@@ -39,7 +39,7 @@ const dirname = path.resolve();
 // Now you can use __dirname
 if (process.env.NODE_ENV === "production") { 
   app.use(express.static(path.join(dirname, "/frontend/dist")));
-  app.get("*", (req, res) => {
+  app.get(/(.*)/, (req, res) => {
     res.sendFile(path.resolve(dirname, "frontend", "dist", "index.html"));
   });
 }
