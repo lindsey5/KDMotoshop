@@ -2,6 +2,9 @@
   "files": [],
   "compilerOptions": {
     "jsx": "react-jsx",
+    "paths": {
+      "@tailwindcss/vite": ["node_modules/@tailwindcss/vite"]
+    }
   },
   "references": [
     { "path": "./tsconfig.app.json" },
