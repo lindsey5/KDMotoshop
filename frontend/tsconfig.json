@@ -2,7 +2,7 @@
   "files": [],
   "compilerOptions": {
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext"
   },
   "references": [
     { "path": "./tsconfig.app.json" },
