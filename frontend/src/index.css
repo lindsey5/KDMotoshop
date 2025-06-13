@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.my-swal-popup {
+  z-index: 99999;
+}
