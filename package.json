@@ -26,7 +26,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch backend --exec ts-node backend/server.ts",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-    "start": "cross-env NODE_ENV=production node dist/server.js"
+    "start": "cross-env NODE_ENV=production node backend/server.js"
   },
   "keywords": [],
   "author": "",
