@@ -15,7 +15,6 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.15.30",
-    "cross-env": "^7.0.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
@@ -25,8 +24,8 @@
   "main": "backend/server.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch backend --exec ts-node backend/server.ts",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-    "start": "cross-env NODE_ENV=production node backend/server.js"
+    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend && tsc",
+    "start": "cross-env NODE_ENV=production node dist/server.js"
   },
   "keywords": [],
   "author": "",
