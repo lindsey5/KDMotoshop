@@ -1,13 +1,15 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LineTextField } from "../../components/Textfield"
 import { RedButton } from "../../components/Button";
-import { postData } from "../../services/api";
+import { fetchData, postData } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [selectedRole, setSelectedRole] = useState<string>('Admin');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -15,13 +17,23 @@ const Login = () => {
         const response = await postData('/api/auth/login', { email, password, role: selectedRole});
         if(response.success){
             localStorage.setItem('token', response.token)
-
-            window.location.href = response.user.role === 'Admin' ? '/admin' : '/staff'
+            const path = response.user.role === 'Admin' ? '/admin' : '/staff'
+            window.location.href = path
 
         }else{
             setError(response.message)
         }
     };
+
+      useEffect(() => {
+        const getUser = async () => {
+          const response = await fetchData('/api/user');
+    
+          if (response.success) navigate("/admin", { replace: true });
+        };
+    
+        getUser();
+      }, []);
 
     return <main className="h-screen grid grid-cols-1 md:grid-cols-2">
         <div className="hidden md:flex bg-black h-full flex flex-col items-center justify-center gap-6">

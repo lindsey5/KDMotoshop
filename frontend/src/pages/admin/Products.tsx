@@ -6,13 +6,13 @@ import { RedButton } from "../../components/Button"
 import { useEffect, useState } from "react"
 import CreateCategoryModal from "../../components/modals/CreateCategory"
 import { fetchData } from "../../services/api"
-import type { Category } from "../../types/category"
 import { CustomizedChip } from "../../components/Chip"
 import { confirmDialog } from "../../utils/swal"
 import { deleteData } from "../../services/api"
+import { useNavigate } from "react-router-dom"
 
 const deleteCategory = async (id : string) => {
-    const confirmed = await confirmDialog('Are you sure you want to delete?', 'You won\'t be able to revert this!')
+    const confirmed = await confirmDialog('Are you sure you want to remove?', 'You won\'t be able to revert this!')
 
     if (confirmed) {
         const response = await deleteData(`/api/category/${id}`)   
@@ -24,6 +24,7 @@ const Products = () => {
     const [openCategory, setOpenCategory] = useState<boolean>(false);
     const [categories, setCategories] = useState<[Category]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getCategories = async () => {
@@ -37,6 +38,7 @@ const Products = () => {
 
     return <div className="flex bg-gray-100 h-full">
         <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
+        
         <div className="flex-1 flex flex-col p-5">
             <div className="flex items-center mb-6 justify-between">
                 <h1 className="text-red-500 font-bold text-4xl">Products</h1>
@@ -46,7 +48,7 @@ const Products = () => {
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
                     >Add Category</Button>
-                    <RedButton>Add Product</RedButton>
+                    <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
                 </div>
             </div>
             <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md">

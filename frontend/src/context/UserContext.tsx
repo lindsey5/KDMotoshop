@@ -36,12 +36,11 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
       if (response.user) setUser(response.user);
       else {
-        localStorage.removeItem('token');
         window.location.href = '/login';
       }
     };
 
-    getUser();
+    getUser()
   }, []);
 
   return (

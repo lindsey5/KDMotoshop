@@ -30,7 +30,7 @@ export const CustomizedChip: React.FC<CustomizedChipProps> = ({
             color: 'white', 
           },
         },
-        { minWidth: 60 }
+        { minWidth: 60, fontSize: 15 }
       ]}
     />
   );

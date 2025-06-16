@@ -1,5 +1,6 @@
 import { InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
+import type React from "react";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
@@ -22,6 +23,32 @@ export const LineTextField: React.FC<LineTextFieldProps> = ({ label, ...props })
     />
   );
 };
+
+export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
+  return (
+    <TextField 
+      variant="outlined"
+      sx={{
+            '& .MuiInputLabel-root': {
+                    '&.Mui-focused': {
+                        color: 'red', 
+                    },
+                },
+            '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                    borderColor: 'red', 
+                },
+                '&.Mui-focused fieldset': {
+                    borderColor: 'red',
+                },
+            },
+            ...sx
+      }}
+      {...props}
+
+    />
+  )
+}
 
 export const SearchField: React.FC<TextFieldProps> = ({ sx, ...props }) => {
   return (
