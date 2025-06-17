@@ -67,7 +67,7 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
             <div>
                 <h1 className='font-bold'>Variant {index + 1}</h1>
                 <div className="flex gap-2 mt-2">
-                {Object.entries(variant.attributes).map(([key, value], index : number) => (
+                {Object.entries(variant.attributes).map(([key, value]) => (
                     <span key={key}>{value}</span>
                 ))}
                 </div>
