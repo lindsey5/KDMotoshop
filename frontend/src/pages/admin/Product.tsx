@@ -3,12 +3,15 @@ import { RedTextField } from "../../components/Textfield"
 import { fetchData } from "../../services/api";
 import { CustomizedSelect } from "../../components/Select";
 import { red } from "@mui/material/colors";
-import { FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
+import { Backdrop, Button, CircularProgress, FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
 import { RedButton } from "../../components/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { confirmDialog, errorAlert } from "../../utils/swal";
 import VariantContainer from "../../components/product/VariantContainer";
 import ProductImage from "../../components/product/ProductImage";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { saveProduct } from "../../services/productService";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (
@@ -27,9 +30,13 @@ const RedRadio = ({ label, value } : { label: string, value: string }) => {
 }
 
 const ProductPage = () => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get('id')
     const [categories, setCategories] = useState<Menu[]>([]);
     const [attributeName, setAttributeName] = useState<string>('');
     const [selectedImage, setSelectedImage] = useState<string>('/photo.png');
+    const [loading, setLoading] = useState<boolean>(false)
     const [product, setProduct] = useState<Product>({
         product_name: '',
         description: '',
@@ -45,12 +52,19 @@ const ProductPage = () => {
         variants: []
     });
 
-    useEffect(() => {
-        const getCategories = async () => {
-            const response = await fetchData('/api/category');
-            if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
-        }
+    const getCategories = async () => {
+        const response = await fetchData('/api/category');
+        if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
+    }
 
+    const getProduct = async (id : string) => {
+        const response = await fetchData(`/api/product/${id}`);
+        if(response.success) setProduct(response.product)
+        else navigate('/admin/products')
+    }
+
+    useEffect(() => {
+        if(id) getProduct(id as string);
         getCategories();
     }, [])
 
@@ -127,7 +141,7 @@ const ProductPage = () => {
             variants: prev.variants.map(variant => ({
                 ...variant,
                 attributes: Object.fromEntries(
-                Object.entries(variant.attributes).filter(([key]) => key !== attributeName)
+                    Object.entries(variant.attributes).filter(([key]) => key !== attributeName)
                 )
             }))
             }));
@@ -147,7 +161,13 @@ const ProductPage = () => {
     };
 
     return <div className="min-h-full p-5 bg-gray-100 relative">
-        <h1 className="text-red-500 font-bold text-4xl">Create Product</h1>
+        <Backdrop
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+            open={loading}
+        >
+            <CircularProgress color="inherit" />
+        </Backdrop>
+        <h1 className="text-red-500 font-bold text-4xl">{id ? 'Update' : 'Create'} Product</h1>
         <div className="flex items-start gap-10 mt-6">
             <div className="flex-1">
 
@@ -257,6 +277,7 @@ const ProductPage = () => {
                         <div className="bg-gray-100 flex flex-col gap-5 p-5">
                         {product.variants.map((variant, i) =>(
                             <VariantContainer 
+                                key={i}
                                 index={i} 
                                 variant={variant}
                                 setProduct={setProduct}
@@ -271,6 +292,13 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </div>}
+                <div className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
+                    <Button 
+                        variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
+                        onClick={() => navigate(-1)}
+                    >Cancel</Button>
+                    <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
+                </div>
             </div>
             
             <div className="w-[30%] max-w-[350px] flex flex-col gap-6">
@@ -324,7 +352,9 @@ const ProductPage = () => {
                                 onChange={handleImages}
                             />
                             <label htmlFor="images-input">
-                                <RedButton component="span">+</RedButton>
+                                <RedButton component="span">
+                                    <AddIcon sx={{ color: 'white'}}/>
+                                </RedButton>
                             </label>
                         </div>
                     </div>

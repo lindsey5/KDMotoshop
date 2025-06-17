@@ -8,6 +8,7 @@ import { createServer } from 'http';
 import userRoutes from './routes/userRoutes';
 import authRoutes from './routes/authRoutes';
 import categoryRoutes from './routes/categoryRoutes';
+import productRoutes from './routes/productRoutes';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000; 
@@ -27,12 +28,13 @@ app.use(cors({
 }))
 app.use(morgan('dev'));
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true}));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/category", categoryRoutes)
+app.use("/api/product", productRoutes)
 
 const dirname = path.resolve();
 

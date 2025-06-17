@@ -1,19 +1,16 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
+import { UploadedImage } from '../types/types';
 
 interface Variant {
+  _id: Types.ObjectId;
   sku: string;
+  image: UploadedImage;
   price: number | null;
   stock: number | null;
-  added_by: string;
   attributes: {
     [key: string]: string;
   };
 }
-
-type UploadedImage = {
-  imageUrl: string;
-  imagePublicId: string;
-};
 
 interface IProduct extends Document {
   product_name: string;
@@ -24,7 +21,7 @@ interface IProduct extends Document {
   stock: number;
   product_type: string;
   visibility: string;
-  added_by: string;
+  added_by: Types.ObjectId;
   images: UploadedImage[];
   thumbnail: UploadedImage;
   variants: Variant[];
@@ -41,27 +38,41 @@ const ProductSchema: Schema<IProduct> = new Schema(
     stock: { type: Number },
     product_type: { type: String, required: true },
     visibility: { type: String, required: true },
-    added_by: { type: String, required: true },
-    images: [
-      {
-        imageUrl: { type: String, required: true },
-        imagePublicId: { type: String, required: true }
-      }
-    ],
-    thumbnail: {
-      imageUrl: { type: String, required: true },
-      imagePublicId: { type: String, required: true }
+    added_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    images: { 
+        type: [
+            {
+                imageUrl: { type: String, required: true },
+                imagePublicId: { type: String, required: true }
+            }
+        ], 
+        required: true
     },
-    variants: [
-      {
-        sku: { type: String, required: true, unique: true },
-        price: { type: Number, required: true, },
-        stock: { type: Number, required: true, },
-        added_by: { type: String, required: true },
-        attributes: { type: Map, of: String, required: true }
-      }
-    ],
-    attributes: [String]
+    thumbnail: { 
+        type:  {
+            imageUrl: { type: String, required: true },
+            imagePublicId: { type: String, required: true }
+        },
+        required: true
+    },
+    variants: { 
+        type: [
+            {
+                sku: { type: String, required: true, unique: true },
+                image: { 
+                  type: {
+                    imageUrl: { type: String, required: true },
+                    imagePublicId: { type: String, required: true }
+                  },
+                  required: true
+                },
+                price: { type: Number, required: true, },
+                stock: { type: Number, required: true, },
+                attributes: { type: Map, of: String, required: true }
+            }
+        ],
+    },
+    attributes: { type: [String] }
   },
   { timestamps: true }
 );

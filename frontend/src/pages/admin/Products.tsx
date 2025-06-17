@@ -1,4 +1,4 @@
-import { Button, TableRow } from "@mui/material"
+import { Button, IconButton, Pagination, TableRow } from "@mui/material"
 import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table"
 import { SearchField } from "../../components/Textfield"
 import DashboardCard from "../../components/DashboardCard"
@@ -10,6 +10,8 @@ import { CustomizedChip } from "../../components/Chip"
 import { confirmDialog } from "../../utils/swal"
 import { deleteData } from "../../services/api"
 import { useNavigate } from "react-router-dom"
+import { formatDate } from "../../utils/dateUtils"
+import EditIcon from '@mui/icons-material/Edit';
 
 const deleteCategory = async (id : string) => {
     const confirmed = await confirmDialog('Are you sure you want to remove?', 'You won\'t be able to revert this!')
@@ -22,19 +24,50 @@ const deleteCategory = async (id : string) => {
 
 const Products = () => {
     const [openCategory, setOpenCategory] = useState<boolean>(false);
-    const [categories, setCategories] = useState<[Category]>();
+    const [pagination, setPagination] = useState<Pagination>({
+        totalPages: 1,
+        page: 1,
+        searchTerm: ''
+    });
+    const [categories, setCategories] = useState<Category[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [products, setProducts] = useState<Product[]>();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const getCategories = async () => {
-            const response = await fetchData('/api/category');
+    const getCategories = async () => {
+        const response = await fetchData('/api/category');
 
-            if(response.success) setCategories(response.categories)
+        if(response.success) setCategories(response.categories)
+    }
+
+    const getProducts = async () => {
+        const response = await fetchData(`/api/product?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
+
+        if(response.success) {
+            setPagination(prev => ({
+                ...prev,
+                totalPages: response.totalPages,
+            }))
+            setProducts(response.products)
         }
+    }
 
+    useEffect(() => {
+        getProducts();
         getCategories();
     }, [])
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            getProducts();
+        }, 300); 
+        
+        return () => clearTimeout(delayDebounce);
+    }, [pagination.page, pagination.searchTerm, selectedCategory])
+
+     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPagination(prev => ({...prev, page: value}))
+    };
 
     return <div className="flex bg-gray-100 h-full">
         <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
@@ -52,10 +85,14 @@ const Products = () => {
                 </div>
             </div>
             <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md">
-                <SearchField 
-                    sx={{ width: '400px'}}
-                    placeholder="Search product (Product name, SKU, Category)"
-                />
+                <div className="flex items-center justify-between">
+                    <SearchField 
+                        sx={{ width: '400px'}}
+                        onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
+                        placeholder="Search product (Product name, SKU, Category)"
+                    />
+                    <Pagination count={pagination.totalPages} onChange={handlePage} />
+                </div>
                 <div className="flex overflow-x-auto mt-4 gap-2">
                     <CustomizedChip 
                         onClick={() => setSelectedCategory('All')} 
@@ -78,22 +115,40 @@ const Products = () => {
                                 <StyledTableCell align="left">Product name</StyledTableCell>
                                 <StyledTableCell align="left">Stock</StyledTableCell>
                                 <StyledTableCell align="center">Category</StyledTableCell>
+                                <StyledTableCell align="center">Product Type</StyledTableCell>
                                 <StyledTableCell align="center">Created at</StyledTableCell>
                                 <StyledTableCell align="center">Action</StyledTableCell>
                             </TableRow>
                         }
-                        rows={
-                            <>
-                                <StyledTableRow>
-                                    <StyledTableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    Product
-                                    </StyledTableCell>
-                                    <StyledTableCell>100</StyledTableCell>
-                                    <StyledTableCell align="center">Category A</StyledTableCell>
-                                    <StyledTableCell align="center">2024-01-01</StyledTableCell>
-                                    <StyledTableCell align="center">Edit | Delete</StyledTableCell>
-                                </StyledTableRow>
-                            </>
+                        rows={products?.map(product => (
+                            <StyledTableRow>
+                                <StyledTableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <img 
+                                        className="bg-gray-100 w-12 h-12"
+                                        src={
+                                            typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+                                            ? product.thumbnail.imageUrl
+                                            : typeof product.thumbnail === 'string'
+                                                ? product.thumbnail
+                                                : '/photo.png'
+                                        }
+                                    />
+                                    {product.product_name}
+                                </StyledTableCell>
+                                <StyledTableCell>{product.product_type === 'Single' ? product.stock : 
+                                    product.variants.reduce((total, variant) => {
+                                        return variant.stock ? total + variant.stock : total
+                                    }, 0)}
+                                </StyledTableCell>
+                                <StyledTableCell align="center">{product.category}</StyledTableCell>
+                                <StyledTableCell align="center">{product.product_type}</StyledTableCell>
+                                <StyledTableCell align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </StyledTableCell>
+                            </StyledTableRow>))
                         }
                     />
                 </div>

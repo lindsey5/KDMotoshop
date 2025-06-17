@@ -14,7 +14,7 @@ interface VariantContainerProps {
 }
 
 const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct, variant }) => {
-    const [expand, setExpand] = useState<boolean>(index === 0);
+    const [expand, setExpand] = useState<boolean>(false);
 
     const updateVariant = (
         field: keyof Variant,
@@ -67,10 +67,8 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
             <div>
                 <h1 className='font-bold'>Variant {index + 1}</h1>
                 <div className="flex gap-2 mt-2">
-                {Object.entries(variant.attributes).map(([key, value]) => (
-                    value ? <span key={key}>
-                    {value} |
-                    </span> : <></>
+                {Object.entries(variant.attributes).map(([key, value], index : number) => (
+                    <span key={key}>{value}</span>
                 ))}
                 </div>
             </div>
@@ -109,6 +107,7 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
             <div className='grid grid-cols-2 gap-10 mb-8'>
                 {Object.entries(variant.attributes).map(([key, value]) => (
                     <RedTextField 
+                        key={key}
                         label={key} 
                         value={value} 
                         onChange={(e) => handleAttribute(key, e.target.value)}

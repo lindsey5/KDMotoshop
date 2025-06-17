@@ -25,9 +25,9 @@ interface Product{
     product_name: string;
     description: string;
     category: string;
-    sku: string | undefined;
-    price: number | undefined; 
-    stock: number | undefined;
+    sku?: string | undefined;
+    price?: number | undefined; 
+    stock?: number | undefined;
     product_type: string;
     visibility: string;
     added_by?: string; 
@@ -35,4 +35,5 @@ interface Product{
     thumbnail: UploadedImage | string | ArrayBuffer | null,
     variants: Variant[];
     attributes: string[];
+    createdAt?: Date;
 }
