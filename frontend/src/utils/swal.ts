@@ -6,20 +6,21 @@ const MySwal = withReactContent(Swal);
 export const confirmDialog = async (
   title: string,
   text: string,
+  icon: 'warning' | 'error' | 'success' | 'info' | 'question' = 'warning',
   confirmText = 'Yes',
   cancelText = 'Cancel'
 ): Promise<boolean> => {
   const result = await MySwal.fire({
     title,
     text,
-    icon: 'warning',
+    icon,
     showCancelButton: true,
     confirmButtonText: confirmText,
     cancelButtonText: cancelText,
-    confirmButtonColor: 'red'
+    confirmButtonColor: 'red',
   });
 
-  return result.isConfirmed;
+  return result.isConfirmed === true;
 };
 
 export const successAlert = (title: string, text: string) => {

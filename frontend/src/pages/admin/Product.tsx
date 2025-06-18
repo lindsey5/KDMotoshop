@@ -160,7 +160,7 @@ const ProductPage = () => {
         }
     };
 
-    return <div className="min-h-full p-5 bg-gray-100 relative">
+    return <div className="min-w-[1000px] min-h-full p-5 bg-gray-100 relative">
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -211,17 +211,17 @@ const ProductPage = () => {
                     {product.product_type === 'Single' ? 
                     (<div className="grid grid-cols-2 gap-10">
                         <RedTextField 
+                            label="SKU" 
+                            placeholder="Enter product SKU"
+                            onChange={(e) => setProduct({ ...product, sku: e.target.value})}
+                            value={product.sku}
+                        />
+                        <RedTextField 
                             label="Stock" 
                             placeholder="Enter stock"
                             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             onChange={(e ) => handleNoDecimal(e.target.value, 'stock')}
                             value={product.stock || ''}
-                        />
-                        <RedTextField 
-                            label="SKU" 
-                            placeholder="Enter product SKU"
-                            onChange={(e) => setProduct({ ...product, sku: e.target.value})}
-                            value={product.sku}
                         />
                         <RedTextField 
                             label="Price" 
@@ -265,7 +265,7 @@ const ProductPage = () => {
                     )}
                 </div>
 
-                {product.product_type === 'Variable' && <div className="my-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
+                {product.product_type === 'Variable' && <div className="mt-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
                     <div className="flex items-center justify-between mb-6">
                          <h1 className="text-lg font-bold">Product Variations</h1>
                          <RedButton
@@ -292,7 +292,7 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </div>}
-                <div className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
+                <div className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
                     <Button 
                         variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
                         onClick={() => navigate(-1)}
@@ -306,7 +306,7 @@ const ProductPage = () => {
                     <strong>Product Thumbnail</strong>
                     <div className="flex flex-col items-center gap-5 mt-4"> 
                         <img 
-                            className="w-full bg-gray-100 h-[150px] lg:h-[230px]"
+                            className="w-[90%] bg-gray-100 h-[150px] lg:h-[230px]"
                             src={
                                 typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
                                 ? product.thumbnail.imageUrl

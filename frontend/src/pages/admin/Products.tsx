@@ -14,7 +14,7 @@ import { formatDate } from "../../utils/dateUtils"
 import EditIcon from '@mui/icons-material/Edit';
 
 const deleteCategory = async (id : string) => {
-    const confirmed = await confirmDialog('Are you sure you want to remove?', 'You won\'t be able to revert this!')
+    const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!')
 
     if (confirmed) {
         const response = await deleteData(`/api/category/${id}`)   

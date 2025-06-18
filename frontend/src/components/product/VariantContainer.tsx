@@ -66,11 +66,7 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
         <div className="p-5 flex justify-between items-center rounded-lg">
             <div>
                 <h1 className='font-bold'>Variant {index + 1}</h1>
-                <div className="flex gap-2 mt-2">
-                {Object.entries(variant.attributes).map(([key, value]) => (
-                    <span key={key}>{value}</span>
-                ))}
-                </div>
+                <p>{variant.sku}</p>
             </div>
             <div className='flex items-center'>
                 <IconButton onClick={removeVariant}>
@@ -117,6 +113,12 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
             <h1 className="text-gray-400 font-bold mb-6">Variant Information</h1>
             <div className='grid grid-cols-2 gap-10 mb-8'>
                 <RedTextField 
+                    label="SKU"
+                    value={variant.sku}
+                    onChange={(e) => updateVariant('sku', e.target.value)}
+                    placeholder='Enter Variant SKU'
+                />
+                <RedTextField 
                     type='number'
                     label="Stock"
                     value={variant.stock}
@@ -129,12 +131,6 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
                     value={variant.price}
                     onChange={(e) => updateVariant('price', e.target.value)}
                     placeholder='Enter Variant Price' 
-                />
-                <RedTextField 
-                    label="SKU"
-                    value={variant.sku}
-                    onChange={(e) => updateVariant('sku', e.target.value)}
-                    placeholder='Enter Variant SKU'
                 />
             </div>
         </div>}

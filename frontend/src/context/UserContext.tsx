@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import { fetchData } from "../services/api";
+import { CircularProgress } from "@mui/material";
+import { AdminSidebar } from "../components/Sidebar";
 
 interface User {
   email: string;
@@ -42,6 +44,11 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
     getUser()
   }, []);
+
+  if(!user) return <div className="h-screen flex justify-center items-center">
+    <AdminSidebar />
+    <CircularProgress />
+  </div>
 
   return (
     <UserContext.Provider value={{ user }}>

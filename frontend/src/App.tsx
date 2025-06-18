@@ -4,10 +4,12 @@ import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Products";
 import ProductPage from "./pages/admin/Product";
+import Home from "./pages/customer/Home";
 
 function App() {
   return <BrowserRouter>
   <Routes>
+    <Route index element={<Home />} />
     <Route path="login" element={<Login />} />
     <Route path="admin" element={<AdminLayout />} >
       <Route index element={<AdminDashboard />} />

@@ -5,7 +5,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from '@mui/material';
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface SidebarButtonProps {
   icon: ReactNode;
@@ -15,10 +15,11 @@ interface SidebarButtonProps {
 
 const SidebarButton = ({ label, icon, path }: SidebarButtonProps) => {
   const pathname = useLocation().pathname;
+  const navigate = useNavigate();
 
   return (
     <Button
-        onClick={() => window.location.href = path}
+        onClick={() => navigate(path)}
         variant="contained"
         startIcon={icon}
         sx={{

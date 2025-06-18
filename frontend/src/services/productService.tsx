@@ -28,7 +28,7 @@ export const saveProduct = async (
   product: Product,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  if (!(await confirmDialog('Save product?', ''))) return;
+  if (!(await confirmDialog('Save product?', '', 'success'))) return;
 
   setLoading(true);
   try {
