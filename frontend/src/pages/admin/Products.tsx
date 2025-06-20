@@ -12,6 +12,14 @@ import { deleteData } from "../../services/api"
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "../../utils/dateUtils"
 import EditIcon from '@mui/icons-material/Edit';
+import { PieChart } from "@mui/x-charts"
+
+const categoryData = {
+    data: [
+        { id: 0, value: 40, label: "Full-faced Helmet" },
+        { id: 2, value: 15, label: "Topbox" },
+    ]
+};
 
 const deleteCategory = async (id : string) => {
     const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!')
@@ -55,7 +63,11 @@ const Products = () => {
     useEffect(() => {
         getProducts();
         getCategories();
-    }, [])
+    }, [pagination.page, selectedCategory])
+
+    useEffect(() => {
+        setSelectedCategory('All')
+    }, [pagination.searchTerm])
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -63,9 +75,9 @@ const Products = () => {
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
-    }, [pagination.page, pagination.searchTerm, selectedCategory])
+    }, [pagination.searchTerm])
 
-     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
 
@@ -74,7 +86,10 @@ const Products = () => {
         
         <div className="flex-1 flex flex-col p-5">
             <div className="flex items-center mb-6 justify-between">
-                <h1 className="text-red-500 font-bold text-4xl">Products</h1>
+                <div>
+                    <h1 className="font-bold text-4xl">Products</h1>
+                    <p className="text-gray-600 mt-2">Here you can view all products</p>
+                </div>
                 <div className="flex gap-10">
                     <Button 
                         sx={{ color: 'red', borderColor: 'red'}} 
@@ -84,12 +99,12 @@ const Products = () => {
                     <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
                 </div>
             </div>
-            <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md">
+            <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md border-1 border-gray-300">
                 <div className="flex items-center justify-between">
                     <SearchField 
                         sx={{ width: '400px'}}
                         onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
-                        placeholder="Search product (Product name, SKU, Category)"
+                        placeholder="Search by Product name, SKU, Category..."
                     />
                     <Pagination count={pagination.totalPages} onChange={handlePage} />
                 </div>
@@ -158,7 +173,14 @@ const Products = () => {
             <DashboardCard label="Total Products" value="20"/>
             <DashboardCard label="Total Products Sold" value="100"/>
 
-            
+            <div className="bg-white p-5 shadow-lg border-1 border-gray-200 rounded-md">
+                <h1 className="text-lg font-bold">Most Popular Categories</h1>
+                <PieChart
+                    series={[ categoryData ]}
+                    width={300}
+                    height={300}
+                />
+            </div>
         </div>
     </div>
 }

@@ -51,17 +51,6 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
         }
     };
 
-    const handleImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                updateVariant('image', reader.result)
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
     return <div className='bg-white border-1 border-gray-300 rounded-lg'>
         <div className="p-5 flex justify-between items-center rounded-lg">
             <div>
@@ -79,34 +68,14 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
         </div>
 
         {expand && <div className='p-5'>
-            <img 
-                className="w-35 h-35 bg-gray-100 mb-4"
-                src={
-                    typeof variant.image === 'object' && variant.image !== null && 'imageUrl' in variant.image
-                    ? variant.image.imageUrl
-                       : typeof variant.image === 'string'
-                       ? variant.image
-                    : '/photo.png'
-                }
-            />
-            <input
-                type="file"
-                accept="image/*"
-                id="image-input"
-                style={{ display: 'none' }}
-                onChange={handleImage}
-            />
-            <label htmlFor="image-input">
-                <RedButton component="span">Add Image</RedButton>
-            </label>
-            <h1 className="text-gray-400 font-bold my-6">Attributes</h1>
+            <h1 className="text-gray-400 font-bold mb-6">Attributes</h1>
             <div className='grid grid-cols-2 gap-10 mb-8'>
                 {Object.entries(variant.attributes).map(([key, value]) => (
                     <RedTextField 
                         key={key}
                         label={key} 
                         value={value} 
-                        onChange={(e) => handleAttribute(key, e.target.value)}
+                        onChange={(e) => handleAttribute(key, e.target.value.toLocaleUpperCase())}
                     />
                 ))}
             </div>

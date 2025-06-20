@@ -5,8 +5,8 @@ interface Category{
 }
 
 interface Variant{
+    _id?: string;
     sku: string;
-    image: UploadedImage | string | ArrayBuffer | null;
     price: number | null;
     stock: number | null;
     added_by?: string;
@@ -28,7 +28,7 @@ interface Product{
     sku?: string | undefined;
     price?: number | undefined; 
     stock?: number | undefined;
-    product_type: string;
+    product_type: "Single" | "Variable" | string;
     visibility: string;
     added_by?: string; 
     images: (UploadedImage | string | ArrayBuffer)[], 

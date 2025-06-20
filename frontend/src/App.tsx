@@ -5,6 +5,8 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Products";
 import ProductPage from "./pages/admin/Product";
 import Home from "./pages/customer/Home";
+import Orders from "./pages/admin/Orders";
+import CreateOrderPage from "./pages/admin/CreateOrder";
 
 function App() {
   return <BrowserRouter>
@@ -15,6 +17,10 @@ function App() {
       <Route index element={<AdminDashboard />} />
       <Route path="products" element={<Products />} />
       <Route path="product" element={<ProductPage />} />
+      <Route path="orders" element={<Orders />} />
+      <Route path="order">
+        <Route path="create" element={<CreateOrderPage />} />
+      </Route>
     </Route>
     <Route path="*" element={<Navigate to="/" />}/>
   </Routes>

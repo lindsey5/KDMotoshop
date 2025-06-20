@@ -39,3 +39,21 @@ export const get_categories =  async(req: Request, res: Response) => {
         res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }
+
+export const delete_category = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            res.status(409).json({ success: false, message: 'Category does not exist' });
+            return;
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({ success: true, message: 'Category deleted successfully' });
+
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+};

@@ -11,16 +11,10 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
         const thumbnail = await uploadImage(product.thumbnail);
         const images = await Promise.all(product.images.map(async (image : string) => await uploadImage(image)))
 
-        const variants = await Promise.all(product.variants.map(async (variant : any) => {
-            const image = await uploadImage(variant.image)
-            return { ...variant, image }
-        }))
-
         const newProduct = new Product({ 
             ...product, 
             thumbnail, 
             images, 
-            variants, 
             added_by: req.user_id 
         })
 
@@ -29,7 +23,8 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
         res.status(201).json({ success: true, newProduct});
 
     }catch(err : any){
-        res.status(500).json({ success: false, message: err.message });
+      console.log(err)
+      res.status(500).json({ success: false, message: err.message });
     }
 }
 
@@ -138,29 +133,9 @@ export const update_product = async (req: Request, res: Response) => {
       if (!stillUsed) await deleteImage(oldImg.imagePublicId);
     }
 
-    const variants = await Promise.all(
-      product.variants.map(async (variant: any, index: number) => {
-        if (typeof variant.image === 'string') {
-          const newImage = await uploadImage(variant.image);
-
-          const oldVariant = oldProduct.variants[index];
-          if (oldVariant && oldVariant.image?.imagePublicId) await deleteImage(oldVariant.image.imagePublicId);
-
-          return { ...variant, image: newImage };
-        }
-
-        return variant; 
-      })
-    );
-
-    for (let i = product.variants.length; i < oldProduct.variants.length; i++) {
-        const oldVariant = oldProduct.variants[i];
-        if (oldVariant?.image?.imagePublicId) await deleteImage(oldVariant.image.imagePublicId);
-    }
-
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { ...product, thumbnail, images, variants },
+      { ...product, thumbnail, images },
       { new: true }
     );
 

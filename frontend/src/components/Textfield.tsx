@@ -50,22 +50,21 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
   )
 }
 
-export const SearchField: React.FC<TextFieldProps> = ({ sx, ...props }) => {
+export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChange }) => {
   return (
     <TextField
-      {...props}
+      onChange={onChange}
+      placeholder={placeholder}
       variant="outlined"
       sx={{
         width: '100%',
         '& .MuiOutlinedInput-root': {
           fontSize: 15,
-          height: '45px',
-          borderRadius: 20,
           '&:hover fieldset': {
-            borderColor: 'black',
+            borderColor: 'red',
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'black',
+            borderColor: 'red',
           },
         },
         ...sx,
@@ -76,7 +75,6 @@ export const SearchField: React.FC<TextFieldProps> = ({ sx, ...props }) => {
             <SearchIcon color="action" />
           </InputAdornment>
         ),
-        ...props.InputProps,
       }}
     />
   );

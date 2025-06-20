@@ -2,6 +2,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
+import BadgeIcon from '@mui/icons-material/Badge';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Button } from '@mui/material';
 import type { ReactNode } from 'react';
@@ -43,7 +44,8 @@ export const AdminSidebar = () => {
         <SidebarButton label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25}}/>} path="/admin"/>
         <SidebarButton label="Products" icon={<SportsMotorsportsIcon sx={{ width: 25, height: 25}}/>} path="/admin/products"/>
         <SidebarButton label="Orders" icon={<ShoppingCartIcon sx={{ width: 25, height: 25}}/>} path="/admin/orders"/>
-        <SidebarButton label="Employees" icon={<PersonIcon sx={{ width: 25, height: 25}} />} path="/admin/emoloyees"/>
+        <SidebarButton label="Employees" icon={<BadgeIcon sx={{ width: 25, height: 25}} />} path="/admin/emoloyees"/>
+        <SidebarButton label="Customers" icon={<PersonIcon sx={{ width: 25, height: 25}} />} path="/admin/customers"/>
          <SidebarButton label="Settings" icon={<SettingsIcon sx={{ width: 25, height: 25}} />} path="/admin/settings"/>
     </aside>
 }

@@ -5,10 +5,11 @@ import { MenuItem } from '@mui/material';
 
 interface CustomizedSelectProps extends BaseSelectProps{
     menu: Menu[];
-    label: string;
+    label?: string;
+    icon?: React.ReactNode
 }
 
-export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, menu, ...props}) => {
+export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, menu, icon, ...props}) => {
     return <FormControl fullWidth>
         <InputLabel 
           sx={{
@@ -17,10 +18,14 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
             },
           }}
         >{label}</InputLabel>
+        <div className='absolute left-2 top-1/2 transform -translate-y-1/2'>
+        {icon}
+        </div>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          label={label}
+          
+          {...(label && { label })}
           {...props}
           sx={{
             '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -30,6 +35,7 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
               borderColor: 'red', 
               borderWidth: '2px'
             },
+            ...(icon && { paddingLeft: 3}),
             ...sx
           }}
         >

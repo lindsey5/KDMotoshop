@@ -167,7 +167,10 @@ const ProductPage = () => {
         >
             <CircularProgress color="inherit" />
         </Backdrop>
-        <h1 className="text-red-500 font-bold text-4xl">{id ? 'Update' : 'Create'} Product</h1>
+        <div>
+            <h1 className="font-bold text-4xl">{id ? 'Edit' : 'Create'} Product</h1>
+            <p className="text-gray-600 mt-2">{id ? 'Edit your' : 'Create your new'} product here.</p>
+        </div>
         <div className="flex items-start gap-10 mt-6">
             <div className="flex-1">
 
@@ -195,7 +198,6 @@ const ProductPage = () => {
                         fullWidth
                         multiline
                         inputProps={{ maxLength: 500 }}
-                        rows={4}
                     />
                     <div className="flex gap-4 items-center">
                         <h1 className="text-gray-500">Product Type</h1>
@@ -220,7 +222,7 @@ const ProductPage = () => {
                             label="Stock" 
                             placeholder="Enter stock"
                             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            onChange={(e ) => handleNoDecimal(e.target.value, 'stock')}
+                            onChange={(e) => handleNoDecimal(e.target.value, 'stock')}
                             value={product.stock || ''}
                         />
                         <RedTextField 

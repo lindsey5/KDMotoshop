@@ -4,7 +4,6 @@ import { postData, updateData } from "./api";
 const isVariantValid = (variant: Variant): boolean => {
   return (
     variant.sku.trim() !== '' &&
-    variant.image !== null &&
     variant.price !== null &&
     variant.stock !== null &&
     Object.keys(variant.attributes).length > 0 &&
@@ -61,6 +60,25 @@ export const saveProduct = async (
       } else if (!product.variants.every((v) => isVariantValid(v))) {
         errorAlert('Invalid Variant', 'Please fill in all fields for each variant.');
         return;
+      }
+      
+      const seen = new Set();
+      for (const variant of product.variants) {
+        
+        const sortedAttributes = Object.entries(variant.attributes)
+          .map(([k, v]) => [k, v.trim()])
+          .sort(([aKey], [bKey]) => aKey.localeCompare(bKey));
+
+        const key = JSON.stringify(Object.fromEntries(sortedAttributes));
+
+        if (seen.has(key)) {
+          errorAlert(
+            'Duplicate Variant',
+            `Each variant must have a unique combination of attributes.`
+          );
+          return;
+        }
+        seen.add(key);
       }
 
       const { sku, price, stock, ...rest } = product;

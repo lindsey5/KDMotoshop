@@ -33,7 +33,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     product_name: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
-    sku: { type: String, unique: true },
+    sku: { type: String },
     price: { type: Number },
     stock: { type: Number },
     product_type: { type: String, required: true },
@@ -59,13 +59,6 @@ const ProductSchema: Schema<IProduct> = new Schema(
         type: [
             {
                 sku: { type: String, required: true, unique: true },
-                image: { 
-                  type: {
-                    imageUrl: { type: String, required: true },
-                    imagePublicId: { type: String, required: true }
-                  },
-                  required: true
-                },
                 price: { type: Number, required: true, },
                 stock: { type: Number, required: true, },
                 attributes: { type: Map, of: String, required: true }
