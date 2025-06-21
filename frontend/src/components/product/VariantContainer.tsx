@@ -5,7 +5,6 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { RedTextField } from '../Textfield';
 import { confirmDialog } from '../../utils/swal';
-import { RedButton } from '../Button';
 
 interface VariantContainerProps {
   index: number;

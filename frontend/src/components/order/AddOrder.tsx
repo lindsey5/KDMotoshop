@@ -1,25 +1,23 @@
-import { Button, IconButton, Modal } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import { useMemo, useState } from "react";
 import { RedButton } from "../Button";
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { successAlert } from "../../utils/swal";
 import { formatNumber } from "../../utils/utils";
+import Counter from "../Counter";
 
 interface AddOrderModalProps{
     selectedProduct: Product | undefined;
-    setOrders: React.Dispatch<React.SetStateAction<Sale[]>>
+    setOrderItems: React.Dispatch<React.SetStateAction<OrderItem[]>>
     close: () => void;
 }
 
-const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, setOrders }) => {
+const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, setOrderItems }) => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
 
     const filteredVariants = useMemo(() => {
-        if (!selectedProduct) { return [] };
-
         setQuantity(1)
+        if (!selectedProduct) { return [] };
 
         return selectedProduct.variants.filter((variant) =>
             Object.entries(selectedAttributes).every(
@@ -35,16 +33,8 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
         }));
     };
 
-    const incrementQuantity = () => {
-        setQuantity(prev => prev + 1);
-    };
-
-    const decrementQuantity = () => {
-        setQuantity(prev => (prev - 1 ));
-    };
-
     const handleAddOrder = () => {
-        setOrders(prev => {
+        setOrderItems(prev => {
             const existingIndex = prev.findIndex(
                 o => o.product_id === selectedProduct?._id && o.variant_id === filteredVariants[0]._id
             );
@@ -67,7 +57,7 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
                     quantity,
                     stock: filteredVariants[0].stock || 0,
                     price: filteredVariants[0]?.price || 0,
-                    sales: (filteredVariants[0].price || 0) * quantity
+                    lineTotal: (filteredVariants[0].price || 0) * quantity
                 }
             ];
         });
@@ -136,23 +126,12 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
                             </div>
                         );
                     })}
-                    <div>
-                        <h1 className="mb-2">Quantity</h1>
-                        <div className="flex gap-2">
-                            <IconButton onClick={decrementQuantity} disabled={quantity === 1 || (filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length)}>
-                                <RemoveIcon />
-                            </IconButton>
-            
-                            <input
-                                className="w-16 px-2 outline-none text-center border-1 border-gray-300"
-                                disabled
-                                value={quantity}
-                            />
-                            <IconButton onClick={incrementQuantity} disabled={quantity === filteredVariants[0]?.stock || (filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length)}>
-                                <AddIcon />
-                            </IconButton>
-                        </div>
-                    </div>
+                    <Counter 
+                        value={quantity} 
+                        setValue={setQuantity} 
+                        limit={filteredVariants[0]?.stock || 0}
+                        disabled={filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
+                    />
                 </div>
                 <RedButton
                     onClick={handleAddOrder}

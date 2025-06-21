@@ -2,7 +2,7 @@ import { RedButton } from "../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
 import StatCard from "../../components/order/StatCard";
 import { Pagination, TableRow } from "@mui/material";
-import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table";
+import CustomizedTable, { StyledTableCell } from "../../components/Table";
 import { SearchField } from "../../components/Textfield";
 import { CustomizedSelect } from "../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';

@@ -3,7 +3,7 @@ interface Order{
     total: number;
     subtotal: number;
     status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled"
-    sales: Sale[]
+    order_items: OrderItem[]
     customer_name?: string;
     address?: {
         street: string;
@@ -17,7 +17,7 @@ interface Order{
     note?: string;
 }
 
-interface Sale{
+interface OrderItem{
     _id?: string;
     product_id: string;
     variant_id?: string;
@@ -26,5 +26,5 @@ interface Sale{
     product_name: string;
     quantity: number;
     price: number;
-    sales: number;
+    lineTotal: number;
 }

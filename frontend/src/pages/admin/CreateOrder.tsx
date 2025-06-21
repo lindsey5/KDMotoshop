@@ -10,6 +10,25 @@ import OrderContainer from "../../components/order/OrderContainer";
 import { formatNumber } from "../../utils/utils";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate } from "react-router-dom";
+import CustomerModal from "../../components/order/CustomerModal";
+
+const OrderState : Order = {
+    total: 0,
+    subtotal: 0,
+    status: 'Pending',
+    order_items: [],
+    customer_name: '',
+    customer_phone: '',
+    payment_method: 'Cash',
+    note: '',
+    address: {
+        street: '',
+        barangay: '',
+        city: '',
+        zip_code: '',
+        country: ''
+    }
+}
 
 const CreateOrderPage = () => {
     const [pagination, setPagination] = useState<Pagination>({
@@ -21,8 +40,9 @@ const CreateOrderPage = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectProduct] = useState<Product | undefined>();
-    const [orders, setOrders] = useState<Sale[]>([]);
-    const [total, setTotal] = useState<number>(0);
+    const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+    const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
+    const [order, setOrder] = useState<Order>(OrderState);
     const navigate = useNavigate();
 
     const fetchCategories = async () => {
@@ -31,8 +51,8 @@ const CreateOrderPage = () => {
     }
 
     useEffect(() => {
-        setTotal(orders.reduce((total, order) => order.sales + total,0));
-    }, [orders])
+        setOrder(prev => ({ ...prev, total: orderItems.reduce((total, item) => item.lineTotal + total,0)}))
+    }, [orderItems])
 
     useEffect(() => {
         fetchProducts();
@@ -71,7 +91,7 @@ const CreateOrderPage = () => {
         if(product.product_type === 'Variable'){
             setSelectProduct(product)
         }else{
-            setOrders(prev => {
+            setOrderItems(prev => {
                     if(!prev.find(o => o.product_id === product._id)){
 
                         return [...prev, {
@@ -85,12 +105,12 @@ const CreateOrderPage = () => {
                                     : '/photo.png',
                             quantity: 1,
                             price: product.price || 0,
-                            sales: product.price || 0
+                            lineTotal: product.price || 0
                         }]
 
                     }
 
-                    return prev.map(o => o.product_id === product._id ? ({...o, quantity: o.quantity + 1, sales: (o.quantity + 1) * o.price}) : o)
+                    return prev.map(o => o.product_id === product._id ? ({...o, quantity: o.quantity + 1, lineTotal: (o.quantity + 1) * o.price}) : o)
                 })
 
             successAlert('Order Added', 'Order successfully added');
@@ -103,16 +123,22 @@ const CreateOrderPage = () => {
 
     const clear = async () => {
         if(await confirmDialog('Remove all items?', '')){
-            setOrders([])
+            setOrderItems([])
         }
     }
 
     return <div className="flex h-full bg-gray-100 gap-5">
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
-            setOrders={setOrders}
+            setOrderItems={setOrderItems}
             close={closeProduct}
         />}
+        <CustomerModal 
+            open={showCustomerModal} 
+            onClose={() => setShowCustomerModal(false)}
+            order={order}
+            setOrder={setOrder}
+        />
         <div className="flex-1 flex flex-col p-5">
             <div className="flex items-center mb-4 gap-5">
                 <IconButton onClick={() => navigate('/admin/orders')}>
@@ -186,19 +212,26 @@ const CreateOrderPage = () => {
                 <Button 
                     variant="contained" 
                     startIcon={<AddIcon />} 
+                    onClick={() => setShowCustomerModal(true)}
                     sx={{ color: '#292929', backgroundColor: '#d8d8d8', fontWeight: 'bold' }}
                 >Add customer</Button>
-                <Button sx={{ color: 'red' }} onClick={clear}>Clear</Button>
+                <Button 
+                    sx={{ color: 'red' }} 
+                    onClick={clear} 
+                    disabled={orderItems.length === 0}
+                >Clear</Button>
             </div>
             <div className="flex-grow min-h-0 overflow-y-auto">
-            {orders.map((order, index) => <OrderContainer order={order} index={index} setOrders={setOrders}/>)}
+            {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
             </div>
             <div className="flex flex-col gap-5 p-5 border-t-1 border-gray-300">
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
-                    <h1 className="font-bold text-2xl">₱{formatNumber(total)}</h1>
+                    <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>
                 </div>
-                <RedButton>Proceed</RedButton>
+                <RedButton
+                    disabled={orderItems.length === 0}
+                >Proceed</RedButton>
             </div>
         </div>
     </div>
