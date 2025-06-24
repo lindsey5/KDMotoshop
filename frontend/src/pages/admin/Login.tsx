@@ -17,7 +17,7 @@ const Login = () => {
         const response = await postData('/api/auth/login', { email, password, role: selectedRole});
         if(response.success){
             localStorage.setItem('token', response.token)
-            const path = response.user.role === 'Admin' ? '/admin' : '/staff'
+            const path = response.user.role === 'Admin' ? '/admin/dashboard' : '/staff'
             window.location.href = path
 
         }else{
@@ -29,7 +29,7 @@ const Login = () => {
         const getUser = async () => {
           const response = await fetchData('/api/user');
     
-          if (response.success) navigate("/admin", { replace: true });
+          if (response.success) navigate("/admin/dashboard", { replace: true });
         };
     
         getUser();

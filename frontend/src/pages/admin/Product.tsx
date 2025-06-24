@@ -12,6 +12,7 @@ import VariantContainer from "../../components/product/VariantContainer";
 import ProductImage from "../../components/product/ProductImage";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../services/productService";
+import BreadCrumbs from "../../components/BreadCrumbs";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (
@@ -51,6 +52,13 @@ const ProductPage = () => {
         attributes: [],
         variants: []
     });
+
+    const PageBreadCrumbs : { label: string, href: string }[] = [
+        { label: 'Dashboard', href: '/admin/dashboard' },
+        { label: 'Products', href: '/admin/products' },
+        { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
+
+    ]
 
     const getCategories = async () => {
         const response = await fetchData('/api/category');
@@ -168,8 +176,8 @@ const ProductPage = () => {
             <CircularProgress color="inherit" />
         </Backdrop>
         <div>
-            <h1 className="font-bold text-4xl">{id ? 'Edit' : 'Create'} Product</h1>
-            <p className="text-gray-600 mt-2">{id ? 'Edit your' : 'Create your new'} product here.</p>
+            <h1 className="font-bold text-4xl mb-4">{id ? 'Edit' : 'Create'} Product</h1>
+            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
         <div className="flex items-start gap-10 mt-6">
             <div className="flex-1">
@@ -197,6 +205,7 @@ const ProductPage = () => {
                         placeholder="Add product description here"
                         fullWidth
                         multiline
+                        rows={10}
                         inputProps={{ maxLength: 500 }}
                     />
                     <div className="flex gap-4 items-center">
@@ -216,7 +225,7 @@ const ProductPage = () => {
                             label="SKU" 
                             placeholder="Enter product SKU"
                             onChange={(e) => setProduct({ ...product, sku: e.target.value})}
-                            value={product.sku}
+                            value={product.sku || ''}
                         />
                         <RedTextField 
                             label="Stock" 

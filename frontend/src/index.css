@@ -3,3 +3,11 @@
 .my-swal-popup {
   z-index: 99999;
 }
+
+.phone-container {
+  width: 100%;
+}
+
+.phone-input {
+  width: 100% !important;
+}

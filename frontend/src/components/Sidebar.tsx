@@ -25,7 +25,7 @@ const SidebarButton = ({ label, icon, path }: SidebarButtonProps) => {
         startIcon={icon}
         sx={{
             fontWeight: 'bold',
-            backgroundColor: pathname === path ? 'red' : 'black',
+            backgroundColor: pathname.includes(path) ? 'red' : 'black',
             '&:hover': {
             backgroundColor: 'red',
             },
@@ -41,7 +41,7 @@ export const AdminSidebar = () => {
 
     return <aside className="w-[200px] fixed left-0 inset-y-0 bg-black p-5 flex flex-col gap-5">
         <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
-        <SidebarButton label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25}}/>} path="/admin"/>
+        <SidebarButton label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25}}/>} path="/admin/dashboard"/>
         <SidebarButton label="Products" icon={<SportsMotorsportsIcon sx={{ width: 25, height: 25}}/>} path="/admin/products"/>
         <SidebarButton label="Orders" icon={<ShoppingCartIcon sx={{ width: 25, height: 25}}/>} path="/admin/orders"/>
         <SidebarButton label="Employees" icon={<BadgeIcon sx={{ width: 25, height: 25}} />} path="/admin/emoloyees"/>

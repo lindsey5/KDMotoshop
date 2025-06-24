@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom"
 import { formatDate } from "../../utils/dateUtils"
 import EditIcon from '@mui/icons-material/Edit';
 import { PieChart } from "@mui/x-charts"
+import BreadCrumbs from "../../components/BreadCrumbs"
 
 const categoryData = {
     data: [
@@ -20,6 +21,11 @@ const categoryData = {
         { id: 2, value: 15, label: "Topbox" },
     ]
 };
+
+const PageBreadCrumbs : { label: string, href: string }[] = [
+    { label: 'Dashboard', href: '/admin/dashboard' },
+    { label: 'Products', href: '/admin/products' },
+]
 
 const deleteCategory = async (id : string) => {
     const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!')
@@ -87,8 +93,8 @@ const Products = () => {
         <div className="flex-1 flex flex-col p-5">
             <div className="flex items-center mb-6 justify-between">
                 <div>
-                    <h1 className="font-bold text-4xl">Products</h1>
-                    <p className="text-gray-600 mt-2">Here you can view all products</p>
+                    <h1 className="font-bold text-4xl mb-4">Products</h1>
+                    <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 </div>
                 <div className="flex gap-10">
                     <Button 
@@ -96,7 +102,7 @@ const Products = () => {
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
                     >Add Category</Button>
-                    <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
+                    <RedButton onClick={() => navigate('/admin/products/product')}>Add Product</RedButton>
                 </div>
             </div>
             <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md border-1 border-gray-300">
@@ -159,7 +165,7 @@ const Products = () => {
                                 <StyledTableCell align="center">{product.product_type}</StyledTableCell>
                                 <StyledTableCell align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
                                 <StyledTableCell align="center">
-                                    <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+                                    <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
                                         <EditIcon />
                                     </IconButton>
                                 </StyledTableCell>

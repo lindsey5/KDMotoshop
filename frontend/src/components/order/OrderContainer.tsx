@@ -25,7 +25,7 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
 
     useEffect(() => {
         setQuantity(orderItem.quantity);
-    }, [ orderItem.quantity])
+    }, [orderItem.quantity])
 
     useEffect(() => {
         setOrderItems(prev => prev.map((o, i) => (
@@ -59,7 +59,7 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
                 <Counter 
                     value={orderItem.quantity} 
                     setValue={setQuantity} 
-                    limit={orderItem.stock} 
+                    limit={orderItem.stock! | 0} 
                     disabled={false} 
                 />
             </div>}

@@ -29,6 +29,7 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
     <TextField 
       variant="outlined"
       sx={{
+            backgroundColor: 'white',
             '& .MuiInputLabel-root': {
                     '&.Mui-focused': {
                         color: 'red', 
@@ -57,6 +58,7 @@ export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChang
       placeholder={placeholder}
       variant="outlined"
       sx={{
+        backgroundColor: 'white',
         width: '100%',
         '& .MuiOutlinedInput-root': {
           fontSize: 15,

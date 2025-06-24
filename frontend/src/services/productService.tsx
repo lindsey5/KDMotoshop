@@ -100,11 +100,7 @@ export const saveProduct = async (
         return;
       }
 
-      if (product._id) {
-        await updateProduct(product._id as string, product);
-      } else {
-        await createProduct(product);
-      }
+      product._id ? await updateProduct(product._id as string, product) : await createProduct(product);
     }
 
   } catch (error) {

@@ -47,18 +47,7 @@ export const get_products = async (req: Request, res: Response) => {
       ];
     }
 
-    if (category && category !== "All") {
-      if (filter.$or) {
-        filter = {
-          $and: [
-            filter,
-            { category: category }
-          ]
-        };
-      } else {
-        filter.category = category;
-      }
-    }
+    if (category && category !== "All") filter.category = category;
 
     const [products, total] = await Promise.all([
       Product.find(filter)

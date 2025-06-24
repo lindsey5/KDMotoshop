@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { fetchData } from "../../services/api";
-import { Button, IconButton, Pagination } from "@mui/material";
+import { fetchData, postData } from "../../services/api";
+import { Button,Pagination } from "@mui/material";
 import { SearchField } from "../../components/Textfield";
 import { RedButton } from "../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,27 +8,28 @@ import AddOrderModal from "../../components/order/AddOrder";
 import { confirmDialog, successAlert } from "../../utils/swal";
 import OrderContainer from "../../components/order/OrderContainer";
 import { formatNumber } from "../../utils/utils";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useNavigate } from "react-router-dom";
-import CustomerModal from "../../components/order/CustomerModal";
+import OrderInformationModal from "../../components/order/OrderInformation";
+import BreadCrumbs from "../../components/BreadCrumbs";
 
 const OrderState : Order = {
     total: 0,
     subtotal: 0,
     status: 'Pending',
-    order_items: [],
-    customer_name: '',
-    customer_phone: '',
+    customer: {
+        firstname: '',
+        lastname: '',
+        phone: '',
+        email: ''
+    },
     payment_method: 'Cash',
     note: '',
-    address: {
-        street: '',
-        barangay: '',
-        city: '',
-        zip_code: '',
-        country: ''
-    }
 }
+
+const PageBreadCrumbs : { label: string, href: string }[] = [
+    { label: 'Dashboard', href: '/admin/dashboard' },
+    { label: 'Orders', href: '/admin/orders' },
+    { label: 'Create Order', href: '/admin/orders/create' }
+]
 
 const CreateOrderPage = () => {
     const [pagination, setPagination] = useState<Pagination>({
@@ -43,7 +44,6 @@ const CreateOrderPage = () => {
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
     const [order, setOrder] = useState<Order>(OrderState);
-    const navigate = useNavigate();
 
     const fetchCategories = async () => {
         const response = await fetchData('/api/category');
@@ -51,7 +51,14 @@ const CreateOrderPage = () => {
     }
 
     useEffect(() => {
-        setOrder(prev => ({ ...prev, total: orderItems.reduce((total, item) => item.lineTotal + total,0)}))
+        setOrder(prev => (
+            { ...prev, 
+                subtotal: orderItems
+                .reduce((total, item) => item.lineTotal + total,0),
+                total: orderItems
+                .reduce((total, item) => item.lineTotal + total,0)
+            }
+        ))
     }, [orderItems])
 
     useEffect(() => {
@@ -127,26 +134,41 @@ const CreateOrderPage = () => {
         }
     }
 
+    const proceed = async () => {
+        if(!order.customer.firstname || !order.customer.lastname || (order.address && Object.values(order.address).some(value => !value))){
+            setShowCustomerModal(true);
+        }else{
+            if(await confirmDialog('Save order?', '', "success")){
+                const response = await postData('/api/order', { order, orderItems});
+                if(response.success){
+                    successAlert('Order Created', 'Order successfully created');
+                    setOrderItems([]);
+                    setOrder(OrderState);
+                    setPagination({ ...pagination, page: 1, searchTerm: '' });
+                    setSelectedCategory('All');
+                }
+            }
+        }
+
+    }
+
     return <div className="flex h-full bg-gray-100 gap-5">
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
             setOrderItems={setOrderItems}
             close={closeProduct}
         />}
-        <CustomerModal 
+        <OrderInformationModal
             open={showCustomerModal} 
             onClose={() => setShowCustomerModal(false)}
             order={order}
             setOrder={setOrder}
         />
         <div className="flex-1 flex flex-col p-5">
-            <div className="flex items-center mb-4 gap-5">
-                <IconButton onClick={() => navigate('/admin/orders')}>
-                    <ArrowBackIosNewIcon />
-                </IconButton>
-                <h1 className="font-bold text-3xl">Create Order</h1>
-            </div>
-            <div className="flex justify-between items-center">
+            <h1 className="font-bold text-3xl mb-4">Create Order</h1>
+            <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
+
+            <div className="flex justify-between items-center mt-6">
                 <SearchField 
                     onChange={(e) => setPagination({...pagination, searchTerm: e.target.value })}
                     sx={{ maxWidth: '450px', backgroundColor: 'white'}}
@@ -230,6 +252,7 @@ const CreateOrderPage = () => {
                     <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>
                 </div>
                 <RedButton
+                    onClick={proceed}
                     disabled={orderItems.length === 0}
                 >Proceed</RedButton>
             </div>

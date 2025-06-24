@@ -42,7 +42,7 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
             if (existingIndex !== -1)  return prev.map((o, i) =>
                 i === existingIndex ? { 
                     ...o, 
-                    quantity: (o.quantity + quantity) > o.stock ? o.stock : o.quantity + quantity, 
+                    quantity: o.quantity + quantity, 
                     sales: (o.quantity + quantity) * o.price 
                 } 
             : o)
