@@ -6,13 +6,13 @@ import { red } from "@mui/material/colors";
 import { Backdrop, Button, CircularProgress, FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
 import { RedButton } from "../../components/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import { confirmDialog, errorAlert } from "../../utils/swal";
 import VariantContainer from "../../components/product/VariantContainer";
-import ProductImage from "../../components/product/ProductImage";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../services/productService";
 import BreadCrumbs from "../../components/BreadCrumbs";
+import ProductThumbnail from "../../components/product/ProductThumbnail";
+import ProductImages from "../../components/product/ProductImages";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (
@@ -313,63 +313,17 @@ const ProductPage = () => {
             </div>
             
             <div className="w-[30%] max-w-[350px] flex flex-col gap-6">
-                <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
-                    <strong>Product Thumbnail</strong>
-                    <div className="flex flex-col items-center gap-5 mt-4"> 
-                        <img 
-                            className="w-[90%] bg-gray-100 h-[150px] lg:h-[230px]"
-                            src={
-                                typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                                ? product.thumbnail.imageUrl
-                                : typeof product.thumbnail === 'string'
-                                    ? product.thumbnail
-                                    : '/photo.png'
-                            }
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            id="thumbnail-input"
-                            style={{ display: 'none' }}
-                            onChange={handleThumbnail}
-                        />
-                        <label htmlFor="thumbnail-input">
-                            <RedButton component="span">Add Thumbnail</RedButton>
-                        </label>
-                    </div>
-                </div>
-                <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
-                    <strong>Product Images</strong>
-                    <div className="flex flex-col items-center gap-10 mt-4">
-                        <img className="w-[170px] h-[170px] bg-gray-100 lg:h-[150px]" src={selectedImage} />
-                        
-                        <div className="w-full flex gap-5 items-center">
-                            <div className="flex gap-5 flex-grow min-w-0 overflow-auto scrollbar-hidden py-3">
-                                {product.images.map((image, i) => (
-                                    <ProductImage 
-                                        key={i} 
-                                        index={i}
-                                        setSelectedImage={setSelectedImage} 
-                                        image={image}
-                                        handleDelete={deleteImage}
-                                    />
-                                ))}
-                            </div>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="images-input"
-                                style={{ display: 'none' }}
-                                onChange={handleImages}
-                            />
-                            <label htmlFor="images-input">
-                                <RedButton component="span">
-                                    <AddIcon sx={{ color: 'white'}}/>
-                                </RedButton>
-                            </label>
-                        </div>
-                    </div>
-                </div>
+                <ProductThumbnail 
+                    product={product}
+                    handleThumbnail={handleThumbnail}
+                />
+                <ProductImages 
+                    images={product.images}
+                    setSelectedImage={setSelectedImage}
+                    deleteImage={deleteImage}
+                    selectedImage={selectedImage}
+                    handleImages={handleImages}
+                />
                  <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
                     <h1 className="mb-4">Product Visibility</h1>
                     <RadioGroup

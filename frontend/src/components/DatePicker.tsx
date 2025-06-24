@@ -8,8 +8,8 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 interface CustomDateRangePickerProps {
-  value: DateRange<Dayjs>;
-  setValue: React.Dispatch<React.SetStateAction<DateRange<Dayjs>>>;
+  value: DateRange<Dayjs> | undefined;
+  setValue: React.Dispatch<React.SetStateAction<DateRange<Dayjs> | undefined>>;
 }
 
 export const CustomDateRangePicker: React.FC<CustomDateRangePickerProps> = ({

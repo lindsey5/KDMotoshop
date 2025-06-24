@@ -10,6 +10,8 @@ import OrderContainer from "../../components/order/OrderContainer";
 import { formatNumber } from "../../utils/utils";
 import OrderInformationModal from "../../components/order/OrderInformation";
 import BreadCrumbs from "../../components/BreadCrumbs";
+import CategoryFilter from "../../components/order/CategoryFilter";
+import ProductContainer from "../../components/order/ProductContainer";
 
 const OrderState : Order = {
     total: 0,
@@ -38,17 +40,11 @@ const CreateOrderPage = () => {
         searchTerm: ''
     });
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectProduct] = useState<Product | undefined>();
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
     const [order, setOrder] = useState<Order>(OrderState);
-
-    const fetchCategories = async () => {
-        const response = await fetchData('/api/category');
-        if(response.success) setCategories(response.categories)
-    }
 
     useEffect(() => {
         setOrder(prev => (
@@ -63,7 +59,6 @@ const CreateOrderPage = () => {
 
     useEffect(() => {
         fetchProducts();
-        fetchCategories();
     }, [pagination.page, selectedCategory])
 
     useEffect(() => {
@@ -178,51 +173,20 @@ const CreateOrderPage = () => {
             </div>
 
             {/* Categories*/}
-            <div className="bg-white rounded-md border-1 border-gray-300 shadow-lg mt-6 p-5 flex items-center gap-5">
-                <Button
-                    variant={selectedCategory === 'All' ? 'outlined' : 'text'}   
-                    onClick={() => setSelectedCategory('All')}
-                    sx={{ 
-                        ...(selectedCategory === 'All' ? 
-                            { backgroundColor: '#fee2e2', color: 'red', borderColor: 'red', borderWidth: 2} :
-                            { color: 'black', ":hover": { backgroundColor: '#fee2e2', color: 'red' } }
-                        ) 
-                    }}
-                >All</Button>
-                {categories.map(category => (
-                    <Button
-                        key={category._id}
-                        variant={selectedCategory === category.category_name ? 'outlined' : 'text'}   
-                        onClick={() => setSelectedCategory(category.category_name)}
-                        sx={{ 
-                            ...(selectedCategory === category.category_name ? 
-                                { backgroundColor: '#fee2e2', color: 'red', borderColor: 'red', borderWidth: 2} :
-                                { color: 'black', ":hover": { backgroundColor: '#fee2e2', color: 'red' } }
-                            ) 
-                        }}
-                    >{category.category_name}</Button>
-                ))}
-            </div>
+            <CategoryFilter 
+                selectedCategory={selectedCategory} 
+                setSelectedCategory={setSelectedCategory}
+            />
             
             {/* Products */}
             <div className="flex flex-col flex-grow min-h-0 mt-4 overflow-y-auto">
                 <div className="2xl:grid-cols-5 grid grid-cols-3 flex flex-wrap gap-5 p-3">
                     {products.map(product => (
-                    <div key={product._id} className="bg-white p-5 flex flex-col gap-4 border-1 border-gray-300 shadow-md rounded-md">
-                        <img 
-                            className="bg-gray-100 w-full h-40 2xl:h-50"
-                            src={
-                                typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                                ? product.thumbnail.imageUrl
-                                : typeof product.thumbnail === 'string'
-                                    ? product.thumbnail
-                                    : '/photo.png'
-                            }
+                        <ProductContainer 
+                            product={product}
+                            key={product._id}
+                            addOrder={addOrder}
                         />
-                        <h1 className="font-bold text-lg">{product.product_name}</h1>
-                        <h1 className="font-bold text-lg">₱{formatNumber(product.price ? product.price :  Math.min(...product.variants.map(v => v.price || 0)))}</h1>
-                        <RedButton onClick={() => addOrder(product)}>Add</RedButton>
-                    </div>
                     ))}
                 </div>
             </div>

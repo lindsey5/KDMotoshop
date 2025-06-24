@@ -36,17 +36,14 @@ const Orders = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
-    const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs>>(() => [
-        dayjs().startOf('year'), 
-        dayjs().endOf('year'),   
-    ]);
+    const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
     
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
 
     const getOrdersAsync = async () => {
-        const response = await fetchData(`/api/order?page=${pagination.page}&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${selectedDates[0]?.toISOString()}&endDate=${selectedDates[1]?.toISOString()}`);
+        const response = await fetchData(`/api/order?page=${pagination.page}&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${selectedDates?.[0] ? selectedDates[0].toISOString() : ''}&endDate=${selectedDates?.[1] ? selectedDates[1].toISOString() : ''}`);
         if(response.success) {
             setPagination(prev => ({...prev, totalPages: response.totalPages, page: response.page }));
             setOrders(response.orders);
@@ -55,12 +52,19 @@ const Orders = () => {
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
+            setPagination({...PaginationState, searchTerm });
+            setSelectedStatus('All');
+            setSelectedDates(undefined);
             getOrdersAsync();
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
 
-    }, [selectedDates, selectedStatus, searchTerm, pagination.page]);
+    }, [searchTerm]);
+
+    useEffect(() => {
+        getOrdersAsync();
+    }, [selectedDates, selectedStatus,])
 
 
     return <div className="flex flex-col bg-gray-100 p-5">
