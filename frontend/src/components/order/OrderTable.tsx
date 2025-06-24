@@ -1,9 +1,11 @@
 import CircleIcon from '@mui/icons-material/Circle';
 import { statusColorMap } from "../../constants/status";
 import { TableRow } from "@mui/material";
-import { StyledTableCell } from '../Table';
+import { StyledTableCell, StyledTableRow } from '../Table';
+import { formatNumber } from '../../utils/utils';
+import { formatDate } from '../../utils/dateUtils';
 
-export const Status: React.FC<{ status: string}> = ({ status }) => {
+const Status: React.FC<{ status: string}> = ({ status }) => {
   const { bg, icon } = statusColorMap[status] || {
     bg: 'bg-gray-200',
     icon: '#9ca3af',
@@ -28,5 +30,24 @@ export const OrderTableColumns = () => {
             <StyledTableCell>Status</StyledTableCell>
             <StyledTableCell>Action</StyledTableCell>
         </TableRow>
+    )
+}
+
+export const OrderTableRow = ({ order } : { order : Order}) => {
+    return (
+        <StyledTableRow>
+            <StyledTableCell>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
+            <StyledTableCell>{order.order_id}</StyledTableCell>
+            <StyledTableCell>₱{formatNumber(order.total)}</StyledTableCell>
+            <StyledTableCell>{order.payment_method}</StyledTableCell>
+            <StyledTableCell>{formatDate(order.createdAt)}</StyledTableCell>
+            <StyledTableCell>
+                <div className="flex">
+                    <Status status={order.status} />
+                </div>
+            </StyledTableCell>
+            <StyledTableCell>
+            </StyledTableCell>
+        </StyledTableRow>
     )
 }

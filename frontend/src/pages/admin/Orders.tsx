@@ -1,22 +1,19 @@
 import { RedButton } from "../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
 import { Pagination } from "@mui/material";
-import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table";
+import CustomizedTable from "../../components/Table";
 import { SearchField } from "../../components/Textfield";
 import { CustomizedSelect } from "../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import { OrderTableColumns, Status } from "../../components/order/OrderTable";
+import { OrderTableColumns, OrderTableRow } from "../../components/order/OrderTable";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { fetchData } from "../../services/api";
-import { formatNumber } from "../../utils/utils";
 import { Statuses } from "../../constants/status";
-import { formatDate } from "../../utils/dateUtils";
 import { StatCards } from "../../components/order/StatCard";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -105,22 +102,7 @@ const Orders = () => {
             <div className="min-h-0 flex-grow overflow-y-auto">
                 <CustomizedTable
                     cols={<OrderTableColumns />}
-                    rows={orders.map(order => (
-                        <StyledTableRow>
-                            <StyledTableCell>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
-                            <StyledTableCell>{order.order_id}</StyledTableCell>
-                            <StyledTableCell>₱{formatNumber(order.total)}</StyledTableCell>
-                            <StyledTableCell>{order.payment_method}</StyledTableCell>
-                            <StyledTableCell>{formatDate(order.createdAt)}</StyledTableCell>
-                            <StyledTableCell>
-                                <div className="flex">
-                                    <Status status={order.status} />
-                                </div>
-                            </StyledTableCell>
-                            <StyledTableCell>
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    ))} 
+                    rows={orders.map(order => <OrderTableRow order={order}/>)} 
                 />
             </div>
         </div>

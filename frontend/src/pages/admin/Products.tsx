@@ -1,5 +1,5 @@
-import { Button, IconButton, Pagination, TableRow } from "@mui/material"
-import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table"
+import { Button, Pagination } from "@mui/material"
+import CustomizedTable from "../../components/Table"
 import { SearchField } from "../../components/Textfield"
 import DashboardCard from "../../components/DashboardCard"
 import { RedButton } from "../../components/Button"
@@ -10,10 +10,9 @@ import { CustomizedChip } from "../../components/Chip"
 import { confirmDialog } from "../../utils/swal"
 import { deleteData } from "../../services/api"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "../../utils/dateUtils"
-import EditIcon from '@mui/icons-material/Edit';
 import { PieChart } from "@mui/x-charts"
 import BreadCrumbs from "../../components/BreadCrumbs"
+import { ProductTableColumns, ProductTableRow } from "../../components/product/ProductTable"
 
 const categoryData = {
     data: [
@@ -131,45 +130,8 @@ const Products = () => {
                 </div>
                 <div className="min-h-0 flex-grow overflow-y-auto mt-6">
                     <CustomizedTable
-                        cols={
-                            <TableRow>
-                                <StyledTableCell align="left">Product name</StyledTableCell>
-                                <StyledTableCell align="left">Stock</StyledTableCell>
-                                <StyledTableCell align="center">Category</StyledTableCell>
-                                <StyledTableCell align="center">Product Type</StyledTableCell>
-                                <StyledTableCell align="center">Created at</StyledTableCell>
-                                <StyledTableCell align="center">Action</StyledTableCell>
-                            </TableRow>
-                        }
-                        rows={products?.map(product => (
-                            <StyledTableRow>
-                                <StyledTableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <img 
-                                        className="bg-gray-100 w-12 h-12"
-                                        src={
-                                            typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                                            ? product.thumbnail.imageUrl
-                                            : typeof product.thumbnail === 'string'
-                                                ? product.thumbnail
-                                                : '/photo.png'
-                                        }
-                                    />
-                                    {product.product_name}
-                                </StyledTableCell>
-                                <StyledTableCell>{product.product_type === 'Single' ? product.stock : 
-                                    product.variants.reduce((total, variant) => {
-                                        return variant.stock ? total + variant.stock : total
-                                    }, 0)}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">{product.category}</StyledTableCell>
-                                <StyledTableCell align="center">{product.product_type}</StyledTableCell>
-                                <StyledTableCell align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </StyledTableCell>
-                            </StyledTableRow>))
+                        cols={<ProductTableColumns />}
+                        rows={products?.map(product => <ProductTableRow product={product}/>)
                         }
                     />
                 </div>
