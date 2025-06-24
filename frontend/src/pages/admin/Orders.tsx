@@ -1,7 +1,6 @@
 import { RedButton } from "../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
-import StatCard from "../../components/order/StatCard";
-import { Pagination, TableRow } from "@mui/material";
+import { Pagination } from "@mui/material";
 import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table";
 import { SearchField } from "../../components/Textfield";
 import { CustomizedSelect } from "../../components/Select";
@@ -12,44 +11,23 @@ import dayjs from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import CircleIcon from '@mui/icons-material/Circle';
-import { statusColorMap } from "../../constants/status";
+import { OrderTableColumns, Status } from "../../components/order/OrderTable";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { fetchData } from "../../services/api";
 import { formatNumber } from "../../utils/utils";
 import { Statuses } from "../../constants/status";
 import { formatDate } from "../../utils/dateUtils";
+import { StatCards } from "../../components/order/StatCard";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
     { label: 'Orders', href: '/admin/orders' },
 ]
 
-export const Status: React.FC<{ status: string}> = ({ status }) => {
-  const { bg, icon } = statusColorMap[status] || {
-    bg: 'bg-gray-200',
-    icon: '#9ca3af',
-  };
-
-  return (
-    <div className={`flex items-center gap-2 ${bg} p-2 rounded-md`}>
-      <CircleIcon sx={{ width: 15, height: 15, color: icon }} />
-      <h1 className="font-bold text-gray-600">{status}</h1>
-    </div>
-  );
-};
-
 const PaginationState ={
     totalPages: 1,
     page: 1,
     searchTerm: ''
-}
-
-interface CardValue {
-    overallTotalOrders: number;
-    pendingOrders: number;
-    completedOrders: number;
-    cancelledOrders: number;
 }
 
 const Orders = () => {
@@ -58,7 +36,6 @@ const Orders = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
-    const [cardValues, setCardValues] = useState<CardValue | undefined>();
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs>>(() => [
         dayjs().startOf('year'), 
         dayjs().endOf('year'),   
@@ -73,12 +50,6 @@ const Orders = () => {
         if(response.success) {
             setPagination(prev => ({...prev, totalPages: response.totalPages, page: response.page }));
             setOrders(response.orders);
-            setCardValues({
-                overallTotalOrders: response.overallTotalOrders,
-                pendingOrders: response.pendingOrders,
-                completedOrders: response.completedOrdes,
-                cancelledOrders: response.cancelledOrders
-            });
         }
     }
 
@@ -100,18 +71,8 @@ const Orders = () => {
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
         </div>
-        <div className="h-[150px] flex items-center bg-white gap-10 p-5 rounded-lg shadow-md border-1 border-gray-300">
-            <StatCard title="Total Orders" value={cardValues?.overallTotalOrders.toString() || ''} subtitle="Total Orders for last 365 days"/>
-            <hr className="h-full border-1 border-gray-200" />
-
-            <StatCard title="Pending Orders" value={cardValues?.pendingOrders.toString() || ''} subtitle="Total Pending Orders" color="yellow"/>
-            <hr className="h-full border-1 border-gray-200" />
-
-            <StatCard title="Completed Orders" value={cardValues?.completedOrders.toString() || ''} subtitle="Completed Orders for last 365 days"/>
-            <hr className="h-full border-1 border-gray-200" />
-
-            <StatCard title="Cancelled Orders" value={cardValues?.cancelledOrders.toString() || ''} subtitle="Cancelled Orders for last 365 days" color="red"/>
-        </div>
+        <StatCards />
+        
         <div className="flex-grow min-h-[700px] flex flex-col bg-white p-5 border-1 border-gray-300 mt-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6 gap-10">
                 <SearchField
@@ -139,17 +100,7 @@ const Orders = () => {
             </div>
             <div className="min-h-0 flex-grow overflow-y-auto">
                 <CustomizedTable
-                    cols={
-                        <TableRow>
-                            <StyledTableCell>Customer Name</StyledTableCell>
-                            <StyledTableCell>Order ID</StyledTableCell>
-                            <StyledTableCell>Amount</StyledTableCell>
-                            <StyledTableCell>Payment Method</StyledTableCell>
-                            <StyledTableCell>Order Date</StyledTableCell>
-                             <StyledTableCell>Status</StyledTableCell>
-                            <StyledTableCell>Action</StyledTableCell>
-                        </TableRow>
-                    }
+                    cols={<OrderTableColumns />}
                     rows={orders.map(order => (
                         <StyledTableRow>
                             <StyledTableCell>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
