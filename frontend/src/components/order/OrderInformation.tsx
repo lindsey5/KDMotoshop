@@ -1,12 +1,12 @@
 import { Button, FormControlLabel, Modal, Switch } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RedTextField } from "../Textfield";
 import { useBarangays, useCities, useRegions } from "../../hooks/useAddress";
 import { CustomizedSelect, StatusSelect } from "../Select";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { RedButton } from "../Button";
-import { Statuses } from "../../constants/contants";
+import { Statuses } from "../../constants/status";
 
 interface OrderInformationModalProps {
     open: boolean;

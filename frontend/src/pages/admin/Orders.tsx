@@ -1,7 +1,7 @@
 import { RedButton } from "../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
 import StatCard from "../../components/order/StatCard";
-import { Avatar, Pagination, TableRow } from "@mui/material";
+import { Pagination, TableRow } from "@mui/material";
 import CustomizedTable, { StyledTableCell, StyledTableRow } from "../../components/Table";
 import { SearchField } from "../../components/Textfield";
 import { CustomizedSelect } from "../../components/Select";
@@ -17,7 +17,7 @@ import { statusColorMap } from "../../constants/status";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { fetchData } from "../../services/api";
 import { formatNumber } from "../../utils/utils";
-import { Statuses } from "../../constants/contants";
+import { Statuses } from "../../constants/status";
 import { formatDate } from "../../utils/dateUtils";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -38,19 +38,30 @@ export const Status: React.FC<{ status: string}> = ({ status }) => {
     </div>
   );
 };
+
+const PaginationState ={
+    totalPages: 1,
+    page: 1,
+    searchTerm: ''
+}
+
+interface CardValue {
+    overallTotalOrders: number;
+    pendingOrders: number;
+    completedOrders: number;
+    cancelledOrders: number;
+}
+
 const Orders = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const navigate = useNavigate();
-    const [pagination, setPagination] = useState<Pagination>({
-        totalPages: 1,
-        page: 1,
-        searchTerm: ''
-    });
+    const [pagination, setPagination] = useState<Pagination>(PaginationState);
+    const [cardValues, setCardValues] = useState<CardValue | undefined>();
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs>>(() => [
-        dayjs().startOf('year'),  // Jan 1st this year
-        dayjs().endOf('year'),    // Dec 31st this year
+        dayjs().startOf('year'), 
+        dayjs().endOf('year'),   
     ]);
     
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -62,6 +73,12 @@ const Orders = () => {
         if(response.success) {
             setPagination(prev => ({...prev, totalPages: response.totalPages, page: response.page }));
             setOrders(response.orders);
+            setCardValues({
+                overallTotalOrders: response.overallTotalOrders,
+                pendingOrders: response.pendingOrders,
+                completedOrders: response.completedOrdes,
+                cancelledOrders: response.cancelledOrders
+            });
         }
     }
 
@@ -75,7 +92,7 @@ const Orders = () => {
     }, [selectedDates, selectedStatus, searchTerm, pagination.page]);
 
 
-    return <div className="h-full flex flex-col bg-gray-100 p-5">
+    return <div className="flex flex-col bg-gray-100 p-5">
         <div className="flex justify-between items-center mb-6">
             <div>
                 <h1 className="font-bold text-4xl mb-4">Orders List</h1>
@@ -84,16 +101,16 @@ const Orders = () => {
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
         </div>
         <div className="h-[150px] flex items-center bg-white gap-10 p-5 rounded-lg shadow-md border-1 border-gray-300">
-            <StatCard title="Total Orders" value="2,400" subtitle="Total Orders for last 365 days"/>
+            <StatCard title="Total Orders" value={cardValues?.overallTotalOrders.toString() || ''} subtitle="Total Orders for last 365 days"/>
             <hr className="h-full border-1 border-gray-200" />
 
-            <StatCard title="Pending Orders" value="1,000" subtitle="Total Pending Orders" color="yellow"/>
+            <StatCard title="Pending Orders" value={cardValues?.pendingOrders.toString() || ''} subtitle="Total Pending Orders" color="yellow"/>
             <hr className="h-full border-1 border-gray-200" />
 
-            <StatCard title="Completed Orders" value="2,400" subtitle="Completed Orders for last 365 days"/>
+            <StatCard title="Completed Orders" value={cardValues?.completedOrders.toString() || ''} subtitle="Completed Orders for last 365 days"/>
             <hr className="h-full border-1 border-gray-200" />
 
-            <StatCard title="Cancelled Orders" value="400" subtitle="Cancelled Orders for last 365 days" color="red"/>
+            <StatCard title="Cancelled Orders" value={cardValues?.cancelledOrders.toString() || ''} subtitle="Cancelled Orders for last 365 days" color="red"/>
         </div>
         <div className="flex-grow min-h-[700px] flex flex-col bg-white p-5 border-1 border-gray-300 mt-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-6 gap-10">
@@ -137,7 +154,7 @@ const Orders = () => {
                         <StyledTableRow>
                             <StyledTableCell>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
                             <StyledTableCell>{order.order_id}</StyledTableCell>
-                            <StyledTableCell>{formatNumber(order.total)}</StyledTableCell>
+                            <StyledTableCell>₱{formatNumber(order.total)}</StyledTableCell>
                             <StyledTableCell>{order.payment_method}</StyledTableCell>
                             <StyledTableCell>{formatDate(order.createdAt)}</StyledTableCell>
                             <StyledTableCell>

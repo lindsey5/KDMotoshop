@@ -72,13 +72,19 @@ export const get_orders = async (req: Request, res: Response) => {
         else if (startDate) filter.createdAt = { $gte: new Date(startDate) };
         else if (endDate)  filter.createdAt = { $lte: new Date(endDate) };
 
-        const [orders, totalOrders] = await Promise.all([
+        const last365Days = new Date();
+        last365Days.setFullYear(last365Days.getFullYear() - 1);
+        const [orders, totalOrders, overallTotalOrders, pendingOrders, completedOrdes, cancelledOrders] = await Promise.all([
             Order.find(filter)
                 .skip(skip)
                 .limit(limit)
                 .populate({ path: 'customer.customer_id' })
                 .sort({ createdAt: -1 }),
-            Order.countDocuments(filter)
+            Order.countDocuments(filter),
+            Order.countDocuments({ createdAt: { $gte: last365Days } }),
+            Order.countDocuments({ status: 'Pending', createdAt: { $gte: last365Days } }),
+            Order.countDocuments({ status: 'Completed', createdAt: { $gte: last365Days } }),
+            Order.countDocuments({ status: 'Cancelled', createdAt: { $gte: last365Days } })
         ]);
             
 
@@ -87,7 +93,11 @@ export const get_orders = async (req: Request, res: Response) => {
             orders,
             page,
             totalPages: Math.ceil(totalOrders / limit),
-            totalOrders
+            totalOrders,
+            overallTotalOrders,
+            pendingOrders,
+            completedOrdes,
+            cancelledOrders
         });
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message });
