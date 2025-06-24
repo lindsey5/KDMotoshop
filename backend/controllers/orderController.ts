@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Order from '../models/Order';
 import OrderItem from '../models/OrderItem';
 import { AuthenticatedRequest } from '../types/auth';
+import Product from '../models/Product';
 
 const generateOrderId = async () => {
   const prefix = 'ORD-';
@@ -17,6 +18,20 @@ const generateOrderId = async () => {
   return order_id;
 };
 
+const decrementStock = async (item : any) => {
+    if (item.variant_id) {
+        await Product.updateOne(
+            {  _id: item.product_id,  "variants._id": item.variant_id },
+            { $inc: { "variants.$.stock": -item.quantity } }
+        );
+    } else {
+        await Product.updateOne(
+            { _id: item.product_id },
+            { $inc: { stock: -item.quantity } }
+        );
+    }
+}
+
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { order, orderItems } = req.body;
@@ -28,8 +43,11 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
 
         const orderItemsWithOrderID = orderItems.map((item: any) => ({...item, order_id: newOrder._id}));   
         OrderItem.insertMany(orderItemsWithOrderID)
-            .then(async () => {
+            .then(async (items) => {
                 const savedOrder = await newOrder.save();
+                if(newOrder.status === 'Completed') {
+                    for (const item of items) await decrementStock(item)
+                }
                 res.status(201).json({ success: true, order: savedOrder });
             })  
             .catch((error) => {

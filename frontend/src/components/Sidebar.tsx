@@ -38,7 +38,6 @@ const SidebarButton = ({ label, icon, path }: SidebarButtonProps) => {
 };
 
 export const AdminSidebar = () => {
-
     return <aside className="w-[200px] fixed left-0 inset-y-0 bg-black p-5 flex flex-col gap-5">
         <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
         <SidebarButton label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25}}/>} path="/admin/dashboard"/>
