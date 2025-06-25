@@ -135,3 +135,23 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: err.message });
     }
 }
+
+export const get_order_by_id = async (req: Request, res: Response) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if(!order){
+            res.status(404).json({ success: false, message: 'Order not found'})
+            return;
+        }
+
+        const orderItems = await OrderItem.find({ order_id: order._id});
+
+        res.status(200).json({ 
+            success: true,  
+            order: { ...order.toObject(), orderItems }
+        });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}

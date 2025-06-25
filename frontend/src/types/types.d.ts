@@ -1,14 +1,14 @@
-interface ModalProps{
+type ModalProps = {
     open: boolean;
     close: () => void
 }
 
-interface Menu{
+type Menu = {
     value: string;
     label: string;
 }
 
-interface Pagination{
+type Pagination = {
     totalPages: number;
     page: number;
     searchTerm: string;

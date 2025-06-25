@@ -7,7 +7,7 @@ import {
 } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-interface CustomDateRangePickerProps {
+type CustomDateRangePickerProps = {
   value: DateRange<Dayjs> | undefined;
   setValue: React.Dispatch<React.SetStateAction<DateRange<Dayjs> | undefined>>;
 }

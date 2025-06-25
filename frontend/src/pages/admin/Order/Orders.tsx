@@ -1,20 +1,20 @@
-import { RedButton } from "../../components/Button"
+import { RedButton } from "../../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
 import { Pagination } from "@mui/material";
-import CustomizedTable from "../../components/Table";
-import { SearchField } from "../../components/Textfield";
-import { CustomizedSelect } from "../../components/Select";
+import CustomizedTable from "../../../components/Table";
+import { SearchField } from "../../../components/Textfield";
+import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
-import { CustomDateRangePicker } from "../../components/DatePicker";
+import { CustomDateRangePicker } from "../../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import { OrderTableColumns, OrderTableRow } from "../../components/order/OrderTable";
-import BreadCrumbs from "../../components/BreadCrumbs";
-import { fetchData } from "../../services/api";
-import { Statuses } from "../../constants/status";
-import { StatCards } from "../../components/order/StatCard";
+import { OrderTableColumns, OrderTableRow } from "../../../components/order/OrderTable";
+import BreadCrumbs from "../../../components/BreadCrumbs";
+import { fetchData } from "../../../services/api";
+import { Statuses } from "../../../constants/status";
+import { StatCards } from "../../../components/order/StatCard";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -62,7 +62,6 @@ const Orders = () => {
     useEffect(() => {
         getOrdersAsync();
     }, [selectedDates, selectedStatus,])
-
 
     return <div className="flex flex-col bg-gray-100 p-5">
         <div className="flex justify-between items-center mb-6">

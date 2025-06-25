@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react"
-import { RedTextField } from "../../components/Textfield"
-import { fetchData } from "../../services/api";
-import { CustomizedSelect } from "../../components/Select";
+import { RedTextField } from "../../../components/Textfield"
+import { fetchData } from "../../../services/api";
+import { CustomizedSelect } from "../../../components/Select";
 import { red } from "@mui/material/colors";
 import { Backdrop, Button, CircularProgress, FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
-import { RedButton } from "../../components/Button";
+import { RedButton } from "../../../components/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { confirmDialog, errorAlert } from "../../utils/swal";
-import VariantContainer from "../../components/product/VariantContainer";
+import { confirmDialog, errorAlert } from "../../../utils/swal";
+import VariantContainer from "../../../components/product/VariantContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { saveProduct } from "../../services/productService";
-import BreadCrumbs from "../../components/BreadCrumbs";
-import ProductThumbnail from "../../components/product/ProductThumbnail";
-import ProductImages from "../../components/product/ProductImages";
+import { saveProduct } from "../../../services/productService";
+import BreadCrumbs from "../../../components/BreadCrumbs";
+import ProductThumbnail from "../../../components/product/ProductThumbnail";
+import ProductImages from "../../../components/product/ProductImages";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (

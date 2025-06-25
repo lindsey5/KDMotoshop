@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 import { fetchData } from "../../services/api";
 import React, { useEffect, useState } from "react";
 
-interface CategoryFilterProps {
+type CategoryFilterProps = {
     selectedCategory: string;
     setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
 }

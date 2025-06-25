@@ -1,5 +1,8 @@
 
-export const formatDateWithWeekday = (date: Date): string => {
+export const formatDateWithWeekday = (date: Date | string | null | undefined): string => {
+  if(!date) return '';
+  const d = typeof date === 'string' ? new Date(date) : date;
+
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
     year: 'numeric',
@@ -7,7 +10,7 @@ export const formatDateWithWeekday = (date: Date): string => {
     day: 'numeric',
   };
 
-  return date.toLocaleDateString('en-US', options);
+  return d.toLocaleDateString('en-US', options);
 };
 
 export const formatDate = (date: Date | string | null | undefined): string => {
@@ -20,4 +23,16 @@ export const formatDate = (date: Date | string | null | undefined): string => {
   const day = String(d.getUTCDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
+};
+
+export const formatToLongDateFormat = (date: Date | string | null | undefined): string => {
+  if (!date) return '';
+
+  const d = typeof date === 'string' ? new Date(date) : date;
+
+  return  d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 };

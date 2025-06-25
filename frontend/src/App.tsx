@@ -2,11 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/admin/Login";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
-import Products from "./pages/admin/Products";
-import ProductPage from "./pages/admin/Product";
+import Products from "./pages/admin/Product/Products";
+import ProductPage from "./pages/admin/Product/Product";
 import Home from "./pages/customer/Home";
-import Orders from "./pages/admin/Orders";
-import CreateOrderPage from "./pages/admin/CreateOrder";
+import Orders from "./pages/admin/Order/Orders";
+import CreateOrderPage from "./pages/admin/Order/CreateOrder";
+import OrderDetails from "./pages/admin/Order/Order";
 
 function App() {
   return <BrowserRouter>
@@ -22,6 +23,7 @@ function App() {
       <Route path="orders">
         <Route index element={<Orders />} />
         <Route path="create" element={<CreateOrderPage />} />
+        <Route path=":id" element={<OrderDetails />} />
       </Route>
     </Route>
     <Route path="*" element={<Navigate to="/" />}/>

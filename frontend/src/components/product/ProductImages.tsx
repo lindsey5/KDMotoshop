@@ -2,7 +2,7 @@ import { useState } from "react";
 import { RedButton } from "../Button";
 import AddIcon from '@mui/icons-material/Add';
 
-interface ProductImageProps{
+type ProductImageProps = {
     index: number;
     image: UploadedImage | string | ArrayBuffer;
     setSelectedImage: React.Dispatch<React.SetStateAction<string>>

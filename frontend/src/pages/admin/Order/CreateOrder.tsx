@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react"
-import { fetchData, postData } from "../../services/api";
-import { Button,Pagination } from "@mui/material";
-import { SearchField } from "../../components/Textfield";
-import { RedButton } from "../../components/Button";
+import { fetchData, postData } from "../../../services/api";
+import { Backdrop, Button,Pagination } from "@mui/material";
+import { SearchField } from "../../../components/Textfield";
+import { RedButton } from "../../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
-import AddOrderModal from "../../components/order/AddOrder";
-import { confirmDialog, successAlert } from "../../utils/swal";
-import OrderContainer from "../../components/order/OrderContainer";
-import { formatNumber } from "../../utils/utils";
-import OrderInformationModal from "../../components/order/OrderInformation";
-import BreadCrumbs from "../../components/BreadCrumbs";
-import CategoryFilter from "../../components/order/CategoryFilter";
-import ProductContainer from "../../components/order/ProductContainer";
+import AddOrderModal from "../../../components/order/AddOrder";
+import { confirmDialog, successAlert } from "../../../utils/swal";
+import OrderContainer from "../../../components/order/OrderContainer";
+import { formatNumber } from "../../../utils/utils";
+import OrderInformationModal from "../../../components/order/OrderInformation";
+import BreadCrumbs from "../../../components/BreadCrumbs";
+import CategoryFilter from "../../../components/order/CategoryFilter";
+import ProductContainer from "../../../components/order/ProductContainer";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const OrderState : Order = {
+    order_source: 'Store',
+    shipping_fee: 0,
     total: 0,
     subtotal: 0,
-    status: 'Pending',
+    status: 'Completed',
     customer: {
         firstname: '',
         lastname: '',
@@ -45,6 +48,7 @@ const CreateOrderPage = () => {
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
     const [order, setOrder] = useState<Order>(OrderState);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         setOrder(prev => (
@@ -100,16 +104,13 @@ const CreateOrderPage = () => {
                             product_id: product._id || '',
                             product_name: product.product_name,
                             stock: product.stock || 0,
-                            image: selectedProduct && typeof selectedProduct.thumbnail === 'object' && selectedProduct.thumbnail !== null && 'imageUrl' in selectedProduct.thumbnail
-                                ? selectedProduct.thumbnail.imageUrl
-                                : selectedProduct && typeof selectedProduct.thumbnail === 'string'
-                                    ? selectedProduct.thumbnail
-                                    : '/photo.png',
+                            image: product && typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+                                ? product.thumbnail.imageUrl
+                                : null,
                             quantity: 1,
                             price: product.price || 0,
                             lineTotal: product.price || 0
                         }]
-
                     }
 
                     return prev.map(o => o.product_id === product._id ? ({...o, quantity: o.quantity + 1, lineTotal: (o.quantity + 1) * o.price}) : o)
@@ -134,6 +135,7 @@ const CreateOrderPage = () => {
             setShowCustomerModal(true);
         }else{
             if(await confirmDialog('Save order?', '', "success")){
+                setLoading(true)
                 const response = await postData('/api/order', { order, orderItems});
                 if(response.success){
                     successAlert('Order Created', 'Order successfully created');
@@ -142,12 +144,27 @@ const CreateOrderPage = () => {
                     setPagination({ ...pagination, page: 1, searchTerm: '' });
                     setSelectedCategory('All');
                 }
+                setLoading(false)
             }
         }
 
     }
 
+    useEffect(() => {
+        console.log(order.shipping_fee)
+    }, [order])
+
     return <div className="flex h-full bg-gray-100 gap-5">
+        <Backdrop
+            sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
+            open={loading}
+        >
+            <div className="w-[250px] p-5 bg-white flex flex-col items-center rounded-lg gap-5">
+                <h1 className="text-gray-600 text-2xl">Saving Order</h1>
+                <CircularProgress sx={{ color: 'red' }} size={60}/>
+                <p className="text-gray-600 text-xl">Please wait...</p>
+            </div>
+        </Backdrop>
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
             setOrderItems={setOrderItems}
@@ -211,6 +228,21 @@ const CreateOrderPage = () => {
             {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
             </div>
             <div className="flex flex-col gap-5 p-5 border-t-1 border-gray-300">
+                <div className="flex flex-col gap-5 pb-5 border-b-1 border-gray-400">
+                    <div className="flex justify-between">
+                        <strong>Subtotal</strong>
+                        <strong>₱{formatNumber(order.subtotal)}</strong>
+                    </div>
+                    <div className="flex justify-between items-center"> 
+                        <strong>Shipping fee</strong>
+                        <input 
+                            className="w-[70px] border-1 outline-none px-2 py-1 rounded-sm" 
+                            type="number"
+                            value={order.shipping_fee || ''}
+                            onChange={(e) => setOrder(prev => ({...prev, shipping_fee: Number(e.target.value)}))}
+                        />
+                    </div>
+                </div>
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
                     <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>

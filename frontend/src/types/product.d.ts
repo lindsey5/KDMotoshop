@@ -1,10 +1,10 @@
-interface Category{
+type Category = {
     _id: string;
     category_name: string;
     added_by: string;
 }
 
-interface Variant{
+type Variant = {
     _id?: string;
     sku: string;
     price: number | null;
@@ -20,7 +20,7 @@ type UploadedImage = {
   imagePublicId: string;
 };
 
-interface Product{
+type Product = {
     _id?: string;
     product_name: string;
     description: string;

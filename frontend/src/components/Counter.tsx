@@ -3,7 +3,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { IconButton } from '@mui/material';
 import type React from 'react';
 
-interface CounterProps {
+type CounterProps = {
     value: number;
     setValue: React.Dispatch<React.SetStateAction<number>>;
     limit: number;

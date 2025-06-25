@@ -5,7 +5,7 @@ import { successAlert } from "../../utils/swal";
 import { formatNumber } from "../../utils/utils";
 import Counter from "../Counter";
 
-interface AddOrderModalProps{
+type AddOrderModalProps = {
     selectedProduct: Product | undefined;
     setOrderItems: React.Dispatch<React.SetStateAction<OrderItem[]>>
     close: () => void;
@@ -57,7 +57,10 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
                     quantity,
                     stock: filteredVariants[0].stock || 0,
                     price: filteredVariants[0]?.price || 0,
-                    lineTotal: (filteredVariants[0].price || 0) * quantity
+                    lineTotal: (filteredVariants[0].price || 0) * quantity,
+                    image: selectedProduct && typeof selectedProduct.thumbnail === 'object' && selectedProduct.thumbnail !== null && 'imageUrl' in selectedProduct.thumbnail
+                            ? selectedProduct.thumbnail.imageUrl
+                            : null,
                 }
             ];
         });

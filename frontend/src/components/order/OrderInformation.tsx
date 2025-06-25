@@ -8,7 +8,7 @@ import 'react-phone-input-2/lib/material.css';
 import { RedButton } from "../Button";
 import { Statuses } from "../../constants/status";
 
-interface OrderInformationModalProps {
+type OrderInformationModalProps = {
     open: boolean;
     onClose: () => void;
     setOrder: React.Dispatch<React.SetStateAction<Order>>;
@@ -74,7 +74,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
             onClose={onClose} 
             className="z-99 p-5 flex justify-center items-start overflow-y-auto"
         >
-            <div className="w-[90%] max-w-[600px] items-start p-10 bg-white rounded-md flex flex-col gap-5">
+            <div className="w-[90%] max-w-[600px] items-start p-5 bg-white rounded-md flex flex-col gap-5">
                 <h1 className="font-bold text-2xl mb-4">Customer & Order Info</h1>
                 <p className="text-gray-500">Customer</p>
                 <div className="w-full flex gap-5">
@@ -142,8 +142,14 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                     inputStyle={{ width: '100%', height: '55px' }}
                     onChange={(phone) => setOrder(prev => ({ ...prev, customer: { ...prev.customer, phone } }))}
                 />
-                <p className="text-gray-500">Order Information</p>
-                <div className="w-full grid grid-cols-2 gap-5">
+                <p className="text-gray-500 mb-2">Order Information</p>
+                <div className="w-full grid grid-cols-2 gap-6">
+                    <CustomizedSelect
+                        label="Order Source"
+                        value={order.order_source}
+                        onChange={(e) => setOrder(prev => ({ ...prev, order_source: e.target.value as Order['order_source'] }))}
+                        menu={['Store', 'Facebook', 'Shopee', 'Lazada'].map(method => ({ value: method, label: method }))}
+                    />
                     <StatusSelect 
                         value={order.status}
                         onChange={(e) => setOrder(prev => ({ ...prev, status: e.target.value as Order['status'] }))}

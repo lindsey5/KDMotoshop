@@ -3,6 +3,9 @@ import { AuthenticatedRequest } from "../types/auth";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import Product from "../models/Product";
 import { UploadedImage } from "../types/types";
+import Order from "../models/Order";
+import OrderItem from "../models/OrderItem";
+import { Types } from "mongoose";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -57,10 +60,37 @@ export const get_products = async (req: Request, res: Response) => {
       Product.countDocuments(filter),
     ]);
 
+    const orderStatuses = ["Pending", "Accepted", "Shipped"];
+
+    const orders = await Order.find({ status: { $in: orderStatuses } }, "_id");
+    const orderIds = orders.map(order => order._id);
+
+    const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
+
+    const stockMap = new Map<string, number>();
+    orderItems.forEach(item => {
+      const key = item.product_id + (item.variant_id || "");
+      stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
+    });
+
+    products.forEach(product => {
+      const key = (product._id as Types.ObjectId).toString();
+      const orderedQty = stockMap.get(key) || 0;
+      product.stock = Math.max((product.stock || 0) - orderedQty, 0);
+      
+      if(product.variants.length > 0){
+        product.variants?.forEach(variant => {
+          const varKey = product._id + variant._id.toString();
+          const varOrderedQty = stockMap.get(varKey) || 0;
+          variant.stock = Math.max((variant.stock || 0) - varOrderedQty, 0);
+        });
+      }
+    });
+
     res.status(200).json({
       success: true,
       products,
-      page,
+      page,  
       totalPages: Math.ceil(total / limit),
       totalProducts: total,
     });
@@ -96,7 +126,7 @@ export const update_product = async (req: Request, res: Response) => {
       return;
     }
 
-    const isExist = await Product.findOne({_id: { $ne: id },  product_name: product.product_name });
+    const isExist = await Product.findOne({ _id: { $ne: id },  product_name: product.product_name });
 
     if (isExist) {
       res.status(400).json({ success: false, message: 'Product name already exists.'});
@@ -106,7 +136,6 @@ export const update_product = async (req: Request, res: Response) => {
     let thumbnail : UploadedImage | null = oldProduct.thumbnail;
     if (typeof product.thumbnail === 'string') {
       thumbnail = await uploadImage(product.thumbnail);
-      await deleteImage(oldProduct.thumbnail.imagePublicId);
     }
 
     const images = await Promise.all(
@@ -122,11 +151,7 @@ export const update_product = async (req: Request, res: Response) => {
       if (!stillUsed) await deleteImage(oldImg.imagePublicId);
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { ...product, thumbnail, images },
-      { new: true }
-    );
+    const updatedProduct = await Product.findByIdAndUpdate(id, { ...product, thumbnail, images }, { new: true });
 
     res.status(200).json({
       success: true,

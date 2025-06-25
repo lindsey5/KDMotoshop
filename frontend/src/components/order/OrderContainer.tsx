@@ -7,7 +7,7 @@ import { cn, formatNumber } from '../../utils/utils';
 import { confirmDialog } from '../../utils/swal';
 import Counter from '../Counter';
 
-interface OrderContainerProps{
+type OrderContainerProps = {
     orderItem: OrderItem;
     index: number;
     setOrderItems: React.Dispatch<React.SetStateAction<OrderItem[]>>
@@ -55,12 +55,16 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
                     <CancelIcon />
                 </IconButton>
             </div>
-            {show && <div className='mt-6'>
+            {show && <div className='mt-6 flex gap-10'>
                 <Counter 
                     value={orderItem.quantity} 
                     setValue={setQuantity} 
                     limit={orderItem.stock! | 0} 
                     disabled={false} 
+                />
+                <img 
+                    src={orderItem.image || 'photo.png'} 
+                    className='w-20 h-20 rounded-sm' 
                 />
             </div>}
         </div>

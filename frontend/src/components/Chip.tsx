@@ -1,7 +1,7 @@
 import { Chip } from "@mui/material";
 import type React from "react";
 
-interface CustomizedChipProps {
+type CustomizedChipProps = {
   isSelected: boolean;
   label: string;
   onClick: () => void;

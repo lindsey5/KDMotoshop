@@ -4,6 +4,8 @@ import { TableRow } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from '../Table';
 import { formatNumber } from '../../utils/utils';
 import { formatDate } from '../../utils/dateUtils';
+import { RedButton } from '../Button';
+import { useNavigate } from 'react-router-dom';
 
 const Status: React.FC<{ status: string}> = ({ status }) => {
   const { bg, icon } = statusColorMap[status] || {
@@ -27,13 +29,15 @@ export const OrderTableColumns = () => {
             <StyledTableCell>Amount</StyledTableCell>
             <StyledTableCell>Payment Method</StyledTableCell>
             <StyledTableCell>Order Date</StyledTableCell>
-            <StyledTableCell>Status</StyledTableCell>
-            <StyledTableCell>Action</StyledTableCell>
+            <StyledTableCell align='center'>Status</StyledTableCell>
+            <StyledTableCell align='center'>Action</StyledTableCell>
         </TableRow>
     )
 }
 
 export const OrderTableRow = ({ order } : { order : Order}) => {
+    const navigate = useNavigate();
+
     return (
         <StyledTableRow>
             <StyledTableCell>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
@@ -41,12 +45,13 @@ export const OrderTableRow = ({ order } : { order : Order}) => {
             <StyledTableCell>₱{formatNumber(order.total)}</StyledTableCell>
             <StyledTableCell>{order.payment_method}</StyledTableCell>
             <StyledTableCell>{formatDate(order.createdAt)}</StyledTableCell>
-            <StyledTableCell>
-                <div className="flex">
+            <StyledTableCell align='center'>
+                <div className="flex justify-center">
                     <Status status={order.status} />
                 </div>
             </StyledTableCell>
-            <StyledTableCell>
+            <StyledTableCell align='center'>
+                <RedButton onClick={() => navigate(`/admin/orders/${order._id}`)}>Details</RedButton>
             </StyledTableCell>
         </StyledTableRow>
     )

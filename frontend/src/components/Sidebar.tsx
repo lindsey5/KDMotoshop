@@ -8,7 +8,7 @@ import { Button } from '@mui/material';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-interface SidebarButtonProps {
+type SidebarButtonProps = {
   icon: ReactNode;
   label: string;
   path: string;

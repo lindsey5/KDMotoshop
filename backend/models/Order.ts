@@ -2,6 +2,8 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface IOrder extends Document {
     order_id: string;
+    order_source: string;
+    shipping_fee: number;
     total: number;
     subtotal: number;
     status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled" | "Refunded";
@@ -28,6 +30,12 @@ const OrderSchema: Schema<IOrder> = new Schema(
     order_id: { type: String, required: true, unique: true },
     total: { type: Number, required: true },
     subtotal: { type: Number, required: true },
+    order_source: {
+      type: String,
+      enum: ['Store', 'Website', 'Facebook', 'Shopee', 'Lazada'],
+      default: 'website'
+    },
+    shipping_fee: { type: Number, required: true },
     status: {
       type: String,
       enum: ["Pending", "Accepted", "Shipped", "Completed", "Rejected", "Cancelled", "Refunded"],

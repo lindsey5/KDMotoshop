@@ -6,13 +6,13 @@ type StatCardProps = {
   title: string;
   value: string;
   subtitle: string;
-  color?: 'green' | 'blue' | 'red' | 'yellow'; 
+  color?: 'green' | 'purple' | 'red' | 'yellow'; 
 };
 
 const StatCard = ({ title, value, subtitle, color = "green" }: StatCardProps) => {
     const colorMap: Record<string, string> = {
         green: "bg-green-500",
-        blue: "bg-blue-500",
+        purple: "bg-purple-500",
         red: "bg-red-500",
         yellow: "bg-yellow-500",
     };
@@ -29,7 +29,7 @@ const StatCard = ({ title, value, subtitle, color = "green" }: StatCardProps) =>
     );
 };
 
-interface CardValue {
+type CardValue = {
     overallTotalOrders: number;
     pendingOrders: number;
     completedOrders: number;
@@ -69,7 +69,7 @@ export const StatCards = () => {
             <StatCard title="Pending Orders" value={cardValues.pendingOrders.toString()} subtitle="Total Pending Orders" color="yellow"/>
             <hr className="h-full border-1 border-gray-200" />
         
-            <StatCard title="Completed Orders" value={cardValues.completedOrders.toString()} subtitle="Completed Orders for last 365 days"/>
+            <StatCard title="Completed Orders" value={cardValues.completedOrders.toString()} subtitle="Completed Orders for last 365 days" color="purple"/>
             <hr className="h-full border-1 border-gray-200" />
         
             <StatCard title="Cancelled Orders" value={cardValues.cancelledOrders.toString()} subtitle="Cancelled Orders for last 365 days" color="red"/>

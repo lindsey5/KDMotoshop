@@ -45,7 +45,7 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
       </FormControl>
 }
 
-interface StatusSelectProps{
+type StatusSelectProps = {
     value: string;
     menu: { value: string; label: string; color: string }[];
     sx?: React.CSSProperties;

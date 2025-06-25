@@ -1,6 +1,6 @@
 import { RedButton } from "../Button"
 
-interface ProductThumbnailProps {
+type ProductThumbnailProps = {
     product: Product;
     handleThumbnail: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

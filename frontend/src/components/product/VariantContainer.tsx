@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { RedTextField } from '../Textfield';
 import { confirmDialog } from '../../utils/swal';
 
-interface VariantContainerProps {
+type VariantContainerProps = {
   index: number;
   setProduct: React.Dispatch<React.SetStateAction<Product>>;
   variant: Variant;

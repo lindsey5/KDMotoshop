@@ -9,6 +9,7 @@ interface OrderItem extends Document {
     quantity: number;
     price: number;
     lineTotal: number;
+    image: string;
 }
 
 const OrderItemSchema: Schema<OrderItem> = new Schema(
@@ -20,7 +21,8 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
     product_name: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
-    lineTotal: { type: Number, required: true }
+    lineTotal: { type: Number, required: true },
+    image: { type: String, required: true}
   },
   { timestamps: true }
 );
