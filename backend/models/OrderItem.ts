@@ -7,6 +7,7 @@ interface OrderItem extends Document {
     attributes?: { [key: string]: string }
     product_name: string;
     quantity: number;
+    status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Cancelled';
     price: number;
     lineTotal: number;
     image: string;
@@ -22,6 +23,7 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     lineTotal: { type: Number, required: true },
+    status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Cancelled'], default: 'Unfulfilled' },
     image: { type: String, required: true}
   },
   { timestamps: true }

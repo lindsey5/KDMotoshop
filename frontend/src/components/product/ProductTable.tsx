@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 export const ProductTableColumns = () => {
     return (
-        <TableRow>
+        <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
             <StyledTableCell align="left">Product name</StyledTableCell>
             <StyledTableCell align="left">Stock</StyledTableCell>
             <StyledTableCell align="center">Category</StyledTableCell>
@@ -22,7 +22,7 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
     
     return (
         <StyledTableRow>
-            <StyledTableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <img 
                     className="bg-gray-100 w-12 h-12"
                     src={
@@ -35,15 +35,15 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
                 />
                 {product.product_name}
             </StyledTableCell>
-            <StyledTableCell>{product.product_type === 'Single' ? product.stock : 
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''}>{product.product_type === 'Single' ? product.stock : 
                 product.variants.reduce((total, variant) => {
                     return variant.stock ? total + variant.stock : total
                 }, 0)}
             </StyledTableCell>
-            <StyledTableCell align="center">{product.category}</StyledTableCell>
-            <StyledTableCell align="center">{product.product_type}</StyledTableCell>
-            <StyledTableCell align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
-            <StyledTableCell align="center">
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.category}</StyledTableCell>
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.product_type}</StyledTableCell>
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
+            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">
                 <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
                     <EditIcon />
                 </IconButton>

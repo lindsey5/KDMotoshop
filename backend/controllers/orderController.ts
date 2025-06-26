@@ -32,6 +32,20 @@ const decrementStock = async (item : any) => {
     }
 }
 
+const incrementStock = async (item : any) => {
+    if (item.variant_id) {
+        await Product.updateOne(
+            {  _id: item.product_id,  "variants._id": item.variant_id },
+            { $inc: { "variants.$.stock": item.quantity } }
+        );
+    } else {
+        await Product.updateOne(
+            { _id: item.product_id },
+            { $inc: { stock: item.quantity } }
+        );
+    }
+}
+
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { order, orderItems } = req.body;
@@ -40,6 +54,10 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
         const newOrder = new Order({...order, createdBy: req.user_id, order_id: await generateOrderId()});
+        
+        if(order.status !== 'Pending'){
+            orderItems.map((item : any) => ({...item, status: 'Fulfilled' }))
+        }
 
         const orderItemsWithOrderID = orderItems.map((item: any) => ({...item, order_id: newOrder._id}));   
         OrderItem.insertMany(orderItemsWithOrderID)
@@ -150,6 +168,45 @@ export const get_order_by_id = async (req: Request, res: Response) => {
         res.status(200).json({ 
             success: true,  
             order: { ...order.toObject(), orderItems }
+        });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+export const update_order = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const order = await Order.findById(id);
+
+        if(!order){
+            res.status(404).json({ success: false, message: 'Order not found'});
+            return;
+        }
+
+        const updatedOrder = await Order.findByIdAndUpdate(
+            id, 
+            req.body, 
+            { new: true }
+        );
+
+        if(req.body.status !== 'Completed' && (order.status === 'Shipped' || order.status === 'Completed')){
+            for (const item of req.body.orderItems) {
+                await incrementStock(item)
+                if(req.body.status === 'Pending'){
+                    await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
+                }
+            }
+        }else if(req.body.status !== 'Pending' && req.body.status !== 'Accepted'){
+            for (const item of req.body.orderItems) {
+                if((req.body.status === 'Completed' || req.body.status === 'Shipped') && order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
+                await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
+            }
+        }
+
+        res.status(200).json({ 
+            success: true,  
+            order: updatedOrder
         });
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message });

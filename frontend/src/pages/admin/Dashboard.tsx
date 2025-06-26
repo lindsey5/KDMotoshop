@@ -1,23 +1,11 @@
+import AreaChart from "../../components/charts/AreaChart";
 import DashboardCard from "../../components/DashboardCard"
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { BarChart } from '@mui/x-charts/BarChart';
 import { PieChart } from "@mui/x-charts";
 import { LineChart } from "@mui/x-charts";
 
-const salesData = [
-  { month: 'Jan', total: 12000 },
-  { month: 'Feb', total: 15000 },
-  { month: 'Mar', total: 18000 },
-  { month: 'Apr', total: 20000 },
-  { month: 'May', total: 25000 },
-  { month: 'Jun', total: 22000 },
-  { month: 'Jul', total: 30000 },
-  { month: 'Aug', total: 28000 },
-  { month: 'Sep', total: 31000 },
-  { month: 'Oct', total: 35000 },
-  { month: 'Nov', total: 37000 },
-  { month: 'Dec', total: 40000 },
-];
+const data =  [500, 700, 800, 600, 900, 750, 1500, 100];
+const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const categoryData = {
     data: [
@@ -60,23 +48,21 @@ const AdminDashboard = () => {
             <DashboardCard label="Sales This Year" value="₱1,000,000"/>
         </div>
         <div className="flex items-center mt-14 gap-5">
-            <div className="bg-white flex-1 p-5 shadow-lg border-1 border-gray-200 rounded-md">
-                <BarChart
-                    dataset={salesData}
-                    xAxis={[{ dataKey: 'month' }]}
-                    series={[{ dataKey: 'total', label: 'Monthly Sales' }]}
-                    height={350}
-                    colors={['red']}
-                    grid={{ horizontal: true }}
+            <div className="h-[400px] bg-white flex-1 px-5 pb-5 shadow-lg border-1 border-gray-200 rounded-md">
+                <AreaChart 
+                    label="Monthly Sales"
+                    data={data}
+                    labels={labels}
                 />
+
             </div>
             <div className="bg-white p-5 shadow-lg border-1 border-gray-200 rounded-md">
                 <h1>Most Popular Categories</h1>
-            <PieChart
-                series={[ categoryData ]}
-                width={200}
-                height={200}
-            />
+                <PieChart
+                    series={[ categoryData ]}
+                    width={180}
+                    height={200}
+                />
             </div>
         </div>
         <div className="h-[450px] bg-white flex-1 p-5 shadow-lg border-1 border-gray-200 rounded-md mt-14">

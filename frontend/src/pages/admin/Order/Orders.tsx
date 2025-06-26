@@ -63,7 +63,7 @@ const Orders = () => {
         getOrdersAsync();
     }, [selectedDates, selectedStatus,])
 
-    return <div className="flex flex-col bg-gray-100 p-5">
+    return <div className="h-full flex flex-col p-5 bg-gray-100">
         <div className="flex justify-between items-center mb-6">
             <div>
                 <h1 className="font-bold text-4xl mb-4">Orders List</h1>
@@ -95,14 +95,14 @@ const Orders = () => {
                         value={selectedDates}
                         setValue={setSelectedDates}
                     />
-                    <Pagination count={pagination.totalPages} onChange={handlePage} />
                 </div>
             </div>
-            <div className="min-h-0 flex-grow overflow-y-auto">
-                <CustomizedTable
-                    cols={<OrderTableColumns />}
-                    rows={orders.map(order => <OrderTableRow order={order}/>)} 
-                />
+            <CustomizedTable
+                cols={<OrderTableColumns />}
+                rows={orders.map(order => <OrderTableRow key={`${order._id}`} order={order} />)} 
+            />
+            <div className="flex justify-end mt-4">
+                <Pagination count={pagination.totalPages} onChange={handlePage} />
             </div>
         </div>
     </div>

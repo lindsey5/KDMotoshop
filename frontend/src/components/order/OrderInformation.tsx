@@ -105,18 +105,21 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                         <CustomizedSelect 
                             label="Region"
                             value={selectedRegion}
+                            sx={{ backgroundColor: 'white'}}
                             menu={regions.map((region) => ({ value: region.code, label: region.name }))}
                             onChange={(e) => handleRegionChange(e.target.value as string)}
                         />
                         {selectedRegion && <CustomizedSelect 
                             label="City"
                             value={selectedCity}
+                            sx={{ backgroundColor: 'white'}}
                             menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
                             onChange={(e) => handleCityChange(e.target.value as string)}
                         />}
                         {selectedCity && <CustomizedSelect 
                                 label="Barangay"
                                 value={order.address.barangay}
+                                sx={{ backgroundColor: 'white'}}
                                 menu={barangays.map((barangay) => ({ value: barangay, label: barangay }))}
                                 onChange={(e) => handleBarangayChange(e.target.value as string)}
                         />}
@@ -124,6 +127,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                             <RedTextField 
                                 label="Street, Building, House No." 
                                 fullWidth 
+                                sx={{ backgroundColor: 'white'}}
                                 value={order.address.street || ''}
                                 onChange={(e) => setOrder((prev) => ({
                                     ...prev,

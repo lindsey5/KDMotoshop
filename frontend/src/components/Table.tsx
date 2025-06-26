@@ -35,7 +35,7 @@ interface CustomizedTableProps extends TableContainerProps{
 
 const CustomizedTable : React.FC<CustomizedTableProps> = ({cols, rows, ...props}) => {
   return (
-    <TableContainer component={Paper} {...props}>
+    <TableContainer component={Paper} {...props} sx={{ flexGrow: 1, minHeight: 0 }}>
       <Table aria-label="customized table">
         <TableHead>
           {cols}

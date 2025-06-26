@@ -55,7 +55,7 @@ const CreateOrderPage = () => {
             { ...prev, 
                 subtotal: orderItems
                 .reduce((total, item) => item.lineTotal + total,0),
-                total: orderItems
+                total: prev.shipping_fee + orderItems
                 .reduce((total, item) => item.lineTotal + total,0)
             }
         ))
@@ -109,7 +109,8 @@ const CreateOrderPage = () => {
                                 : null,
                             quantity: 1,
                             price: product.price || 0,
-                            lineTotal: product.price || 0
+                            lineTotal: product.price || 0,
+                            status: "Unfulfilled"
                         }]
                     }
 
@@ -151,8 +152,8 @@ const CreateOrderPage = () => {
     }
 
     useEffect(() => {
-        console.log(order.shipping_fee)
-    }, [order])
+        setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
+    }, [order.shipping_fee])
 
     return <div className="flex h-full bg-gray-100 gap-5">
         <Backdrop

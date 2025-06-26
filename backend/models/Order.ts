@@ -6,7 +6,7 @@ interface IOrder extends Document {
     shipping_fee: number;
     total: number;
     subtotal: number;
-    status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled" | "Refunded";
+    status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
     customer: {
         customer_id?: Types.ObjectId;
         email?: string;

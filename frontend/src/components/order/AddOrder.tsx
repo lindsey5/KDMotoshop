@@ -50,6 +50,7 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
             return [
                 ...prev,
                 {
+                    status: "Unfulfilled",
                     product_id: selectedProduct?._id || '',
                     variant_id: filteredVariants[0]._id,
                     attributes: filteredVariants[0].attributes,

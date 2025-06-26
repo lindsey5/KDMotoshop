@@ -1,7 +1,6 @@
 import { Button, Pagination } from "@mui/material"
 import CustomizedTable from "../../../components/Table"
 import { SearchField } from "../../../components/Textfield"
-import DashboardCard from "../../../components/DashboardCard"
 import { RedButton } from "../../../components/Button"
 import { useEffect, useState } from "react"
 import CreateCategoryModal from "../../../components/product/CreateCategory"
@@ -10,16 +9,8 @@ import { CustomizedChip } from "../../../components/Chip"
 import { confirmDialog } from "../../../utils/swal"
 import { deleteData } from "../../../services/api"
 import { useNavigate } from "react-router-dom"
-import { PieChart } from "@mui/x-charts"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/product/ProductTable"
-
-const categoryData = {
-    data: [
-        { id: 0, value: 40, label: "Full-faced Helmet" },
-        { id: 2, value: 15, label: "Topbox" },
-    ]
-};
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -86,10 +77,9 @@ const Products = () => {
         setPagination(prev => ({...prev, page: value}))
     };
 
-    return <div className="flex bg-gray-100 h-full">
-        <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
-        
-        <div className="flex-1 flex flex-col p-5">
+    return( 
+        <div className="flex flex-col bg-gray-100 h-full p-5">
+            <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
             <div className="flex items-center mb-6 justify-between">
                 <div>
                     <h1 className="font-bold text-4xl mb-4">Products</h1>
@@ -113,7 +103,7 @@ const Products = () => {
                     />
                     <Pagination count={pagination.totalPages} onChange={handlePage} />
                 </div>
-                <div className="flex overflow-x-auto mt-4 gap-2">
+                <div className="flex overflow-x-auto mt-4 mb-6 gap-2">
                     <CustomizedChip 
                         onClick={() => setSelectedCategory('All')} 
                         label="All"
@@ -128,29 +118,13 @@ const Products = () => {
                         />
                     )}
                 </div>
-                <div className="min-h-0 flex-grow overflow-y-auto mt-6">
-                    <CustomizedTable
-                        cols={<ProductTableColumns />}
-                        rows={products?.map(product => <ProductTableRow product={product}/>)
-                        }
-                    />
-                </div>
-            </div>
-        </div>
-        <div className="w-[400px] p-5 flex flex-col gap-5">
-            <DashboardCard label="Total Products" value="20"/>
-            <DashboardCard label="Total Products Sold" value="100"/>
-
-            <div className="bg-white p-5 shadow-lg border-1 border-gray-200 rounded-md">
-                <h1 className="text-lg font-bold">Most Popular Categories</h1>
-                <PieChart
-                    series={[ categoryData ]}
-                    width={300}
-                    height={300}
+                <CustomizedTable
+                    cols={<ProductTableColumns />}
+                    rows={products?.map(product => <ProductTableRow product={product}/>)}
                 />
             </div>
         </div>
-    </div>
+    )
 }
 
 export default Products

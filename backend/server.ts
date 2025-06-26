@@ -10,6 +10,7 @@ import authRoutes from './routes/authRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import productRoutes from './routes/productRoutes';
 import orderRoutes from './routes/orderRoutes';
+import salesRoutes from './routes/salesRoutes';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000; 
@@ -68,6 +69,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/category", categoryRoutes)
 app.use("/api/product", productRoutes)
 app.use("/api/order", orderRoutes)
+app.use('/api/sales', salesRoutes)
 
 const dirname = path.resolve();
 

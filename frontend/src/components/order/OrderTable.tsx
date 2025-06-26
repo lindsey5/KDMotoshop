@@ -23,12 +23,13 @@ const Status: React.FC<{ status: string}> = ({ status }) => {
 
 export const OrderTableColumns = () => {
     return (
-        <TableRow>
+        <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
             <StyledTableCell>Customer Name</StyledTableCell>
             <StyledTableCell>Order ID</StyledTableCell>
             <StyledTableCell>Amount</StyledTableCell>
             <StyledTableCell>Payment Method</StyledTableCell>
             <StyledTableCell>Order Date</StyledTableCell>
+            <StyledTableCell>Order Source</StyledTableCell>
             <StyledTableCell align='center'>Status</StyledTableCell>
             <StyledTableCell align='center'>Action</StyledTableCell>
         </TableRow>
@@ -45,6 +46,7 @@ export const OrderTableRow = ({ order } : { order : Order}) => {
             <StyledTableCell>₱{formatNumber(order.total)}</StyledTableCell>
             <StyledTableCell>{order.payment_method}</StyledTableCell>
             <StyledTableCell>{formatDate(order.createdAt)}</StyledTableCell>
+            <StyledTableCell>{order.order_source}</StyledTableCell>
             <StyledTableCell align='center'>
                 <div className="flex justify-center">
                     <Status status={order.status} />
