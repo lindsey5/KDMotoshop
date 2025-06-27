@@ -13,6 +13,7 @@ import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import ProductThumbnail from "../../../components/product/ProductThumbnail";
 import ProductImages from "../../../components/product/ProductImages";
+import Card from "../../../components/Card";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (
@@ -181,8 +182,7 @@ const ProductPage = () => {
         </div>
         <div className="flex items-start gap-10 mt-6">
             <div className="flex-1">
-
-                <div className="border-1 border-gray-300 flex flex-col gap-5 bg-white p-5 rounded-lg shadow-md">
+                <Card className="flex flex-col gap-5">
                     <h1 className="text-lg font-bold">Basic Information</h1>
                     <div className="grid grid-cols-2 gap-10">
                     <RedTextField 
@@ -274,7 +274,7 @@ const ProductPage = () => {
                         }
                         </>
                     )}
-                </div>
+                </Card>
 
                 {product.product_type === 'Variable' && <div className="mt-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
                     <div className="flex items-center justify-between mb-6">
@@ -324,7 +324,7 @@ const ProductPage = () => {
                     selectedImage={selectedImage}
                     handleImages={handleImages}
                 />
-                 <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
+                <Card>
                     <h1 className="mb-4">Product Visibility</h1>
                     <RadioGroup
                         row
@@ -334,7 +334,7 @@ const ProductPage = () => {
                         <RedRadio label="Published" value="Published" />
                         <RedRadio label="Hidden" value="Hidden" />
                     </RadioGroup>
-                 </div>
+                </Card>
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ import { deleteData } from "../../../services/api"
 import { useNavigate } from "react-router-dom"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/product/ProductTable"
+import Card from "../../../components/Card"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -94,7 +95,7 @@ const Products = () => {
                     <RedButton onClick={() => navigate('/admin/products/product')}>Add Product</RedButton>
                 </div>
             </div>
-            <div className="flex-grow min-h-0 flex flex-col p-5 bg-white rounded-lg shadow-md border-1 border-gray-300">
+            <Card className="flex-grow min-h-0 flex flex-col ">
                 <div className="flex items-center justify-between">
                     <SearchField 
                         sx={{ width: '400px'}}
@@ -111,6 +112,7 @@ const Products = () => {
                     />
                     {categories && categories.map(category => 
                         <CustomizedChip 
+                            key={category.category_name}
                             onClick={() => setSelectedCategory(category.category_name)}
                             isSelected={selectedCategory === category.category_name}
                             label={category.category_name} 
@@ -120,9 +122,9 @@ const Products = () => {
                 </div>
                 <CustomizedTable
                     cols={<ProductTableColumns />}
-                    rows={products?.map(product => <ProductTableRow product={product}/>)}
+                    rows={products?.map(product => <ProductTableRow key={product._id} product={product}/>)}
                 />
-            </div>
+            </Card>
         </div>
     )
 }

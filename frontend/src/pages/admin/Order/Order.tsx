@@ -13,6 +13,7 @@ import OrderItems from "../../../components/order/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
+import Card from "../../../components/Card";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -65,34 +66,32 @@ const OrderDetails = () => {
         <div className="flex items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
                 <OrderItems orderItems={order.orderItems}/>
-                <div className="bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
+                <Card>
                     <h1 className="font-bold text-xl">Payment Summary</h1>
-                    <div className="mt-6 grid grid-cols-2 gap-5">
+                    <div className="my-6 grid grid-cols-2 gap-5 p-2 bg-gray-100">
                         <p>Subtotal</p>
                         <p className="text-right">₱{formatNumber(order.subtotal)}</p>
                         <p>Shipping Fee</p>
                         <p className="text-right">₱{formatNumber(order.shipping_fee)}</p>
                     </div>
-                    <div className="flex justify-between p-2 mt-6 bg-gray-100">
+                    <div className="flex justify-between">
                         <h1 className="font-bold text-xl">Total</h1>
                         <h1 className="font-bold text-xl">₱{formatNumber(order.total)}</h1>
                     </div>
-                </div>
-                <div className="flex justify-end bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
+                </Card>
+                <Card className="flex justify-end ">
                     <RedButton onClick={updateOrder}>Save</RedButton>
-                </div>
+                </Card>
             </div>
             <div className="w-[350px] flex flex-col gap-5">
-                <div className="flex flex-col gap-5 w-full bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
-                    <div className="w-full">
-                        <StatusSelect 
-                            menu={Statuses}
-                            value={order.status}
-                            onChange={(e) => setOrder(prev => ({...prev!, status: e.target.value as Order['status']}))}
-                        />
-                    </div>
-                </div>
-                <div className="w-full bg-white p-5 flex flex-col gap-5 rounded-lg border-1 border-gray-300 shadow-md">
+                <Card className="flex flex-col gap-5 w-full ">
+                    <StatusSelect 
+                        menu={Statuses}
+                        value={order.status}
+                        onChange={(e) => setOrder(prev => ({...prev!, status: e.target.value as Order['status']}))}
+                    />
+                </Card>
+                <Card className="w-full flex flex-col gap-5">
                     <h1 className="font-bold text-xl">Customer</h1>
                     <div className="flex gap-5 items-center pb-5 border-b-1 border-gray-300">
                         <Avatar />
@@ -118,11 +117,11 @@ const OrderDetails = () => {
                     </div>}
                     <p className="text-gray-500">Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
                     <p className="text-gray-500">Order Source: {order.order_source}</p>
-                </div>
-                <div className="w-full bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
+                </Card>
+                <Card className="w-full">
                     <h1 className="font-bold mb-4">Note:</h1>
                     <p>{order.note || 'N/A'}</p>
-                </div>
+                </Card>
             </div>
         </div>
     </div>

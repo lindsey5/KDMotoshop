@@ -1,6 +1,7 @@
 import { Button } from "@mui/material"
 import { fetchData } from "../../services/api";
 import React, { useEffect, useState } from "react";
+import Card from "../Card";
 
 type CategoryFilterProps = {
     selectedCategory: string;
@@ -20,7 +21,7 @@ const CategoryFilter : React.FC<CategoryFilterProps> = ({ selectedCategory, setS
     }, [selectedCategory])
 
     return (
-        <div className="bg-white rounded-md border-1 border-gray-300 shadow-lg mt-6 p-5 flex items-center gap-5">
+        <Card className="mt-6 flex items-center gap-5">
             <Button
                 variant={selectedCategory === 'All' ? 'outlined' : 'text'}   
                 onClick={() => setSelectedCategory('All')}
@@ -44,7 +45,7 @@ const CategoryFilter : React.FC<CategoryFilterProps> = ({ selectedCategory, setS
                     }}
                 >{category.category_name}</Button>
             ))}
-        </div>
+        </Card>
     )
 }
 

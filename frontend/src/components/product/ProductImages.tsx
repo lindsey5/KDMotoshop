@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RedButton } from "../Button";
 import AddIcon from '@mui/icons-material/Add';
+import Card from "../Card";
 
 type ProductImageProps = {
     index: number;
@@ -57,7 +58,7 @@ interface ProductImagesProps{
 
 const ProductImages : React.FC<ProductImagesProps> = ({ images, setSelectedImage, deleteImage, selectedImage, handleImages }) => {
     return (
-        <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
+        <Card>
             <strong>Product Images</strong>
             <div className="flex flex-col items-center gap-10 mt-4">
                 <img className="w-[170px] h-[170px] bg-gray-100 lg:h-[150px]" src={selectedImage} />
@@ -88,7 +89,7 @@ const ProductImages : React.FC<ProductImagesProps> = ({ images, setSelectedImage
                     </label>
                 </div>
             </div>
-        </div>
+        </Card>
     )
 }
 

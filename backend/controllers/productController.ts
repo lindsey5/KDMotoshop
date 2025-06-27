@@ -60,6 +60,48 @@ export const get_products = async (req: Request, res: Response) => {
       Product.countDocuments(filter),
     ]);
 
+    res.status(200).json({
+      success: true,
+      products,
+      page,  
+      totalPages: Math.ceil(total / limit),
+      totalProducts: total,
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+
+export const get_products_with_reserved = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const skip = (page - 1) * limit;
+  const searchTerm = req.query.searchTerm as string | undefined;
+  const category = req.query.category as string | undefined;
+
+  try {
+    let filter: any = {};
+
+    if (searchTerm) {
+      filter.$or = [
+        { product_name: { $regex: searchTerm, $options: "i" } },
+        { sku: { $regex: searchTerm, $options: "i" } },
+        { category: { $regex: searchTerm, $options: "i" } },
+        { "variants.sku": { $regex: searchTerm, $options: "i" } },
+      ];
+    }
+
+    if (category && category !== "All") filter.category = category;
+
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .populate("added_by")
+        .skip(skip)
+        .limit(limit),
+      Product.countDocuments(filter),
+    ]);
+
     const orderStatuses = ["Pending", "Accepted", "Shipped"];
 
     const orders = await Order.find({ status: { $in: orderStatuses } }, "_id");
@@ -135,6 +177,7 @@ export const update_product = async (req: Request, res: Response) => {
 
     let thumbnail : UploadedImage | null = oldProduct.thumbnail;
     if (typeof product.thumbnail === 'string') {
+      await deleteImage(thumbnail?.imagePublicId);
       thumbnail = await uploadImage(product.thumbnail);
     }
 
@@ -162,3 +205,78 @@ export const update_product = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const get_top_products = async (req: Request, res: Response) => {
+  try{
+    const topProducts = await OrderItem.aggregate([
+      { 
+        $group: { 
+          _id: '$product_name',
+          totalQuantity: { $sum: '$quantity'},
+          image: { $first: '$image' }
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $project: {
+          product_name: '$_id',
+          totalQuantity: 1,
+          image: 1,
+          _id: 0
+        }
+      }
+    ])
+
+    res.status(200).json({ success: true, topProducts})
+
+  }catch(err : any){
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+export const get_top_categories = async (req: Request, res: Response) => {
+  try{
+    const topCategories = await OrderItem.aggregate([
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'product_id',
+          foreignField: '_id',
+          as: 'product'
+        }
+      },
+      { $unwind: '$product' },
+      { 
+        $group: { 
+          _id: '$product.category',
+          totalQuantity: { $sum: '$quantity'},
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $project: {
+          category: '$_id',
+          totalQuantity: 1,
+          _id: 0
+        }
+      }
+    ])
+
+    res.status(200).json({ success: true, topCategories})
+
+  }catch(err : any){
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}

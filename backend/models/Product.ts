@@ -24,7 +24,7 @@ interface IProduct extends Document {
   added_by: Types.ObjectId;
   images: UploadedImage[];
   thumbnail: UploadedImage;
-  variants: Variant[];
+  variants: Variant[]; 
   attributes: string[];
 }
 

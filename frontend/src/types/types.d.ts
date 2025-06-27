@@ -13,3 +13,7 @@ type Pagination = {
     page: number;
     searchTerm: string;
 }
+
+type ChartData = {
+    data: { value: number; label: string} []
+}

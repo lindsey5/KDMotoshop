@@ -1,26 +1,12 @@
-import AreaChart from "../../components/charts/AreaChart";
-import DashboardCard from "../../components/DashboardCard"
+import Card from "../../components/Card";
+import MonthlySales from "../../components/dashboard/MonthSales";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { PieChart } from "@mui/x-charts";
 import { LineChart } from "@mui/x-charts";
+import DashboardCards from "../../components/dashboard/DashboardCards";
+import TopProductsChart from "../../components/dashboard/TopProducts";
+import TopCategoriesChart from "../../components/dashboard/TopCategories";
 
-const data =  [500, 700, 800, 600, 900, 750, 1500, 100];
-const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-const categoryData = {
-    data: [
-        { id: 0, value: 40, label: "Full-faced Helmet" },
-        { id: 2, value: 15, label: "Topbox" },
-    ]
-};
-
-const dateLabels = [
-  '5-01', '5-02', '5-03', '5-04', '5-05', '5-06', '5-07',
-  '5-08', '5-09', '5-10', '5-11', '5-12', '5-13', '5-14',
-  '5-15', '5-16', '5-17', '5-18', '5-19', '5-20', '5-21',
-  '5-22', '5-23', '5-24', '5-25', '5-26', '5-27', '5-28',
-  '5-29', '5-30', '5-31',
-];
+const dateLabels = Array.from({ length: 31 }, (_, i) => i + 1);
 
 // Example actual and forecast sales data for May (31 days)
 const actualSales = [
@@ -41,43 +27,26 @@ const AdminDashboard = () => {
     return <div className="min-h-full p-5 bg-gray-100">
         <h1 className="text-red-500 font-bold text-4xl">Dashboard</h1>
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
-        <div className="grid grid-cols-4 gap-10 mt-10">
-            <DashboardCard label="Sales Today" value="₱2,000"/>
-            <DashboardCard label="Sales this week" value="₱10,000"/>
-            <DashboardCard label="Sales This Month" value="₱100,000"/>
-            <DashboardCard label="Sales This Year" value="₱1,000,000"/>
+        <DashboardCards />
+        <div className="flex items-center mt-14 gap-5">
+            <MonthlySales />
+            <TopProductsChart />
         </div>
         <div className="flex items-center mt-14 gap-5">
-            <div className="h-[400px] bg-white flex-1 px-5 pb-5 shadow-lg border-1 border-gray-200 rounded-md">
-                <AreaChart 
-                    label="Monthly Sales"
-                    data={data}
-                    labels={labels}
-                />
-
-            </div>
-            <div className="bg-white p-5 shadow-lg border-1 border-gray-200 rounded-md">
-                <h1>Most Popular Categories</h1>
-                <PieChart
-                    series={[ categoryData ]}
-                    width={180}
-                    height={200}
-                />
-            </div>
+            <TopCategoriesChart />
+            <Card className="h-[400px] bg-white flex-3">
+            <h1 className="font-bold text-xl">This Month Forecast</h1>
+            <LineChart
+                series={[
+                    { data: actualSales, label: 'Actual sales', color: 'black' },
+                    { data: forecastSales, label: 'Forecast sales', color: 'red' },
+                ]}
+                xAxis={[{ scaleType: 'point', data: dateLabels }]}
+                yAxis={[{ width: 50 }]}
+                grid={{ horizontal: true }}
+            />
+        </Card>
         </div>
-        <div className="h-[450px] bg-white flex-1 p-5 shadow-lg border-1 border-gray-200 rounded-md mt-14">
-                <h1 className="font-bold text-xl">This Month Forecast</h1>
-                <LineChart
-                    series={[
-                        { data: actualSales, label: 'Actual sales', color: 'black' },
-                        { data: forecastSales, label: 'Forecast sales', color: 'red' },
-                    ]}
-                    xAxis={[{ scaleType: 'point', data: dateLabels }]}
-                    yAxis={[{ width: 50 }]}
-                    grid={{ horizontal: true }}
-                />
-        </div>
-
     </div>  
 }
 

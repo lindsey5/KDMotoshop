@@ -18,11 +18,19 @@ export const formatDate = (date: Date | string | null | undefined): string => {
 
   const d = typeof date === 'string' ? new Date(date) : date;
 
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
 
-  return `${year}-${month}-${day}`;
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+
+  const formattedHours = String(hours).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${formattedHours}:${minutes} ${ampm}`;
 };
 
 export const formatToLongDateFormat = (date: Date | string | null | undefined): string => {
@@ -30,9 +38,12 @@ export const formatToLongDateFormat = (date: Date | string | null | undefined): 
 
   const d = typeof date === 'string' ? new Date(date) : date;
 
-  return  d.toLocaleDateString('en-US', {
+  return d.toLocaleString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
   });
 };

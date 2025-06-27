@@ -54,12 +54,14 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
         const newOrder = new Order({...order, createdBy: req.user_id, order_id: await generateOrderId()});
-        
-        if(order.status !== 'Pending'){
-            orderItems.map((item : any) => ({...item, status: 'Fulfilled' }))
-        }
 
-        const orderItemsWithOrderID = orderItems.map((item: any) => ({...item, order_id: newOrder._id}));   
+        const orderItemsWithOrderID = orderItems.map((item: any) => (
+            {
+                ...item, 
+                order_id: newOrder._id,
+                status: order.status === 'Completed' ? 'Fulfilled' : 'Unfulfilled'
+            }
+        ));   
         OrderItem.insertMany(orderItemsWithOrderID)
             .then(async (items) => {
                 const savedOrder = await newOrder.save();
@@ -163,11 +165,21 @@ export const get_order_by_id = async (req: Request, res: Response) => {
             return;
         }
 
-        const orderItems = await OrderItem.find({ order_id: order._id});
+        const orderItems = await OrderItem.find({ order_id: order._id })
+            .populate('product_id', 'thumbnail.imageUrl');
+
+        const formattedItems = orderItems.map(item => {
+            const { product_id, ...rest } = item.toObject();
+
+            return {
+                ...rest,
+                image: (product_id as any)?.thumbnail?.imageUrl || null
+            };
+        });
 
         res.status(200).json({ 
             success: true,  
-            order: { ...order.toObject(), orderItems }
+            order: { ...order.toObject(), orderItems: formattedItems }
         });
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message });
@@ -195,11 +207,15 @@ export const update_order = async (req: Request, res: Response) => {
                 await incrementStock(item)
                 if(req.body.status === 'Pending'){
                     await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
+                }else if(req.body.status === 'Refunded'){
+                    await OrderItem.updateOne({_id: item._id}, { status: 'Refunded' });
+                }else if(req.body.status === 'Cancelled'){
+                    await OrderItem.updateOne({_id: item._id}, { status: 'Cancelled' });
                 }
             }
-        }else if(req.body.status !== 'Pending' && req.body.status !== 'Accepted'){
+        }else if(req.body.status === 'Completed' || req.body.status === 'Shipped'){
             for (const item of req.body.orderItems) {
-                if((req.body.status === 'Completed' || req.body.status === 'Shipped') && order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
+                if(order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
             }
         }

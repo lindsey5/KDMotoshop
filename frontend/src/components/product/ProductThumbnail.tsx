@@ -1,4 +1,5 @@
 import { RedButton } from "../Button"
+import Card from "../Card";
 
 type ProductThumbnailProps = {
     product: Product;
@@ -7,7 +8,7 @@ type ProductThumbnailProps = {
 
 const ProductThumbnail : React.FC<ProductThumbnailProps> = ({ product, handleThumbnail }) => {
     return (
-        <div className="bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg">
+        <Card>
             <strong>Product Thumbnail</strong>
             <div className="flex flex-col items-center gap-5 mt-4"> 
                 <img 
@@ -31,7 +32,7 @@ const ProductThumbnail : React.FC<ProductThumbnailProps> = ({ product, handleThu
                     <RedButton component="span">Add Thumbnail</RedButton>
                 </label>
             </div>
-        </div>
+        </Card>
     )
 
 }

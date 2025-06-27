@@ -14,7 +14,8 @@ import { OrderTableColumns, OrderTableRow } from "../../../components/order/Orde
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
-import { StatCards } from "../../../components/order/StatCard";
+import { StatsCards } from "../../../components/order/StatCard";
+import Card from "../../../components/Card";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -40,7 +41,10 @@ const Orders = () => {
     };
 
     const getOrdersAsync = async () => {
-        const response = await fetchData(`/api/order?page=${pagination.page}&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${selectedDates?.[0] ? selectedDates[0].toISOString() : ''}&endDate=${selectedDates?.[1] ? selectedDates[1].toISOString() : ''}`);
+        const startDate = selectedDates?.[0] ? new Date(selectedDates[0].toString()) : '';
+        const endDate = selectedDates?.[1] ? new Date(selectedDates[1].toString()) : '';
+
+        const response = await fetchData(`/api/order?page=${pagination.page}&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}`);
         if(response.success) {
             setPagination(prev => ({...prev, totalPages: response.totalPages, page: response.page }));
             setOrders(response.orders);
@@ -71,9 +75,9 @@ const Orders = () => {
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
         </div>
-        <StatCards />
+        <StatsCards />
         
-        <div className="flex-grow min-h-[700px] flex flex-col bg-white p-5 border-1 border-gray-300 mt-6 rounded-lg shadow-md">
+        <Card className="flex-grow min-h-[700px] flex flex-col mt-6">
             <div className="flex justify-between items-center mb-6 gap-10">
                 <SearchField
                     value={searchTerm}
@@ -104,7 +108,7 @@ const Orders = () => {
             <div className="flex justify-end mt-4">
                 <Pagination count={pagination.totalPages} onChange={handlePage} />
             </div>
-        </div>
+        </Card>
     </div>
 }
 

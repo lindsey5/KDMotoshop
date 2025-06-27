@@ -1,11 +1,14 @@
 import { Router } from "express";
-import { create_product, get_product_by_id, get_products, update_product } from "../controllers/productController";
+import { create_product, get_product_by_id, get_products, get_top_categories, get_top_products, update_product } from "../controllers/productController";
 import { adminRequireAuth } from "../middlewares/authMiddleware";
 
 const router = Router();
 
 router.post('/', adminRequireAuth, create_product);
-router.get('/', get_products);
+router.get('/', adminRequireAuth, get_products);
+router.get('/with-reserved', get_products);
+router.get('/top', adminRequireAuth, get_top_products);
+router.get('/categories/top', adminRequireAuth, get_top_categories);
 router.get('/:id', get_product_by_id);
 router.put('/:id', update_product);
 
