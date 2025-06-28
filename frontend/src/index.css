@@ -1,5 +1,44 @@
 @import "tailwindcss";
 
+@theme {
+  --animate-slide-to-t: slide-to-t 0.8s ease-in;
+  --animate-slide-to-l: slide-to-l 0.8s ease-in-out;
+  --animate-slide-to-r: slide-to-r 0.8s ease-in-out;
+
+  @keyframes slide-to-t {
+    from {
+      transform: translateY(80px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-to-r {
+    from {
+      transform: translateX(-100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+    @keyframes slide-to-l {
+    from {
+      transform: translateX(100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
 .my-swal-popup {
   z-index: 99999;
 }
@@ -10,4 +49,10 @@
 
 .phone-input {
   width: 100% !important;
+}
+
+@keyframes speedLine {
+  0% { transform: translateX(-200px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100vw); opacity: 0; }
 }

@@ -4,15 +4,18 @@ import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Product/Products";
 import ProductPage from "./pages/admin/Product/Product";
-import Home from "./pages/customer/Home";
+import Home from "./pages/customer/Home/Home";
 import Orders from "./pages/admin/Order/Orders";
 import CreateOrderPage from "./pages/admin/Order/CreateOrder";
 import OrderDetails from "./pages/admin/Order/Order";
+import CustomerLayout from "./layouts/CustomerLayout";
 
 function App() {
   return <BrowserRouter>
   <Routes>
-    <Route index element={<Home />} />
+    <Route element={<CustomerLayout />}>
+      <Route index element={<Home />} />
+    </Route>
     <Route path="login" element={<Login />} />
     <Route path="admin" element={<AdminLayout />} >
       <Route index element={<Navigate to="/admin/dashboard" />} />

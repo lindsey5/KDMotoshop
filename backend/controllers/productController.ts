@@ -208,72 +208,39 @@ export const update_product = async (req: Request, res: Response) => {
 
 export const get_top_products = async (req: Request, res: Response) => {
   try{
-    const topProducts = await OrderItem.aggregate([
+    const topProductsAggregation = await OrderItem.aggregate([
       { 
         $group: { 
-          _id: '$product_name',
-          totalQuantity: { $sum: '$quantity'},
-          image: { $first: '$image' }
+          _id: '$product_id',
+          totalQuantity: { $sum: '$quantity' }
         }
       },
-      {
-        $sort: { totalQuantity: -1 }
-      },
-      {
-        $limit: 10
-      },
-      {
-        $project: {
-          product_name: '$_id',
-          totalQuantity: 1,
-          image: 1,
-          _id: 0
-        }
-      }
-    ])
+      { $sort: { totalQuantity: -1 } },
+      { $limit: 10 }
+    ]);
 
-    res.status(200).json({ success: true, topProducts})
+    // Get the top 10 product IDs
+    const topProductIds = topProductsAggregation.map(item => item._id);
 
-  }catch(err : any){
-    console.error(err);
-    res.status(500).json({ success: false, message: err.message });
-  }
-}
+    // Fetch matching products
+    const products = await Product.find({ _id: { $in: topProductIds } });
 
-export const get_top_categories = async (req: Request, res: Response) => {
-  try{
-    const topCategories = await OrderItem.aggregate([
-      {
-        $lookup: {
-          from: 'products',
-          localField: 'product_id',
-          foreignField: '_id',
-          as: 'product'
-        }
-      },
-      { $unwind: '$product' },
-      { 
-        $group: { 
-          _id: '$product.category',
-          totalQuantity: { $sum: '$quantity'},
-        }
-      },
-      {
-        $sort: { totalQuantity: -1 }
-      },
-      {
-        $limit: 10
-      },
-      {
-        $project: {
-          category: '$_id',
-          totalQuantity: 1,
-          _id: 0
-        }
-      }
-    ])
+    // Merge product data with totalQuantity from aggregation
+    const topProducts = topProductsAggregation.map(item => {
+      const product = products.find((p : any) => p._id.toString() === item._id.toString());
 
-    res.status(200).json({ success: true, topCategories})
+      if (!product) return null;
+
+      return {
+        product_name: product.product_name,
+        image: product.thumbnail.imageUrl,
+        totalQuantity: item.totalQuantity,
+        price: product.product_type === 'Variable' ? product.variants?.sort((a, b) => (a.price || 0) - (b.price || 0))[0].price : product.price,
+      };
+    });
+
+    res.status(200).json({ success: true, topProducts });
+
 
   }catch(err : any){
     console.error(err);

@@ -58,7 +58,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     variants: { 
         type: [
             {
-                sku: { type: String, required: true, unique: true },
+                sku: { type: String, required: true },
                 price: { type: Number, required: true, },
                 stock: { type: Number, required: true, },
                 attributes: { type: Map, of: String, required: true }
