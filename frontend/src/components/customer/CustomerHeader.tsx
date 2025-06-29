@@ -79,7 +79,7 @@ const CustomerHeader = () => {
     }, []);
 
     return (
-        <header className={cn("z-1 flex gap-10 items-center justify-between fixed top-0 left-0 right-0 px-10 py-3 transition-all duration-300", isScrolled && 'bg-black')}>
+        <header className={cn("z-10 flex gap-10 items-center justify-between fixed top-0 left-0 right-0 px-10 py-3 transition-all duration-300", isScrolled && 'bg-black')}>
             <img className="w-30 h-15 cursor-pointer" 
                 onClick={() => window.location.href = '/'} src="/kd-logo.png" alt="" 
             />

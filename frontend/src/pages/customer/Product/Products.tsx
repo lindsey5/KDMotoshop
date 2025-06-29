@@ -4,16 +4,20 @@ import { cn } from "../../../utils/utils";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/customer/ProductContainer";
 import { Pagination } from "@mui/material";
+import { CustomSelect } from "../../../components/Select";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products'}
 ]
 
+const options = ['Rating high to low', 'Rating low to high', 'Price low to high', 'Price high to low']
+
 const CustomerProducts = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [selectedSort, setSelectedSort] = useState<string>(options[0]);
     const [pagination, setPagination] = useState<Pagination>({
         totalPages: 1,
         page: 1,
@@ -77,7 +81,10 @@ const CustomerProducts = () => {
             </aside>
             <div className="relative flex-1 p-10">
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
-                <h1 className="text-4xl text-red-400 font-bold mt-4">Products</h1>
+                <div className="w-full flex justify-between items-center">
+                    <h1 className="text-4xl text-red-400 font-bold mt-4">Products</h1>
+                    <CustomSelect options={options} selected={selectedSort} setSelected={setSelectedSort}/>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:gap-10 gap-5">
                 {products.map((product) => <CustomerProductContainer key={product._id} product={product}/>)}
                 </div>

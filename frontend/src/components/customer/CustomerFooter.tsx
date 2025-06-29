@@ -46,8 +46,8 @@ const CustomerFooter = () => {
             </div>
             <div className="flex justify-end gap-5 mt-20">
                 <CustomIcon src="/icons/facebook.png" alt="facebook" path="https://www.facebook.com/KDmotoshop" />
-                <CustomIcon src="/icons/lazada.png" alt="lazada" path="https://www.lazada.com.ph/shop/kd-motoshop/?spm=a2o4l.pdp_revamp.seller.1.7bfc590cCUGmBD&itemId=3608217825&channelSource=pdp" />
-                <CustomIcon src="/icons/shopee.png" alt="shopee" path="https://shopee.ph/kdmotoshop?entryPoint=ShopBySearch&searchKeyword=kd%20motoshop" />
+                <CustomIcon src="/icons/youtube.svg" alt="lazada" path="https://www.youtube.com/@kdmotoshop3496" />
+                <CustomIcon src="/icons/tiktok.webp" alt="lazada" path="https://www.tiktok.com/@kdmotoshop_taguig" />
             </div>
         </footer>
     )

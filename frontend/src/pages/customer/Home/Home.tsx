@@ -1,6 +1,7 @@
 import AboutSection from "./About";
 import PopularCategoriesSection from "./Categories";
 import PopularProductsSection from "./PopularProducts";
+import * as motion from "motion/react-client"
 
 const SpeedLines = () => (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -35,8 +36,22 @@ const KDMotoshopHome = () => {
                         </button>
                     </div>
                     <div className="relative w-[450px] h-[450px] hidden md:block">
-                        <img className="animate-slide-to-r border-3 border-white absolute w-[350px] h-[350px] rounded-lg" src="/evo.jpg" alt="" />
-                        <img className="animate-slide-to-l border-3 border-white w-[250px] h-[250px] absolute -bottom-10 md:right-5 xl:-right-30 rounded-lg" src="/topbox.jpg" alt="" />
+                        <motion.div
+                            className="border-3 border-white absolute w-[350px] h-[350px] rounded-lg"
+                            initial={{ opacity: 0, x: -50}}
+                            whileInView={{ opacity: 1, x: 0}}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <img src="/evo.jpg" alt="" />
+                        </motion.div>
+                        <motion.div
+                            className="border-3 border-white w-[250px] h-[250px] absolute -bottom-10 md:right-5 xl:-right-30 rounded-lg"
+                            initial={{ opacity: 0, x: 50}}
+                            whileInView={{ opacity: 1, x: 0}}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <img src="/topbox.jpg" alt="" />
+                        </motion.div>
                     </div>
                 </div>
                 <PopularProductsSection />

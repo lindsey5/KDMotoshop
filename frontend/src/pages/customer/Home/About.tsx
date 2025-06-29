@@ -1,44 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
+import * as motion from "motion/react-client"
 
 const AboutSection = () => {
-  const headingRef = useRef(null);
-  const imageRef = useRef(null);
-  const [isVisible, setIsVisible] = useState({ heading: false, image: false });
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target === headingRef.current) {
-              setIsVisible((prev) => ({ ...prev, heading: true }));
-            }
-            if (entry.target === imageRef.current) {
-              setIsVisible((prev) => ({ ...prev, image: true }));
-            }
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    if (headingRef.current) observer.observe(headingRef.current);
-    if (imageRef.current) observer.observe(imageRef.current);
-
-    return () => {
-      if (headingRef.current) observer.unobserve(headingRef.current);
-      if (imageRef.current) observer.unobserve(imageRef.current);
-    };
-  }, []);
 
   return (
     <div className="relative flex justify-center items-center h-screen" id='about'>
       <div className="flex p-15 rounded-md gap-50">
-        <div
-          ref={headingRef}
-          className={isVisible.heading ? 'animate-slide-to-r' : 'opacity-0'}
+        <motion.div
+          initial={{ opacity: 0, x: -50}}
+          whileInView={{ opacity: 1, x: 0}}
+          transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl lg:text-6xl font-bold text-red-600">ABOUT</h1>
           <p className='max-w-lg text-lg mt-10'>
@@ -50,13 +22,18 @@ const AboutSection = () => {
           <div className='flex gap-2 mt-4'>
             <EmailIcon />KDmotoshop@gmail.com
           </div>
-        </div>
-        <img
-          ref={imageRef}
-          className={`hidden lg:block h-[500px] ${isVisible.image ? 'animate-slide-to-l' : 'opacity-0'}`}
-          src="/bg.jpg"
-          alt=""
-        />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 50}}
+          whileInView={{ opacity: 1, x: 0}}
+          transition={{ duration: 0.6 }}
+        >
+          <img
+            className="hidden lg:block h-[500px]"
+            src="/bg.jpg"
+            alt=""
+          />
+        </motion.div>
       </div>
     </div>
   );
