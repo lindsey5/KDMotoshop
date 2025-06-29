@@ -5,7 +5,7 @@ import { adminRequireAuth } from "../middlewares/authMiddleware";
 const router = Router();
 
 router.post('/', adminRequireAuth, create_product);
-router.get('/', adminRequireAuth, get_products);
+router.get('/', get_products);
 router.get('/with-reserved', get_products);
 router.get('/top', get_top_products);
 router.get('/:id', get_product_by_id);

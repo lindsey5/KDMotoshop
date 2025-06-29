@@ -17,37 +17,50 @@ export const ProductTableColumns = () => {
     )
 }
 
+const highLightLowStock = (product : Product) : string => {
+    return product.product_type === 'Single'
+      ? (!product.stock || product.stock < 10 ? 'bg-red-100' : '')
+      : (product.variants.reduce((total, v) => total + (v.stock || 0), 0) < 10 ? 'bg-red-100' : '')
+}
+
 export const ProductTableRow = ({ product } : { product : Product }) => {
     const navigate = useNavigate();
     
     return (
-        <StyledTableRow>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <img 
-                    className="bg-gray-100 w-12 h-12"
-                    src={
-                        typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                        ? product.thumbnail.imageUrl
-                            : typeof product.thumbnail === 'string'
-                            ? product.thumbnail
-                        : '/photo.png'
-                    }
-                />
-                {product.product_name}
-            </StyledTableCell>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''}>{product.product_type === 'Single' ? product.stock : 
-                product.variants.reduce((total, variant) => {
-                    return variant.stock ? total + variant.stock : total
-                }, 0)}
-            </StyledTableCell>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.category}</StyledTableCell>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.product_type}</StyledTableCell>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
-            <StyledTableCell className={product.stock && product.stock < 10 ? 'bg-red-100' : ''} align="center">
-                <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
-                    <EditIcon />
-                </IconButton>
-            </StyledTableCell>
-        </StyledTableRow>
+<StyledTableRow>
+  <StyledTableCell className={highLightLowStock(product)}>
+    <div className="flex items-center gap-2">
+      <img 
+        className="bg-gray-100 w-12 h-12 object-cover rounded"
+        src={
+          typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+            ? product.thumbnail.imageUrl
+            : typeof product.thumbnail === 'string'
+            ? product.thumbnail
+            : '/photo.png'
+        }
+        alt="thumbnail"
+      />
+      <span>{product.product_name}</span>
+    </div>
+  </StyledTableCell>
+
+  <StyledTableCell className={highLightLowStock(product)}>
+    {product.product_type === 'Single'
+      ? product.stock
+      : product.variants.reduce((total, variant) => total + (variant.stock || 0), 0)
+    }
+  </StyledTableCell>
+
+  <StyledTableCell className={highLightLowStock(product)} align="center">{product.category}</StyledTableCell>
+  <StyledTableCell className={highLightLowStock(product)} align="center">{product.product_type}</StyledTableCell>
+  <StyledTableCell className={highLightLowStock(product)} align="center">{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
+  <StyledTableCell className={highLightLowStock(product)} align="center">
+    <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
+      <EditIcon />
+    </IconButton>
+  </StyledTableCell>
+</StyledTableRow>
+
     )
 }

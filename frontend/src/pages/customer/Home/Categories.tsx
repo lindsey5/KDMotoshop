@@ -43,8 +43,8 @@ const PopularCategoriesSection = () => {
     }, [])
 
     return (
-        <section className="py-20" ref={sectionRef}>
-            <div className={`${isVisible ? 'animate-slide-to-t' : 'opacity-0'}`}>
+        <section className="bg-gray-100 py-20" ref={sectionRef}>
+            <div className={`${isVisible ? 'md:animate-slide-to-t' : 'md:opacity-0'}`}>
                 <h1 className="text-center text-5xl font-bold text-red-600">Popular Categories</h1>
                 <div className="flex flex-wrap justify-center gap-20 mt-25">
                     {categories.map(category => (

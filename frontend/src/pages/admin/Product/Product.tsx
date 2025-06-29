@@ -51,7 +51,8 @@ const ProductPage = () => {
         images: [],
         thumbnail: null,
         attributes: [],
-        variants: []
+        variants: [],
+        weight: 0,
     });
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -125,7 +126,7 @@ const ProductPage = () => {
 
     const handleNoDecimal = (input : string, field : string) => {
         if (input === '' || /^\d+$/.test(input)) {
-            setProduct({ ...product, [field]: Number(input)});
+            setProduct({ ...product, [field]: input});
         }
     };
 
@@ -228,11 +229,11 @@ const ProductPage = () => {
                             value={product.sku || ''}
                         />
                         <RedTextField 
+                            type="number"
                             label="Stock" 
+                            value={product.stock}
                             placeholder="Enter stock"
-                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             onChange={(e) => handleNoDecimal(e.target.value, 'stock')}
-                            value={product.stock || ''}
                         />
                         <RedTextField 
                             label="Price" 

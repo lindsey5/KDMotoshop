@@ -102,7 +102,7 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
       Product.countDocuments(filter),
     ]);
 
-    const orderStatuses = ["Pending", "Accepted", "Shipped"];
+    const orderStatuses = ["Pending", "Accepted"];
 
     const orders = await Order.find({ status: { $in: orderStatuses } }, "_id");
     const orderIds = orders.map(order => order._id);

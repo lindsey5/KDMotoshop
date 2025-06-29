@@ -23,7 +23,7 @@ const KDMotoshopHome = () => {
 
     return (
             <div className="bg-white" id="home">
-                <div className='h-screen relative shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900 overflow-hidden flex justify-center items-center gap-25'>
+                <div className='h-screen p-5 relative shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900 overflow-hidden flex justify-center items-center gap-25'>
                     <SpeedLines />
                     <div className="relative space-y-4 text-white max-w-md flex flex-col items-center lg:items-start">
                         <h2 className="text-5xl font-bold text-center lg:text-start">Ride better. Shop better.</h2>
@@ -36,7 +36,7 @@ const KDMotoshopHome = () => {
                     </div>
                     <div className="relative w-[450px] h-[450px] hidden md:block">
                         <img className="animate-slide-to-r border-3 border-white absolute w-[350px] h-[350px] rounded-lg" src="/evo.jpg" alt="" />
-                        <img className="animate-slide-to-l border-3 border-white w-[250px] h-[250px] absolute -bottom-10 -right-30 rounded-lg" src="/topbox.jpg" alt="" />
+                        <img className="animate-slide-to-l border-3 border-white w-[250px] h-[250px] absolute -bottom-10 md:right-5 xl:-right-30 rounded-lg" src="/topbox.jpg" alt="" />
                     </div>
                 </div>
                 <PopularProductsSection />

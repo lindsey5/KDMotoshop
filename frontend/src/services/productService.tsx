@@ -95,9 +95,6 @@ export const saveProduct = async (
       } else if (!product.price) {
         errorAlert('Price is required', '');
         return;
-      } else if (!product.stock) {
-        errorAlert('Stock is required', '');
-        return;
       }
 
       product._id ? await updateProduct(product._id as string, product) : await createProduct(product);

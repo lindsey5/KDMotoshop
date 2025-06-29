@@ -9,7 +9,6 @@ type Variant = {
     sku: string;
     price: number | null;
     stock: number | null;
-    added_by?: string;
     attributes: {
         [key: string]: string;
     };
@@ -25,14 +24,15 @@ type Product = {
     product_name: string;
     description: string;
     category: string;
-    sku?: string | undefined;
-    price?: number | undefined; 
-    stock?: number | undefined;
+    sku?: string | null;
+    price?: number | null; 
+    stock?: number | null;
     product_type: "Single" | "Variable" | string;
     visibility: string;
     added_by?: string; 
     images: (UploadedImage | string | ArrayBuffer)[], 
     thumbnail: UploadedImage | string | ArrayBuffer | null,
+    weight: number;
     variants: Variant[];
     attributes: string[];
     createdAt?: Date;

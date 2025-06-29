@@ -9,12 +9,14 @@ import Orders from "./pages/admin/Order/Orders";
 import CreateOrderPage from "./pages/admin/Order/CreateOrder";
 import OrderDetails from "./pages/admin/Order/Order";
 import CustomerLayout from "./layouts/CustomerLayout";
+import CustomerProducts from "./pages/customer/Product/Products";
 
 function App() {
   return <BrowserRouter>
   <Routes>
     <Route element={<CustomerLayout />}>
       <Route index element={<Home />} />
+      <Route path="products" element={<CustomerProducts />} />
     </Route>
     <Route path="login" element={<Login />} />
     <Route path="admin" element={<AdminLayout />} >

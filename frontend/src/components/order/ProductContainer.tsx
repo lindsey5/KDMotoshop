@@ -17,7 +17,7 @@ const ProductContainer = ({ product, addOrder } : { product : Product, addOrder:
             />
             <h1 className="font-bold text-lg">{product.product_name}</h1>
             <h1 className="font-bold text-lg">₱{formatNumber(product.price ? product.price :  Math.min(...product.variants.map(v => v.price || 0)))}</h1>
-            <RedButton onClick={() => addOrder(product)}>Add</RedButton>
+            <RedButton onClick={() => addOrder(product)} disabled={product.stock === 0}>Add</RedButton>
         </Card>
     )
 }

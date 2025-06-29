@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom"
-import { lazy } from "react";
-import { ObserverContextProvider } from "../context/ObserverContext";
-const CustomerHeader = lazy(() => import('../components/customer/CustomerHeader'));
+import CustomerHeader from "../components/customer/CustomerHeader";
+import CustomerFooter from "../components/customer/CustomerFooter";
 
 const CustomerLayout = () => {
     return (
-        <ObserverContextProvider>
+        <>
             <CustomerHeader />
             <Outlet />
-        </ObserverContextProvider>
+            <CustomerFooter />
+        </>
     )
 }
 

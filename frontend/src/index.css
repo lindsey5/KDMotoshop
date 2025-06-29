@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --animate-slide-to-t: slide-to-t 0.8s ease-in;
+  --animate-slide-to-t: slide-to-t 0.8s ease-in-out;
   --animate-slide-to-l: slide-to-l 0.8s ease-in-out;
   --animate-slide-to-r: slide-to-r 0.8s ease-in-out;
 

@@ -53,7 +53,7 @@ const AboutSection = () => {
         </div>
         <img
           ref={imageRef}
-          className={`hidden md:block h-[500px] ${isVisible.image ? 'animate-slide-to-l' : 'opacity-0'}`}
+          className={`hidden lg:block h-[500px] ${isVisible.image ? 'animate-slide-to-l' : 'opacity-0'}`}
           src="/bg.jpg"
           alt=""
         />
