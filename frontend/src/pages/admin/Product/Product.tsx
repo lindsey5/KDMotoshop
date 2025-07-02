@@ -11,7 +11,7 @@ import VariantContainer from "../../../components/admin/product/VariantContainer
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import ProductThumbnail from "../../../components/admin/product/ProductThumbnail";
+import AddProductThumbnail from "../../../components/admin/product/AddProductThumbnail";
 import ProductImages from "../../../components/admin/product/ProductImages";
 import Card from "../../../components/Card";
 
@@ -314,7 +314,7 @@ const ProductPage = () => {
             </div>
             
             <div className="w-[30%] max-w-[350px] flex flex-col gap-6">
-                <ProductThumbnail 
+                <AddProductThumbnail 
                     product={product}
                     handleThumbnail={handleThumbnail}
                 />

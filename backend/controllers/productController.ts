@@ -38,7 +38,8 @@ export const get_products = async (req: Request, res: Response) => {
   const searchTerm = req.query.searchTerm as string | undefined;
   const category = req.query.category as string | undefined;
   const min = req.query.min;
-  const max = req.query.max
+  const max = req.query.max;
+  const visibility = req.query.visibility;
 
   try {
     let filter: any = {};
@@ -63,6 +64,8 @@ export const get_products = async (req: Request, res: Response) => {
           ]
       }];
     }
+
+    if(visibility) filter.visibility = visibility;
 
     if (category && category !== "All") filter.category = category;
 

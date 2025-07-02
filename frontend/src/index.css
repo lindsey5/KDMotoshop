@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+.notailwind * {
+  all: revert;
+}
+
 .my-swal-popup {
   z-index: 99999;
 }

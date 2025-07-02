@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/customer/ProductContainer";
-import { Button, Pagination, Slider } from "@mui/material";
+import { Pagination, Slider } from "@mui/material";
 import { CustomSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
@@ -57,7 +57,7 @@ const CustomerProducts = () => {
     }
 
     const getAllProducts = async () => {
-        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}`);
+        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published`);
         
         if(response.success) {
             setPagination(prev => ({
@@ -90,7 +90,7 @@ const CustomerProducts = () => {
     };
 
     const filterProducts = async () => {
-        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}`);
+        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published`);
         
         if(response.success) {
             setPagination(prev => ({

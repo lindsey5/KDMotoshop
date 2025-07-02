@@ -1,9 +1,10 @@
-import { Button, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { useMemo, useState } from "react";
 import { RedButton } from "../../Button";
 import { successAlert } from "../../../utils/swal";
 import { formatNumber } from "../../../utils/utils";
 import Counter from "../../Counter";
+import Attributes from "../../Attributes";
 
 type AddOrderModalProps = {
     selectedProduct: Product | undefined;
@@ -97,49 +98,21 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
                     <h1 className="text-red-500">Not Available</h1>
                 )}
                 <div className="flex flex-col gap-4 mb-4">
-                    {selectedProduct?.attributes.map(attribute => {
-                        const values = [
-                            ...new Set(
-                            selectedProduct?.variants?.flatMap((variant) =>
-                                Object.entries(variant.attributes)
-                                .filter(([key]) => key === attribute)
-                                .map(([, value]) => value)
-                            ) ?? []
-                            ),
-                        ];
-
-                        return (
-                            <div key={attribute}>
-                                <h1 className="mb-2">{attribute}</h1>
-                                <div className="flex flex-wrap gap-2">
-                                    {values.map((value) => (
-                                    <Button
-                                        sx={{...selectedAttributes[attribute] === value ? { 'backgroundColor' : 'red' } : { color: 'black', borderColor: 'black'}}}
-                                        key={value}
-                                        variant={
-                                        selectedAttributes[attribute] === value
-                                            ? "contained"
-                                            : "outlined"
-                                        }
-                                        onClick={() => handleSelect(attribute, value)}
-                                    >
-                                        {value}
-                                    </Button>
-                                    ))}
-                                </div>
-                            </div>
-                        );
-                    })}
+                    <Attributes 
+                        product={selectedProduct}
+                        handleSelect={handleSelect}
+                        selectedAttributes={selectedAttributes}
+                    />
                     <Counter 
                         value={quantity} 
                         setValue={setQuantity} 
-                        limit={filteredVariants[0]?.stock || 0}
-                        disabled={filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
+                        limit={filteredVariants[0]?.stock || 1}
+                        disabled={filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
                     />
                 </div>
                 <RedButton
                     onClick={handleAddOrder}
-                    disabled={filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
+                    disabled={filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
                 >
                     Add Order
                 </RedButton>

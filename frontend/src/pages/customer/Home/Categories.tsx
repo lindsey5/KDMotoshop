@@ -33,7 +33,7 @@ const variants = {
 const PopularCategoriesSection = () => {
   const [categories, setCategories] = useState<TopCategory[]>([]);
   const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
-  const pageSize = 2;
+  const pageSize = 3;
 
   useEffect(() => {
     const getCategories = async () => {
@@ -75,7 +75,6 @@ const PopularCategoriesSection = () => {
             transform: "translateY(-50%)",
           }}
           onClick={() => paginate(-1)}
-          disabled={categories.length === 0}
         >
           <ArrowBackIosIcon />
         </IconButton>
@@ -123,7 +122,6 @@ const PopularCategoriesSection = () => {
             transform: "translateY(-50%)",
           }}
           onClick={() => paginate(1)}
-          disabled={categories.length === 0}
         >
           <ArrowForwardIosIcon />
         </IconButton>
