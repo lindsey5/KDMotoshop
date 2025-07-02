@@ -1,4 +1,4 @@
-import { formatNumber } from "../../utils/utils"
+import { formatNumber } from "../../../utils/utils"
 
 const OrderItems = ({ orderItems } : { orderItems : Order['orderItems']}) => {
     return (

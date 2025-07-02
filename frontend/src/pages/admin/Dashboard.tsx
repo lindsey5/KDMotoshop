@@ -1,10 +1,10 @@
 import Card from "../../components/Card";
-import MonthlySales from "../../components/dashboard/MonthSales";
+import MonthlySales from "../../components/admin/dashboard/MonthSales";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
 import { LineChart } from "@mui/x-charts";
-import DashboardCards from "../../components/dashboard/DashboardCards";
-import TopProductsChart from "../../components/dashboard/TopProducts";
-import TopCategoriesChart from "../../components/dashboard/TopCategories";
+import DashboardCards from "../../components/admin/dashboard/DashboardCards";
+import TopProductsChart from "../../components/admin/dashboard/TopProducts";
+import TopCategoriesChart from "../../components/admin/dashboard/TopCategories";
 
 const dateLabels = Array.from({ length: 31 }, (_, i) => i + 1);
 

@@ -1,9 +1,9 @@
 import { Button, Modal } from "@mui/material"
-import { LineTextField } from "../Textfield";
-import { RedButton } from "../Button";
+import { LineTextField } from "../../Textfield";
+import { RedButton } from "../../Button";
 import { useState } from "react";
-import { postData } from "../../services/api";
-import { errorAlert } from "../../utils/swal";
+import { postData } from "../../../services/api";
+import { errorAlert } from "../../../utils/swal";
 
 const CreateCategoryModal : React.FC<ModalProps> = ({ open, close }) => {
     const [category, setCategory] = useState<string>('');

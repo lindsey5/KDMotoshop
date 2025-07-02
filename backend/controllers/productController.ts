@@ -37,6 +37,8 @@ export const get_products = async (req: Request, res: Response) => {
   const skip = (page - 1) * limit;
   const searchTerm = req.query.searchTerm as string | undefined;
   const category = req.query.category as string | undefined;
+  const min = req.query.min;
+  const max = req.query.max
 
   try {
     let filter: any = {};
@@ -48,6 +50,18 @@ export const get_products = async (req: Request, res: Response) => {
         { category: { $regex: searchTerm, $options: "i" } },
         { "variants.sku": { $regex: searchTerm, $options: "i" } },
       ];
+    }
+
+    if (min && max) {
+      const minVal = Number(min);
+      const maxVal = Number(max);
+
+      filter.$and = [{
+          $or: [
+            { price: { $gte: minVal, $lte: maxVal } },
+            { "variants.price": { $gte: minVal, $lte: maxVal } }
+          ]
+      }];
     }
 
     if (category && category !== "All") filter.category = category;
@@ -68,6 +82,7 @@ export const get_products = async (req: Request, res: Response) => {
       totalProducts: total,
     });
   } catch (err: any) {
+    console.log(err)
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -157,6 +172,47 @@ export const get_product_by_id = async (req: Request, res: Response) => {
   }
 };
 
+export const get_product_by_id_with_reserved = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if(!product){
+      res.status(404).json({ success: false, message: 'Product not found'})
+      return;
+    }
+
+    const orderStatuses = ["Pending", "Accepted"];
+
+    const orders = await Order.find({ status: { $in: orderStatuses }, product_id: product._id }, "_id");
+    const orderIds = orders.map(order => order._id);
+
+    const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
+
+    const stockMap = new Map<string, number>();
+    orderItems.forEach(item => {
+      const key = item.product_id + (item.variant_id || "");
+      stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
+    });
+
+    if(product.product_type === 'Single'){
+      const key = (product._id as Types.ObjectId).toString();
+      const orderedQty = stockMap.get(key) || 0;
+      product.stock = Math.max((product.stock || 0) - orderedQty, 0);
+    }else{
+      product.variants?.forEach(variant => {
+        const varKey = product._id + variant._id.toString();
+        const varOrderedQty = stockMap.get(varKey) || 0;
+        variant.stock = Math.max((variant.stock || 0) - varOrderedQty, 0);
+      });
+    }
+
+    res.status(200).json({ success: true, product })
+
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export const update_product = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -208,6 +264,7 @@ export const update_product = async (req: Request, res: Response) => {
 
 export const get_top_products = async (req: Request, res: Response) => {
   try{
+    const limit = Number(req.query.limit) || 5;
     const topProductsAggregation = await OrderItem.aggregate([
       { 
         $group: { 
@@ -216,7 +273,7 @@ export const get_top_products = async (req: Request, res: Response) => {
         }
       },
       { $sort: { totalQuantity: -1 } },
-      { $limit: 10 }
+      { $limit: limit }
     ]);
 
     // Get the top 10 product IDs
@@ -232,6 +289,7 @@ export const get_top_products = async (req: Request, res: Response) => {
       if (!product) return null;
 
       return {
+        _id: product._id,
         product_name: product.product_name,
         image: product.thumbnail.imageUrl,
         totalQuantity: item.totalQuantity,

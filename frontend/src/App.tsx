@@ -10,6 +10,7 @@ import CreateOrderPage from "./pages/admin/Order/CreateOrder";
 import OrderDetails from "./pages/admin/Order/Order";
 import CustomerLayout from "./layouts/CustomerLayout";
 import CustomerProducts from "./pages/customer/Product/Products";
+import CustomerProduct from "./pages/customer/Product/Product";
 
 function App() {
   return <BrowserRouter>
@@ -17,6 +18,7 @@ function App() {
     <Route element={<CustomerLayout />}>
       <Route index element={<Home />} />
       <Route path="products" element={<CustomerProducts />} />
+      <Route path="product/:id" element={<CustomerProduct />} />
     </Route>
     <Route path="login" element={<Login />} />
     <Route path="admin" element={<AdminLayout />} >

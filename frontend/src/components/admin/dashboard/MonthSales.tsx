@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Card from "../Card"
-import AreaChart from "../charts/AreaChart"
-import { fetchData } from "../../services/api";
+import Card from "../../Card"
+import AreaChart from "../../charts/AreaChart"
+import { fetchData } from "../../../services/api";
 
 const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 

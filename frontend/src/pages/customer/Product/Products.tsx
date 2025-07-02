@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
-import { cn } from "../../../utils/utils";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/customer/ProductContainer";
-import { Pagination } from "@mui/material";
+import { Button, Pagination, Slider } from "@mui/material";
 import { CustomSelect } from "../../../components/Select";
+import { RedButton } from "../../../components/Button";
+import { getProducts } from "../../../services/productService";
+import TopProductsContainer from "../../../components/product/TopProductContainer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products'}
 ]
+
 
 const options = ['Rating high to low', 'Rating low to high', 'Price low to high', 'Price high to low']
 
@@ -18,14 +21,27 @@ const CustomerProducts = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedSort, setSelectedSort] = useState<string>(options[0]);
+    const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
     const [pagination, setPagination] = useState<Pagination>({
         totalPages: 1,
         page: 1,
         searchTerm: ''
     });
 
-    const handleChange = (_t: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}));
+    const [value, setValue] = useState<number[]>([0, 10000]);
+    const minDistance = 1000;
+    
+    const marks = [
+        { value: 0, label: '₱0' },
+        { value: 10000, label: '₱10000' }
+    ];
+
+    const handleSlider = (_: Event, newValue: number[], activeThumb: number) => {
+        if (activeThumb === 0) {
+            setValue([Math.min(newValue[0], value[1] - minDistance), value[1]]);
+        } else {
+            setValue([value[0], Math.max(newValue[1], value[0] + minDistance)]);
+        }
     };
 
     const getCategories = async () => {
@@ -33,9 +49,14 @@ const CustomerProducts = () => {
         if(response.success) setCategories(response.categories)
     }
 
-    const getProducts = async () => {
-        const response = await fetchData(`/api/product?page=${pagination.page}&limit=${20}&category=${selectedCategory}`);
+    const getTopProducts = async () => {
+        const response = await fetchData('/api/product/top');
+        if(response.success) setTopProducts(response.topProducts)
+    }
 
+    const getAllProducts = async () => {
+        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}`);
+        
         if(response.success) {
             setPagination(prev => ({
                 ...prev,
@@ -45,60 +66,95 @@ const CustomerProducts = () => {
                 ...product,
                 image: product.thumbnail.imageUrl,
                 price: product.product_type === 'Variable' ?  product.variants.sort((a : any, b: any) => (a.price - b.price))[0].price : product.price
-            })))
+                })))
         }
     }
 
     useEffect(() => {
-        getProducts();
+        getTopProducts();
         getCategories();
+    }, [])
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            getAllProducts()
+        }, 300); 
+
+        return () => clearTimeout(delayDebounce);
     }, [pagination.page, selectedCategory])
+
+    const handlePage = (_: React.ChangeEvent<unknown>, value: number) => {
+        setPagination(prev => ({...prev, page: value }))
+    };
+
+    const filterProducts = async () => {
+        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}`);
+        
+        if(response.success) {
+            setPagination(prev => ({
+                ...prev,
+                totalPages: response.totalPages,
+                page: response.page
+            }))
+            setProducts(response.products.map((product : any) => ({
+                ...product,
+                image: product.thumbnail.imageUrl,
+                price: product.product_type === 'Variable' ?  
+                    product.variants
+                    .sort((a : any, b: any) => (a.price - b.price))[0].price 
+                    : product.price
+                })))
+        }
+
+    }
 
     return (
         <div className="flex pt-20">
-            <aside className="border-r-1 border-gray-300">
-                <div className="pl-5 pt-8">
-                    <h1 className="text-gray-400 text-base">Categories</h1>
-                </div>
-                <div className="w-[200px] flex flex-col gap-5 mt-6">
-                    <button
-                        className={cn("pl-5 py-2 relative text-start hover:text-red-400 hover:bg-red-100 cursor-pointer",
-                            selectedCategory === 'All' && "text-lg text-red-400 font-bold after:content-[''] after:top-0 after:bottom-0 after:w-[5px] after:bg-red-500 after:absolute after:rounded-md after:right-0"
-                        )}
-                        onClick={() => setSelectedCategory('All')}
-                    
-                    >All</button>
-                    {categories.map(category => (
-                        <button
-                        key={category.category_name}
-                        className={cn("pl-5 py-2 relative text-start hover:text-red-400 hover:bg-red-100 cursor-pointer",
-                            selectedCategory === category.category_name && "text-lg text-red-400 font-bold after:content-[''] after:top-0 after:bottom-0 after:w-[5px] after:bg-red-500 after:absolute after:rounded-md after:right-0"
-                        )}
-                        onClick={() => setSelectedCategory(category.category_name)}
-                        >{category.category_name}</button>
-                    ))}
-                </div>
-            </aside>
-            <div className="relative flex-1 p-10">
+            <div className="relative flex-1 bg-gray-50 p-10">
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
-                <div className="w-full flex justify-between items-center">
-                    <h1 className="text-4xl text-red-400 font-bold mt-4">Products</h1>
+                <div className="w-full flex justify-between items-center mt-4">
+                    <h1 className="text-4xl text-red-500 font-bold ">Products</h1>
                     <CustomSelect options={options} selected={selectedSort} setSelected={setSelectedSort}/>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:gap-10 gap-5">
-                {products.map((product) => <CustomerProductContainer key={product._id} product={product}/>)}
+                {products.map((product : any) => <CustomerProductContainer key={product._id} product={product}/>)}
                 </div>
-                {products.length > 0 && (
+                {products.length > 0 &&  (
                     <div className="flex justify-end">
                         <Pagination
                             count={pagination.totalPages}
-                            onChange={handleChange}
+                            onChange={handlePage}
                             shape="rounded"
                             size="large"
                         />
                     </div>
                 )}
             </div>
+            <aside className="px-5 py-10 w-[330px] border-l-1 border-gray-300 flex flex-col gap-10">
+                <div className="flex flex-col gap-6 px-5">
+                    <h1 className="mb-6 font-bold text-xl">Filter by Price</h1>
+                    <Slider
+                        value={value}
+                        onChange={handleSlider}
+                        valueLabelDisplay="auto"
+                        step={1000}
+                        marks={marks} 
+                        min={0}
+                        max={10000}
+                        sx={{
+                            color: 'red', 
+                        }}
+                    />
+                    <RedButton onClick={filterProducts}>Filter</RedButton>
+                </div>
+                <div className="flex flex-col mt-12">
+                    {topProducts.map(product => (
+                        <div className="cursor-pointer hover:bg-gray-100 p-3 rounded-md">
+                            <TopProductsContainer product={product} />
+                        </div>
+                    ))}
+                </div>
+            </aside>
         </div>
     )
 }

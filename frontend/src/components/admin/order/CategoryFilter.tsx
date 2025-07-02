@@ -1,7 +1,7 @@
 import { Button } from "@mui/material"
-import { fetchData } from "../../services/api";
+import { fetchData } from "../../../services/api";
 import React, { useEffect, useState } from "react";
-import Card from "../Card";
+import Card from "../../Card";
 
 type CategoryFilterProps = {
     selectedCategory: string;

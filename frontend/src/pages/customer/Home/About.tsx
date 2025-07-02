@@ -5,7 +5,7 @@ import * as motion from "motion/react-client"
 const AboutSection = () => {
 
   return (
-    <div className="relative flex justify-center items-center h-screen" id='about'>
+    <div className="relative flex justify-center items-center" id='about'>
       <div className="flex p-15 rounded-md gap-50">
         <motion.div
           initial={{ opacity: 0, x: -50}}
@@ -26,7 +26,7 @@ const AboutSection = () => {
         <motion.div
           initial={{ opacity: 0, x: 50}}
           whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, type: 'spring'}}
         >
           <img
             className="hidden lg:block h-[500px]"

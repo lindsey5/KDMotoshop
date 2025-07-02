@@ -10,11 +10,11 @@ import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import { OrderTableColumns, OrderTableRow } from "../../../components/order/OrderTable";
+import { OrderTableColumns, OrderTableRow } from "../../../components/admin/order/OrderTable";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
-import { StatsCards } from "../../../components/order/StatCard";
+import { StatsCards } from "../../../components/admin/order/StatCard";
 import Card from "../../../components/Card";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [

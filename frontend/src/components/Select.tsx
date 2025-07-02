@@ -3,7 +3,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { type BaseSelectProps, type SelectChangeEvent } from '@mui/material/Select';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box, MenuItem } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import * as motion from "motion/react-client"
 import { cn } from '../utils/utils';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';

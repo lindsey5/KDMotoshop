@@ -1,6 +1,6 @@
-import { formatNumber } from "../../utils/utils"
-import { RedButton } from "../Button"
-import Card from "../Card";
+import { formatNumber } from "../../../utils/utils"
+import { RedButton } from "../../Button"
+import Card from "../../Card";
 
 const ProductContainer = ({ product, addOrder } : { product : Product, addOrder: (product : Product) => void}) => {
     return (

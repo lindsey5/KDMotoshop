@@ -37,3 +37,9 @@ type Product = {
     attributes: string[];
     createdAt?: Date;
 }
+
+type TopProduct = {
+    product_name: string;
+    image: string;
+    totalQuantity: number;
+}

@@ -4,14 +4,14 @@ import { Backdrop, Button,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
-import AddOrderModal from "../../../components/order/AddOrder";
+import AddOrderModal from "../../../components/admin/order/AddOrder";
 import { confirmDialog, successAlert } from "../../../utils/swal";
-import OrderContainer from "../../../components/order/OrderContainer";
+import OrderContainer from "../../../components/admin/order/OrderContainer";
 import { formatNumber } from "../../../utils/utils";
-import OrderInformationModal from "../../../components/order/OrderInformation";
+import OrderInformationModal from "../../../components/admin/order/OrderInformation";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CategoryFilter from "../../../components/order/CategoryFilter";
-import ProductContainer from "../../../components/order/ProductContainer";
+import CategoryFilter from "../../../components/admin/order/CategoryFilter";
+import ProductContainer from "../../../components/admin/order/ProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const OrderState : Order = {
@@ -78,7 +78,7 @@ const CreateOrderPage = () => {
     }, [pagination.searchTerm])
 
     const fetchProducts = async () => {
-        const response = await fetchData(`/api/product/with-reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
+        const response = await fetchData(`/api/product/reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
 
         if(response.success) {
             setPagination(prev => ({

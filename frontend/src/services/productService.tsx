@@ -1,5 +1,5 @@
 import { confirmDialog, errorAlert } from "../utils/swal";
-import { postData, updateData } from "./api";
+import { fetchData, postData, updateData } from "./api";
 
 const isVariantValid = (variant: Variant): boolean => {
   return (
@@ -107,3 +107,11 @@ export const saveProduct = async (
     setLoading(false);
   }
 };
+
+export const getProducts = async (query? : string) => {
+  const response = await fetchData(`/api/product?${query}`);
+
+  if(response.success) {
+    return response
+  }
+}
