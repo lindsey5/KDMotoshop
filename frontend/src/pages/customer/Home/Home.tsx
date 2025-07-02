@@ -23,7 +23,7 @@ const SpeedLines = () => (
 const KDMotoshopHome = () => {
 
     return (
-            <div className="bg-white" id="home">
+            <div className="bg-white">
                 <div className='h-screen p-5 relative shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900 overflow-hidden flex justify-center items-center gap-25'>
                     <SpeedLines />
                     <div className="relative space-y-4 text-white max-w-md flex flex-col items-center lg:items-start">

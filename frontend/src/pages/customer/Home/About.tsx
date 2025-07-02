@@ -5,12 +5,12 @@ import * as motion from "motion/react-client"
 const AboutSection = () => {
 
   return (
-    <div className="relative flex justify-center items-center" id='about'>
+    <div className="relative flex justify-center items-center">
       <div className="flex p-15 rounded-md gap-50">
         <motion.div
           initial={{ opacity: 0, x: -50}}
           whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.4 }}
         >
           <h1 className="text-4xl lg:text-6xl font-bold text-red-600">ABOUT</h1>
           <p className='max-w-lg text-lg mt-10'>

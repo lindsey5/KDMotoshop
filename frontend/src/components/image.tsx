@@ -1,7 +1,7 @@
 import { cn } from "../utils/utils"
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconButton } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
@@ -21,11 +21,12 @@ export const ProductThumbnail = ({ product, className } : { product : Product | 
 }
 
 const imagesPerPage = 3;
-const delay = 3000; 
+const delay = 5000; 
 
 export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
     const [page, setPage] = useState<number>(0);
     const totalPages = Math.ceil(images.length / imagesPerPage);
+    const [selectedImage, setSelectedImage] = useState<string | undefined>();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -50,6 +51,9 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
 
     return (
         <div className="w-full relative px-15">
+            <Modal open={selectedImage !== undefined} onClose={() => setSelectedImage(undefined)}>
+                <img className="absolute inset-1/2 transform -translate-1/2" src={selectedImage}/>
+            </Modal>
         <AnimatePresence mode="wait">
             <motion.div
                 key={page}
@@ -64,7 +68,8 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
                     key={idx}
                     src={img}
                     alt={`Slide ${idx}`}
-                    className="w-25 h-25 object-cover rounded-xl shadow-md"
+                    onClick={() => setSelectedImage(img)}
+                    className="w-25 h-25 object-cover rounded-xl shadow-md cursor-pointer"
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3, delay: idx * 0.1 }}
