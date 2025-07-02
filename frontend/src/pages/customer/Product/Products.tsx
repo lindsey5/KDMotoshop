@@ -7,6 +7,7 @@ import { CustomSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../../components/product/TopProductContainer";
+import { useNavigate } from "react-router-dom";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -17,6 +18,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const options = ['Rating high to low', 'Rating low to high', 'Price low to high', 'Price high to low']
 
 const CustomerProducts = () => {
+    const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -149,7 +151,10 @@ const CustomerProducts = () => {
                 </div>
                 <div className="flex flex-col mt-12">
                     {topProducts.map(product => (
-                        <div className="cursor-pointer hover:bg-gray-100 p-3 rounded-md">
+                        <div 
+                            className="cursor-pointer hover:bg-gray-100 p-3 rounded-md"
+                            onClick={() => navigate(`/product/${product._id}`)}
+                        >
                             <TopProductsContainer product={product} />
                         </div>
                     ))}

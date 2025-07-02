@@ -1,8 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import { cn, formatNumber } from "../../utils/utils";
 
 const CustomerProductContainer = ({ product, className } : { product: any, className?: string }) => {
+    const navigate = useNavigate();
+    
+    const handleClick = () => {
+        navigate(`/product/${product._id}`)
+    }
+
     return (
-        <div key={product._id} className={cn("bg-black rounded-md overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer", className)}>
+        <div 
+            className={cn("bg-black rounded-md overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer", className)}
+            onClick={handleClick}
+        >
             <img
                 src={product.image}
                 alt={product.product_name}

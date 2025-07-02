@@ -62,6 +62,7 @@ export const delete_category = async (req: AuthenticatedRequest, res: Response) 
 
 export const get_top_categories = async (req: Request, res: Response) => {
   try {
+    const limit = Number(req.query.limit) || 10;
     const topCategories = await OrderItem.aggregate([
       {
         $lookup: {
@@ -80,7 +81,7 @@ export const get_top_categories = async (req: Request, res: Response) => {
         }
       },
       { $sort: { totalQuantity: -1 } },
-      { $limit: 5 },
+      { $limit: limit },
       {
         $project: {
           category: '$_id',

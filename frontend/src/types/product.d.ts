@@ -39,6 +39,7 @@ type Product = {
 }
 
 type TopProduct = {
+    _id: string;
     product_name: string;
     image: string;
     totalQuantity: number;

@@ -1,7 +1,9 @@
 
 const CustomerProduct = () => {
     return (
-        <div></div>
+         <div className="flex pt-20">
+            
+         </div>
     )
 }
 
