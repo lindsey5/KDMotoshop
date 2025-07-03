@@ -3,10 +3,6 @@ import FormControl from '@mui/material/FormControl';
 import Select, { type BaseSelectProps, type SelectChangeEvent } from '@mui/material/Select';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box, MenuItem } from '@mui/material';
-import { useState } from 'react';
-import * as motion from "motion/react-client"
-import { cn } from '../utils/utils';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface CustomizedSelectProps extends BaseSelectProps{
     menu: Menu[];
@@ -93,50 +89,3 @@ export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, on
       </FormControl>
 }
 
-type CustomSelectProps = {
-  options: string[];
-  selected: string;
-  setSelected: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export const CustomSelect = ({ options, selected, setSelected} : CustomSelectProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const toggleDropdown = () => setIsOpen(prev => !prev);
-  const handleSelect = (option: string) => {
-    setSelected(option);
-    setIsOpen(false);
-  };
-
-  return (
-    <div className="relative w-64">
-      <button
-        onClick={toggleDropdown}
-        className="w-full flex items-center justify-between px-4 py-3 bg-white rounded shadow-md border border-gray-500 hover:bg-gray-50 hover:border-red-400 transition cursor-pointer"
-      >
-        {selected}
-        <ExpandMoreIcon />
-      </button>
-        {isOpen && (
-          <motion.ul
-            className="absolute w-full mt-2 bg-white border border-gray-300 rounded shadow z-1 overflow-hidden cursor-pointer"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {options.map((option) => (
-              <motion.li
-                key={option}
-                onClick={() => handleSelect(option)}
-                className={cn("px-4 py-3 cursor-pointer", selected === option ? 'bg-red-100' : 'hover:bg-gray-100')}
-                whileHover={{ scale: 1.02 }}
-              >
-                {option}
-              </motion.li>
-            ))}
-          </motion.ul>
-        )}
-    </div>
-  );
-};

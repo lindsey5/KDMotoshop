@@ -3,25 +3,26 @@ import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import { Pagination, Slider } from "@mui/material";
-import { CustomSelect } from "../../../components/Select";
+import { CustomizedSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../../components/containers/TopProductContainer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products'}
 ]
 
-
 const options = ['Rating high to low', 'Rating low to high', 'Price low to high', 'Price high to low']
 
 const CustomerProducts = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const category = searchParams.get('category');
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [selectedCategory, setSelectedCategory] = useState<string>(category || 'All');
     const [selectedSort, setSelectedSort] = useState<string>(options[0]);
     const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
     const [pagination, setPagination] = useState<Pagination>({
@@ -29,7 +30,6 @@ const CustomerProducts = () => {
         page: 1,
         searchTerm: ''
     });
-
     const [value, setValue] = useState<number[]>([0, 10000]);
     const minDistance = 1000;
     
@@ -116,7 +116,21 @@ const CustomerProducts = () => {
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex justify-between items-center mt-4">
                     <h1 className="text-4xl text-red-500 font-bold ">Products</h1>
-                    <CustomSelect options={options} selected={selectedSort} setSelected={setSelectedSort}/>
+                    <div className="flex gap-5 flex-1 max-w-[600px]">
+                        <CustomizedSelect 
+                            menu={[
+                                { label: 'All', value: 'All'},
+                                ...categories.map(category => ({ label: category.category_name, value: category.category_name}))
+                            ]}
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value as string)}
+                        />
+                        <CustomizedSelect 
+                            menu={options.map(option => ({ label: option, value: option}))}
+                            value={selectedSort}
+                            onChange={(e) => setSelectedSort(e.target.value as string)}
+                        />
+                    </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:gap-10 gap-5">
                 {products.map((product : any) => <CustomerProductContainer key={product._id} product={product}/>)}

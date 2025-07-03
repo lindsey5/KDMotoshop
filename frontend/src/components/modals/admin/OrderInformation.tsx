@@ -152,7 +152,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                         label="Order Source"
                         value={order.order_source}
                         onChange={(e) => setOrder(prev => ({ ...prev, order_source: e.target.value as Order['order_source'] }))}
-                        menu={['Store', 'Facebook', 'Shopee', 'Lazada'].map(method => ({ value: method, label: method }))}
+                        menu={['Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
                     />
                     <StatusSelect 
                         value={order.status}

@@ -31,7 +31,10 @@ const KDMotoshopHome = () => {
                         <p className="text-center text-xl lg:text-start">
                            Your shop for legit and affordable helmets, racks, intercoms, and riding gear—trusted by riders, built for every journey.
                         </p>
-                        <button className="border-1 border-white cursor-pointer mt-4 bg-red-600 text-white px-8 py-2 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-700">
+                        <button 
+                            className="border-1 border-white cursor-pointer mt-4 bg-red-600 text-white px-8 py-2 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-700"
+                            onClick={() => window.location.href = '/products'}
+                        >
                         SHOP NOW
                         </button>
                     </div>

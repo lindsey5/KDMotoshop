@@ -103,7 +103,7 @@ const PopularCategoriesSection = () => {
                 <h1 className="text-center font-bold text-red-600 text-xl">
                   {category.category}
                 </h1>
-                <RedButton>Shop now</RedButton>
+                <RedButton onClick={() => window.location.href = `/products?category=${category.category}`}>Shop now</RedButton>
               </motion.div>
             ))}
           </motion.div>
