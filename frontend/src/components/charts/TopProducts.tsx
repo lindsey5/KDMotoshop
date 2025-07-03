@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { fetchData } from "../../../services/api";
-import Card from "../../Card";
-import TopProductsContainer from "../../product/TopProductContainer";
+import { fetchData } from "../../services/api";
+import Card from "../Card";
+import TopProductsContainer from "../containers/TopProductContainer";
 
 const TopProductsChart = () => {
     const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -19,7 +19,7 @@ const TopProductsChart = () => {
 
     return (
         <Card className="flex-1 h-[400px] flex flex-col gap-5">
-            <h1 className="font-bold text-lg">Most Popular Products</h1>
+            <h1 className="font-bold text-lg">Most Selling Products</h1>
             <div className="flex flex-col gap-5 flex-grow overflow-y-auto py-2">
                 {topProducts.map(product => (
                     <TopProductsContainer product={product}/>

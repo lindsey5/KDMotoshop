@@ -1,6 +1,6 @@
-import { formatNumber } from "../../../utils/utils"
+import { formatNumber } from "../../utils/utils"
 
-const OrderItems = ({ orderItems } : { orderItems : Order['orderItems']}) => {
+const OrderItemsContainer = ({ orderItems } : { orderItems : Order['orderItems']}) => {
     return (
         <div className="flex flex-col gap-10 bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
             <h1 className="font-bold text-xl">Items:</h1>
@@ -25,4 +25,4 @@ const OrderItems = ({ orderItems } : { orderItems : Order['orderItems']}) => {
     )            
 }
 
-export default OrderItems
+export default OrderItemsContainer

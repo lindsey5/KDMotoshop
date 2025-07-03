@@ -36,7 +36,7 @@ const Login = () => {
       }, []);
 
     return <main className="h-screen grid grid-cols-1 md:grid-cols-2">
-        <div className="hidden md:flex bg-black h-full flex flex-col items-center justify-center gap-6">
+        <div className="hidden md:flex h-full flex flex-col items-center justify-center gap-6 shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900">
             <h1 className="text-white text-5xl font-bold">Welcome to</h1>
             <img className="w-[50%] h-[230px]" src="/kd-logo (1).png" alt="logo" />
             <h1 className="text-white text-3xl">Ride better. Shop better</h1>

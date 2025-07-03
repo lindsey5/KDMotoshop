@@ -1,7 +1,7 @@
 import { PieChart } from "@mui/x-charts"
 import { useEffect, useState } from "react";
-import { fetchData } from "../../../services/api";
-import Card from "../../Card";
+import { fetchData } from "../../services/api";
+import Card from "../Card";
 
 const TopCategoriesChart = () => {
     const [data, setData] = useState<ChartData>({ data: [] });

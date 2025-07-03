@@ -51,9 +51,9 @@ const CustomerProduct = () => {
 
 
     return (
-         <div className="pt-25 bg-gray-100 px-10 pb-5">
+         <div className="pt-30 bg-gray-100 md:px-10 px-5 pb-10">
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
-            <div className="flex flex-col lg:flex-row gap-10 py-10 bg-gray-100">
+            <div className="flex flex-col md:flex-row gap-10 py-10 bg-gray-100">
                 <div className="flex flex-col gap-5 items-center">
                     <ProductThumbnail 
                         product={product} 
@@ -74,11 +74,21 @@ const CustomerProduct = () => {
                 </div>
                 <div className="flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-lg">
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
-                    {product?.product_type === 'Variable' ? filteredVariants.length > 0 ? 
-                        <h1 className="font-bold text-3xl">₱{formatNumber((product?.product_type === 'Variable' ? filteredVariants?.[0]?.price : product?.price) ?? 0)}</h1>
-                    : <h1 className="text-red-500">Not Available</h1>
-                
+                    {product?.product_type === 'Variable' ? 
+                        (filteredVariants.length > 0 ? 
+                            <h1 className="font-bold text-3xl">₱{formatNumber((
+                                product?.product_type === 'Variable' ? 
+                                    filteredVariants?.[0]?.price 
+                                    : product?.price) ?? 0)}
+                            </h1>
+                        : <h1 className="text-red-500">Not Available</h1>)
                     : <h1 className="font-bold text-2xl">₱{formatNumber(product?.price ?? 0)}</h1>}
+
+                    {(
+                    (product?.product_type === 'Variable' && (filteredVariants[0]?.stock ?? 0) < 1 && filteredVariants.length > 0) ||
+                    (product?.product_type === 'Single' && (product?.stock ?? 0) < 1)
+                    ) && <h1 className="text-red-500">Out of stock</h1>}
+
                     <div className="flex flex-col gap-4 mb-4">
                         <Attributes 
                             product={product}

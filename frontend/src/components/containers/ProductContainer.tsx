@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { cn, formatNumber } from "../../utils/utils";
 
 const CustomerProductContainer = ({ product, className } : { product: any, className?: string }) => {
-    const navigate = useNavigate();
     
     const handleClick = () => {
-        navigate(`/product/${product._id}`)
+        window.location.href = `/product/${product._id}`
     }
 
     return (

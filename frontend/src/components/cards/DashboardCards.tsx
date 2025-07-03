@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import DashboardCard from "./DashboardCard"
-import { fetchData } from "../../../services/api";
-import { formatNumber } from "../../../utils/utils";
+import { fetchData } from "../../services/api";
+import { formatNumber } from "../../utils/utils";
 
 const DashboardCards = () => {
     const [data, setData] = useState({

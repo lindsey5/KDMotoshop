@@ -1,8 +1,8 @@
-import { formatNumber } from "../../../utils/utils"
-import { RedButton } from "../../Button"
-import Card from "../../Card";
+import { formatNumber } from "../../utils/utils"
+import { RedButton } from "../Button"
+import Card from "../Card";
 
-const ProductContainer = ({ product, addOrder } : { product : Product, addOrder: (product : Product) => void}) => {
+const OrderProductContainer = ({ product, addOrder } : { product : Product, addOrder: (product : Product) => void}) => {
     return (
         <Card className="flex flex-col gap-4">
             <img 
@@ -22,4 +22,4 @@ const ProductContainer = ({ product, addOrder } : { product : Product, addOrder:
     )
 }
 
-export default ProductContainer;
+export default OrderProductContainer;

@@ -27,9 +27,10 @@ type AreaChartProps = {
     labels: string[];
     label: string;
     data: number[];
+    fill?: boolean;
 }
 
-const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data}) => {
+const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill = true}) => {
   return (
     <Line 
         data={{
@@ -38,7 +39,7 @@ const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data}) => {
                 {
                 label: label,
                 data: data,
-                fill: true,
+                fill: fill,
                 backgroundColor: 'rgba(224, 104, 104, 0.2)',
                 borderColor: 'red',
                 tension: 0.1, 

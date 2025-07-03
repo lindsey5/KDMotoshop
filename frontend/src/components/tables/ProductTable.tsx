@@ -1,7 +1,7 @@
 import { TableRow, IconButton } from "@mui/material"
-import { StyledTableCell, StyledTableRow } from "../../Table";
+import { StyledTableCell, StyledTableRow } from "../Table";
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "../../../utils/dateUtils";
+import { formatDate } from "../../utils/dateUtils";
 import EditIcon from '@mui/icons-material/Edit';
 
 export const ProductTableColumns = () => {

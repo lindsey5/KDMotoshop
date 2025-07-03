@@ -1,5 +1,5 @@
 import { SparkLineChart } from "@mui/x-charts"
-import Card from "../../Card"
+import Card from "../Card"
 
 const DashboardCard = ({ label, value} : { label: string, value: string}) => {
     return (

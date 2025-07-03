@@ -9,7 +9,7 @@ import { Avatar, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import OrderItems from "../../../components/admin/order/OrderItems";
+import OrderItemsContainer from "../../../components/containers/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
@@ -65,7 +65,7 @@ const OrderDetails = () => {
         </div>
         <div className="flex items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
-                <OrderItems orderItems={order.orderItems}/>
+                <OrderItemsContainer orderItems={order.orderItems}/>
                 <Card>
                     <h1 className="font-bold text-xl">Payment Summary</h1>
                     <div className="my-6 grid grid-cols-2 gap-5 p-2 bg-gray-100">

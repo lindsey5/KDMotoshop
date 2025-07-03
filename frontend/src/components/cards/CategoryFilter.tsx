@@ -1,14 +1,14 @@
 import { Button } from "@mui/material"
-import { fetchData } from "../../../services/api";
+import { fetchData } from "../../services/api";
 import React, { useEffect, useState } from "react";
-import Card from "../../Card";
+import Card from "../Card";
 
 type CategoryFilterProps = {
     selectedCategory: string;
     setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CategoryFilter : React.FC<CategoryFilterProps> = ({ selectedCategory, setSelectedCategory }) => {
+const CategoryFilterCard : React.FC<CategoryFilterProps> = ({ selectedCategory, setSelectedCategory }) => {
     const [categories, setCategories] = useState<Category[]>([]);
     
     const fetchCategories = async () => {
@@ -49,4 +49,4 @@ const CategoryFilter : React.FC<CategoryFilterProps> = ({ selectedCategory, setS
     )
 }
 
-export default CategoryFilter;
+export default CategoryFilterCard;

@@ -7,12 +7,12 @@ import { Backdrop, Button, CircularProgress, FormControlLabel, IconButton, Radio
 import { RedButton } from "../../../components/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { confirmDialog, errorAlert } from "../../../utils/swal";
-import VariantContainer from "../../../components/admin/product/VariantContainer";
+import VariantContainer from "../../../components/containers/VariantContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import AddProductThumbnail from "../../../components/admin/product/AddProductThumbnail";
-import ProductImages from "../../../components/admin/product/ProductImages";
+import AddProductThumbnail from "../../../components/cards/AddProductThumbnail";
+import ProductImages from "../../../components/images/ProductImages";
 import Card from "../../../components/Card";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {

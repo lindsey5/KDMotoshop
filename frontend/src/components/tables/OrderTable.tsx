@@ -1,10 +1,10 @@
 import CircleIcon from '@mui/icons-material/Circle';
-import { statusColorMap } from "../../../constants/status";
+import { statusColorMap } from "../../constants/status";
 import { TableRow } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../../Table';
-import { formatNumber } from '../../../utils/utils';
-import { formatDate } from '../../../utils/dateUtils';
-import { RedButton } from '../../Button';
+import { StyledTableCell, StyledTableRow } from '../Table';
+import { formatNumber } from '../../utils/utils';
+import { formatDate } from '../../utils/dateUtils';
+import { RedButton } from '../Button';
 import { useNavigate } from 'react-router-dom';
 
 const Status: React.FC<{ status: string}> = ({ status }) => {

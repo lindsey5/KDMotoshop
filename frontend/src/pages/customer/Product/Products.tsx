@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CustomerProductContainer from "../../../components/customer/ProductContainer";
+import CustomerProductContainer from "../../../components/containers/ProductContainer";
 import { Pagination, Slider } from "@mui/material";
 import { CustomSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
-import TopProductsContainer from "../../../components/product/TopProductContainer";
+import TopProductsContainer from "../../../components/containers/TopProductContainer";
 import { useNavigate } from "react-router-dom";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -150,6 +150,7 @@ const CustomerProducts = () => {
                     <RedButton onClick={filterProducts}>Filter</RedButton>
                 </div>
                 <div className="flex flex-col mt-12">
+                    <h1 className="font-bold text-lg">Most Popular Products</h1>
                     {topProducts.map(product => (
                         <div 
                             className="cursor-pointer hover:bg-gray-100 p-3 rounded-md"
