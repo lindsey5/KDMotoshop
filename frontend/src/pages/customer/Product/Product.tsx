@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchData } from "../../../services/api";
-import { ProductThumbnail, MultiImageSlideshow } from "../../../components/Image";
+import { ProductThumbnail, MultiImageSlideshow } from "../../../components/image";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
 import { formatNumber } from "../../../utils/utils";
