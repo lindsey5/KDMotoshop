@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchData } from "../../services/api";
+import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
 
 const CustomIcon = ({ src, alt, path }: { src: string; alt: string, path: string }) => (

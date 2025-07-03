@@ -1,6 +1,6 @@
-import { RedButton } from "../Button"
-import Card from "../Card";
-import { ProductThumbnail } from "../Image";
+import { RedButton } from "../../Button"
+import Card from "../../Card";
+import { ProductThumbnail } from "../../Image";
 
 type AddProductThumbnailProps = {
     product: Product;

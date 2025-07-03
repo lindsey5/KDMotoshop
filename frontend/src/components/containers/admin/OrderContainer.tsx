@@ -3,9 +3,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
-import { cn, formatNumber } from '../../utils/utils';
-import { confirmDialog } from '../../utils/swal';
-import Counter from '../Counter';
+import { cn, formatNumber } from '../../../utils/utils';
+import { confirmDialog } from '../../../utils/swal';
+import Counter from '../../Counter';
 
 type OrderContainerProps = {
     orderItem: OrderItem;

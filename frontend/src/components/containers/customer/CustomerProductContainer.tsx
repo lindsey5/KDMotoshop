@@ -1,4 +1,4 @@
-import { cn, formatNumber } from "../../utils/utils";
+import { cn, formatNumber } from "../../../utils/utils";
 
 const CustomerProductContainer = ({ product, className } : { product: any, className?: string }) => {
     

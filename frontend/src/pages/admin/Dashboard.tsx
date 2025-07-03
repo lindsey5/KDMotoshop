@@ -1,6 +1,6 @@
 import MonthlySales from "../../components/charts/MonthlySales";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import DashboardCards from "../../components/cards/DashboardCards";
+import DashboardCards from "../../components/cards/admin/DashboardCards";
 import TopProductsChart from "../../components/charts/TopProducts";
 import TopCategoriesChart from "../../components/charts/TopCategories";
 import SalesPredictionChart from "../../components/charts/SalesPrediction";

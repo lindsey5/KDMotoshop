@@ -3,8 +3,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import { RedTextField } from '../Textfield';
-import { confirmDialog } from '../../utils/swal';
+import { RedTextField } from '../../Textfield';
+import { confirmDialog } from '../../../utils/swal';
 
 type VariantContainerProps = {
   index: number;

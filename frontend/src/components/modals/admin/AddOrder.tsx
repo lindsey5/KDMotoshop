@@ -1,10 +1,10 @@
 import { Modal } from "@mui/material";
 import { useMemo, useState } from "react";
-import { RedButton } from "../Button";
-import { successAlert } from "../../utils/swal";
-import { formatNumber } from "../../utils/utils";
-import Counter from "../Counter";
-import Attributes from "../Attributes";
+import { RedButton } from "../../Button";
+import { successAlert } from "../../../utils/swal";
+import { formatNumber } from "../../../utils/utils";
+import Counter from "../../Counter";
+import Attributes from "../../Attributes";
 
 type AddOrderModalProps = {
     selectedProduct: Product | undefined;

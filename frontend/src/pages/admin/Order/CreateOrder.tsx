@@ -4,14 +4,14 @@ import { Backdrop, Button,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
-import AddOrderModal from "../../../components/modals/AddOrder";
+import AddOrderModal from "../../../components/modals/admin/AddOrder";
 import { confirmDialog, successAlert } from "../../../utils/swal";
-import OrderContainer from "../../../components/containers/OrderContainer";
+import OrderContainer from "../../../components/containers/admin/OrderContainer";
 import { formatNumber } from "../../../utils/utils";
-import OrderInformationModal from "../../../components/modals/OrderInformation";
+import OrderInformationModal from "../../../components/modals/admin/OrderInformation";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CategoryFilter from "../../../components/cards/CategoryFilter";
-import ProductContainer from "../../../components/containers/OrderProductContainer";
+import CategoryFilter from "../../../components/cards/admin/CategoryFilter";
+import ProductContainer from "../../../components/containers/admin/OrderProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const OrderState : Order = {

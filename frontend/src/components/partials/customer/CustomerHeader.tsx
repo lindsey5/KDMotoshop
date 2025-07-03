@@ -2,8 +2,8 @@ import { Button, IconButton, Link } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { cn } from "../../utils/utils";
-import { RedButton } from "../Button";
+import { cn } from "../../../utils/utils";
+import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
 
 const HeaderLink = ({ label, path } : { path: string, label: string}) => {

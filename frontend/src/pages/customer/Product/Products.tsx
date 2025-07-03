@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CustomerProductContainer from "../../../components/containers/ProductContainer";
+import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import { Pagination, Slider } from "@mui/material";
 import { CustomSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";

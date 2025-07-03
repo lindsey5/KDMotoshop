@@ -6,38 +6,7 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Button } from '@mui/material';
-import { Link, useLocation } from 'react-router-dom';
-import type { ReactNode } from 'react';
-
-type SidebarLinkProps = {
-  icon: ReactNode;
-  label: string;
-  path: string;
-};
-
-const SidebarLink = ({ label, icon, path }: SidebarLinkProps) => {
-  const pathname = useLocation().pathname;
-
-  return (
-    <Button
-      component={Link}
-      to={path}
-      fullWidth
-      startIcon={icon}
-      sx={{
-        fontWeight: 'bold',
-        backgroundColor: pathname.includes(path) ? 'red' : 'black',
-        '&:hover': {
-          backgroundColor: 'red',
-        },
-        color: 'white',
-        justifyContent: 'flex-start',
-      }}
-    >
-      {label}
-    </Button>
-  );
-};
+import { SidebarLink } from '../SideBar';
 
 const signout = async () => {
   localStorage.removeItem('token');

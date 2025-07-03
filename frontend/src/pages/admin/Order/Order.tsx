@@ -9,7 +9,7 @@ import { Avatar, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import OrderItemsContainer from "../../../components/containers/OrderItems";
+import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";

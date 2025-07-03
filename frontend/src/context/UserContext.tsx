@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import { fetchData } from "../services/api";
 import { CircularProgress } from "@mui/material";
-import { AdminSidebar } from "../components/Sidebar";
+import { AdminSidebar } from "../components/partials/admin/Sidebar";
 
 interface User {
   email: string;

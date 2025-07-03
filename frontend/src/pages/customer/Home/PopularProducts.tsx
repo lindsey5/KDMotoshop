@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
 import { RedButton } from "../../../components/Button";
-import CustomerProductContainer from "../../../components/containers/ProductContainer";
+import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import * as motion from "motion/react-client"
 
 const itemVariants = {

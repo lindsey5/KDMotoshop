@@ -14,7 +14,7 @@ import { OrderTableColumns, OrderTableRow } from "../../../components/tables/Ord
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
-import { StatsCards } from "../../../components/cards/StatCard";
+import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard";
 import Card from "../../../components/Card";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -75,7 +75,7 @@ const Orders = () => {
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
         </div>
-        <StatsCards />
+        <OrderStatsCards />
         
         <Card className="flex-grow min-h-[700px] flex flex-col mt-6">
             <div className="flex justify-between items-center mb-6 gap-10">

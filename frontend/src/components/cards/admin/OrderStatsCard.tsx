@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { cn } from "../../utils/utils";
-import { fetchData } from "../../services/api";
-import Card from "../Card";
+import { cn } from "../../../utils/utils";
+import { fetchData } from "../../../services/api";
+import Card from "../../Card";
 
 type StatCardProps = {
   title: string;
@@ -37,7 +37,7 @@ type CardValue = {
     cancelledOrders: number;
 }
 
-export const StatsCards = () => {
+export const OrderStatsCards = () => {
     const [cardValues, setCardValues] = useState<CardValue>(
         {
             overallTotalOrders: 0,
