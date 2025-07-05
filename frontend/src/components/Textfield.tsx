@@ -29,7 +29,6 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
     <TextField 
       variant="outlined"
       sx={{
-            backgroundColor: 'white',
             '& .MuiInputLabel-root': {
                     '&.Mui-focused': {
                         color: 'red', 

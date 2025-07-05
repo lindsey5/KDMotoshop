@@ -4,7 +4,7 @@ import { RedButton } from "../../components/Button";
 import { fetchData, postData } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const AdminLogin = () => {
     const [selectedRole, setSelectedRole] = useState<string>('Admin');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -81,4 +81,4 @@ const Login = () => {
     </main>
 }
 
-export default Login
+export default AdminLogin

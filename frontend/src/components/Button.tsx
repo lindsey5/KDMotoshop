@@ -1,15 +1,46 @@
 import { Button, type ButtonProps } from "@mui/material"
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 export const RedButton: React.FC<ButtonProps> = ({sx, ...props}) => {
     return <Button 
     variant="contained" 
     sx={{ 
         backgroundColor: 'red', 
+        border: 1,
+        borderColor: 'white',
         ":hover": {
-            backgroundColor: '#f28b82'
+            backgroundColor: '#c03838'
         },
         ...sx 
     }} 
     {...props} 
     />
 }
+
+export const GoogleButton = () => {
+
+    const handleSuccess = async (response : any) => {
+      try {
+        const credential = response.credential;
+        const decoded = JSON.parse(atob(credential.split('.')[1]));
+        
+      } catch (error) {
+        console.error('Login processing error:', error);
+      }
+    };
+  
+    const handleError = () => {
+      console.error('Google Login Error:');
+    };
+  
+    return (
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <GoogleLogin 
+            onSuccess={handleSuccess} 
+            onError={handleError} 
+            size="large"
+            theme="filled_black"
+          />
+      </GoogleOAuthProvider>
+    );
+};

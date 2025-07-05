@@ -2,6 +2,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { IconButton } from '@mui/material';
 import type React from 'react';
+import { useContext } from 'react';
+import { DarkmodeContext } from '../context/DarkmodeContext';
 
 type CounterProps = {
     value: number;
@@ -11,12 +13,14 @@ type CounterProps = {
 }
 
 const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled}) => {
+    const context = useContext(DarkmodeContext)
+
     const incrementQuantity = () => {
-        setValue(prev => prev + 1);
+        if(!disabled && value !== limit) setValue(prev => prev + 1);
     };
 
     const decrementQuantity = () => {
-        setValue(prev => (prev - 1 ));
+        if(!disabled && value !== 1) setValue(prev => (prev - 1 ));
     };
 
 
@@ -24,16 +28,22 @@ const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled}) =>
         <div>
             <h1 className="mb-2">Quantity</h1>
             <div className="flex gap-2">
-                <IconButton onClick={decrementQuantity} disabled={value === 1 || disabled}>
+                <IconButton 
+                    onClick={decrementQuantity} 
+                    sx={{ color: context?.theme === 'dark' ? 'white' : ''}}
+                >
                         <RemoveIcon />
                 </IconButton>
                 
                     <input
-                        className="w-16 bg-white px-2 outline-none text-center border-1 border-gray-300"
+                        className="w-16 bg-white px-2 outline-none text-black text-center border-1 border-gray-300"
                         disabled
                         value={value}
                     />
-                    <IconButton onClick={incrementQuantity} disabled={value === limit || disabled}>
+                    <IconButton 
+                        onClick={incrementQuantity} 
+                        sx={{ color: context?.theme === 'dark' ? 'white' : ''}}
+                    >
                         <AddIcon />
                     </IconButton>
             </div>

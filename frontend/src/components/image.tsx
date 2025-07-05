@@ -1,9 +1,10 @@
 import { cn } from "../utils/utils"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton, Modal } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { DarkmodeContext } from "../context/DarkmodeContext";
 
 export const ProductThumbnail = ({ product, className } : { product : Product | undefined, className?: string}) => {
     return (
@@ -27,6 +28,9 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
     const [page, setPage] = useState<number>(0);
     const totalPages = Math.ceil(images.length / imagesPerPage);
     const [selectedImage, setSelectedImage] = useState<string | undefined>();
+    const context = useContext(DarkmodeContext);
+    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
+    const { theme } = context;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -69,7 +73,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
                     src={img}
                     alt={`Slide ${idx}`}
                     onClick={() => setSelectedImage(img)}
-                    className="w-25 h-25 object-cover rounded-xl shadow-md cursor-pointer"
+                    className={cn("w-25 h-25 object-cover rounded-xl shadow-md cursor-pointer")}
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3, delay: idx * 0.1 }}
@@ -83,9 +87,9 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
             sx={{
                 position: "absolute",
                 left: 10,
-                zIndex: 10,
                 top: "50%",
                 transform: "translateY(-50%)",
+                color: theme === 'dark' ? 'white' : ''
             }}
             onClick={handlePrev}
             >
@@ -95,9 +99,9 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
             sx={{
                 position: "absolute",
                 right: 10,
-                zIndex: 10,
                 top: "50%",
                 transform: "translateY(-50%)",
+                color: theme === 'dark' ? 'white' : ''
             }}
             onClick={handleNext}
             >

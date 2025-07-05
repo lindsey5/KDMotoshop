@@ -33,7 +33,7 @@ const CustomerFooter = () => {
                 <div className="flex-1 flex flex-col gap-3 items-start">
                     <h1 className="w-full font-bold text-2xl mb-2 border-b-1 border-gray-300 pb-5">Products</h1>
                     {categories.map(category => (
-                        <Link href="/" underline="hover" sx={{ color: "white"}}>{category.category_name}</Link>
+                        <Link key={category._id} href="/" underline="hover" sx={{ color: "white"}}>{category.category_name}</Link>
                     ))}
                 </div>
                 <div className="flex-1 flex flex-col gap-3 items-start">

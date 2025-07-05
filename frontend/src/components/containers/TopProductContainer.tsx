@@ -1,5 +1,6 @@
 
 const TopProductsContainer = ({ product } : { product: TopProduct }) => {
+
     return (
         <div className="flex gap-5" key={product.product_name}>
             <img className="w-20 h-20" src={product.image}/>

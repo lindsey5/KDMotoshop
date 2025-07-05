@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
 import { RedButton } from "../../../components/Button";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import * as motion from "motion/react-client"
+import { DarkmodeContext } from "../../../context/DarkmodeContext";
+import { cn } from "../../../utils/utils";
 
 const itemVariants = {
     visible: {
@@ -33,45 +35,48 @@ const containerVariants = {
 }
 
 const PopularProductsSection = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
+    const context = useContext(DarkmodeContext);
+    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
+    const { theme } = context;
 
-  useEffect(() => {
-    const getPopularProducts = async () => {
-      const response = await fetchData("/api/product/top");
-      if (response.success) {
-        setProducts(response.topProducts);
-      }
-    };
-    getPopularProducts();
-  }, []);
+    useEffect(() => {
+        const getPopularProducts = async () => {
+        const response = await fetchData("/api/product/top");
+        if (response.success) {
+            setProducts(response.topProducts);
+        }
+        };
+        getPopularProducts();
+    }, []);
 
-  return (
-    <section className="min-h-screen px-10 pt-30 flex flex-col items-center">
-      <div className="w-full">
-        <h1 className="text-4xl md:text-5xl font-bold text-red-600">Best Selling Products</h1>
-      </div>
+    return (
+        <section className={cn("transition-colors duration-600 min-h-screen px-10 pt-30 flex flex-col items-center", theme === 'dark' && 'bg-gray-900')}>
+        <div className="w-full">
+            <h1 className={cn("text-4xl md:text-5xl font-bold text-red-600", theme === 'dark' && 'text-white')}>Best Selling Products</h1>
+        </div>
 
-      <motion.div 
-        initial="hidden"
-        whileInView="visible"
-        variants={containerVariants}
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 my-12 md:gap-10 gap-5"
-        >
-        {products.map((product) => (
-          <motion.div
-            key={product._id}
-            variants={itemVariants}
-          >
-            <CustomerProductContainer className="w-full h-full" product={product} />
-          </motion.div>
-        ))}
-      </motion.div>
+        <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            variants={containerVariants}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 my-12 md:gap-10 gap-5"
+            >
+            {products.map((product) => (
+            <motion.div
+                key={product._id}
+                variants={itemVariants}
+            >
+                <CustomerProductContainer className="w-full h-full" product={product} />
+            </motion.div>
+            ))}
+        </motion.div>
 
-      <Link href="/products">
-        <RedButton>View all products</RedButton>
-      </Link>
-    </section>
-  );
+        <Link href="/products">
+            <RedButton>View all products</RedButton>
+        </Link>
+        </section>
+    );
 };
 
 export default PopularProductsSection;

@@ -29,6 +29,7 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
           {...(label && { label })}
           {...props}
           sx={{
+            backgroundColor: 'white',
             '&:hover .MuiOutlinedInput-notchedOutline': {
               borderColor: 'red' 
             },

@@ -1,10 +1,14 @@
 import { Button, IconButton, Link } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { cn } from "../../../utils/utils";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { cn, formatNumber } from "../../../utils/utils";
 import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
+import { fetchData } from "../../../services/api";
+import { ProductThumbnail } from "../../image";
+import { ThemeToggle } from "../../Toggle";
+import { DarkmodeContext } from "../../../context/DarkmodeContext";
 
 const HeaderLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -42,29 +46,113 @@ const HeaderLink = ({ label, path } : { path: string, label: string}) => {
 }
 
 const HeaderSearchField = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [autoComplete, setAutoComplete] = useState<boolean>(false);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const [hasMore, setHasMore] = useState<boolean>(false);
+    const context = useContext(DarkmodeContext);
+    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
+    const { theme } = context;
+    const [pagination, setPagination] = useState<Pagination>({
+        page: 1,
+        searchTerm: '',
+        totalPages: 1,
+    });
+
+    const getProducts = useCallback( async (reset : boolean) => {
+        const response = await fetchData(`/api/product?page=${pagination.page}&limit=10&searchTerm=${pagination.searchTerm}`);
+
+        if(response.success) {
+            if (!reset && response.products.length === 0) {
+                setHasMore(false);
+                return;
+            }
+
+            const mappedProducts = response.products.map((product : Product) => ({
+                    ...product,
+                    price: product.product_type === 'Single' ? product.price : product.variants.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0].price
+            }))
+
+            if (reset) {
+                setProducts(mappedProducts)
+                setPagination(prev => ({...prev, page: 1}))
+                setHasMore(true);
+            }else {
+                setProducts(prev => [...prev, ...mappedProducts]);
+            }
+        }
+    }, [pagination.page, pagination.searchTerm])
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            getProducts(true);
+        }, 300); 
+        
+        return () => clearTimeout(delayDebounce);
+    }, [pagination.searchTerm])
+
+    useEffect(() => {
+        const delayDebounce = setTimeout(() => {
+            getProducts(false)
+        }, 500); 
+        return () => clearTimeout(delayDebounce);
+    }, [pagination.page]);
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setAutoComplete(false);
+        }, 200);
+    };
+
+    const lastItemRef = useCallback((node : HTMLDivElement | null) => {
+        if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPagination(prev => ({...prev, page: prev.page + 1}))
+                }
+            });
+        if (node) observer.current.observe(node);
+        
+    },[hasMore]);
+
+    const handleFocus = () => setAutoComplete(true)
+
     return (
-        <div className={`
-            flex-1
-            max-w-[400px]
-            relative flex items-center gap-5
-            px-5
-            bg-[#313131] rounded-4xl border-2 border-gray-500
-          `}>
-            <SearchIcon className="text-gray-300"/>
+        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-500 bg-white transition-colors duration-400', theme === 'dark' && 'bg-[#313131]')}>
+            <SearchIcon className={cn(theme === 'dark' && "text-gray-300")}/>
             <input
               type="text"
               placeholder="Search..."
-              className="
-                flex-1 py-2 pr-12 text-white placeholder-gray-300
-                focus:outline-none
-                text-sm md:text-base
-              "
+              className={cn("flex-1 py-2 pr-12 outline-none text-sm md:text-base", theme === 'dark' && "text-white placeholder-gray-300")}
+              onChange={(e) => setPagination(prev => ({ ...prev, searchTerm: e.target.value as string}))}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
+            {autoComplete && pagination.searchTerm && <div className="bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-0 z-10 p-3 border border-gray-300 rounded-md">
+                {products.length > 0 ? products.map((product, index) => (
+                    <div 
+                        key={product._id}
+                        className="flex gap-5 cursor-pointer hover:bg-gray-100 px-3 py-2"
+                        onClick={() => window.location.href = `/product/${product._id}`}
+                        ref={index === products.length - 1 ? lastItemRef : null}
+                    >
+                        <ProductThumbnail 
+                            product={product}
+                            className="w-15 h-15"
+                        />
+                        <div>
+                             <strong>{product.product_name}</strong>
+                            <p className="text-gray-500 mt-2">₱{formatNumber(Number(product.price))}</p>
+                        </div>
+                    </div>
+                )) : <p>No results</p>}
+            </div>}
         </div>
     )
 }
 
 const CustomerHeader = () => {
+    const navigate = useNavigate()
     const location = useLocation()
     const [isScrolled, setIsScrolled] = useState<boolean>(location.pathname !== '/');
 
@@ -87,10 +175,11 @@ const CustomerHeader = () => {
             <div className="flex gap-5 items-center">
                 <HeaderLink path="/" label="Home"/>
                 <HeaderLink  path="/products" label="Products"/>
-                <RedButton>Login</RedButton>
+                <RedButton onClick={() => navigate('/login')}>Login</RedButton>
                 <IconButton>
                     <ShoppingCartIcon sx={{ color: 'white' }} fontSize="large"/>
                 </IconButton>
+                <ThemeToggle />
             </div>
         </header>
     )

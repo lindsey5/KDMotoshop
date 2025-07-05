@@ -1,4 +1,6 @@
 import { Button } from "@mui/material";
+import { useContext } from "react";
+import { DarkmodeContext } from "../context/DarkmodeContext";
 
 type AttributesProps = {
     product: Product | undefined;
@@ -7,6 +9,8 @@ type AttributesProps = {
 }
 
 const Attributes : React.FC<AttributesProps> = ({ product, selectedAttributes, handleSelect}) => {
+    const context = useContext(DarkmodeContext);
+    
     return ( 
         <div className="flex flex-col gap-5">
         {product?.attributes.map(attribute => {
@@ -26,7 +30,14 @@ const Attributes : React.FC<AttributesProps> = ({ product, selectedAttributes, h
                     <div className="flex flex-wrap gap-2">
                         {values.map((value) => (
                             <Button
-                                sx={{...selectedAttributes[attribute] === value ? { 'backgroundColor' : 'red' } : { color: 'black', borderColor: 'black'}}}
+                                sx={{
+                                    ...selectedAttributes[attribute] === value ? 
+                                    { 'backgroundColor' : 'red' } : 
+                                    { 
+                                        color: context?.theme === 'dark' ? 'white' : 'black', 
+                                        borderColor: context?.theme === 'dark' ? 'white' : 'black'
+                                    }
+                                }}
                                 key={value}
                                 variant={
                                 selectedAttributes[attribute] === value
