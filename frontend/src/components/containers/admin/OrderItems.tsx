@@ -1,19 +1,23 @@
-import { formatNumber } from "../../../utils/utils"
+import useDarkmode from "../../../hooks/useDarkmode"
+import { cn, formatNumber } from "../../../utils/utils"
+import Card from "../../Card";
 
 const OrderItemsContainer = ({ orderItems } : { orderItems : Order['orderItems']}) => {
+    const isDark = useDarkmode();
+
     return (
-        <div className="flex flex-col gap-10 bg-white p-5 rounded-lg border-1 border-gray-300 shadow-md">
+        <Card className="flex flex-col gap-10 p-5 rounded-lg">
             <h1 className="font-bold text-xl">Items:</h1>
             {orderItems?.map(item => (
-                <div className="flex justify-between items-start pb-5 border-b-1 border-gray-300">
+                <div className={cn("flex justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
                     <div className="w-[50%] flex gap-5">
                         <img className='w-15 h-15' src={item.image || ''} alt="" />
-                        <div className="">
+                        <div>
                             <h1 className="font-bold mb-4">{item.product_name}</h1>
                             {item.attributes && Object.entries(item.attributes).map(([key, value]) => (
-                                <p className="mb-2 text-gray-500">{key}: {value}</p>
+                                <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{key}: {value}</p>
                             ))}
-                            <p>{item.status}</p>
+                            <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{item.status}</p>
                         </div>
                     </div>
                     <h1 className="font-bold">₱{formatNumber(item.price)}</h1>
@@ -21,7 +25,7 @@ const OrderItemsContainer = ({ orderItems } : { orderItems : Order['orderItems']
                     <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
                 </div>
             ))}
-        </div>
+        </Card>
     )            
 }
 

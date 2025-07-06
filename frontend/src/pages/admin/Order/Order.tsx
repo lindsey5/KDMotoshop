@@ -4,7 +4,7 @@ import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { StatusSelect } from "../../../components/Select";
 import { Statuses } from "../../../constants/status";
-import { formatNumber } from "../../../utils/utils";
+import { cn, formatNumber } from "../../../utils/utils";
 import { Avatar, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
@@ -14,11 +14,13 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import Card from "../../../components/Card";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const OrderDetails = () => {
     const { id } = useParams();
     const [order, setOrder] = useState<Order>();
     const navigate = useNavigate();
+    const isDark = useDarkmode();
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -50,13 +52,13 @@ const OrderDetails = () => {
 
         }
     }
-
+    
     if(!order) return null
 
-    return <div className="flex flex-col justify-start bg-gray-100 min-h-screen">
-        <div className="p-5 bg-white border-b-1 border-gray-300">
+    return <div className={cn("flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
+        <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
-                <IconButton onClick={() => navigate('/admin/orders')}>
+                <IconButton onClick={() => navigate('/admin/orders')} sx={{ color: isDark? 'white' : ''}}>
                     <ArrowBackIosIcon />
                 </IconButton>
                 <h1 className="font-bold text-2xl">{order?.order_id}</h1>
@@ -68,7 +70,7 @@ const OrderDetails = () => {
                 <OrderItemsContainer orderItems={order.orderItems}/>
                 <Card>
                     <h1 className="font-bold text-xl">Payment Summary</h1>
-                    <div className="my-6 grid grid-cols-2 gap-5 p-2 bg-gray-100">
+                    <div className="my-6 grid grid-cols-2 gap-5 p-2">
                         <p>Subtotal</p>
                         <p className="text-right">₱{formatNumber(order.subtotal)}</p>
                         <p>Shipping Fee</p>
@@ -93,11 +95,11 @@ const OrderDetails = () => {
                 </Card>
                 <Card className="w-full flex flex-col gap-5">
                     <h1 className="font-bold text-xl">Customer</h1>
-                    <div className="flex gap-5 items-center pb-5 border-b-1 border-gray-300">
+                    <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                         <Avatar />
                         <h1>{order.customer.firstname} {order.customer.lastname}</h1>
                     </div>
-                    <div className="flex flex-col gap-5 pb-5 border-b-1 border-gray-300">
+                    <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                         <h1 className="font-bold">Contact Info</h1>
                         <div className="flex gap-3">
                             <EmailOutlinedIcon />
@@ -115,8 +117,8 @@ const OrderDetails = () => {
                         <p>{order.address?.city}</p>
                         <p>{order.address?.region}</p>
                     </div>}
-                    <p className="text-gray-500">Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
-                    <p className="text-gray-500">Order Source: {order.order_source}</p>
+                    <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                    <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
                 </Card>
                 <Card className="w-full">
                     <h1 className="font-bold mb-4">Note:</h1>

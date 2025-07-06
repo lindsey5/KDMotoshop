@@ -20,7 +20,7 @@ export const AdminSidebar = () => {
   const isDark = useDarkmode();
 
   return (
-    <aside className={cn("w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col gap-5", isDark ? 'bg-[#1e1e1e]' : 'bg-black')}>
+    <aside className={cn("w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col gap-5", isDark ? 'bg-[#1e1e1e] border-r border-gray-600' : 'bg-black')}>
       <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
       <SidebarLink 
         label="Dashboard" 

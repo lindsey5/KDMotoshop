@@ -1,4 +1,4 @@
-import { Button, Pagination } from "@mui/material"
+import { Button } from "@mui/material"
 import CustomizedTable from "../../../components/Table"
 import { SearchField } from "../../../components/Textfield"
 import { RedButton } from "../../../components/Button"
@@ -14,6 +14,7 @@ import { ProductTableColumns, ProductTableRow } from "../../../components/tables
 import Card from "../../../components/Card"
 import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode"
+import CustomizedPagination from "../../../components/Pagination"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -86,7 +87,7 @@ const Products = () => {
             <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
             <div className="flex items-center mb-6 justify-between">
                 <div>
-                    <h1 className="font-bold text-4xl mb-4 text-red-500">Products</h1>
+                    <h1 className={cn("font-bold text-4xl mb-4 text-red-500", isDark && 'text-white')}>Products</h1>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 </div>
                 <div className="flex gap-10">
@@ -125,22 +126,7 @@ const Products = () => {
                                 />
                             )}
                         </div>
-                        <Pagination 
-                            sx={{
-                                '& .MuiPaginationItem-root': {
-                                    color: isDark ? 'white' : 'black', 
-                                },
-                                '& .Mui-selected': {
-                                    backgroundColor: 'red', 
-                                    color: '#fff',
-                                },
-                                '& .MuiPaginationItem-previousNext': {
-                                    color: isDark ? 'white' : '#4b5563',
-                                },
-                                '& .MuiPaginationItem-previousNext.Mui-disabled': {
-                                    color: isDark ? 'white' : '#9ca3af',
-                                },
-                            }}
+                        <CustomizedPagination 
                             count={pagination.totalPages} 
                             onChange={handlePage} 
                         />

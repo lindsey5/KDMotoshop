@@ -9,15 +9,16 @@ import { ExpandableText } from "../../../components/Text";
 import { RedButton } from "../../../components/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { DarkmodeContext } from "../../../context/DarkmodeContext";
+import { CircularProgress } from "@mui/material";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const CustomerProduct = () => {
     const { id } = useParams();
     const [product, setProduct] = useState<Product>();
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode();
+    
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
@@ -52,8 +53,14 @@ const CustomerProduct = () => {
         }));
     };
 
+    if(!product) return (
+        <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+            <CircularProgress sx={{ color: 'red'}}/>
+         </div>
+    )
+
     return (
-         <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", theme === 'dark' && 'bg-[#1e1e1e]')}>
+         <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col md:flex-row gap-10 py-10">
                 <div className="flex flex-col gap-5 items-center">
@@ -74,7 +81,7 @@ const CustomerProduct = () => {
                         
                         />
                 </div>
-                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", theme==='dark' && 'bg-[#121212] text-white')}>
+                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] text-white')}>
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 

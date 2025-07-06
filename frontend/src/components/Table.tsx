@@ -25,10 +25,10 @@ export const StyledTableRow = styled(TableRow, {
   shouldForwardProp: (prop) => prop !== 'isDark',
 })<{isDark?: boolean}>(({ isDark }) => ({
   '&:nth-of-type(even)': {
-    backgroundColor: isDark ? '#1e1e1e' : 'white',
+    backgroundColor: isDark ? '#313131' : 'white',
   },
   '&:nth-of-type(odd)': {
-    backgroundColor: isDark ? '#121212' : '#eeeeee',
+    backgroundColor: isDark ? ' #252525' : '#eeeeee',
   },
   '&:last-child td, &:last-child th': {
     border: 0,

@@ -1,7 +1,10 @@
 import { Button, type ButtonProps } from "@mui/material"
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import useDarkmode from "../hooks/useDarkmode";
 
 export const RedButton: React.FC<ButtonProps> = ({sx, ...props}) => {
+    const isDark = useDarkmode();
+
     return <Button 
     variant="contained" 
     sx={{ 
@@ -11,13 +14,17 @@ export const RedButton: React.FC<ButtonProps> = ({sx, ...props}) => {
         ":hover": {
             backgroundColor: '#c03838'
         },
+        '&.Mui-disabled': {
+          color: isDark ? "gray" : '', 
+          borderColor: isDark ? 'gray' : ''
+        },
         ...sx 
     }} 
     {...props} 
     />
 }
 
-export const GoogleButton = () => {
+export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black' | 'filled_blue' | 'outline'}) => {
 
     const handleSuccess = async (response : any) => {
       try {
@@ -40,7 +47,7 @@ export const GoogleButton = () => {
               onSuccess={handleSuccess} 
               onError={handleError} 
               size="large"
-              theme="filled_black"
+              theme={theme}
             />
           </div>
       </GoogleOAuthProvider>

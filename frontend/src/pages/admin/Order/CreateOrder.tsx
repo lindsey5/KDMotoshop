@@ -7,12 +7,13 @@ import AddIcon from '@mui/icons-material/Add';
 import AddOrderModal from "../../../components/modals/admin/AddOrder";
 import { confirmDialog, successAlert } from "../../../utils/swal";
 import OrderContainer from "../../../components/containers/admin/OrderContainer";
-import { formatNumber } from "../../../utils/utils";
+import { cn, formatNumber } from "../../../utils/utils";
 import OrderInformationModal from "../../../components/modals/admin/OrderInformation";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CategoryFilter from "../../../components/cards/admin/CategoryFilter";
 import ProductContainer from "../../../components/containers/admin/OrderProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -49,6 +50,7 @@ const CreateOrderPage = () => {
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
     const [order, setOrder] = useState<Order>(OrderState);
     const [loading, setLoading] = useState<boolean>(false);
+    const isDark = useDarkmode()
 
     useEffect(() => {
         setOrder(prev => (
@@ -156,7 +158,7 @@ const CreateOrderPage = () => {
         setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
     }, [order.shipping_fee])
 
-    return <div className="flex h-full bg-gray-100 gap-5">
+    return <div className={cn("flex h-full bg-gray-100 gap-5", isDark && 'text-white bg-[#121212]')}>
         <Backdrop
             sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -185,10 +187,13 @@ const CreateOrderPage = () => {
             <div className="flex justify-between items-center mt-6">
                 <SearchField 
                     onChange={(e) => setPagination({...pagination, searchTerm: e.target.value })}
-                    sx={{ maxWidth: '450px', backgroundColor: 'white'}}
+                    sx={{ maxWidth: '450px' }}
                     placeholder="Search by Product name, SKU, Category..." 
                 />
-                <Pagination count={pagination.totalPages} onChange={handlePage} />
+                <Pagination 
+                    count={pagination.totalPages} 
+                    onChange={handlePage} 
+                />
             </div>
 
             {/* Categories*/}
@@ -212,8 +217,8 @@ const CreateOrderPage = () => {
 
         </div>
 
-        <div className="w-[400px] bg-white flex flex-col border-l-1 border-gray-300">
-            <div className="flex justify-between p-5 border-b-1 border-gray-300">
+        <div className={cn("w-[400px] flex flex-col border-l-1 border-gray-300", isDark && 'bg-[#1e1e1e] border-gray-600')}>
+            <div className={cn("flex justify-between p-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                 <Button 
                     variant="contained" 
                     startIcon={<AddIcon />} 
@@ -229,8 +234,8 @@ const CreateOrderPage = () => {
             <div className="flex-grow min-h-0 overflow-y-auto">
             {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
             </div>
-            <div className="flex flex-col gap-5 p-5 border-t-1 border-gray-300">
-                <div className="flex flex-col gap-5 pb-5 border-b-1 border-gray-400">
+            <div className={cn("flex flex-col gap-5 p-5 border-t-1 border-gray-300", isDark && 'border-gray-600')}>
+                <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-400", isDark && 'border-gray-600')}>
                     <div className="flex justify-between">
                         <strong>Subtotal</strong>
                         <strong>₱{formatNumber(order.subtotal)}</strong>

@@ -1,6 +1,5 @@
 import { RedButton } from "../../../components/Button"
 import AddIcon from '@mui/icons-material/Add';
-import { Pagination } from "@mui/material";
 import CustomizedTable from "../../../components/Table";
 import { SearchField } from "../../../components/Textfield";
 import { CustomizedSelect } from "../../../components/Select";
@@ -18,6 +17,7 @@ import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard"
 import Card from "../../../components/Card";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
+import CustomizedPagination from "../../../components/Pagination";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -73,7 +73,7 @@ const Orders = () => {
     return <div className={cn("transition-colors duration-600 flex flex-col p-5 bg-gray-100", isDark && 'bg-[#121212]')}>
         <div className="flex justify-between items-center mb-6">
             <div>
-                <h1 className="font-bold text-4xl mb-4 text-red-500">Orders List</h1>
+                <h1 className={cn("font-bold text-4xl mb-4 text-red-500", isDark && 'text-white')}>Orders List</h1>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
@@ -109,7 +109,7 @@ const Orders = () => {
                 rows={orders.map(order => <OrderTableRow key={`${order._id}`} order={order} />)} 
             />
             <div className="flex justify-end mt-4">
-                <Pagination count={pagination.totalPages} onChange={handlePage} />
+                <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
             </div>
         </Card>
     </div>

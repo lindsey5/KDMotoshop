@@ -7,6 +7,9 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { RedButton } from "../../Button";
 import { Statuses } from "../../../constants/status";
+import Card from "../../Card";
+import useDarkmode from "../../../hooks/useDarkmode";
+import { cn } from "../../../utils/utils";
 
 type OrderInformationModalProps = {
     open: boolean;
@@ -22,6 +25,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
     const { regions } = useRegions();
     const { cities } = useCities(selectedRegion);
     const { barangays } = useBarangays(selectedCity);
+    const isDark = useDarkmode();
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAddAddress(event.target.checked);
@@ -74,7 +78,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
             onClose={onClose} 
             className="z-99 p-5 flex justify-center items-start overflow-y-auto"
         >
-            <div className="w-[90%] max-w-[600px] items-start p-5 bg-white rounded-md flex flex-col gap-5">
+            <Card className="w-[90%] max-w-[600px] items-start p-5 rounded-md flex flex-col gap-5">
                 <h1 className="font-bold text-2xl mb-4">Customer & Order Info</h1>
                 <p className="text-gray-500">Customer</p>
                 <div className="w-full flex gap-5">
@@ -92,34 +96,48 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                     />
                 </div>
                 <FormControlLabel
-                    control={
-                        <Switch
-                            onChange={handleChange} 
-                            checked={addAddress}
-                        />
-                    }
-                    label="Add Address"
+                control={
+                    <Switch
+                    checked={addAddress}
+                    onChange={handleChange}
+                    sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: 'red',
+                        '&:hover': {
+                        backgroundColor: 'rgba(255, 0, 0, 0.08)', // optional hover effect
+                    },
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: 'red',
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-thumb': {
+                        backgroundColor: isDark ? 'red' : '',
+                        },
+                        '& .MuiSwitch-track': {
+                        backgroundColor: isDark ? ' #e5e7eb' : ' #374151' , // track base color
+                        },
+                    }}
+                    />
+                }
+                label="Add Address"
                 />
                 {addAddress && order.address && (
-                    <div className="mb-5 w-full bg-gray-100 flex flex-col gap-5 p-3 rounded-md">
+                    <div className={cn("mb-5 w-full flex flex-col gap-5 p-3 rounded-md", isDark ? 'bg-[#3d3d3d]' : 'bg-gray-100' )}>
                         <CustomizedSelect 
                             label="Region"
                             value={selectedRegion}
-                            sx={{ backgroundColor: 'white'}}
                             menu={regions.map((region) => ({ value: region.code, label: region.name }))}
                             onChange={(e) => handleRegionChange(e.target.value as string)}
                         />
                         {selectedRegion && <CustomizedSelect 
                             label="City"
                             value={selectedCity}
-                            sx={{ backgroundColor: 'white'}}
                             menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
                             onChange={(e) => handleCityChange(e.target.value as string)}
                         />}
                         {selectedCity && <CustomizedSelect 
                                 label="Barangay"
                                 value={order.address.barangay}
-                                sx={{ backgroundColor: 'white'}}
                                 menu={barangays.map((barangay) => ({ value: barangay, label: barangay }))}
                                 onChange={(e) => handleBarangayChange(e.target.value as string)}
                         />}
@@ -127,7 +145,6 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                             <RedTextField 
                                 label="Street, Building, House No." 
                                 fullWidth 
-                                sx={{ backgroundColor: 'white'}}
                                 value={order.address.street || ''}
                                 onChange={(e) => setOrder((prev) => ({
                                     ...prev,
@@ -137,14 +154,32 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                         )}
                     </div>
                 )}
+                <label
+                    className={`block text-sm font-medium ${
+                    isDark ? 'text-white' : 'text-gray-800'
+                    }`}
+                >
+                    Phone (Optional)
+                </label>
+
                 <PhoneInput
-                    country={'ph'}
-                    onlyCountries={['ph']}
-                    specialLabel="Phone (Optional)"
-                    value={order.customer.phone || ''}
-                    containerStyle={{ width: '100%', height: '55px' }}
-                    inputStyle={{ width: '100%', height: '55px' }}
-                    onChange={(phone) => setOrder(prev => ({ ...prev, customer: { ...prev.customer, phone } }))}
+                country={'ph'}
+                onlyCountries={['ph']}
+                specialLabel="" // prevent default label from rendering
+                value={order.customer.phone || ''}
+                containerStyle={{ width: '100%', height: '55px' }}
+                inputStyle={{
+                    width: '100%',
+                    height: '55px',
+                    backgroundColor: isDark ? '#313131' : '#fff',
+                    color: isDark ? 'white' : 'black',
+                }}
+                onChange={(phone) =>
+                    setOrder((prev) => ({
+                    ...prev,
+                    customer: { ...prev.customer, phone },
+                    }))
+                }
                 />
                 <p className="text-gray-500 mb-2">Order Information</p>
                 <div className="w-full grid grid-cols-2 gap-6">
@@ -182,7 +217,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                     >Close</Button>
                     <RedButton onClick={onClose}>Save</RedButton>
                 </div>
-            </div>
+            </Card>
         </Modal>
     )
 }

@@ -10,6 +10,8 @@ import TopProductsContainer from "../../../components/containers/TopProductConta
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { DarkmodeContext } from "../../../context/DarkmodeContext";
 import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
+import CustomizedPagination from "../../../components/Pagination";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -27,9 +29,7 @@ const CustomerProducts = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>(category || 'All');
     const [selectedSort, setSelectedSort] = useState<string>(options[0]);
     const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode();
     const [pagination, setPagination] = useState<Pagination>({
         totalPages: 1,
         page: 1,
@@ -117,7 +117,7 @@ const CustomerProducts = () => {
 
     return (
         <div className="flex pt-20">
-            <div className={cn("transition-colors duration-600 relative flex-1 p-10", theme === 'dark' && 'bg-[#1e1e1e]')}>
+            <div className={cn("transition-colors duration-600 relative flex-1 p-10", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex justify-between items-center mt-4">
                     <h1 className="text-4xl text-red-500 font-bold">Products</h1>
@@ -142,34 +142,19 @@ const CustomerProducts = () => {
                 </div>
                 {products.length > 0 &&  (
                     <div className="flex justify-end">
-                        <Pagination
+                        <CustomizedPagination 
                             count={pagination.totalPages}
                             onChange={handlePage}
                             shape="rounded"
-                            size="large"
-                            sx={{
-                                '& .MuiPaginationItem-root': {
-                                    color: theme === 'dark' ? 'white' : 'black', 
-                                },
-                                '& .Mui-selected': {
-                                    backgroundColor: 'red', 
-                                    color: '#fff',
-                                },
-                                '& .MuiPaginationItem-previousNext': {
-                                    color: theme === 'dark' ? 'white' : '#4b5563',
-                                },
-                                '& .MuiPaginationItem-previousNext.Mui-disabled': {
-                                    color: theme === 'dark' ? 'white' : '#9ca3af',
-                                },
-                            }}
+                            size="large" 
                         />
                     </div>
                 )}
             </div>
             
-            <aside className={cn("transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex flex-col gap-10", theme === 'dark' && 'bg-[#121212] border-gray-600')}>
+            <aside className={cn("transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
                 <div className="flex flex-col gap-6 px-5">
-                    <h1 className={cn("mb-6 font-bold text-xl", theme === 'dark' && 'text-white')}>Filter by Price</h1>
+                    <h1 className={cn("mb-6 font-bold text-xl", isDark && 'text-white')}>Filter by Price</h1>
                     <Slider
                         value={value}
                         onChange={handleSlider}
@@ -181,23 +166,22 @@ const CustomerProducts = () => {
                         sx={{
                             color: 'red',
                             '& .MuiSlider-rail': {
-                                backgroundColor: theme === 'dark' ? '#60a5fa' : '#3b82f6', // track color
+                                backgroundColor: isDark ? '#60a5fa' : '#3b82f6', // track color
                             }, 
                             '& .MuiSlider-markLabel': {
-                                color: theme === 'dark' ? '#e5e7eb' : 'black', 
+                                color: isDark ? '#e5e7eb' : 'black', 
                             },
                         }}
                     />
                     <RedButton onClick={filterProducts}>Filter</RedButton>
                 </div>
-                <div className={cn("flex flex-col mt-12", theme === 'dark' && 'text-white')}>
+                <div className={cn("flex flex-col mt-12", isDark && 'text-white')}>
                     <h1 className="font-bold text-lg">Most Popular Products</h1>
                     {topProducts.map(product => (
                         <div 
                             key={product._id}
                             className={cn("cursor-pointer hover:bg-gray-100 p-3 rounded-md",
-                                theme === 'dark' && 'hover:bg-red-500/50'
-
+                                isDark && 'hover:bg-[#3d3d3d]'
                             )}
                             onClick={() => navigate(`/product/${product._id}`)}
                         >

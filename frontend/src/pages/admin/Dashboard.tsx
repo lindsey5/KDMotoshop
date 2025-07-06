@@ -11,7 +11,7 @@ const AdminDashboard = () => {
     const isDark = useDarkmode();
 
     return <div className={cn("transition-colors duration-600  min-h-full p-5 bg-gray-100", isDark && 'text-white bg-[#121212]')}>
-        <h1 className="text-red-500 font-bold text-4xl">Dashboard</h1>
+        <h1 className={cn("font-bold text-4xl text-red-500", isDark && 'text-white')}>Dashboard</h1>
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
         <DashboardCards />
         <div className="flex items-center mt-14 gap-5">

@@ -26,24 +26,38 @@ export const LineTextField: React.FC<LineTextFieldProps> = ({ label, ...props })
 };
 
 export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
+  const isDark = useDarkmode()
+  
   return (
     <TextField 
       variant="outlined"
       sx={{
-            '& .MuiInputLabel-root': {
-                    '&.Mui-focused': {
-                        color: 'red', 
-                    },
-                },
-            '& .MuiOutlinedInput-root': {
-                '&:hover fieldset': {
-                    borderColor: 'red', 
-                },
-                '&.Mui-focused fieldset': {
-                    borderColor: 'red',
-                },
-            },
-            ...sx
+        backgroundColor: isDark ? '#313131' : 'white',
+        width: '100%',
+        '& .MuiInputLabel-root': {
+          color: isDark ?  '#bdbdbd' : '',
+          '&.Mui-focused': {
+            color: isDark ? 'white' : 'red', 
+          },
+        },
+        '& .MuiOutlinedInput-root': {
+          fontSize: 15,
+          color: isDark ? 'white' : 'black', // Text color
+          '& input::placeholder': {
+            color: isDark ? '#bdbdbd' : '#757575', // Placeholder color
+            opacity: 1,
+          },
+          '& fieldset': {
+            borderColor: isDark ? '#919191' : '', 
+          },
+          '&:hover fieldset': {
+            borderColor:  isDark ? '#919191' : '',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: isDark ? '#919191' : 'red',
+          },
+        },
+        ...sx
       }}
       {...props}
 
@@ -69,11 +83,14 @@ export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChang
             color: isDark ? '#bdbdbd' : '#757575', // Placeholder color
             opacity: 1,
           },
+          '& fieldset': {
+            borderColor: isDark ? '#919191' : '', 
+          },
           '&:hover fieldset': {
-            borderColor: 'red',
+            borderColor: isDark ? '#919191' : 'gray',
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'red',
+            borderColor: isDark ? '#919191' : 'gray',
           },
         },
         ...sx

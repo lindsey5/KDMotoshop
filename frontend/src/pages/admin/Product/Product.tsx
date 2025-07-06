@@ -14,6 +14,8 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import AddProductThumbnail from "../../../components/cards/admin/AddProductThumbnail";
 import ProductImages from "../../../components/images/ProductImages";
 import Card from "../../../components/Card";
+import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
     return (
@@ -35,6 +37,7 @@ const ProductPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
+    const isDark = useDarkmode();
     const [categories, setCategories] = useState<Menu[]>([]);
     const [attributeName, setAttributeName] = useState<string>('');
     const [selectedImage, setSelectedImage] = useState<string>('/photo.png');
@@ -170,7 +173,7 @@ const ProductPage = () => {
         }
     };
 
-    return <div className="min-w-[1000px] min-h-full p-5 bg-gray-100 relative">
+    return <div className={cn("transition-colors duration-600 min-w-[1000px] min-h-full p-5 bg-gray-100 relative", isDark && 'text-white bg-[#121212]')}>
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -178,7 +181,7 @@ const ProductPage = () => {
             <CircularProgress color="inherit" />
         </Backdrop>
         <div>
-            <h1 className="font-bold text-4xl mb-4">{id ? 'Edit' : 'Create'} Product</h1>
+            <h1 className="font-bold text-4xl mb-4 text-red-500">{id ? 'Edit' : 'Create'} Product</h1>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
         <div className="flex items-start gap-10 mt-6">
@@ -210,7 +213,7 @@ const ProductPage = () => {
                         inputProps={{ maxLength: 500 }}
                     />
                     <div className="flex gap-4 items-center">
-                        <h1 className="text-gray-500">Product Type</h1>
+                        <h1 className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Product Type</h1>
                         <RadioGroup
                             row
                             value={product?.product_type}
@@ -261,9 +264,9 @@ const ProductPage = () => {
                         {product.attributes.length > 0 &&
                             <>
                             <h1 className="font-bold mt-10">All Attributes</h1>
-                            <div className="flex flex-col gap-5 p-3 bg-gray-100">
+                            <div className={cn("flex flex-col gap-5 p-3", isDark ? 'bg-[#313131]' : 'bg-gray-100')}>
                                 {product.attributes.map((attribute, i)=> (
-                                    <div key={i} className="p-5 bg-white rounded-md flex justify-between items-center">
+                                    <div key={i} className={cn('p-5 bg-white rounded-md flex justify-between items-center', isDark ? 'bg-[#121212]' : 'bg-white')}>
                                         <h2 className="font-bold text-lg">{attribute}</h2>
                                         <IconButton onClick={() => deleteAttribute(attribute)}>
                                             <DeleteIcon sx={{ color: 'red' }} fontSize="medium"/>
@@ -277,7 +280,7 @@ const ProductPage = () => {
                     )}
                 </Card>
 
-                {product.product_type === 'Variable' && <div className="mt-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
+                {product.product_type === 'Variable' && <Card className="mt-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
                     <div className="flex items-center justify-between mb-6">
                          <h1 className="text-lg font-bold">Product Variations</h1>
                          <RedButton
@@ -286,7 +289,7 @@ const ProductPage = () => {
                         >Add Variation</RedButton>
                     </div>
                     {product.variants.length > 0 ? (
-                        <div className="bg-gray-100 flex flex-col gap-5 p-5">
+                        <div className={cn("flex flex-col gap-5 p-5" , isDark ? 'bg-[#313131]' : 'bg-gray-100')}>
                         {product.variants.map((variant, i) =>(
                             <VariantContainer 
                                 key={i}
@@ -303,14 +306,14 @@ const ProductPage = () => {
                             <p className="text-gray-400">There are no variations added for this product</p>
                         </div>
                     </div>}
-                </div>}
-                <div className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
+                </Card>}
+                <Card className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
                     <Button 
                         variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
                         onClick={() => navigate(-1)}
                     >Cancel</Button>
                     <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
-                </div>
+                </Card>
             </div>
             
             <div className="w-[30%] max-w-[350px] flex flex-col gap-6">

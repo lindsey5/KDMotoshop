@@ -2,6 +2,7 @@ import { Button } from "@mui/material"
 import { fetchData } from "../../../services/api";
 import React, { useEffect, useState } from "react";
 import Card from "../../Card";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 type CategoryFilterProps = {
     selectedCategory: string;
@@ -10,6 +11,7 @@ type CategoryFilterProps = {
 
 const CategoryFilterCard : React.FC<CategoryFilterProps> = ({ selectedCategory, setSelectedCategory }) => {
     const [categories, setCategories] = useState<Category[]>([]);
+    const isDark = useDarkmode();
     
     const fetchCategories = async () => {
         const response = await fetchData('/api/category');
@@ -27,8 +29,8 @@ const CategoryFilterCard : React.FC<CategoryFilterProps> = ({ selectedCategory, 
                 onClick={() => setSelectedCategory('All')}
                 sx={{ 
                     ...(selectedCategory === 'All' ? 
-                        { backgroundColor: '#fee2e2', color: 'red', borderColor: 'red', borderWidth: 2} :
-                        { color: 'black', ":hover": { backgroundColor: '#fee2e2', color: 'red' } }
+                        { backgroundColor: isDark ? 'red' : '#fee2e2', color: isDark ? 'white' : 'red', borderColor: 'red', borderWidth: 2} :
+                        { color: isDark ? 'white' : 'black', ":hover": { backgroundColor: isDark ? '' : '#fee2e2', color: 'red' } }
                     ) 
                 }}
             >All</Button>
@@ -39,8 +41,8 @@ const CategoryFilterCard : React.FC<CategoryFilterProps> = ({ selectedCategory, 
                     onClick={() => setSelectedCategory(category.category_name)}
                     sx={{ 
                         ...(selectedCategory === category.category_name ? 
-                            { backgroundColor: '#fee2e2', color: 'red', borderColor: 'red', borderWidth: 2} :
-                            { color: 'black', ":hover": { backgroundColor: '#fee2e2', color: 'red' } }
+                            { backgroundColor: isDark ? 'red' : '#fee2e2', color: isDark ? 'white' : 'red', borderColor: 'red', borderWidth: 2} :
+                            { color: isDark ? 'white' : 'black', ":hover": { border: 1, borderColor: 'red', color: 'red' } }
                         ) 
                     }}
                 >{category.category_name}</Button>

@@ -24,6 +24,10 @@ export const CustomDateRangePicker: React.FC<CustomDateRangePickerProps> = ({
       <DateRangePicker
         value={value}
         onChange={(newValue) => setValue(newValue)}
+        sx={{
+          backgroundColor: 'white',
+
+    }}
       />
     </LocalizationProvider>
   );

@@ -5,6 +5,8 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { RedTextField } from '../../Textfield';
 import { confirmDialog } from '../../../utils/swal';
+import useDarkmode from '../../../hooks/useDarkmode';
+import { cn } from '../../../utils/utils';
 
 type VariantContainerProps = {
   index: number;
@@ -14,6 +16,7 @@ type VariantContainerProps = {
 
 const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct, variant }) => {
     const [expand, setExpand] = useState<boolean>(false);
+    const isDark = useDarkmode()
 
     const updateVariant = (
         field: keyof Variant,
@@ -50,17 +53,23 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
         }
     };
 
-    return <div className='bg-white border-1 border-gray-300 rounded-lg'>
+    return <div className={cn('border-1 border-gray-300 rounded-lg', isDark ? 'bg-[#121212]' : 'bg-white')}>
         <div className="p-5 flex justify-between items-center rounded-lg">
             <div>
                 <h1 className='font-bold'>Variant {index + 1}</h1>
                 <p>{variant.sku}</p>
             </div>
             <div className='flex items-center'>
-                <IconButton onClick={removeVariant}>
+                <IconButton 
+                    onClick={removeVariant}
+                    color='inherit'
+                >
                     <DeleteIcon />
                 </IconButton>
-                <IconButton onClick={() => setExpand(!expand)}>
+                <IconButton 
+                    onClick={() => setExpand(!expand)}
+                    color='inherit'
+                >
                     {expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
             </div>

@@ -72,8 +72,16 @@ const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill 
                 grid: {
                     color: isDark ? '#444' : '#ccc',
                 }
+                },
+                x: {
+                ticks: {
+                    color: isDark ? '#969696' : 'black', 
+                },
+                grid: {
+                    color: isDark ? '#444' : '#ccc',
                 }
-            }
+                }
+            },
         }} 
     />
     )

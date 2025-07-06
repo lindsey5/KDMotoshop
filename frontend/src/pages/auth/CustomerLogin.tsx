@@ -45,36 +45,18 @@ const CustomerLogin = () => {
             <div className="flex-1 flex justify-center items-center">
                 <div className={cn("w-full flex flex-col gap-5 max-w-[500px]", isDark && 'text-white')}>
                     <h1 className="font-bold text-4xl mb-10">Welcome Back...</h1>
-                    {isDark ? 
-                        <>
-                        <LoginTextField 
-                            placeholder="Email"
-                            value=""
-                            type="text"
-                            onChange={() => console.log('')}
-                        />
-                        <LoginTextField 
-                            placeholder="Password"
-                            value=""
-                            type="password"
-                            onChange={() => console.log('')}
-                        />
-                        </>
-
-                        : <>
-                            <RedTextField placeholder="Email" />
-                            <RedTextField placeholder="Password" type="password"/>
-                        </>
-                        
-                    }
+                    <RedTextField placeholder="Email" />
+                    <RedTextField placeholder="Password" type="password"/>
                     <a className="hover:underline" href="">Forgot Password</a>
-                    <RedButton sx={{ borderRadius: 50, marginTop: 2 }}>Login</RedButton>
+                    <RedButton sx={{ paddingY: 1, marginTop: 2 }}>Login</RedButton>
                     <div className="w-full flex items-center gap-10 text-gray-400">
                     <hr className="flex-1" />
                     <p>OR</p>
                     <hr className="flex-1" />
                     </div>
-                    <GoogleButton />
+                    <GoogleButton 
+                        theme={isDark ? 'filled_black' : 'filled_blue'}
+                    />
                 </div>
             </div>
         </div>

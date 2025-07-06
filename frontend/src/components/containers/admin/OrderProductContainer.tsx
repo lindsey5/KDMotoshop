@@ -3,6 +3,8 @@ import { RedButton } from "../../Button"
 import Card from "../../Card";
 
 const OrderProductContainer = ({ product, addOrder } : { product : Product, addOrder: (product : Product) => void}) => {
+    const stock = product.product_type === 'Variable' ? product.variants.reduce((total, variant) => total + (variant.stock ?? 0) ,0) : product.stock
+    
     return (
         <Card className="flex flex-col gap-4">
             <img 
@@ -17,7 +19,8 @@ const OrderProductContainer = ({ product, addOrder } : { product : Product, addO
             />
             <h1 className="font-bold text-lg">{product.product_name}</h1>
             <h1 className="font-bold text-lg">₱{formatNumber(product.price ? product.price :  Math.min(...product.variants.map(v => v.price || 0)))}</h1>
-            <RedButton onClick={() => addOrder(product)} disabled={product.stock === 0}>Add</RedButton>
+            {stock === 0 && <p className="text-red-500">Out of stock</p>}
+            <RedButton onClick={() => addOrder(product)} disabled={stock === 0}>Add</RedButton>
         </Card>
     )
 }

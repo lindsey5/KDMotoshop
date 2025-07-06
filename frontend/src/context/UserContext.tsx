@@ -2,6 +2,8 @@ import { createContext, useEffect, useState, type ReactNode } from "react";
 import { fetchData } from "../services/api";
 import { CircularProgress } from "@mui/material";
 import { AdminSidebar } from "../components/partials/admin/Sidebar";
+import { cn } from "../utils/utils";
+import useDarkmode from "../hooks/useDarkmode";
 
 interface User {
   email: string;
@@ -31,6 +33,7 @@ interface UserContextProviderProps {
 
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const isDark = useDarkmode();
 
   useEffect(() => {
     const getUser = async () => {
@@ -45,10 +48,11 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     getUser()
   }, []);
 
-  if(!user) return <div className="h-screen flex justify-center items-center">
-    <AdminSidebar />
-    <CircularProgress />
-  </div>
+  if(!user) return (
+    <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+      <CircularProgress sx={{ color: 'red'}}/>
+    </div>
+  )
 
   return (
     <UserContext.Provider value={{ user }}>

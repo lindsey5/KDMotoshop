@@ -6,6 +6,7 @@ import { IconButton } from '@mui/material';
 import { cn, formatNumber } from '../../../utils/utils';
 import { confirmDialog } from '../../../utils/swal';
 import Counter from '../../Counter';
+import useDarkmode from '../../../hooks/useDarkmode';
 
 type OrderContainerProps = {
     orderItem: OrderItem;
@@ -16,6 +17,7 @@ type OrderContainerProps = {
 const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setOrderItems }) => {
     const [show, setShow] = useState<boolean>(false);
     const [quantity, setQuantity] = useState<number>(orderItem.quantity);
+    const isDark = useDarkmode();
 
     const remove = async () => {
         if(await confirmDialog('Remove this item?', '')){
@@ -33,8 +35,8 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
         ))
     }, [quantity])
 
-    return <div className={cn('border-b-1 border-gray-300 flex gap-5 p-3 items-start', index % 2 == 0 && 'bg-gray-100')}>
-        <IconButton onClick={() => setShow(!show)}>
+    return <div className={cn('border-b border-gray-300 flex gap-5 p-3 items-start', index % 2 == 0 ? (isDark ? 'bg-[#252525] border-gray-600' : 'bg-gray-100') : (isDark ? 'bg-[#121212] border-gray-600' : 'bg-white'))}>
+        <IconButton onClick={() => setShow(!show)} sx={{ color: isDark ? 'white' : ''}}>
              {show ? <KeyboardArrowDownIcon /> : <ChevronRightIcon />}
         </IconButton>
         <h1>{orderItem.quantity}</h1>
@@ -51,7 +53,7 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
                     )}
                 </div>
                 <h1 className='font-bold'>₱{formatNumber(orderItem.lineTotal)}</h1>
-                <IconButton onClick={remove}>
+                <IconButton onClick={remove} sx={{ color: isDark ? 'red' : ''}}>
                     <CancelIcon />
                 </IconButton>
             </div>

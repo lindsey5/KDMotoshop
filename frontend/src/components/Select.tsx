@@ -18,12 +18,13 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
     return <FormControl fullWidth>
         <InputLabel 
           sx={{
+            color: isDark ? '#bdbdbd' : '',
             '&.Mui-focused': {
-              color: 'red', 
+              color: isDark ? 'white' : 'red', 
             },
           }}
         >{label}</InputLabel>
-        <div className={cn('absolute z-1 left-2 top-1/2 transform -translate-y-1/2', 'text-white')}>
+        <div className={cn('absolute z-1 left-2 top-1/2 transform -translate-y-1/2', isDark ? 'text-white' : '')}>
         {icon}
         </div>
         <Select
@@ -36,13 +37,13 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
             backgroundColor: isDark ? '#313131' : 'white',
             color: isDark ? 'white' : '#313131',
             '.MuiOutlinedInput-notchedOutline':{
-              borderColor: isDark ? 'white' : '',
+              borderColor: isDark ? '#919191' : '',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'red' 
+              borderColor: isDark ? '#919191' : 'red'
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'red', 
+              borderColor: isDark ? '#919191' : 'red',
               borderWidth: '2px'
             },
             ...(icon && { paddingLeft: 3}),
@@ -67,8 +68,9 @@ export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, on
     return <FormControl fullWidth>
         <InputLabel 
           sx={{
+            color: isDark ? '#bdbdbd' : '',
             '&.Mui-focused': {
-              color: 'red', 
+              color: isDark ? 'white' : 'red', 
             },
           }}
         >Status</InputLabel>
@@ -80,11 +82,12 @@ export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, on
           onChange={onChange}
           sx={{
             backgroundColor: isDark ? '#313131' : 'white',
+            color: isDark ? 'white' : '#313131',
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'red' 
+              borderColor: isDark ? '#919191' : 'red',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'red', 
+              borderColor: isDark ? '#919191' : 'red',
               borderWidth: '2px'
             },
             ...sx
