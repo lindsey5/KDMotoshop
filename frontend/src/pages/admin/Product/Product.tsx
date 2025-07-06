@@ -18,11 +18,14 @@ import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 
 const RedRadio = ({ label, value } : { label: string, value: string }) => {
+    const isDark = useDarkmode()
+
     return (
         <FormControlLabel
             value={value} 
             control={( <Radio 
                 sx={{
+                    color: isDark ? 'white' : '',
                     '&.Mui-checked': {
                         color: red[600],
                     },

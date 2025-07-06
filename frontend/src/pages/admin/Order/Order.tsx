@@ -5,7 +5,7 @@ import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { StatusSelect } from "../../../components/Select";
 import { Statuses } from "../../../constants/status";
 import { cn, formatNumber } from "../../../utils/utils";
-import { Avatar, IconButton } from "@mui/material";
+import { Avatar, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
@@ -53,9 +53,13 @@ const OrderDetails = () => {
         }
     }
     
-    if(!order) return null
+    if(!order) return (
+        <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+            <CircularProgress sx={{ color: 'red'}}/>
+         </div>
+    )
 
-    return <div className={cn("flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
+    return <div className={cn("transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
                 <IconButton onClick={() => navigate('/admin/orders')} sx={{ color: isDark? 'white' : ''}}>

@@ -9,12 +9,11 @@ export const RedButton: React.FC<ButtonProps> = ({sx, ...props}) => {
     variant="contained" 
     sx={{ 
         backgroundColor: 'red', 
-        border: 1,
-        borderColor: 'white',
         ":hover": {
             backgroundColor: '#c03838'
         },
         '&.Mui-disabled': {
+          border: 1,
           color: isDark ? "gray" : '', 
           borderColor: isDark ? 'gray' : ''
         },
@@ -42,7 +41,7 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
   
     return (
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-          <div className="border border-white">
+          <div className="border border-white w-full">
             <GoogleLogin 
               onSuccess={handleSuccess} 
               onError={handleError} 

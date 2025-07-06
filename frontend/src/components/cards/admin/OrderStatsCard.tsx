@@ -41,6 +41,7 @@ type CardValue = {
 }
 
 export const OrderStatsCards = () => {
+    const isDark = useDarkmode();
     const [cardValues, setCardValues] = useState<CardValue>(
         {
             overallTotalOrders: 0,
@@ -68,13 +69,13 @@ export const OrderStatsCards = () => {
     return (
         <Card className="h-[150px] flex items-center gap-10">
             <StatsCard title="Total Orders" value={cardValues.overallTotalOrders.toString()} subtitle="Total Orders for last 365 days"/>
-            <hr className="h-full border-1 border-gray-200" />
+            <hr className={cn("h-full border-1 border-gray-200", isDark && 'border-gray-600')} />
         
             <StatsCard title="Pending Orders" value={cardValues.pendingOrders.toString()} subtitle="Total Pending Orders" color="yellow"/>
-            <hr className="h-full border-1 border-gray-200" />
+            <hr className={cn("h-full border-1 border-gray-200", isDark && 'border-gray-600')} />
         
             <StatsCard title="Completed Orders" value={cardValues.completedOrders.toString()} subtitle="Completed Orders for last 365 days" color="purple"/>
-            <hr className="h-full border-1 border-gray-200" />
+            <hr className={cn("h-full border-1 border-gray-200", isDark && 'border-gray-600')} />
         
             <StatsCard title="Cancelled Orders" value={cardValues.cancelledOrders.toString()} subtitle="Cancelled Orders for last 365 days" color="red"/>
         </Card>

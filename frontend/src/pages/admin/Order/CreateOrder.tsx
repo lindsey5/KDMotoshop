@@ -158,7 +158,7 @@ const CreateOrderPage = () => {
         setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
     }, [order.shipping_fee])
 
-    return <div className={cn("flex h-full bg-gray-100 gap-5", isDark && 'text-white bg-[#121212]')}>
+    return <div className={cn("transition-colors duration-600 flex h-full bg-gray-100 gap-5", isDark && 'text-white bg-[#121212]')}>
         <Backdrop
             sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
             open={loading}

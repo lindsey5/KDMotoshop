@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { hashPassword } from '../utils/authUtils';
+import { UploadedImage } from '../types/types';
 
 export interface IUser extends Document {
   email: string;
@@ -7,10 +8,7 @@ export interface IUser extends Document {
   firstname: string;
   lastname: string;
   phone: string;
-  image: {
-    public_id: string;
-    url: string;
-  };
+  image: UploadedImage;
   role: string
 }
 

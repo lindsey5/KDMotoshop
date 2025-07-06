@@ -6,6 +6,7 @@ const CustomizedPagination : React.FC<PaginationProps> = ({ sx,  ...props}) => {
 
     return (
         <Pagination 
+            {...props}
             sx={{
                 '& .MuiPaginationItem-root': {
                     color: isDark ? 'white' : 'black', 
@@ -22,7 +23,6 @@ const CustomizedPagination : React.FC<PaginationProps> = ({ sx,  ...props}) => {
                 },
                 ...sx
             }}
-            {...props}
         />
     )
 }
