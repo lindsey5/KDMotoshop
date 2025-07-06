@@ -5,7 +5,6 @@ import {
   type DateRange
 } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import useDarkmode from '../hooks/useDarkmode';
 
 type CustomDateRangePickerProps = {
   value: DateRange<Dayjs> | undefined;
