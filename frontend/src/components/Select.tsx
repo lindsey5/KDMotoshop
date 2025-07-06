@@ -3,6 +3,8 @@ import FormControl from '@mui/material/FormControl';
 import Select, { type BaseSelectProps, type SelectChangeEvent } from '@mui/material/Select';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box, MenuItem } from '@mui/material';
+import { cn } from '../utils/utils';
+import useDarkmode from '../hooks/useDarkmode';
 
 interface CustomizedSelectProps extends BaseSelectProps{
     menu: Menu[];
@@ -11,6 +13,8 @@ interface CustomizedSelectProps extends BaseSelectProps{
 }
 
 export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, menu, icon, ...props}) => {
+    const isDark = useDarkmode();
+    
     return <FormControl fullWidth>
         <InputLabel 
           sx={{
@@ -19,7 +23,7 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
             },
           }}
         >{label}</InputLabel>
-        <div className='absolute left-2 top-1/2 transform -translate-y-1/2'>
+        <div className={cn('absolute z-1 left-2 top-1/2 transform -translate-y-1/2', 'text-white')}>
         {icon}
         </div>
         <Select
@@ -29,7 +33,11 @@ export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, 
           {...(label && { label })}
           {...props}
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: isDark ? '#313131' : 'white',
+            color: isDark ? 'white' : '#313131',
+            '.MuiOutlinedInput-notchedOutline':{
+              borderColor: isDark ? 'white' : '',
+            },
             '&:hover .MuiOutlinedInput-notchedOutline': {
               borderColor: 'red' 
             },
@@ -54,6 +62,8 @@ type StatusSelectProps = {
 }
 
 export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, onChange}) => {
+    const isDark = useDarkmode();
+    
     return <FormControl fullWidth>
         <InputLabel 
           sx={{
@@ -69,7 +79,7 @@ export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, on
           value={value}
           onChange={onChange}
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: isDark ? '#313131' : 'white',
             '&:hover .MuiOutlinedInput-notchedOutline': {
               borderColor: 'red' 
             },

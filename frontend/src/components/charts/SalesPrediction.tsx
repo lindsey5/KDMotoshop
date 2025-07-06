@@ -2,11 +2,12 @@ import Card from "../Card"
 import { useEffect, useState } from "react"
 import { fetchData } from "../../services/api";
 import AreaChart from "./AreaChart";
+import useDarkmode from "../../hooks/useDarkmode";
 
 const SalesPredictionChart = () => {
     const [forecastSales, setForecastSales] = useState<number[]>([]);
     const [dateLabels, setDateLabels] = useState<string[]>([]);
-
+    const isDark = useDarkmode();
 
     useEffect(() => {
         const getForecastSales = async () => {
@@ -27,7 +28,7 @@ const SalesPredictionChart = () => {
                 data={forecastSales}
                 labels={dateLabels}
                 label="Sales Prediction"
-                fill={false}
+                fill={isDark ? true : false}
             />
         </Card>
     )

@@ -1,5 +1,6 @@
 import { Chip } from "@mui/material";
 import type React from "react";
+import useDarkmode from "../hooks/useDarkmode";
 
 type CustomizedChipProps = {
   isSelected: boolean;
@@ -14,23 +15,27 @@ export const CustomizedChip: React.FC<CustomizedChipProps> = ({
   onClick,
   onDelete,
 }) => {
+  const isDark = useDarkmode();
+
   return (
     <Chip
       label={label}
+      variant="outlined"
       onClick={onClick}
       {...(onDelete && { onDelete })}
       sx={[
-        isSelected && {
-          backgroundColor: 'red',
-          color: 'white',
+        { 
+          minWidth: 60, 
+          fontSize: 15,
+          backgroundColor: isSelected ? 'red' : '',
+          color: isDark || isSelected ? 'white' : 'black',
           '& .MuiChip-deleteIcon': {
-            color: 'white', 
+            color: isDark || isSelected ? 'white' : '', 
           },
           '& .MuiChip-deleteIcon:hover': {
-            color: 'white', 
+            color: isDark || isSelected ? 'white' : '', 
           },
-        },
-        { minWidth: 60, fontSize: 15 }
+        }
       ]}
     />
   );

@@ -8,22 +8,32 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import type { ReactNode } from 'react';
 
-export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+export const StyledTableCell = styled(TableCell, {
+  shouldForwardProp: (prop) => prop !== 'isDark',
+})<{isDark?: boolean}>(({ theme, isDark }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    color: isDark ? theme.palette.common.white : 'inherit',
   },
 }));
 
-export const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
+export const StyledTableRow = styled(TableRow, {
+  shouldForwardProp: (prop) => prop !== 'isDark',
+})<{isDark?: boolean}>(({ isDark }) => ({
+  '&:nth-of-type(even)': {
+    backgroundColor: isDark ? '#1e1e1e' : 'white',
   },
-  // hide last border
+  '&:nth-of-type(odd)': {
+    backgroundColor: isDark ? '#121212' : '#eeeeee',
+  },
   '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+  '& td': {
     border: 0,
   },
 }));
@@ -35,7 +45,7 @@ interface CustomizedTableProps extends TableContainerProps{
 
 const CustomizedTable : React.FC<CustomizedTableProps> = ({cols, rows, ...props}) => {
   return (
-    <TableContainer component={Paper} {...props} sx={{ flexGrow: 1, minHeight: 0 }}>
+    <TableContainer component={Paper} {...props}>
       <Table aria-label="customized table">
         <TableHead>
           {cols}

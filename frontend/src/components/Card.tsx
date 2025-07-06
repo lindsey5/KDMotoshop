@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "../utils/utils";
+import useDarkmode from "../hooks/useDarkmode";
 
 interface CardProps {
   className?: string;
@@ -7,8 +8,11 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ className = "", children }) => {
-  return (
-    <div className={cn("p-5 bg-white rounded-lg shadow-md border border-gray-300", className)}>
+    const isDark = useDarkmode();
+    
+    return (
+        
+    <div className={cn("p-5 rounded-lg shadow-md border", className, isDark ? "bg-[#1e1e1e] border-[#2a2a2a]" : 'bg-white border-gray-300')}>
       {children}
     </div>
   );

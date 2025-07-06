@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
 import { RedButton } from "../../../components/Button";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import * as motion from "motion/react-client"
-import { DarkmodeContext } from "../../../context/DarkmodeContext";
 import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const itemVariants = {
     visible: {
@@ -36,9 +36,7 @@ const containerVariants = {
 
 const PopularProductsSection = () => {
     const [products, setProducts] = useState<Product[]>([]);
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode()
 
     useEffect(() => {
         const getPopularProducts = async () => {
@@ -51,9 +49,9 @@ const PopularProductsSection = () => {
     }, []);
 
     return (
-        <section className={cn("transition-colors duration-600 min-h-screen px-10 pt-30 flex flex-col items-center", theme === 'dark' && 'bg-gray-900')}>
+        <section className={cn("transition-colors duration-600 min-h-screen px-10 pt-30 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
         <div className="w-full">
-            <h1 className={cn("text-4xl md:text-5xl font-bold text-red-600", theme === 'dark' && 'text-white')}>Best Selling Products</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-red-600">Best Selling Products</h1>
         </div>
 
         <motion.div 

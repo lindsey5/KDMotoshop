@@ -117,10 +117,10 @@ const CustomerProducts = () => {
 
     return (
         <div className="flex pt-20">
-            <div className={cn("transition-colors duration-600 relative flex-1 p-10", theme === 'dark' && 'bg-gray-900')}>
+            <div className={cn("transition-colors duration-600 relative flex-1 p-10", theme === 'dark' && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex justify-between items-center mt-4">
-                    <h1 className={cn("text-4xl text-red-500 font-bold", theme === 'dark' && 'text-white')}>Products</h1>
+                    <h1 className="text-4xl text-red-500 font-bold">Products</h1>
                     <div className="flex gap-5 flex-1 max-w-[600px]">
                         <CustomizedSelect 
                             menu={[
@@ -161,13 +161,13 @@ const CustomerProducts = () => {
                                 '& .MuiPaginationItem-previousNext.Mui-disabled': {
                                     color: theme === 'dark' ? 'white' : '#9ca3af',
                                 },
-                        }}
+                            }}
                         />
                     </div>
                 )}
             </div>
             
-            <aside className={cn("transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex flex-col gap-10", theme === 'dark' && 'bg-[#090e1a] border-gray-600')}>
+            <aside className={cn("transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex flex-col gap-10", theme === 'dark' && 'bg-[#121212] border-gray-600')}>
                 <div className="flex flex-col gap-6 px-5">
                     <h1 className={cn("mb-6 font-bold text-xl", theme === 'dark' && 'text-white')}>Filter by Price</h1>
                     <Slider
@@ -196,7 +196,7 @@ const CustomerProducts = () => {
                         <div 
                             key={product._id}
                             className={cn("cursor-pointer hover:bg-gray-100 p-3 rounded-md",
-                                theme === 'dark' && 'hover:bg-[#020713]'
+                                theme === 'dark' && 'hover:bg-red-500/50'
 
                             )}
                             onClick={() => navigate(`/product/${product._id}`)}

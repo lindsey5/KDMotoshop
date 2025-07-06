@@ -1,17 +1,15 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import * as motion from "motion/react-client"
-import { useContext } from 'react';
-import { DarkmodeContext } from '../../../context/DarkmodeContext';
 import { cn } from '../../../utils/utils';
+import useDarkmode from '../../../hooks/useDarkmode';
 
 const AboutSection = () => {
-  const context = useContext(DarkmodeContext);
-  if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
+  const isDark = useDarkmode();
 
   return (
     <div className={cn("relative transition-colors duration-600 flex gap-50 justify-center  items-center p-20",
-      context.theme === 'dark' ? "bg-gray-900 text-white" : 'bg-white'
+      isDark ? "bg-[#1e1e1e] text-white" : 'bg-white'
     )}>
         <motion.div
           initial={{ opacity: 0, x: -50}}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { cn } from "../../../utils/utils";
 import { fetchData } from "../../../services/api";
 import Card from "../../Card";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 type StatCardProps = {
   title: string;
@@ -11,6 +12,8 @@ type StatCardProps = {
 };
 
 const StatsCard = ({ title, value, subtitle, color = "green" }: StatCardProps) => {
+    const isDark = useDarkmode();
+
     const colorMap: Record<string, string> = {
         green: "bg-green-500",
         purple: "bg-purple-500",
@@ -19,13 +22,13 @@ const StatsCard = ({ title, value, subtitle, color = "green" }: StatCardProps) =
     };
 
     return (
-        <div className="flex-1">
-            <h2 className="font-bold text-gray-500">{title}</h2>
+        <div className={cn("flex-1", isDark && 'text-white')}>
+            <h2 className={cn('font-bold', !isDark && 'text-gray-500')}>{title}</h2>
             <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-bold">{value}</h1>
                 <hr className={cn(`w-5 h-2 border-none`, colorMap[color])} />
             </div>
-            <p className="text-sm 2xl:text-md text-gray-400 mt-1">{subtitle}</p>
+            <p className={cn("text-sm 2xl:text-md mt-1", isDark ? "text-gray-200" : "text-gray-400")}>{subtitle}</p>
         </div>
     );
 };

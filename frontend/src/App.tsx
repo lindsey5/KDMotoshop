@@ -12,35 +12,38 @@ import CustomerLayout from "./layouts/CustomerLayout";
 import CustomerProducts from "./pages/customer/Product/Products";
 import CustomerProduct from "./pages/customer/Product/Product";
 import CustomerLogin from "./pages/auth/CustomerLogin";
+import { DarkmodeContextProvider } from "./context/DarkmodeContext";
 
 function App() {
-  return <BrowserRouter>
-  <Routes>
-    <Route path="login" element={<CustomerLogin />} />
-    <Route element={<CustomerLayout />}>
-      <Route index element={<Home />} />
-      <Route path="products" element={<CustomerProducts />} />
-      <Route path="product/:id" element={<CustomerProduct />} />
-    </Route>
-    <Route path="admin">
-      <Route path="login" element={<AdminLogin />} />
-      <Route element={<AdminLayout />}>
-        <Route index element={<Navigate to="/admin/dashboard" />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="products">
-          <Route index element={<Products />} />
-          <Route path="product" element={<ProductPage />} />
+  return <DarkmodeContextProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="login" element={<CustomerLogin />} />
+        <Route element={<CustomerLayout />}>
+          <Route index element={<Home />} />
+          <Route path="products" element={<CustomerProducts />} />
+          <Route path="product/:id" element={<CustomerProduct />} />
         </Route>
-        <Route path="orders">
-          <Route index element={<Orders />} />
-          <Route path="create" element={<CreateOrderPage />} />
-          <Route path=":id" element={<OrderDetails />} />
+        <Route path="admin">
+          <Route path="login" element={<AdminLogin />} />
+          <Route element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products">
+              <Route index element={<Products />} />
+              <Route path="product" element={<ProductPage />} />
+            </Route>
+            <Route path="orders">
+              <Route index element={<Orders />} />
+              <Route path="create" element={<CreateOrderPage />} />
+              <Route path=":id" element={<OrderDetails />} />
+            </Route>
+          </Route>
         </Route>
-      </Route>
-    </Route>
-    <Route path="*" element={<Navigate to="/" />}/>
-  </Routes>
-  </BrowserRouter>
+        <Route path="*" element={<Navigate to="/" />}/>
+      </Routes>
+    </BrowserRouter>
+  </DarkmodeContextProvider>
 }
 
 export default App

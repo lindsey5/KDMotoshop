@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import useDarkmode from '../../hooks/useDarkmode';
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +32,9 @@ type AreaChartProps = {
 }
 
 const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill = true}) => {
-  return (
+    const isDark = useDarkmode();
+
+    return (
     <Line 
         data={{
             labels: labels,
@@ -51,13 +54,26 @@ const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill 
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                position: 'top' as const,
+                    labels: {
+                        color: isDark ? 'white' : 'black', 
+                    },
+                    position: 'top' as const,
                 },
                 title: {
-                display: true,
-                text: title,
+                    display: true,
+                    text: title,
                 },
             },
+            scales: {
+                y: {
+                ticks: {
+                    color: isDark ? '	#e0e0e0' : 'black', 
+                },
+                grid: {
+                    color: isDark ? '#444' : '#ccc',
+                }
+                }
+            }
         }} 
     />
     )

@@ -38,7 +38,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
       if (response.user) setUser(response.user);
       else {
-        window.location.href = '/login';
+        window.location.href = '/admin/login';
       }
     };
 

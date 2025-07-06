@@ -2,8 +2,10 @@ import { PieChart } from "@mui/x-charts"
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
 import Card from "../Card";
+import useDarkmode from "../../hooks/useDarkmode";
 
 const TopCategoriesChart = () => {
+    const isDark = useDarkmode();
     const [data, setData] = useState<ChartData>({ data: [] });
 
     useEffect(() => {
@@ -24,10 +26,22 @@ const TopCategoriesChart = () => {
 
     return (
         <Card className="flex-1">
-            <h1 className="font-bold text-xl mb-4">Top Categories</h1>
+            <h1 className="font-bold text-xl mb-4 text-white">Top Categories</h1>
             <PieChart 
                 series={[ data ]}
                 height={300}
+                slotProps={{
+                    legend: {
+                    sx: {
+                        '& .MuiChartsLegend-label': {
+                            color: isDark ? "white" : '', 
+                        },
+                        '& .MuiChartsLegend-mark': {
+                            color: isDark ? "white" : '', 
+                        }
+                    }
+                    }
+                }}
             />
         </Card>
     )

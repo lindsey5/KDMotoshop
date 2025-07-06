@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { type Dayjs } from 'dayjs';
 import {
   DateRangePicker,
@@ -6,6 +5,7 @@ import {
   type DateRange
 } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import useDarkmode from '../hooks/useDarkmode';
 
 type CustomDateRangePickerProps = {
   value: DateRange<Dayjs> | undefined;
@@ -16,6 +16,8 @@ export const CustomDateRangePicker: React.FC<CustomDateRangePickerProps> = ({
   value,
   setValue,
 }) => {
+
+  const isDark = useDarkmode();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

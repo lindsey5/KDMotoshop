@@ -1,6 +1,7 @@
 import { InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import type React from "react";
+import useDarkmode from "../hooks/useDarkmode";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
@@ -51,16 +52,23 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
 }
 
 export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChange }) => {
+  const isDark = useDarkmode()
+
   return (
     <TextField
       onChange={onChange}
       placeholder={placeholder}
       variant="outlined"
       sx={{
-        backgroundColor: 'white',
+        backgroundColor: isDark ? '#313131' : 'white',
         width: '100%',
         '& .MuiOutlinedInput-root': {
           fontSize: 15,
+          color: isDark ? 'white' : 'black', // Text color
+          '& input::placeholder': {
+            color: isDark ? '#bdbdbd' : '#757575', // Placeholder color
+            opacity: 1,
+          },
           '&:hover fieldset': {
             borderColor: 'red',
           },
@@ -68,12 +76,12 @@ export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChang
             borderColor: 'red',
           },
         },
-        ...sx,
+        ...sx
       }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon color="action" />
+            <SearchIcon sx={{ color: isDark ? 'white' : 'action.active' }} /> {/* Icon color */}
           </InputAdornment>
         ),
       }}

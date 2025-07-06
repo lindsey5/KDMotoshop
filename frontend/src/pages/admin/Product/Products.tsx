@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/tables/ProductTable"
 import Card from "../../../components/Card"
+import { cn } from "../../../utils/utils"
+import useDarkmode from "../../../hooks/useDarkmode"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -28,6 +30,7 @@ const deleteCategory = async (id : string) => {
 }
 
 const Products = () => {
+    const isDark = useDarkmode();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
     const [pagination, setPagination] = useState<Pagination>({
         totalPages: 1,
@@ -79,46 +82,69 @@ const Products = () => {
     };
 
     return( 
-        <div className="flex flex-col bg-gray-100 h-full p-5">
+        <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>
             <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
             <div className="flex items-center mb-6 justify-between">
                 <div>
-                    <h1 className="font-bold text-4xl mb-4">Products</h1>
+                    <h1 className="font-bold text-4xl mb-4 text-red-500">Products</h1>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 </div>
                 <div className="flex gap-10">
                     <Button 
-                        sx={{ color: 'red', borderColor: 'red'}} 
+                        sx={{ 
+                            color: isDark ? 'white' : 'red', 
+                            borderColor: isDark ? 'white' : 'red'
+                        }} 
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
                     >Add Category</Button>
                     <RedButton onClick={() => navigate('/admin/products/product')}>Add Product</RedButton>
                 </div>
             </div>
-            <Card className="flex-grow min-h-0 flex flex-col ">
-                <div className="flex items-center justify-between">
+            <Card className="flex-grow min-h-0 flex flex-col">
+                <div className="flex items-center justify-between mb-6">
                     <SearchField 
                         sx={{ width: '400px'}}
                         onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
                         placeholder="Search by Product name, SKU, Category..."
                     />
-                    <Pagination count={pagination.totalPages} onChange={handlePage} />
-                </div>
-                <div className="flex overflow-x-auto mt-4 mb-6 gap-2">
-                    <CustomizedChip 
-                        onClick={() => setSelectedCategory('All')} 
-                        label="All"
-                        isSelected={selectedCategory === 'All'}
-                    />
-                    {categories && categories.map(category => 
-                        <CustomizedChip 
-                            key={category.category_name}
-                            onClick={() => setSelectedCategory(category.category_name)}
-                            isSelected={selectedCategory === category.category_name}
-                            label={category.category_name} 
-                            onDelete={() => deleteCategory(category._id)} 
+                    <div className="flex items-center gap-5">
+                        <div className="flex overflow-x-auto gap-2">
+                            <CustomizedChip 
+                                onClick={() => setSelectedCategory('All')} 
+                                label="All"
+                                isSelected={selectedCategory === 'All'}
+                            />
+                            {categories && categories.map(category => 
+                                <CustomizedChip 
+                                    key={category.category_name}
+                                    onClick={() => setSelectedCategory(category.category_name)}
+                                    isSelected={selectedCategory === category.category_name}
+                                    label={category.category_name} 
+                                    onDelete={() => deleteCategory(category._id)} 
+                                />
+                            )}
+                        </div>
+                        <Pagination 
+                            sx={{
+                                '& .MuiPaginationItem-root': {
+                                    color: isDark ? 'white' : 'black', 
+                                },
+                                '& .Mui-selected': {
+                                    backgroundColor: 'red', 
+                                    color: '#fff',
+                                },
+                                '& .MuiPaginationItem-previousNext': {
+                                    color: isDark ? 'white' : '#4b5563',
+                                },
+                                '& .MuiPaginationItem-previousNext.Mui-disabled': {
+                                    color: isDark ? 'white' : '#9ca3af',
+                                },
+                            }}
+                            count={pagination.totalPages} 
+                            onChange={handlePage} 
                         />
-                    )}
+                    </div>
                 </div>
                 <CustomizedTable
                     cols={<ProductTableColumns />}

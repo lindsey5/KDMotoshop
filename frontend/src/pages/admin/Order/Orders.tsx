@@ -16,6 +16,8 @@ import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
 import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard";
 import Card from "../../../components/Card";
+import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -35,6 +37,7 @@ const Orders = () => {
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
+    const isDark = useDarkmode();
     
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
@@ -67,10 +70,10 @@ const Orders = () => {
         getOrdersAsync();
     }, [selectedDates, selectedStatus,])
 
-    return <div className="h-full flex flex-col p-5 bg-gray-100">
+    return <div className={cn("transition-colors duration-600 flex flex-col p-5 bg-gray-100", isDark && 'bg-[#121212]')}>
         <div className="flex justify-between items-center mb-6">
             <div>
-                <h1 className="font-bold text-4xl mb-4">Orders List</h1>
+                <h1 className="font-bold text-4xl mb-4 text-red-500">Orders List</h1>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>

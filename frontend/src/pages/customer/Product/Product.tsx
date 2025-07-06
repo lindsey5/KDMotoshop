@@ -53,13 +53,13 @@ const CustomerProduct = () => {
     };
 
     return (
-         <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", theme === 'dark' && 'bg-gray-900')}>
+         <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", theme === 'dark' && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col md:flex-row gap-10 py-10">
                 <div className="flex flex-col gap-5 items-center">
                     <ProductThumbnail 
                         product={product} 
-                        className={cn("w-[350px] h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg", theme === 'dark' && 'shadow-red-600/50')}
+                        className={cn("w-[350px] h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
                     />
                     <MultiImageSlideshow 
                             images={
@@ -74,7 +74,7 @@ const CustomerProduct = () => {
                         
                         />
                 </div>
-                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", theme==='dark' && 'bg-[#090e1a] text-white shadow-red-600/50')}>
+                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", theme==='dark' && 'bg-[#121212] text-white')}>
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 

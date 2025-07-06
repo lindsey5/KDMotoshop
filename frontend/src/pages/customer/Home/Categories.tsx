@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { RedButton } from "../../../components/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { DarkmodeContext } from "../../../context/DarkmodeContext";
 import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 type TopCategory = {
   totalQuantity: number;
@@ -37,9 +37,7 @@ const item = {
 const PopularCategoriesSection = () => {
     const [categories, setCategories] = useState<TopCategory[]>([]);
     const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode();
     const pageSize = 3;
 
     useEffect(() => {
@@ -68,10 +66,10 @@ const PopularCategoriesSection = () => {
 
     return (
         <section className={cn('bg-gray-100 transition-colors duration-600 py-20', 
-            theme === 'dark' && 'bg-[#090e1a]'
+            isDark && 'bg-[#121212]'
         )}
         >
-        <h1 className={cn("text-center text-5xl font-bold text-red-600 mb-12", theme === 'dark' && "text-white")}>
+        <h1 className="text-center text-5xl font-bold text-red-600 mb-12">
             Popular Categories
         </h1>
         <div className="relative flex justify-center items-center overflow-hidden min-h-[400px]">
@@ -120,7 +118,7 @@ const PopularCategoriesSection = () => {
                         src={category.image}
                         alt={category.category}
                         />
-                        <h1 className={cn("text-center font-bold text-red-600 text-xl", theme === 'dark' && 'text-white')}>
+                        <h1 className={cn("text-center font-bold text-red-600 text-xl", isDark && 'text-white')}>
                         {category.category}
                         </h1>
                         <RedButton onClick={() => window.location.href = `/products?category=${category.category}`}>Shop now</RedButton>

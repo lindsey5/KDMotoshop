@@ -35,12 +35,14 @@ export const GoogleButton = () => {
   
     return (
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-          <GoogleLogin 
-            onSuccess={handleSuccess} 
-            onError={handleError} 
-            size="large"
-            theme="filled_black"
-          />
+          <div className="border border-white">
+            <GoogleLogin 
+              onSuccess={handleSuccess} 
+              onError={handleError} 
+              size="large"
+              theme="filled_black"
+            />
+          </div>
       </GoogleOAuthProvider>
     );
 };

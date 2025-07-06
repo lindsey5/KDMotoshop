@@ -1,14 +1,14 @@
 import { Button, IconButton, Link } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useState, useEffect, useRef, useCallback, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { cn, formatNumber } from "../../../utils/utils";
 import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
 import { fetchData } from "../../../services/api";
 import { ProductThumbnail } from "../../image";
 import { ThemeToggle } from "../../Toggle";
-import { DarkmodeContext } from "../../../context/DarkmodeContext";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const HeaderLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -50,9 +50,7 @@ const HeaderSearchField = () => {
     const [autoComplete, setAutoComplete] = useState<boolean>(false);
     const observer = useRef<IntersectionObserver | null>(null);
     const [hasMore, setHasMore] = useState<boolean>(false);
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode();
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
         searchTerm: '',
@@ -118,12 +116,12 @@ const HeaderSearchField = () => {
     const handleFocus = () => setAutoComplete(true)
 
     return (
-        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-500 bg-white transition-colors duration-400', theme === 'dark' && 'bg-[#313131]')}>
-            <SearchIcon className={cn(theme === 'dark' && "text-gray-300")}/>
+        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-500 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
+            <SearchIcon className={cn(isDark && "text-gray-300")}/>
             <input
               type="text"
               placeholder="Search..."
-              className={cn("flex-1 py-2 pr-12 outline-none text-sm md:text-base", theme === 'dark' && "text-white placeholder-gray-300")}
+              className={cn("flex-1 py-2 pr-12 outline-none text-sm md:text-base", isDark && "text-white placeholder-gray-300")}
               onChange={(e) => setPagination(prev => ({ ...prev, searchTerm: e.target.value as string}))}
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -152,7 +150,6 @@ const HeaderSearchField = () => {
 }
 
 const CustomerHeader = () => {
-    const navigate = useNavigate()
     const location = useLocation()
     const [isScrolled, setIsScrolled] = useState<boolean>(location.pathname !== '/');
 
@@ -169,13 +166,14 @@ const CustomerHeader = () => {
     return (
         <header className={cn("z-10 flex gap-10 items-center justify-between fixed top-0 left-0 right-0 px-10 py-3 transition-all duration-300", isScrolled && 'bg-black')}>
             <img className="w-30 h-15 cursor-pointer" 
-                onClick={() => window.location.href = '/'} src="/kd-logo.png" alt="" 
+                onClick={() => window.location.href = '/'} 
+                src="/kd-logo.png" alt="" 
             />
             <HeaderSearchField />
             <div className="flex gap-5 items-center">
                 <HeaderLink path="/" label="Home"/>
                 <HeaderLink  path="/products" label="Products"/>
-                <RedButton onClick={() => navigate('/login')}>Login</RedButton>
+                <RedButton onClick={() => window.open('/login', '_blank')}>Login</RedButton>
                 <IconButton>
                     <ShoppingCartIcon sx={{ color: 'white' }} fontSize="large"/>
                 </IconButton>
