@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchData } from "../../../services/api";
 import { ProductThumbnail, MultiImageSlideshow } from "../../../components/image";
@@ -8,7 +8,6 @@ import { cn, formatNumber } from "../../../utils/utils";
 import { ExpandableText } from "../../../components/Text";
 import { RedButton } from "../../../components/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import { DarkmodeContext } from "../../../context/DarkmodeContext";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 

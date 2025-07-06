@@ -17,8 +17,6 @@ export const CustomDateRangePicker: React.FC<CustomDateRangePickerProps> = ({
   setValue,
 }) => {
 
-  const isDark = useDarkmode();
-
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateRangePicker

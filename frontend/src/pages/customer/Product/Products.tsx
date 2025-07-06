@@ -1,14 +1,13 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
-import { Pagination, Slider } from "@mui/material";
+import { Slider } from "@mui/material";
 import { CustomizedSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../../components/containers/TopProductContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { DarkmodeContext } from "../../../context/DarkmodeContext";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
