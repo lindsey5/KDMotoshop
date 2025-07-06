@@ -29,6 +29,8 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
       try {
         const credential = response.credential;
         const decoded = JSON.parse(atob(credential.split('.')[1]));
+
+        console.log(decoded)
         
       } catch (error) {
         console.error('Login processing error:', error);

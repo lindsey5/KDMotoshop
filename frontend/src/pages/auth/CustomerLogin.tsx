@@ -4,21 +4,6 @@ import { ThemeToggle } from "../../components/Toggle";
 import { RedTextField } from "../../components/Textfield";
 import useDarkmode from "../../hooks/useDarkmode";
 
-interface LoginTextFieldProps{
-    placeholder: string;
-    value: string;
-    type: 'text' | 'password' | 'number'
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
-
-const LoginTextField : React.FC<LoginTextFieldProps> = ({ ...props }) => {
-    return (
-        <input 
-            className={cn("bg-[#575757] px-5 py-3 w-full rounded-full outline-none")}
-            {...props}
-        />
-    )
-}
 
 const CustomerLogin = () => {
     const isDark = useDarkmode();
