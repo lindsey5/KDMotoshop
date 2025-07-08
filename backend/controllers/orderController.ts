@@ -2,49 +2,8 @@ import { Request, Response } from 'express';
 import Order from '../models/Order';
 import OrderItem from '../models/OrderItem';
 import { AuthenticatedRequest } from '../types/auth';
-import Product from '../models/Product';
-
-const generateOrderId = async () => {
-  const prefix = 'ORD-';
-  const order_id = prefix + Math.random().toString(36).substring(2, 10).toUpperCase();
-  
-  const existingOrder = await Order.findOne({ order_id });
-
-  // If it exists, retry
-  if (existingOrder) {
-    return generateOrderId();
-  }
-
-  return order_id;
-};
-
-const decrementStock = async (item : any) => {
-    if (item.variant_id) {
-        await Product.updateOne(
-            {  _id: item.product_id,  "variants._id": item.variant_id },
-            { $inc: { "variants.$.stock": -item.quantity } }
-        );
-    } else {
-        await Product.updateOne(
-            { _id: item.product_id },
-            { $inc: { stock: -item.quantity } }
-        );
-    }
-}
-
-const incrementStock = async (item : any) => {
-    if (item.variant_id) {
-        await Product.updateOne(
-            {  _id: item.product_id,  "variants._id": item.variant_id },
-            { $inc: { "variants.$.stock": item.quantity } }
-        );
-    } else {
-        await Product.updateOne(
-            { _id: item.product_id },
-            { $inc: { stock: item.quantity } }
-        );
-    }
-}
+import { createNewOrder, generateOrderId } from '../services/orderService';
+import { incrementStock, decrementStock } from '../services/orderService';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -53,27 +12,10 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             res.status(400).json({ success: false, message: 'Order and order items are required' });
             return;
         }
-        const newOrder = new Order({...order, createdBy: req.user_id, order_id: await generateOrderId()});
+        const newOrder = {...order, createdBy: req.user_id, order_id: await generateOrderId()}
+        const savedOrder = createNewOrder({ orderItems, order: newOrder });
 
-        const orderItemsWithOrderID = orderItems.map((item: any) => (
-            {
-                ...item, 
-                order_id: newOrder._id,
-                status: order.status === 'Completed' ? 'Fulfilled' : 'Unfulfilled'
-            }
-        ));   
-        OrderItem.insertMany(orderItemsWithOrderID)
-            .then(async (items) => {
-                const savedOrder = await newOrder.save();
-                if(newOrder.status === 'Completed') {
-                    for (const item of items) await decrementStock(item)
-                }
-                res.status(201).json({ success: true, order: savedOrder });
-            })  
-            .catch((error) => {
-                throw new Error(`Failed to save order items: ${error.message}`);
-            });
-                
+        res.status(201).json({ success: true, order: savedOrder });
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message });
     }

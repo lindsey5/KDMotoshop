@@ -14,14 +14,6 @@ const rateTable: RateBracket[] = [
   { max: 6,   fees: { Manila: 455, Luzon: 465, Visayas: 500, Mindanao: 550, Island: 560 } },
 ];
 
-const extraPerKgRate: Record<ShippingZone, number> = {
-  Manila: 100,
-  Luzon: 110,
-  Visayas: 120,
-  Mindanao: 130,
-  Island: 140,
-};
-
 function getShippingZone(region: string): ShippingZone {
   const manilaRegions = ['NCR'];
   const luzonRegions = ['Ilocos Region', 'CAR', 'Cagayan Valley', 'Central Luzon', 'CALABARZON', 'MIMAROPA', 'Bicol Region'];
@@ -41,11 +33,7 @@ export function calculateShippingFee(weightKg: number, region: string): number {
 
   if (bracket) {
     return bracket.fees[zone];
-  } else {
-    const baseFee = rateTable[rateTable.length - 1].fees[zone]; // fee for 6kg
-    const extraWeight = weightKg - 6;
-    const extraKg = Math.ceil(extraWeight); // round up partial kg
-    const extraFee = extraKg * extraPerKgRate[zone];
-    return baseFee + extraFee;
-  }
+  } 
+
+  return 0
 }

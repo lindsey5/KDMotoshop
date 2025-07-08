@@ -2,7 +2,6 @@ import Category from "../models/Category";
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import OrderItem from "../models/OrderItem";
-import Product from "../models/Product";
 
 export const create_category = async(req: AuthenticatedRequest, res: Response) => {
     try{

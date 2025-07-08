@@ -29,16 +29,11 @@ const variants = {
     }),
 };
 
-const item = {
-  visible: { opacity: 1, x: 0 },
-  hidden: { opacity: 0, x: 50 },
-}
-
 const PopularCategoriesSection = () => {
     const [categories, setCategories] = useState<TopCategory[]>([]);
     const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
     const isDark = useDarkmode();
-    const pageSize = 3;
+    const pageSize = 2;
 
     useEffect(() => {
         const getCategories = async () => {
@@ -65,7 +60,7 @@ const PopularCategoriesSection = () => {
     );
 
     return (
-        <section className={cn('bg-gray-100 transition-colors duration-600 py-20', 
+        <section className={cn('h-screen bg-gray-100 transition-colors duration-600 py-20', 
             isDark && 'bg-[#121212]'
         )}
         >
@@ -74,17 +69,32 @@ const PopularCategoriesSection = () => {
         </h1>
         <div className="relative flex justify-center items-center overflow-hidden min-h-[400px]">
             <IconButton
-            size="large"
-            sx={{
-                position: "absolute",
-                left: 20,
-                zIndex: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-            }}
-            onClick={() => paginate(-1)}
-            >
-            <ArrowBackIosIcon />
+                size="large"
+                sx={{
+                    position: "absolute",
+                    left: 20,
+                    zIndex: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: isDark ? 'white' : ''
+                }}
+                onClick={() => paginate(-1)}
+                >
+                <ArrowBackIosIcon />
+            </IconButton>
+            <IconButton
+                size="large"
+                sx={{
+                    position: "absolute",
+                    right: 20,
+                    zIndex: 10,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: isDark ? 'white' : ''
+                }}
+                onClick={() => paginate(1)}
+                >
+                <ArrowForwardIosIcon />
             </IconButton>
 
             <AnimatePresence mode="wait" custom={direction}>
@@ -96,21 +106,14 @@ const PopularCategoriesSection = () => {
                 animate="center"
                 exit="exit"
                 transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 },
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.4 },
                 }}
                 className="flex gap-20 justify-center w-full"
             >
                 {currentCategories.map((category) => (
                     <motion.div
                         key={category.category}
-                        variants={item}
-                        initial="hidden"
-                        whileInView="visible"
-                        transition={{
-                            x: { type: "spring", stiffness: 300, damping: 30 },
-                            opacity: { duration: 0.6 },
-                        }}
                         className="flex flex-col gap-5 items-center"
                     >
                         <img
@@ -126,24 +129,10 @@ const PopularCategoriesSection = () => {
                 ))}
             </motion.div>
             </AnimatePresence>
-
-            <IconButton
-            size="large"
-            sx={{
-                position: "absolute",
-                right: 20,
-                zIndex: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-            }}
-            onClick={() => paginate(1)}
-            >
-            <ArrowForwardIosIcon />
-            </IconButton>
         </div>
 
         {/* Dot indicators */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-20">
             {Array.from({ length: totalPages }).map((_, i) => (
             <span
                 key={i}

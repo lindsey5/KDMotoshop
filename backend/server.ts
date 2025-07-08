@@ -13,7 +13,9 @@ import orderRoutes from './routes/orderRoutes';
 import salesRoutes from './routes/salesRoutes';
 import customerRoutes from './routes/customerRoutes';
 import cartRoutes from './routes/cartRoutes';
+import paymentRoutes from './routes/paymentRoutes';
 import { initializeSocket } from './middlewares/socket';
+import { paymongoWebhook } from './middlewares/paymongo';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000; 
@@ -75,6 +77,9 @@ app.use("/api/order", orderRoutes)
 app.use('/api/sales', salesRoutes)
 app.use('/api/customer', customerRoutes)
 app.use('/api/cart', cartRoutes)
+app.use('/api/payment', paymentRoutes)
+
+app.post('/api/paymongo/webhook', paymongoWebhook)
 
 initializeSocket(server)
 

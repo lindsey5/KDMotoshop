@@ -164,7 +164,9 @@ const CustomerHeader = () => {
     useEffect(() => {
         if (socket) {
             const handleAddToCart = (cart: Cart) => {
+                console.log(cart)
                 const index = carts.findIndex(c => c._id === cart._id );
+                console.log(index)
                 
                 index < 0 ? setCarts(prev => [...prev, cart]) : setCarts(prev => prev
                     .map((c, i) => 
@@ -178,7 +180,7 @@ const CustomerHeader = () => {
                 socket.off('add-to-cart', handleAddToCart);
             };
         }
-    }, [socket]);
+    }, [socket, carts]);
 
     useEffect(() => {
         const getCartsAsync = async () => {

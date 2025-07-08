@@ -1,8 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import {  href, useLocation, useNavigate } from "react-router-dom";
-import { fetchData } from "../../../services/api";
+import { fetchData, postData, updateData } from "../../../services/api";
 import useDarkmode from "../../../hooks/useDarkmode";
-import { cn, formatNumber } from "../../../utils/utils";
+import { cn } from "../../../utils/utils";
 import Card from "../../../components/Card";
 import { CustomerContext } from "../../../context/CustomerContext";
 import LocationPinIcon from '@mui/icons-material/LocationPin';
@@ -11,68 +10,117 @@ import { useAddress } from "../../../hooks/useAddress";
 import { CustomizedSelect } from "../../../components/Select";
 import { RedTextField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/Button";
-import { Button } from "@mui/material";
+import { Button, RadioGroup } from "@mui/material";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CustomizedChip } from "../../../components/Chip";
 import PhoneInput from "react-phone-input-2";
 import { calculateShippingFee } from "../../../utils/shipping";
-
-type Address = {
-    street: string;
-    barangay: string;
-    city: string;
-    region: string;
-    firstname: string;
-    lastname: string;
-    phone: string;
-}
+import CustomerItemContainer from "../../../components/containers/customer/CustomerItemContainer";
+import { confirmDialog, successAlert } from "../../../utils/swal";
+import PaymentSummaryCard from "../../../components/cards/customer/PaymentSummary";
+import AddressContainer from "../../../components/containers/customer/AddressContainer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
     { label: 'Checkout', href: '/checkout' }
 ]
 
+const addresssInitialState = {
+        region: '',
+        barangay: '',
+        city: '',
+        street: '',
+        firstname: '',
+        lastname: '',
+        phone: '',
+    }
+
 const CheckoutPage = () => {
     const savedItems = localStorage.getItem('items');
     const parsedItems = JSON.parse(savedItems || '');
-    const { customer } = useContext(CustomerContext);
+    const { customer, setCustomer } = useContext(CustomerContext);
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-    const [addAddress, setAddAddress] = useState<boolean>((customer?.addresses?.length || 0) > 0);
-    const [address, setAddress] = useState<Address | undefined>();
-    const [selectedAddress, setSelectedAddress] = useState<Address | undefined>();
+    const [addAddress, setAddAddress] = useState<boolean>(false);
+    const [address, setAddress] = useState<Address>(addresssInitialState);
+    const [selectedAddress, setSelectedAddress] = useState<number>(0);
     const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
     const isDark = useDarkmode();
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        if(customer){
+            setAddAddress((customer.addresses?.length || 0) < 1)
+            setAddress(prev => ({...prev, firstname: customer.firstname, lastname: customer.lastname}))
+        }
+    }, [customer])
 
     const subtotal : number = useMemo(() => {
         return orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0
     }, [orderItems])
 
     const shipping_fee : number = useMemo(() => {
-        if(orderItems?.length > 0 && selectedAddress?.region) {
-            const weight = orderItems.reduce((total, item) => item.weight + total, 0)
-            return calculateShippingFee(weight, selectedAddress.region)
+        if(orderItems?.length > 0 && customer?.addresses && customer?.addresses.length > 0) {
+            return orderItems.reduce((total, item) => (item.quantity * calculateShippingFee(item.weight, (customer?.addresses?.[selectedAddress]?.region ?? ''))) + total, 0)
         }
         return 0
-    }, [selectedAddress?.region, orderItems])
+    }, [selectedAddress, orderItems, customer?.addresses])
 
     const total : number = useMemo(() => {
         return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0 ) + shipping_fee
     }, [orderItems, shipping_fee])
+    
+    const areFieldsFilled = useMemo(() => {
+        const excludeKey = "phone";
+        return Object.entries(address)
+            .every(([key, value]) => {
+                if (key === excludeKey) return true; 
+                return value !== null && value !== undefined && value !== '';
+            });
+    }, [address])
 
-    const proceed = () => {
-        const order = {
-            order_source: 'Website',
-            shipping_fee: 0,
-            subtotal: orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0,
-            total: orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0,
-            customer: {
-                customer_id: customer?._id,
-                email: customer?.email,
-                firstname: customer?.firstname || '',
-                lastname: customer?.lastname || '',
-            },
-            payment_method: "Cash",
-            status: "Pending"
+    const saveAddress = async () => {
+        setLoading(true)
+        const data = {...customer!, addresses: [...customer?.addresses!, address]}
+        const response = await updateData('/api/customer', data)
+        if(response.success){
+            setCustomer(data)
+            setAddAddress(false)
+            setAddress(addresssInitialState)
+            setSelectedRegion('')
+            setSelectedCity('')
+            if((customer?.addresses?.length || 0) > 0) setSelectedAddress(0)
+            successAlert('Address successfully save', '', isDark);
+        }
+        setLoading(false)
+    }
+
+    const proceed = async () => {
+        if(await confirmDialog('Proceed to payment?', '', isDark, "success")){
+
+            const order = {
+                order_source: 'Website',
+                shipping_fee,
+                subtotal,
+                total,
+                status: "Pending",
+                customer: {
+                    customer_id: customer?._id,
+                    email: customer?.email,
+                    firstname: address.firstname,
+                    lastname: address.lastname,
+                    phone: customer?.addresses?.[selectedAddress].phone
+                },
+                address: {
+                    street: customer?.addresses?.[selectedAddress].street,
+                    barangay: customer?.addresses?.[selectedAddress].barangay,
+                    city: customer?.addresses?.[selectedAddress].city,
+                    region: customer?.addresses?.[selectedAddress].region
+                },
+                payment_method: "Online Payment",
+            };
+            const response = await postData('/api/payment', { order, orderItems});
+
+            if(response.success)window.location.href = response.checkout_url
         }
     }
 
@@ -136,9 +184,13 @@ const CheckoutPage = () => {
         setAddress((prev) => ({ ...prev!, barangay: value }));
     };
 
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedAddress(Number(event.target.value));
+    };
+
     return (
-        <div className={cn("grid grid-cols-[2fr_1.5fr] gap-5 transition-colors duration-600 pt-30 pb-10 px-10", isDark && 'bg-[#121212]')}>
-            <div className="flex-1 flex flex-col gap-5">
+        <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10", isDark && 'bg-[#121212]')}>
+            <div className="flex-2 flex flex-col gap-5">
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 <h1 className="text-3xl font-bold text-red-500">Checkout</h1>
                 <Card>
@@ -146,43 +198,38 @@ const CheckoutPage = () => {
                         <h1 className={cn("text-xl font-bold", isDark && 'text-white')}>Order Summary</h1>
                         <CustomizedChip label={`${orderItems.length} items`} />
                     </div>
-                    {orderItems?.map((item) => (
-                        <div className={cn("flex items-center gap-5 py-5 border-b border-gray-300", isDark && 'border-gray-500')}>
-                            <img className="w-25 h-25" src={item.image || '/photo.png'} alt="" />
-                            <div className="flex flex-col gap-5">
-                                <h1 className="font-bold">{item.product_name}</h1>
-                                <p>Quantity: {item.quantity}</p>
-                                <div className="flex gap-2">
-                                    {Object.values(item?.attributes || {}).map(attribute => <CustomizedChip label={attribute} />)}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    {orderItems?.map((item, i) => <CustomerItemContainer key={i} item={item} />)}
                 </Card>
-                <Card className="">
-                    <div className="grid grid-cols-2 gap-5">
-                        <strong>Subtotal</strong>
-                        <strong className="text-right">₱{formatNumber(subtotal ?? 0)}</strong>
-                        <p>Shipping fee</p>
-                        <p className="text-right">₱{formatNumber(shipping_fee ?? 0)}</p>
-                    </div>
-                    <div className={cn("grid grid-cols-2 font-bold text-2xl mt-5 pt-3 border-t border-gray-300", isDark && 'border-gray-500')}>
-                        <h1>Total</h1>
-                        <h1 className="text-right">₱{formatNumber(total)}</h1>
-                    </div>
-                </Card>
+                <PaymentSummaryCard shipping_fee={shipping_fee} subtotal={subtotal} total={total}/>
             </div>
-            <Card className="pt-5 py-10 px-10 flex flex-col gap-5">
+            <Card className="pt-5 py-10 px-10 flex flex-1 flex-col gap-5">
                 <h1 className="font-bold text-lg">Delivery</h1>
+                <RadioGroup
+                    className="flex flex-col gap-5"
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue="female"
+                    name="radio-buttons-group"
+                >
+                {customer?.addresses?.map((address, index) => (
+                    <AddressContainer 
+                        address={address} 
+                        handleChange={handleChange} 
+                        selectedAddress={selectedAddress} 
+                        index={index}
+                    />
+                ))}
+                </RadioGroup>
                 {addAddress ? <div className={cn("rounded-md flex flex-col gap-5 p-3 bg-gray-100", isDark && 'bg-[#353535]')}>
                     <div className="flex gap-5">
                     <RedTextField 
                         value={address?.firstname || ''} 
                         label="Firstname" 
+                        onChange={(e) => setAddress(prev => ({...prev, firstname: e.target.value}))}
                     />
                     <RedTextField 
                         value={address?.lastname || ''} 
                         label="Lastname" 
+                        onChange={(e) => setAddress(prev => ({...prev, lastname: e.target.value}))}
                     />
                     </div>
                     <CustomizedSelect 
@@ -227,15 +274,15 @@ const CheckoutPage = () => {
                                 color: isDark ? 'white' : 'black',
                             }}
                             onChange={(value) => setAddress((prev) => ({ ...prev!, phone: value}))}
-                    />
+                        />
                     </div>
                     <div className="flex justify-end items-center gap-5">
-                        <Button 
+                        {(customer?.addresses?.length ?? 0) > 0 && <Button 
                             variant="outlined" 
                             sx={{ border: 1, borderColor: isDark ? 'white' : 'gray', color: isDark ? 'white' : 'gray'}}
                             onClick={() => setAddAddress(false)}
-                        >Close</Button>
-                        <RedButton>Save</RedButton>
+                        >Close</Button>}
+                        <RedButton onClick={saveAddress} disabled={!areFieldsFilled || loading}>Save</RedButton>
                     </div>
                 </div> : 
                 
@@ -249,6 +296,10 @@ const CheckoutPage = () => {
                     </div>
                     <AddIcon />
                 </button>}
+                <RedButton 
+                    onClick={proceed}
+                    disabled={(customer?.addresses?.length ?? 0) < 1}
+                >Proceed to payment</RedButton>
             </Card>
         </div>
     )

@@ -8,13 +8,13 @@ const AboutSection = () => {
   const isDark = useDarkmode();
 
   return (
-    <div className={cn("relative transition-colors duration-600 flex gap-50 justify-center  items-center p-20",
+    <div className={cn("relative transition-colors duration-600 flex lg:gap-50 justify-center p-20",
       isDark ? "bg-[#1e1e1e] text-white" : 'bg-white'
     )}>
         <motion.div
           initial={{ opacity: 0, x: -50}}
           whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
         >
           <h1 className="text-4xl lg:text-6xl font-bold text-red-600 dark:text-white">ABOUT</h1>
           <p className='max-w-lg text-lg mt-10'>
@@ -30,7 +30,7 @@ const AboutSection = () => {
         <motion.div
           initial={{ opacity: 0, x: 50}}
           whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.6, type: 'spring'}}
+          transition={{ duration: 0.4, delay: 0.3 }}
         >
           <img
             className="hidden lg:block h-[500px]"

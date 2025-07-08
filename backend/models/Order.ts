@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface IOrder extends Document {
+interface Order extends Document {
     order_id: string;
     order_source: string;
     shipping_fee: number;
@@ -20,12 +20,12 @@ interface IOrder extends Document {
         city: string;
         region: string;
     };
-    payment_method: "Cash" | "Gcash" | "COD" | "Other";
+    payment_method: "CASH" | "GCASH" | "COD" | "OTHER";
     note?: string;
-    createdBy: Types.ObjectId;
+    createdBy?: Types.ObjectId;
 }
 
-const OrderSchema: Schema<IOrder> = new Schema(
+const OrderSchema: Schema<Order> = new Schema(
   {
     order_id: { type: String, required: true, unique: true },
     total: { type: Number, required: true },
@@ -63,8 +63,8 @@ const OrderSchema: Schema<IOrder> = new Schema(
     },
     payment_method: {
       type: String,
-      enum: ["Cash", "Gcash", "COD", "Other"],
-      default: "Cash",
+      enum: ["CASH", "GCASH", "COD", "OTHER"],
+      default: "CASH",
       required: true
     },
     note: { type: String, required: false },
@@ -74,5 +74,5 @@ const OrderSchema: Schema<IOrder> = new Schema(
 );
 
 
-const Order = mongoose.model<IOrder>('Order', OrderSchema);
+const Order = mongoose.model<Order>('Order', OrderSchema);
 export default Order;
