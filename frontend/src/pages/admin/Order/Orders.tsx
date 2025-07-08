@@ -80,7 +80,7 @@ const Orders = () => {
         </div>
         <OrderStatsCards />
         
-        <Card className="flex-grow min-h-[700px] flex flex-col mt-6">
+        <Card className="h-screen flex flex-col mt-6">
             <div className="flex justify-between items-center mb-6 gap-10">
                 <SearchField
                     value={searchTerm}

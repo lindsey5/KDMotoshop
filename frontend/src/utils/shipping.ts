@@ -5,7 +5,6 @@ interface RateBracket {
   fees: Record<ShippingZone, number>;
 }
 
-// 1. Shipping rate table
 const rateTable: RateBracket[] = [
   { max: 0.5, fees: { Manila: 85, Luzon: 95, Visayas: 100, Mindanao: 105, Island: 115 } },
   { max: 1,   fees: { Manila: 115, Luzon: 165, Visayas: 180, Mindanao: 195, Island: 205 } },
@@ -15,7 +14,14 @@ const rateTable: RateBracket[] = [
   { max: 6,   fees: { Manila: 455, Luzon: 465, Visayas: 500, Mindanao: 550, Island: 560 } },
 ];
 
-// 2. Region-to-zone mapper (no region numbers)
+const extraPerKgRate: Record<ShippingZone, number> = {
+  Manila: 100,
+  Luzon: 110,
+  Visayas: 120,
+  Mindanao: 130,
+  Island: 140,
+};
+
 function getShippingZone(region: string): ShippingZone {
   const manilaRegions = ['NCR'];
   const luzonRegions = ['Ilocos Region', 'CAR', 'Cagayan Valley', 'Central Luzon', 'CALABARZON', 'MIMAROPA', 'Bicol Region'];
@@ -29,9 +35,17 @@ function getShippingZone(region: string): ShippingZone {
   return 'Island'; // fallback
 }
 
-// 3. Main shipping fee calculator (weight only)
-export function calculateShippingFee(weightKg: number, region: string): number | null {
+export function calculateShippingFee(weightKg: number, region: string): number {
   const zone = getShippingZone(region);
   const bracket = rateTable.find(b => weightKg <= b.max);
-  return bracket ? bracket.fees[zone] : null; // null if over 6kg
+
+  if (bracket) {
+    return bracket.fees[zone];
+  } else {
+    const baseFee = rateTable[rateTable.length - 1].fees[zone]; // fee for 6kg
+    const extraWeight = weightKg - 6;
+    const extraKg = Math.ceil(extraWeight); // round up partial kg
+    const extraFee = extraKg * extraPerKgRate[zone];
+    return baseFee + extraFee;
+  }
 }

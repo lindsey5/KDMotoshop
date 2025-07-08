@@ -20,7 +20,7 @@ const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setO
     const isDark = useDarkmode();
 
     const remove = async () => {
-        if(await confirmDialog('Remove this item?', '')){
+        if(await confirmDialog('Remove this item?', '', isDark)){
             setOrderItems(prev => prev.filter((_, i)=> i !== index))
         }
     }

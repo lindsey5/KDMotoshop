@@ -3,9 +3,9 @@ import type React from "react";
 import useDarkmode from "../hooks/useDarkmode";
 
 type CustomizedChipProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   onDelete?: () => Promise<void>;
 }
 
@@ -21,7 +21,7 @@ export const CustomizedChip: React.FC<CustomizedChipProps> = ({
     <Chip
       label={label}
       variant="outlined"
-      onClick={onClick}
+      {...(onClick && { onClick })}
       {...(onDelete && { onDelete })}
       sx={[
         { 

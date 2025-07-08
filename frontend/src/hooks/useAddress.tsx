@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { normalizeCityName } from "../utils/utils";
 import { fetchData } from "../services/api";
 
-export function useRegions() {
+function useRegions() {
   const [regions, setRegions]= useState<{ code: string; name: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown>(null);
@@ -33,7 +33,7 @@ export function useRegions() {
 }
 
 
-export function useBarangays(cityCode: string) {
+function useBarangays(cityCode: string) {
   const [barangays, setBarangays] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown>(null);
@@ -60,8 +60,7 @@ export function useBarangays(cityCode: string) {
   return { barangays, loading, error };
 }
 
-
-export function useCities(regionCode: string) {
+function useCities(regionCode: string) {
   const [cities, setCities] = useState<{ code: string; name: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown>(null);
@@ -89,4 +88,22 @@ export function useCities(regionCode: string) {
   }, [regionCode]);
 
   return { cities, loading, error };
+}
+
+export const useAddress = () => {
+  const [selectedRegion, setSelectedRegion] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+  const { regions } = useRegions();
+  const { cities } = useCities(selectedRegion);
+  const { barangays } = useBarangays(selectedCity);
+
+  return { 
+    regions, 
+    cities, 
+    barangays, 
+    selectedRegion,
+    setSelectedRegion, 
+    selectedCity,
+    setSelectedCity
+  }
 }

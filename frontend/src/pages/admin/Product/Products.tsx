@@ -21,15 +21,6 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Products', href: '/admin/products' },
 ]
 
-const deleteCategory = async (id : string) => {
-    const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!')
-
-    if (confirmed) {
-        const response = await deleteData(`/api/category/${id}`)   
-        if(response.success) window.location.reload(); 
-    }
-}
-
 const Products = () => {
     const isDark = useDarkmode();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
@@ -81,6 +72,15 @@ const Products = () => {
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
+
+    const deleteCategory = async (id : string) => {
+        const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!', isDark)
+
+        if (confirmed) {
+            const response = await deleteData(`/api/category/${id}`)   
+            if(response.success) window.location.reload(); 
+        }
+    }
 
     return( 
         <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>

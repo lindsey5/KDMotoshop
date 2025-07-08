@@ -31,7 +31,7 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
     };
 
     const removeVariant = async () => {
-        if(await confirmDialog("Remove this variant?", "")){
+        if(await confirmDialog("Remove this variant?", "", isDark)){
             setProduct(prev => ({
             ...prev,
             variants: prev.variants.filter((_, i) => i !== index)

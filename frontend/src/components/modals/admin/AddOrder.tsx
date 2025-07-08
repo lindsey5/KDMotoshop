@@ -66,11 +66,12 @@ const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, 
                     image: selectedProduct && typeof selectedProduct.thumbnail === 'object' && selectedProduct.thumbnail !== null && 'imageUrl' in selectedProduct.thumbnail
                             ? selectedProduct.thumbnail.imageUrl
                             : null,
+                    weight: selectedProduct?.weight ?? 0
                 }
             ];
         });
         close();
-        successAlert('Order Added', 'Order successfully added');
+        successAlert('Order Added', 'Order successfully added', isDark);
     };
     
 

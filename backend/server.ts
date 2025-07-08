@@ -11,6 +11,9 @@ import categoryRoutes from './routes/categoryRoutes';
 import productRoutes from './routes/productRoutes';
 import orderRoutes from './routes/orderRoutes';
 import salesRoutes from './routes/salesRoutes';
+import customerRoutes from './routes/customerRoutes';
+import cartRoutes from './routes/cartRoutes';
+import { initializeSocket } from './middlewares/socket';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000; 
@@ -70,6 +73,10 @@ app.use("/api/category", categoryRoutes)
 app.use("/api/product", productRoutes)
 app.use("/api/order", orderRoutes)
 app.use('/api/sales', salesRoutes)
+app.use('/api/customer', customerRoutes)
+app.use('/api/cart', cartRoutes)
+
+initializeSocket(server)
 
 const dirname = path.resolve();
 

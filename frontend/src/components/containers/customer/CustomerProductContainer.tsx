@@ -1,7 +1,7 @@
 import { cn, formatNumber } from "../../../utils/utils";
 
 const CustomerProductContainer = ({ product, className } : { product: any, className?: string }) => {
-    
+
     const handleClick = () => {
         window.location.href = `/product/${product._id}`
     }

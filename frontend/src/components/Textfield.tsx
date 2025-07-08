@@ -98,7 +98,7 @@ export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChang
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon sx={{ color: isDark ? 'white' : 'action.active' }} /> {/* Icon color */}
+            <SearchIcon sx={{ color: isDark ? 'white' : 'action.active' }} />
           </InputAdornment>
         ),
       }}

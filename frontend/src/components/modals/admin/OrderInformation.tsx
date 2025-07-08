@@ -1,7 +1,7 @@
 import { Button, FormControlLabel, Modal, Switch } from "@mui/material";
 import React, { useState } from "react";
 import { RedTextField } from "../../Textfield";
-import { useBarangays, useCities, useRegions } from "../../../hooks/useAddress";
+import { useAddress } from "../../../hooks/useAddress";
 import { CustomizedSelect, StatusSelect } from "../../Select";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
@@ -20,11 +20,7 @@ type OrderInformationModalProps = {
 
 const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, onClose, setOrder, order }) => {
     const [addAddress, setAddAddress] = useState<boolean>(false);
-    const [selectedRegion, setSelectedRegion] = useState<string>('');
-    const [selectedCity, setSelectedCity] = useState<string>('');
-    const { regions } = useRegions();
-    const { cities } = useCities(selectedRegion);
-    const { barangays } = useBarangays(selectedCity);
+    const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
     const isDark = useDarkmode();
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,23 +159,23 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                 </label>
 
                 <PhoneInput
-                country={'ph'}
-                onlyCountries={['ph']}
-                specialLabel="" // prevent default label from rendering
-                value={order.customer.phone || ''}
-                containerStyle={{ width: '100%', height: '55px' }}
-                inputStyle={{
-                    width: '100%',
-                    height: '55px',
-                    backgroundColor: isDark ? '#313131' : '#fff',
-                    color: isDark ? 'white' : 'black',
-                }}
-                onChange={(phone) =>
-                    setOrder((prev) => ({
-                    ...prev,
-                    customer: { ...prev.customer, phone },
-                    }))
-                }
+                    country={'ph'}
+                    onlyCountries={['ph']}
+                    specialLabel="" 
+                    value={order.customer.phone || ''}
+                    containerStyle={{ width: '100%', height: '55px' }}
+                    inputStyle={{
+                        width: '100%',
+                        height: '55px',
+                        backgroundColor: isDark ? '#313131' : '#fff',
+                        color: isDark ? 'white' : 'black',
+                    }}
+                    onChange={(phone) =>
+                        setOrder((prev) => ({
+                        ...prev,
+                        customer: { ...prev.customer, phone },
+                        }))
+                    }
                 />
                 <p className="text-gray-500 mb-2">Order Information</p>
                 <div className="w-full grid grid-cols-2 gap-6">

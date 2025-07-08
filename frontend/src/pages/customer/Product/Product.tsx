@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchData } from "../../../services/api";
 import { ProductThumbnail, MultiImageSlideshow } from "../../../components/image";
 import Counter from "../../../components/Counter";
@@ -10,6 +10,9 @@ import { RedButton } from "../../../components/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
+import { CustomerContext } from "../../../context/CustomerContext";
+import { SocketContext } from "../../../context/socketContext";
+import { successAlert } from "../../../utils/swal";
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -17,8 +20,10 @@ const CustomerProduct = () => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
     const isDark = useDarkmode();
+    const { socket } = useContext(SocketContext);
+    const { customer } = useContext(CustomerContext);
+    const navigate = useNavigate();
     
-
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
         { label: 'Products', href: '/products'},
@@ -58,6 +63,35 @@ const CustomerProduct = () => {
          </div>
     )
 
+    const addToCart = async () => {
+        if(customer){
+            const cart : Cart = {
+                customer_id: customer._id,
+                product_id: product._id ?? '',
+                variant_id: product.product_type === 'Single' ? null : filteredVariants[0]._id ?? null,
+                quantity: quantity,
+            } 
+            socket?.emit('add-to-cart', cart)
+            successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
+        }else{
+            navigate('/login')
+        }
+    }
+
+    const proceedToCheckout = () => {
+        if(customer){
+            const items = [{
+                product_id: product._id,
+                variant_id: product.product_type === 'Single' ? '' : filteredVariants[0]._id ?? '',
+                quantity: quantity
+            }]
+            localStorage.setItem('items', JSON.stringify(items))
+            navigate('/checkout')
+        }else{
+            navigate('/login')
+        }
+    }
+
     return (
          <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
@@ -80,7 +114,7 @@ const CustomerProduct = () => {
                         
                         />
                 </div>
-                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] text-white')}>
+                <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] border-gray-500 text-white')}>
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 
@@ -115,11 +149,13 @@ const CustomerProduct = () => {
                     <div className="w-full flex gap-10">
                         <RedButton 
                             sx={{ height: 45 }}
+                            onClick={proceedToCheckout}
                             fullWidth
                             disabled={product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0}
                         >Buy</RedButton>
                         <RedButton 
                             sx={{ height: 45 }}
+                            onClick={addToCart}
                             fullWidth
                             disabled={product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0}
                         >Add to cart</RedButton>

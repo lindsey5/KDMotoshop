@@ -42,12 +42,12 @@ const OrderDetails = () => {
     }, [id])
 
     const updateOrder = async () => {
-        if(await confirmDialog('Save update?', '')){
+        if(await confirmDialog('Save update?', '', isDark)){
             const response = await updateData(`/api/order/${id}`, order);
             if(response.success){
                 window.location.reload();
             }else{
-                errorAlert(response.message, '');
+                errorAlert(response.message, '', isDark);
             }
 
         }

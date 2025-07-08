@@ -58,7 +58,7 @@ const ProductPage = () => {
         thumbnail: null,
         attributes: [],
         variants: [],
-        weight: 0,
+        weight: 0.5,
     });
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -145,12 +145,12 @@ const ProductPage = () => {
             }));
             setAttributeName('')
         }else{
-            errorAlert('Attribute already exist', '')
+            errorAlert('Attribute already exist', '', isDark)
         }
     };
     
     const deleteAttribute = async (attributeName: string) => {
-        if (await confirmDialog("Remove this attribute?", "")) {
+        if (await confirmDialog("Remove this attribute?", "", isDark)) {
             setProduct(prev => ({
             ...prev,
             attributes: prev.attributes.filter(attr => attr !== attributeName),
@@ -165,7 +165,7 @@ const ProductPage = () => {
     };
 
     const deleteImage = async (index: number): Promise<void> => {
-        const confirm = await confirmDialog("Remove this image?", "");
+        const confirm = await confirmDialog("Remove this image?", "", isDark);
         if (confirm) {
             setProduct(prev => ({
             ...prev,
@@ -226,6 +226,14 @@ const ProductPage = () => {
                             <RedRadio label="Variable" value="Variable" />
                         </RadioGroup>
                     </div>
+                    <RedTextField 
+                        label="Weight" 
+                        type="number"
+                        onChange={(e) => setProduct({ ...product, weight: Number(e.target.value)})}
+                        value={product?.weight || 0}
+                        placeholder="Add product weight"
+                        fullWidth
+                    />
                     {product.product_type === 'Single' ? 
                     (<div className="grid grid-cols-2 gap-10">
                         <RedTextField 

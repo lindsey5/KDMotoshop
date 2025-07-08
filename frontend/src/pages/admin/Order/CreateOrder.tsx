@@ -113,14 +113,15 @@ const CreateOrderPage = () => {
                             quantity: 1,
                             price: product.price || 0,
                             lineTotal: product.price || 0,
-                            status: "Unfulfilled"
+                            status: "Unfulfilled",
+                            weight: product.weight,
                         }]
                     }
 
                     return prev.map(o => o.product_id === product._id ? ({...o, quantity: o.quantity + 1, lineTotal: (o.quantity + 1) * o.price}) : o)
                 })
 
-            successAlert('Order Added', 'Order successfully added');
+            successAlert('Order Added', 'Order successfully added', isDark);
         }
     }
 
@@ -129,7 +130,7 @@ const CreateOrderPage = () => {
     }
 
     const clear = async () => {
-        if(await confirmDialog('Remove all items?', '')){
+        if(await confirmDialog('Remove all items?', '', isDark)){
             setOrderItems([])
         }
     }
@@ -138,11 +139,11 @@ const CreateOrderPage = () => {
         if(!order.customer.firstname || !order.customer.lastname || (order.address && Object.values(order.address).some(value => !value))){
             setShowCustomerModal(true);
         }else{
-            if(await confirmDialog('Save order?', '', "success")){
+            if(await confirmDialog('Save order?', '', isDark, "success",)){
                 setLoading(true)
                 const response = await postData('/api/order', { order, orderItems});
                 if(response.success){
-                    successAlert('Order Created', 'Order successfully created');
+                    successAlert('Order Created', 'Order successfully created', isDark);
                     setOrderItems([]);
                     setOrder(OrderState);
                     setPagination({ ...pagination, page: 1, searchTerm: '' });

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import { verifyPassword, createToken } from "../utils/authUtils";
+import { createCustomer, findCustomer } from "../services/customerService";
 
 export const login = async (req: Request, res: Response) => {
     const { email, password, role } = req.body;
@@ -27,3 +28,41 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+export const signupCustomer = async (req : Request, res: Response) => {
+  try{
+    const isExist = await findCustomer({ email: req.body.email });
+
+    if(isExist){
+      res.status(409).json({ success: false, message: 'Email already used' });
+      return;
+    }
+
+    const newCustomer = await createCustomer(req.body);
+    const token = createToken(newCustomer._id);
+
+    res.status(201).json({ success: true, newCustomer, token });
+
+  }catch(err : any){
+    res.status(500).json({ success: false, message: err.message || 'Server error'})
+  }
+}
+
+export const signinWithGoogle = async (req: Request, res: Response) => {
+  try{
+    const customer = await findCustomer({ email: req.body.email });
+
+    if(customer){
+      const token = createToken(customer._id);
+      res.status(201).json({ success: true, customer, token });
+      return
+    }
+
+    const newCustomer = await createCustomer(req.body);
+    const token = createToken(newCustomer._id);
+    res.status(201).json({ success: true, customer: newCustomer, token });
+
+  }catch(err : any){
+    console.log(err.message)
+    res.status(500).json({ success: false, message: err.message || 'Server error'})
+  }
+}

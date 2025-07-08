@@ -1,7 +1,6 @@
-import { Button, IconButton, Link } from "@mui/material";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { Avatar, Button, IconButton, Link, Badge } from "@mui/material";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { cn, formatNumber } from "../../../utils/utils";
 import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,8 +8,13 @@ import { fetchData } from "../../../services/api";
 import { ProductThumbnail } from "../../image";
 import { ThemeToggle } from "../../Toggle";
 import useDarkmode from "../../../hooks/useDarkmode";
+import { CustomerContext } from "../../../context/CustomerContext";
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { SocketContext } from "../../../context/socketContext";
 
 const HeaderLink = ({ label, path } : { path: string, label: string}) => {
+
     return (
         <Link href={path}>
             <Button
@@ -116,8 +120,8 @@ const HeaderSearchField = () => {
     const handleFocus = () => setAutoComplete(true)
 
     return (
-        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-500 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
-            <SearchIcon className={cn(isDark && "text-gray-300")}/>
+        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
+            <SearchIcon className={cn(isDark && "text-gray-400")}/>
             <input
               type="text"
               placeholder="Search..."
@@ -152,6 +156,38 @@ const HeaderSearchField = () => {
 const CustomerHeader = () => {
     const location = useLocation()
     const [isScrolled, setIsScrolled] = useState<boolean>(location.pathname !== '/');
+    const { customer } = useContext(CustomerContext);
+    const { socket } = useContext(SocketContext);
+    const [carts, setCarts] = useState<Cart[]>([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (socket) {
+            const handleAddToCart = (cart: Cart) => {
+                const index = carts.findIndex(c => c._id === cart._id );
+                
+                index < 0 ? setCarts(prev => [...prev, cart]) : setCarts(prev => prev
+                    .map((c, i) => 
+                        i === index ? {...c, quantity: c.quantity + cart.quantity} : c
+                    ))
+            };
+
+            socket.on('add-to-cart', handleAddToCart);
+
+            return () => {
+                socket.off('add-to-cart', handleAddToCart);
+            };
+        }
+    }, [socket]);
+
+    useEffect(() => {
+        const getCartsAsync = async () => {
+            const response = await fetchData('/api/cart');
+            if(response.success) setCarts(response.carts);
+        }
+
+        getCartsAsync();
+    }, [])
 
     useEffect(() => {
         const handleScroll = () => {
@@ -173,10 +209,19 @@ const CustomerHeader = () => {
             <div className="flex gap-5 items-center">
                 <HeaderLink path="/" label="Home"/>
                 <HeaderLink  path="/products" label="Products"/>
-                <RedButton onClick={() => window.open('/login', '_blank')}>Login</RedButton>
-                <IconButton>
-                    <ShoppingCartIcon sx={{ color: 'white' }} fontSize="large"/>
+                {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
+                <>
+                <IconButton sx={{ color: 'white', ":hover": { color: 'red' }}}>
+                    <NotificationsOutlinedIcon />
                 </IconButton>
+                    <Badge badgeContent={carts.length} color="primary">
+                        <IconButton  sx={{ color: 'white', ":hover": { color: 'red' } }}>
+                            <ShoppingCartOutlinedIcon />
+                        </IconButton>
+                    </Badge>
+                    <Avatar src={customer.image.imageUrl} alt={customer.firstname} />
+                </>
+                }
                 <ThemeToggle />
             </div>
         </header>

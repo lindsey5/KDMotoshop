@@ -14,7 +14,7 @@ const AdminLogin = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError('')
-        const response = await postData('/api/auth/login', { email, password, role: selectedRole});
+        const response = await postData('/api/auth/admin/login', { email, password, role: selectedRole});
         if(response.success){
             localStorage.setItem('token', response.token)
             const path = response.user.role === 'Admin' ? '/admin/dashboard' : '/staff'
@@ -74,7 +74,6 @@ const AdminLogin = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <RedButton sx={{ height: 40}} type="submit">Login</RedButton>
-                
             </div>
         </form>
 

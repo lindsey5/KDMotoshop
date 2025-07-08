@@ -27,7 +27,7 @@ export const saveProduct = async (
   product: Product,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  if (!(await confirmDialog('Save product?', '', 'success'))) return;
+  if (!(await confirmDialog('Save product?', '', false, 'success',))) return;
 
   setLoading(true);
   try {
@@ -46,6 +46,9 @@ export const saveProduct = async (
       return;
     } else if (product.images.length < 1) {
       errorAlert('Upload at least one product image', '');
+      return;
+    } else if (product.weight === 0) {
+      errorAlert('Weight should not be 0', '');
       return;
     }
 

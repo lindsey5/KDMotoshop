@@ -21,6 +21,7 @@ interface IProduct extends Document {
   stock: number;
   product_type: string;
   visibility: string;
+  weight: number;
   added_by: Types.ObjectId;
   images: UploadedImage[];
   thumbnail: UploadedImage;
@@ -38,6 +39,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     stock: { type: Number },
     product_type: { type: String, required: true },
     visibility: { type: String, required: true },
+    weight: { type: Number, required: true },
     added_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     images: { 
         type: [
