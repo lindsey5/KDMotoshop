@@ -49,7 +49,7 @@ const PopularProductsSection = () => {
     }, []);
 
     return (
-        <section className={cn("transition-colors duration-600 min-h-screen px-10 pt-30 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
+        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-10 pt-30 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
         <div className="w-full">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600">Best Selling Products</h1>
         </div>
