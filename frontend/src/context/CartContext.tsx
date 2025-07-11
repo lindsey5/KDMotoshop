@@ -27,7 +27,7 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
     const getCart = async () => {
       setLoading(true)
       const response = await fetchData('/api/cart');
-      console.log(response.carts)
+
       if (response.success) setCart(response.carts.map((item : any) => {
         const product = item.product_id
         const variant = product.variants.find((v : any) => v._id === item.variant_id)

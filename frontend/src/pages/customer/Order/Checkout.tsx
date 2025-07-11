@@ -132,8 +132,8 @@ const CheckoutPage = () => {
 
     useEffect(() => {
         const getProducts = async () => {
-            const items = await Promise.all(parsedItems.map(async (item : Cart) => {
-                const response = await fetchData(`/api/product/${item.product_id}`);
+            const items = await Promise.all(parsedItems.map(async (item : any) => {
+                const response = await fetchData(`/api/product/${item.product_id._id}`);
 
                 if(response.success){
                     const product : Product = response.product

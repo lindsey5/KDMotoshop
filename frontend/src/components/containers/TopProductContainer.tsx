@@ -12,4 +12,4 @@ const TopProductsContainer = ({ product } : { product: TopProduct }) => {
     )
 }
 
-export default TopProductsContainer
+export default TopProductsContainer 

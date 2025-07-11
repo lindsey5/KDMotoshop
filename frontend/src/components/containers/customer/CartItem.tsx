@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../utils/utils"
 import { CustomizedChip } from "../../Chip";
 import Counter from "../../Counter";
 import { updateData } from "../../../services/api";
 import { Button } from "@mui/material";
+import { CartContext } from "../../../context/CartContext";
 
 type CartItemContainerProps = {
     item : CartItem;
@@ -14,10 +15,12 @@ type CartItemContainerProps = {
 const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) => {
     const isDark = useDarkmode();
     const [value, setValue] = useState<number>(item.quantity);
+    const { setCart } = useContext(CartContext);
 
     useEffect(() => {
         const delayDebounce = setTimeout(async () => {
             await updateData(`/api/cart/${item._id}`, { quantity: value });
+            setCart(prev => prev.map(i => i._id === item._id ? ({...i, quantity: value }) : i))
         }, 500); 
         return () => clearTimeout(delayDebounce);
     }, [value]);
