@@ -44,7 +44,7 @@ const OrderSchema: Schema<Order> = new Schema(
     },
     customer: {
       type: {
-        customer_id: { type: String, required: false },
+        customer_id: { type: Schema.Types.ObjectId, ref: 'Customer', required: false },
         email: { type: String, required: false },
         firstname: { type: String, required: true },
         lastname: { type: String, required: true },

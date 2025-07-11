@@ -27,7 +27,7 @@ const highLightLowStock = (product: Product, isDark: boolean): string => {
   } else {
     const totalStock = product.variants.reduce((total, v) => total + (v.stock || 0), 0);
     return totalStock < 10
-      ? isDark ? 'bg-red-400' : 'bg-red-100'
+      ? isDark ? 'bg-red-600' : 'bg-red-100'
       : '';
   }
 };

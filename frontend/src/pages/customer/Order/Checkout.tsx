@@ -15,10 +15,12 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CustomizedChip } from "../../../components/Chip";
 import PhoneInput from "react-phone-input-2";
 import { calculateShippingFee } from "../../../utils/shipping";
-import CustomerItemContainer from "../../../components/containers/customer/CustomerItemContainer";
-import { confirmDialog, successAlert } from "../../../utils/swal";
+import CheckoutItemContainer from "../../../components/containers/customer/CheckoutItem";
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
 import PaymentSummaryCard from "../../../components/cards/customer/PaymentSummary";
 import AddressContainer from "../../../components/containers/customer/AddressContainer";
+import { RedRadio } from "../../../components/Radio";
+import e from "cors";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -26,18 +28,20 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const addresssInitialState = {
-        region: '',
-        barangay: '',
-        city: '',
-        street: '',
-        firstname: '',
-        lastname: '',
-        phone: '',
-    }
+    region: '',
+    barangay: '',
+    city: '',
+    street: '',
+    firstname: '',
+    lastname: '',
+    phone: '',
+}
 
 const CheckoutPage = () => {
     const savedItems = localStorage.getItem('items');
-    const parsedItems = JSON.parse(savedItems || '');
+    const cartItems = localStorage.getItem('cart');
+    const parsedCartItems = cartItems ? JSON.parse(cartItems) : null;
+    const parsedItems = JSON.parse(savedItems || ''); 
     const { customer, setCustomer } = useContext(CustomerContext);
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [addAddress, setAddAddress] = useState<boolean>(false);
@@ -46,6 +50,7 @@ const CheckoutPage = () => {
     const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
     const isDark = useDarkmode();
     const [loading, setLoading] = useState<boolean>(false);
+    const [paymentMethod, setPaymentMethod] = useState<string>('CASH');
 
     useEffect(() => {
         if(customer){
@@ -70,12 +75,8 @@ const CheckoutPage = () => {
     }, [orderItems, shipping_fee])
     
     const areFieldsFilled = useMemo(() => {
-        const excludeKey = "phone";
         return Object.entries(address)
-            .every(([key, value]) => {
-                if (key === excludeKey) return true; 
-                return value !== null && value !== undefined && value !== '';
-            });
+            .every(([_, value]) => value !== '');
     }, [address])
 
     const saveAddress = async () => {
@@ -95,7 +96,7 @@ const CheckoutPage = () => {
     }
 
     const proceed = async () => {
-        if(await confirmDialog('Proceed to payment?', '', isDark, "success")){
+        if(await confirmDialog(paymentMethod === 'CASH' ? 'Create order?' :'Proceed to payment?', '', isDark, "success")){
 
             const order = {
                 order_source: 'Website',
@@ -116,11 +117,16 @@ const CheckoutPage = () => {
                     city: customer?.addresses?.[selectedAddress].city,
                     region: customer?.addresses?.[selectedAddress].region
                 },
-                payment_method: "Online Payment",
+                payment_method: paymentMethod,
             };
-            const response = await postData('/api/payment', { order, orderItems});
+            const response = await postData(paymentMethod === 'CASH' ? '/api/order/customer' : '/api/payment', {
+                order, 
+                orderItems, 
+                cart: parsedCartItems
+            });
 
-            if(response.success)window.location.href = response.checkout_url
+            if(response.success) window.location.href = response.checkout_url
+            else errorAlert(response.message, '', isDark)
         }
     }
 
@@ -134,14 +140,16 @@ const CheckoutPage = () => {
                     const variant = product.variants.filter(variant => variant._id === item.variant_id)[0]
                     
                     if(product.product_type === 'Variable' && !variant) return null
-                    
+
+                    const stock = product.product_type === 'Single' ? product.stock : variant.stock
+
                     return {
                         product_id: item.product_id,
                         variant_id: item.variant_id,
                         attributes: product.product_type === 'Single' ? null : variant.attributes,
-                        stock: product.product_type === 'Single' ? product.stock : variant.stock,
+                        stock: stock,
                         product_name: product.product_name,
-                        quantity: item.quantity,
+                        quantity: item.quantity > (stock ?? 0) ? stock : item.quantity,
                         price: product.product_type === 'Single' ? product.price : variant.price,
                         lineTotal: product.product_type === 'Single' ? (product.price ?? 0) * item.quantity : (variant.price ?? 0) * item.quantity,
                         image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
@@ -188,8 +196,24 @@ const CheckoutPage = () => {
         setSelectedAddress(Number(event.target.value));
     };
 
+    const handlePaymentMethod = (event: React.ChangeEvent<HTMLInputElement>) => setPaymentMethod(event.target.value)
+
+    const removeAddress = async (index : number) => {
+        if(await confirmDialog('Remove this address?', '', isDark)){
+            setLoading(true)
+            const data = {...customer!, addresses: customer?.addresses?.filter((_, i) => i !== index)}
+            const response = await updateData('/api/customer', data)
+            if(response.success){
+                setCustomer(data)
+                successAlert('Address successfully removed', '', isDark)
+                if(data.addresses?.length === 1) setSelectedAddress(0);
+            }
+            setLoading(false)
+        }
+    }
+
     return (
-        <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10", isDark && 'bg-[#121212]')}>
+        <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <div className="flex-2 flex flex-col gap-5">
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 <h1 className="text-3xl font-bold text-red-500">Checkout</h1>
@@ -198,7 +222,7 @@ const CheckoutPage = () => {
                         <h1 className={cn("text-xl font-bold", isDark && 'text-white')}>Order Summary</h1>
                         <CustomizedChip label={`${orderItems.length} items`} />
                     </div>
-                    {orderItems?.map((item, i) => <CustomerItemContainer key={i} item={item} />)}
+                    {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
                 </Card>
                 <PaymentSummaryCard shipping_fee={shipping_fee} subtotal={subtotal} total={total}/>
             </div>
@@ -207,15 +231,16 @@ const CheckoutPage = () => {
                 <RadioGroup
                     className="flex flex-col gap-5"
                     aria-labelledby="demo-radio-buttons-group-label"
-                    defaultValue="female"
                     name="radio-buttons-group"
+                    onChange={handleChange} 
                 >
                 {customer?.addresses?.map((address, index) => (
                     <AddressContainer 
+                        key={index}
                         address={address} 
-                        handleChange={handleChange} 
                         selectedAddress={selectedAddress} 
                         index={index}
+                        remove={removeAddress}
                     />
                 ))}
                 </RadioGroup>
@@ -239,7 +264,7 @@ const CheckoutPage = () => {
                         onChange={(e) => handleRegionChange(e.target.value as string)}
                     />
                     {selectedRegion && <CustomizedSelect 
-                        label="City"
+                        label="City/Municipalities"
                         value={selectedCity}
                         menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
                         onChange={(e) => handleCityChange(e.target.value as string)}
@@ -258,7 +283,7 @@ const CheckoutPage = () => {
                     />
                     <div>
                         <label className={`mb-2 block text-sm font-medium ${isDark ? 'text-[#919191]' : 'text-gray-400'}`}>
-                            Phone (Optional)
+                            Phone
                         </label>
                         <PhoneInput
                             country={'ph'}
@@ -282,7 +307,10 @@ const CheckoutPage = () => {
                             sx={{ border: 1, borderColor: isDark ? 'white' : 'gray', color: isDark ? 'white' : 'gray'}}
                             onClick={() => setAddAddress(false)}
                         >Close</Button>}
-                        <RedButton onClick={saveAddress} disabled={!areFieldsFilled || loading}>Save</RedButton>
+                        <RedButton 
+                            onClick={saveAddress} 
+                            disabled={!areFieldsFilled || loading}
+                        >Save</RedButton>
                     </div>
                 </div> : 
                 
@@ -296,10 +324,23 @@ const CheckoutPage = () => {
                     </div>
                     <AddIcon />
                 </button>}
+                
+                <strong>Payment Method</strong>
+                <RadioGroup
+                    className="flex flex-col gap-5"
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    value={paymentMethod}
+                    name="radio-buttons-group"
+                    onChange={handlePaymentMethod}
+                >
+                    <RedRadio label="Cash on delivery" value="CASH"/>
+                    <RedRadio label="NON-COD (GCASH, PAYMAYA)" value="ONLINE PAYMENT"/>
+                </RadioGroup>
+
                 <RedButton 
                     onClick={proceed}
                     disabled={(customer?.addresses?.length ?? 0) < 1}
-                >Proceed to payment</RedButton>
+                >{paymentMethod === 'CASH' ? 'Create order' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>
     )

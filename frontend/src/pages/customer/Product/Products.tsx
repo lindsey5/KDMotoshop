@@ -116,7 +116,7 @@ const CustomerProducts = () => {
 
     return (
         <div className="flex pt-20">
-            <div className={cn("transition-colors duration-600 relative flex-1 p-10", isDark && 'bg-[#1e1e1e]')}>
+            <div className={cn("transition-colors duration-600 relative flex-1 p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex justify-between items-center mt-4">
                     <h1 className="text-4xl text-red-500 font-bold">Products</h1>

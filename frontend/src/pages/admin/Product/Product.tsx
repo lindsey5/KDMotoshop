@@ -16,24 +16,22 @@ import ProductImages from "../../../components/images/ProductImages";
 import Card from "../../../components/Card";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
+import { RedRadio } from "../../../components/Radio";
 
-const RedRadio = ({ label, value } : { label: string, value: string }) => {
-    const isDark = useDarkmode()
-
-    return (
-        <FormControlLabel
-            value={value} 
-            control={( <Radio 
-                sx={{
-                    color: isDark ? 'white' : '',
-                    '&.Mui-checked': {
-                        color: red[600],
-                    },
-                }}
-            /> )} 
-             label={label} 
-        />   
-    )
+const productInitialState = {
+    product_name: '',
+    description: '',
+    category: '',
+    product_type: 'Single',
+    sku: undefined,
+    price: undefined,
+    stock: undefined,
+    visibility: 'Published',
+    images: [],
+    thumbnail: null,
+    attributes: [],
+    variants: [],
+    weight: 0.5,
 }
 
 const ProductPage = () => {
@@ -45,27 +43,12 @@ const ProductPage = () => {
     const [attributeName, setAttributeName] = useState<string>('');
     const [selectedImage, setSelectedImage] = useState<string>('/photo.png');
     const [loading, setLoading] = useState<boolean>(false)
-    const [product, setProduct] = useState<Product>({
-        product_name: '',
-        description: '',
-        category: '',
-        product_type: 'Single',
-        sku: undefined,
-        price: undefined,
-        stock: undefined,
-        visibility: 'Published',
-        images: [],
-        thumbnail: null,
-        attributes: [],
-        variants: [],
-        weight: 0.5,
-    });
+    const [product, setProduct] = useState<Product>(productInitialState);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },
         { label: 'Products', href: '/admin/products' },
         { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
-
     ]
 
     const getCategories = async () => {
@@ -245,7 +228,7 @@ const ProductPage = () => {
                         <RedTextField 
                             type="number"
                             label="Stock" 
-                            value={product.stock}
+                            value={product?.stock}
                             placeholder="Enter stock"
                             onChange={(e) => handleNoDecimal(e.target.value, 'stock')}
                         />

@@ -15,6 +15,7 @@ import CustomerLogin from "./pages/auth/CustomerLogin";
 import { DarkmodeContextProvider } from "./context/DarkmodeContext";
 import { SocketContextProvider } from "./context/socketContext";
 import CheckoutPage from "./pages/customer/Order/Checkout";
+import Cart from "./pages/customer/Order/Cart";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
               <Route path="products" element={<CustomerProducts />} />
               <Route path="product/:id" element={<CustomerProduct />} />
               <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="cart" element={<Cart />} />
             </Route>
             <Route path="admin">
               <Route path="login" element={<AdminLogin />} />

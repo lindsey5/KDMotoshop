@@ -194,7 +194,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                         label="Payment Method"
                         value={order.payment_method}
                         onChange={(e) => setOrder(prev => ({ ...prev, payment_method: e.target.value as Order['payment_method'] }))}
-                        menu={['Cash', 'GCash', 'Other'].map(method => ({ value: method, label: method }))}
+                        menu={['CASH', 'GCASH', 'PAYMAYA', "CARD"].map(method => ({ value: method, label: method }))}
                     />
                 </div>
                 <RedTextField 

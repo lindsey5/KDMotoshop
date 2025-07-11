@@ -2,35 +2,25 @@ import { Button, Radio } from "@mui/material"
 import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode";
 import LocationPinIcon from '@mui/icons-material/LocationPin';
-import { useContext, useState } from "react";
-import { updateData } from "../../../services/api";
-import { CustomerContext } from "../../../context/CustomerContext";
-import { confirmDialog, successAlert } from "../../../utils/swal";
+import { useState } from "react";
 
 type AddressContainerProps = {
     address: Address;
     index: number;
-    handleChange: (e : any) => void;
     selectedAddress: number;
+    remove: (index : number) => Promise<void>;
 }
 
-const AddressContainer = ({ address, index, selectedAddress, handleChange } : AddressContainerProps) => {
+const AddressContainer = ({ address, index, selectedAddress, remove} : AddressContainerProps) => {
     const isDark = useDarkmode();
-    const { customer, setCustomer } = useContext(CustomerContext);
     const [loading, setLoading] = useState<boolean>(false);
 
     const removeAddress = async () => {
-        if(await confirmDialog('Remove this address?', '', isDark)){
-            setLoading(true)
-            const data = {...customer!, addresses: customer?.addresses?.filter((_, i) => i !== index)}
-            const response = await updateData('/api/customer', data)
-            if(response.success){
-                setCustomer(data)
-                successAlert('Address successfully removed', '', isDark)
-            }
-            setLoading(false)
-        }
+        setLoading(true)
+        await remove(index)
+        setLoading(false)
     }
+
 
     return (
         <div className={cn("flex justify-between items-center gap-5 border border-gray-300 p-5 rounded-lg", isDark && 'border-gray-500')}>
@@ -49,7 +39,6 @@ const AddressContainer = ({ address, index, selectedAddress, handleChange } : Ad
             </div>
             <Radio
                 checked={selectedAddress === index}
-                onChange={handleChange}
                 value={index}
                 name="radio-buttons"
                 sx={{

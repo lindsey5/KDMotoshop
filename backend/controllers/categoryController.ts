@@ -63,6 +63,7 @@ export const get_top_categories = async (req: Request, res: Response) => {
   try {
     const limit = Number(req.query.limit) || 10;
     const topCategories = await OrderItem.aggregate([
+      { $match: { status: 'Fulfilled'} },
       {
         $lookup: {
           from: 'products',

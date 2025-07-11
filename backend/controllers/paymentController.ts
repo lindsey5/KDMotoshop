@@ -4,7 +4,7 @@ const url = process.env.NODE_ENV === 'production' ? 'https://kdmotoshop.onrender
 
 export const createPaymentCheckout = async (req : Request, res: Response) => {
     try{
-        const { order, orderItems } = req.body
+        const { order, orderItems, cart } = req.body
 
         const line_items = [
             ...orderItems.map((item : any) => ({ 
@@ -13,14 +13,15 @@ export const createPaymentCheckout = async (req : Request, res: Response) => {
                 amount: item.price * 100, 
                 name: item.product_name,  
                 quantity: item.quantity 
-            })),
-            {
-                currency: "PHP",
-                amount: order.shipping_fee * 100,
-                name: "Shipping fee",
-                quantity: 1,
-            }
+            }))
         ]
+
+        line_items.push({
+            currency: "PHP",
+            amount: order.shipping_fee * 100,
+            name: "Shipping fee",
+            quantity: 1,
+        })
 
         const options = {
             method: 'POST',
@@ -38,10 +39,11 @@ export const createPaymentCheckout = async (req : Request, res: Response) => {
                     line_items,
                     success_url: url,
                     cancel_url: url,
-                    payment_method_types: ['card', 'gcash', 'paymaya'],
+                    payment_method_types: ['gcash', 'paymaya'],
                     metadata: { 
                         orderItems: JSON.stringify(orderItems),
-                        order: JSON.stringify(order)
+                        order: JSON.stringify(order),
+                        cart: JSON.stringify(cart)
                     }
                 }
                 }

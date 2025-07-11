@@ -32,10 +32,9 @@ const OrderDetails = () => {
         const getOrderAsync = async () => {
             const response = await fetchData(`/api/order/${id}`)
             if(response.success){
-                setOrder(response.order)
-            }else{
-                window.location.href = '/admin/dashboard'
-            }
+                const { customer, ...rest } = response.order
+                setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
+            }else window.location.href = '/admin/dashboard'
         }
 
         getOrderAsync();
@@ -100,7 +99,7 @@ const OrderDetails = () => {
                 <Card className="w-full flex flex-col gap-5">
                     <h1 className="font-bold text-xl">Customer</h1>
                     <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
-                        <Avatar />
+                        <Avatar src={order.customer.image} />
                         <h1>{order.customer.firstname} {order.customer.lastname}</h1>
                     </div>
                     <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>

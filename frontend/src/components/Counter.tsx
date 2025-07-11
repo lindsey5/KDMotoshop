@@ -10,9 +10,10 @@ type CounterProps = {
     setValue: React.Dispatch<React.SetStateAction<number>>;
     limit: number;
     disabled?: boolean;
+    showLabel?: boolean;
 }
 
-const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled}) => {
+const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled, showLabel}) => {
     const context = useContext(DarkmodeContext)
 
     const incrementQuantity = () => {
@@ -20,13 +21,12 @@ const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled}) =>
     };
 
     const decrementQuantity = () => {
-        if(!disabled && value !== 1) setValue(prev => (prev - 1 ));
+        if(!disabled && value > 1) setValue(prev => (prev - 1 ));
     };
-
 
     return (
         <div>
-            <h1 className="mb-2">Quantity</h1>
+            {showLabel && <h1 className="mb-2">Quantity</h1>}
             <div className="flex gap-2">
                 <IconButton 
                     onClick={decrementQuantity} 

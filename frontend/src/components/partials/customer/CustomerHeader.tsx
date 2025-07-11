@@ -1,6 +1,6 @@
 import { Avatar, Button, IconButton, Link, Badge } from "@mui/material";
 import { useState, useEffect, useRef, useCallback, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { cn, formatNumber } from "../../../utils/utils";
 import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,9 +11,9 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { SocketContext } from "../../../context/socketContext";
+import { CartContext } from "../../../context/CartContext";
 
-const HeaderLink = ({ label, path } : { path: string, label: string}) => {
+const NavLink = ({ label, path } : { path: string, label: string}) => {
 
     return (
         <Link href={path}>
@@ -154,52 +154,9 @@ const HeaderSearchField = () => {
 }
 
 const CustomerHeader = () => {
-    const location = useLocation()
-    const [isScrolled, setIsScrolled] = useState<boolean>(location.pathname !== '/');
     const { customer } = useContext(CustomerContext);
-    const { socket } = useContext(SocketContext);
-    const [carts, setCarts] = useState<Cart[]>([]);
+    const { cart } = useContext(CartContext);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (socket) {
-            const handleAddToCart = (cart: Cart) => {
-                console.log(cart)
-                const index = carts.findIndex(c => c._id === cart._id );
-                console.log(index)
-                
-                index < 0 ? setCarts(prev => [...prev, cart]) : setCarts(prev => prev
-                    .map((c, i) => 
-                        i === index ? {...c, quantity: c.quantity + cart.quantity} : c
-                    ))
-            };
-
-            socket.on('add-to-cart', handleAddToCart);
-
-            return () => {
-                socket.off('add-to-cart', handleAddToCart);
-            };
-        }
-    }, [socket, carts]);
-
-    useEffect(() => {
-        const getCartsAsync = async () => {
-            const response = await fetchData('/api/cart');
-            if(response.success) setCarts(response.carts);
-        }
-
-        getCartsAsync();
-    }, [])
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if(location.pathname === '/') setIsScrolled(window.scrollY > window.innerHeight);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
 
     return (
         <header className="z-10 flex gap-10 items-center justify-between fixed top-0 left-0 right-0 px-10 py-3 bg-black transition-all duration-300">
@@ -209,15 +166,21 @@ const CustomerHeader = () => {
             />
             <HeaderSearchField />
             <div className="flex gap-5 items-center">
-                <HeaderLink path="/" label="Home"/>
-                <HeaderLink  path="/products" label="Products"/>
+                <NavLink path="/" label="Home"/>
+                <NavLink  path="/products" label="Products"/>
                 {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
                 <>
                 <IconButton sx={{ color: 'white', ":hover": { color: 'red' }}}>
                     <NotificationsOutlinedIcon />
                 </IconButton>
-                    <Badge badgeContent={carts.length} color="primary">
-                        <IconButton  sx={{ color: 'white', ":hover": { color: 'red' } }}>
+                    <Badge badgeContent={cart.length} color="primary">
+                        <IconButton  
+                            onClick={() => navigate('/cart')}
+                            sx={{ 
+                                color: 'white', 
+                                ":hover": { color: 'red' } 
+                            }}
+                        >
                             <ShoppingCartOutlinedIcon />
                         </IconButton>
                     </Badge>

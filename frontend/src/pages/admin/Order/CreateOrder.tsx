@@ -27,7 +27,7 @@ const OrderState : Order = {
         phone: '',
         email: ''
     },
-    payment_method: 'Cash',
+    payment_method: 'CASH',
     note: '',
 }
 
@@ -218,7 +218,7 @@ const CreateOrderPage = () => {
 
         </div>
 
-        <div className={cn("w-[400px] flex flex-col border-l-1 border-gray-300", isDark && 'bg-[#1e1e1e] border-gray-600')}>
+        <div className={cn("w-[400px] flex flex-col border-l-1 border-gray-300 bg-white", isDark && 'bg-[#1e1e1e] border-gray-600')}>
             <div className={cn("flex justify-between p-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                 <Button 
                     variant="contained" 

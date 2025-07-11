@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchData } from "../../../services/api";
+import { fetchData, postData } from "../../../services/api";
 import { ProductThumbnail, MultiImageSlideshow } from "../../../components/image";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
@@ -11,8 +11,8 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
-import { SocketContext } from "../../../context/socketContext";
 import { successAlert } from "../../../utils/swal";
+import { CartContext } from "../../../context/CartContext";
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -20,7 +20,7 @@ const CustomerProduct = () => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
     const isDark = useDarkmode();
-    const { socket } = useContext(SocketContext);
+    const { cart, setCart } = useContext(CartContext);
     const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
     
@@ -65,14 +65,32 @@ const CustomerProduct = () => {
 
     const addToCart = async () => {
         if(customer){
-            const cart : Cart = {
+            const newItem : Cart = {
                 customer_id: customer._id,
                 product_id: product._id ?? '',
                 variant_id: product.product_type === 'Single' ? null : filteredVariants[0]._id ?? null,
                 quantity: quantity,
             } 
-            socket?.emit('add-to-cart', cart)
-            successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
+            const response = await postData('/api/cart', newItem);
+            if(response.success){
+                const existedCartIndex = cart.findIndex(item => item._id === response.cart._id);
+
+                existedCartIndex !== -1 ? cart.map((item, index) => (
+                    index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
+                )) : setCart(prev => [...prev, {
+                    ...response.cart, 
+                    attributes: selectedAttributes,
+                    stock:  product.product_type === 'Single' ? product.stock : filteredVariants[0].stock,
+                    product_name: product.product_name,
+                    price: product.product_type === 'Single' ? product.price : filteredVariants[0].price,
+                    image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+                        ? product.thumbnail.imageUrl
+                            : typeof product?.thumbnail === 'string'
+                            ? product.thumbnail
+                        : '/photo.png'
+                }])
+                successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
+            }
         }else{
             navigate('/login')
         }
@@ -86,6 +104,7 @@ const CustomerProduct = () => {
                 quantity: quantity
             }]
             localStorage.setItem('items', JSON.stringify(items))
+            localStorage.removeItem('cart')
             navigate('/checkout')
         }else{
             navigate('/login')

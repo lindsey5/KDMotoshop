@@ -33,7 +33,7 @@ const PopularCategoriesSection = () => {
     const [categories, setCategories] = useState<TopCategory[]>([]);
     const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
     const isDark = useDarkmode();
-    const pageSize = 2;
+    const pageSize = 3;
 
     useEffect(() => {
         const getCategories = async () => {
@@ -60,7 +60,7 @@ const PopularCategoriesSection = () => {
     );
 
     return (
-        <section className={cn('h-screen bg-gray-100 transition-colors duration-600 py-20', 
+        <section className={cn('min-h-screen bg-gray-100 transition-colors duration-600 py-20', 
             isDark && 'bg-[#121212]'
         )}
         >
@@ -109,7 +109,7 @@ const PopularCategoriesSection = () => {
                     x: { type: "spring", stiffness: 300, damping: 30 },
                     opacity: { duration: 0.4 },
                 }}
-                className="flex gap-20 justify-center w-full"
+                className="flex flex-wrap gap-20 justify-center w-full"
             >
                 {currentCategories.map((category) => (
                     <motion.div

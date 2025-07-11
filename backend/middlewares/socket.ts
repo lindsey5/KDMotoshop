@@ -1,7 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { Server as HTTPServer } from 'http';
-import Cart, { ICart } from '../models/Cart';
 
 interface JwtPayload {
   id: string;
@@ -39,29 +38,8 @@ const initializeSocket = (server: HTTPServer): void => {
       console.log('User disconnected:', socket.id);
     });
 
-    socket.on('add-to-cart', async (cart : ICart) => {
-        try{
-          const query : any = {
-            product_id: cart.product_id,
-            customer_id: cart.customer_id
-          }
-
-          if(cart.variant_id) query.variant_id = cart.variant_id
-
-          const existedCart = await Cart.findOne(query)
-          
-          if(existedCart){
-            existedCart.quantity += cart.quantity;
-            await existedCart.save();
-            socket.emit('add-to-cart', existedCart);
-          }else{
-            const newCart = new Cart(cart);
-            await newCart.save()
-            socket.emit('add-to-cart', newCart);
-          }
-        }catch(err : any){
-          console.log('Error: ', err.message)
-        }
+    socket.on('add-to-cart', () => {
+        socket.emit('add-to-cart');
     })
 
     try {

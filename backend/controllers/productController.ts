@@ -269,6 +269,7 @@ export const get_top_products = async (req: Request, res: Response) => {
   try{
     const limit = Number(req.query.limit) || 5;
     const topProductsAggregation = await OrderItem.aggregate([
+      { $match: { status: 'Fulfilled' } },
       { 
         $group: { 
           _id: '$product_id',

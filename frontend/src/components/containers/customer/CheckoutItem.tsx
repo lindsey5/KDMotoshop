@@ -2,7 +2,7 @@ import useDarkmode from "../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../utils/utils"
 import { CustomizedChip } from "../../Chip";
 
-const CustomerItemContainer = ({ item } : { item : OrderItem}) => {
+const CheckoutItemContainer = ({ item } : { item : OrderItem}) => {
     const isDark = useDarkmode();
     
     return (
@@ -21,4 +21,4 @@ const CustomerItemContainer = ({ item } : { item : OrderItem}) => {
     )
 }
 
-export default CustomerItemContainer
+export default CheckoutItemContainer

@@ -13,7 +13,35 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
         const newOrder = {...order, createdBy: req.user_id, order_id: await generateOrderId()}
-        const savedOrder = createNewOrder({ orderItems, order: newOrder });
+
+        const savedOrder = await createNewOrder({ orderItems, order: newOrder });
+
+        if(!savedOrder) {
+            res.status(400).json({ success: false, message: 'Creating order error'});
+            return;
+        }
+
+        res.status(201).json({ success: true, order: savedOrder });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+export const create_customer_order = async (req: Request, res: Response) => {
+    try {
+        const { order, orderItems, cart } = req.body;
+        if (!order || !orderItems) {
+            res.status(400).json({ success: false, message: 'Order and order items are required' });
+            return;
+        }
+        const newOrder = {...order, order_id: await generateOrderId()}
+
+        const cartToDelete = Array.isArray(cart) ? cart : [];
+        const savedOrder = await createNewOrder({ orderItems, order: newOrder, cart: cartToDelete });
+        if(!savedOrder) {
+            res.status(400).json({ success: false, message: 'Creating order error'});
+            return;
+        }
 
         res.status(201).json({ success: true, order: savedOrder });
     } catch (err: any) {
@@ -100,7 +128,7 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
 
 export const get_order_by_id = async (req: Request, res: Response) => {
     try {
-        const order = await Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id).populate('customer.customer_id', 'image.imageUrl');
 
         if(!order){
             res.status(404).json({ success: false, message: 'Order not found'})

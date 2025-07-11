@@ -1,6 +1,8 @@
+import Cart from "../models/Cart";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
 import Product from "../models/Product";
+import { ICart } from "../models/Cart";
 
 export const generateOrderId = async () : Promise<string> => {
   const prefix = 'ORD-';
@@ -44,27 +46,38 @@ export const incrementStock = async (item : any) => {
     }
 }
 
-export const createNewOrder = async ({ orderItems, order} : { orderItems : OrderItem[], order: Order}) => {
-    const newOrder = new Order(order);
-    
-    const orderItemsWithOrderID = orderItems.map((item: any) => (
-        {
-            ...item, 
-            order_id: newOrder._id,
-            status: order.status === 'Completed' ? 'Fulfilled' : 'Unfulfilled'
-        }
-    ));   
-    await OrderItem.insertMany(orderItemsWithOrderID)
-        .then(async (items) => {
-            if(newOrder.status === 'Completed') {
-                for (const item of items) await decrementStock(item)
+export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) => {
+    try{
+        const newOrder = new Order(order);
+        
+        const orderItemsWithOrderID = orderItems.map((item: any) => (
+            {
+                ...item, 
+                order_id: newOrder._id,
+                status: order.status === 'Completed' ? 'Fulfilled' : 'Unfulfilled'
             }
-        })  
-        .catch((error) => {
-            throw new Error(`Failed to save order items: ${error.message}`);
-    });
+        ));   
+        await OrderItem.insertMany(orderItemsWithOrderID)
+            .then(async (items) => {
+                if(newOrder.status === 'Completed') {
+                    for (const item of items) await decrementStock(item)
+                }
+            })  
+            .catch((error) => {
+                throw new Error(`Failed to save order items: ${error.message}`);
+        });
 
-    const savedOrder = await newOrder.save();
+        if(cart){
+            for(const item of cart){
+                await Cart.findByIdAndDelete(item._id);
+            }
+        }
 
-    return savedOrder
+        const savedOrder = await newOrder.save();
+
+        return savedOrder
+    }catch(err : any){
+        console.log(err)
+        return null
+    }
 }

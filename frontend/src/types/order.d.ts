@@ -7,7 +7,8 @@ type Order = {
     subtotal: number;
     status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled" | "Refunded";
     customer: {
-        customer_id?: string;
+        customer_id?: string | UploadedImage;
+        image?: string; 
         email?: string;
         firstname: string;
         lastname: string;
@@ -19,7 +20,7 @@ type Order = {
         city: string;
         region: string;
     };
-    payment_method: "Cash" | "GCash" | "Other";
+    payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
     note?: string;
     createdBy?: string;
     createdAt?: Date;

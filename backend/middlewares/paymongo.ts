@@ -11,17 +11,25 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
 
     if (isValid && payload.data.attributes.type === 'checkout_session.payment.paid') {
         const paymentIntentId = payload.data.attributes.data.attributes.payment_intent_id
-        const { order, orderItems } = payload.data.attributes.data.attributes.metadata
+        const { order, orderItems, cart } = payload.data.attributes.data.attributes.metadata
         const parsedOrder = JSON.parse(order)
+        const parsedCart = JSON.parse(cart ?? "")
         
-        const payment_method = parsedOrder.payment_method === 'Online Payment' ? 
+        const payment_method = parsedOrder.payment_method === 'ONLINE PAYMENT' ? 
             payload.data.attributes.data.attributes.payment_method_used.toUpperCase() : parsedOrder.payment_method
 
         const savedOrder = { ...parsedOrder, payment_method, order_id: await generateOrderId() }
-        await createNewOrder({ orderItems: JSON.parse(orderItems), order: savedOrder });
-
+        const createdOrder = await createNewOrder({ orderItems: JSON.parse(orderItems), order: savedOrder, cart: Array.isArray(parsedCart) ? parsedCart : [] });
+        console.log(cart)
+        if(!createdOrder){
+          res.status(400)
+          return;
+        }
         res.sendStatus(200)
-    }else res.sendStatus(400)
+        return;
+    }
+    
+    res.sendStatus(400)
 }
 
 function verifyWebhookSignature(payload : any, signature : any) {

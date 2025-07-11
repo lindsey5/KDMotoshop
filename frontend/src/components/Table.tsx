@@ -34,7 +34,7 @@ export const StyledTableRow = styled(TableRow, {
     border: 0,
   },
   '& td': {
-    border: isDark ? 0 : 1,
+    borderColor: isDark ? '#4b4b4b' : '',
   },
 }));
 
