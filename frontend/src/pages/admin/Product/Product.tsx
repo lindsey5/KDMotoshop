@@ -2,8 +2,7 @@ import { useEffect, useState } from "react"
 import { RedTextField } from "../../../components/Textfield"
 import { fetchData } from "../../../services/api";
 import { CustomizedSelect } from "../../../components/Select";
-import { red } from "@mui/material/colors";
-import { Backdrop, Button, CircularProgress, FormControlLabel, IconButton, Radio, RadioGroup } from "@mui/material";
+import { Backdrop, Button, CircularProgress, IconButton, RadioGroup } from "@mui/material";
 import { RedButton } from "../../../components/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { confirmDialog, errorAlert } from "../../../utils/swal";
