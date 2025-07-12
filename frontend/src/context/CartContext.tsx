@@ -52,6 +52,8 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
     getCart()
   }, []);
 
+  useEffect(() => console.log(cart) ,[cart])
+
   return (
     <CartContext.Provider value={{ cart, setCart, loading }}>
       {children}

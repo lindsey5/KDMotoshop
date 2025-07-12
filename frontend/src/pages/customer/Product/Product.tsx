@@ -75,9 +75,9 @@ const CustomerProduct = () => {
             if(response.success){
                 const existedCartIndex = cart.findIndex(item => item._id === response.cart._id);
 
-                existedCartIndex !== -1 ? cart.map((item, index) => (
+                existedCartIndex !== -1 ? setCart(cart.map((item, index) => (
                     index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
-                )) : setCart(prev => [...prev, {
+                ))) : setCart(prev => [...prev, {
                     ...response.cart, 
                     attributes: selectedAttributes,
                     stock:  product.product_type === 'Single' ? product.stock : filteredVariants[0].stock,
@@ -113,13 +113,13 @@ const CustomerProduct = () => {
     }
 
     return (
-         <div className={cn("pt-30 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
+         <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col md:flex-row gap-10 py-10">
-                <div className="flex flex-col gap-5 items-center">
+                <div className="flex flex-col gap-5 md:items-center">
                     <ProductThumbnail 
                         product={product} 
-                        className={cn("w-[350px] h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
+                        className={cn("w-[200px] h-[200px] lg:w-[350px] lg:h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
                     />
                     <MultiImageSlideshow 
                             images={

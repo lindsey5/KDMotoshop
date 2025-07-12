@@ -334,7 +334,13 @@ const CheckoutPage = () => {
                     onChange={handlePaymentMethod}
                 >
                     <RedRadio label="Cash on delivery" value="CASH"/>
-                    <RedRadio label="NON-COD (GCASH, PAYMAYA)" value="ONLINE PAYMENT"/>
+                    <div className="flex justify-between">
+                        <RedRadio label="E-Wallet" value="ONLINE PAYMENT" />
+                        <div className="flex gap-2">
+                            <img className="w-12 h-10" src="/icons/gcash.jpeg" alt="gcash" />
+                            <img className="w-12 h-10" src="/icons/maya.png" alt="gcash" />
+                        </div>
+                    </div>
                 </RadioGroup>
 
                 <RedButton 

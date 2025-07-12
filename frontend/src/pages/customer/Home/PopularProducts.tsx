@@ -42,6 +42,8 @@ const PopularProductsSection = () => {
         const getPopularProducts = async () => {
         const response = await fetchData("/api/product/top");
         if (response.success) {
+            console.log
+            (response)
             setProducts(response.topProducts);
         }
         };

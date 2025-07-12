@@ -54,7 +54,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
     };
 
     return (
-        <div className="w-full relative px-15">
+        <div className="relative px-15">
             <Modal open={selectedImage !== undefined} onClose={() => setSelectedImage(undefined)}>
                 <img className="absolute inset-1/2 transform -translate-1/2" src={selectedImage}/>
             </Modal>
@@ -73,7 +73,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
                     src={img}
                     alt={`Slide ${idx}`}
                     onClick={() => setSelectedImage(img)}
-                    className={cn("w-25 h-25 object-cover rounded-xl shadow-md cursor-pointer")}
+                    className={cn("w-18 h-18 md:w-25 md:h-25 object-cover rounded-xl shadow-md cursor-pointer")}
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.3, delay: idx * 0.1 }}

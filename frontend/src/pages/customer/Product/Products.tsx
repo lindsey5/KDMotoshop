@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
+import PopularProductsSection from "../Home/PopularProducts";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -115,10 +116,10 @@ const CustomerProducts = () => {
     }
 
     return (
-        <div className="flex pt-20">
+        <div className="flex flex-col md:flex-row pt-20">
             <div className={cn("transition-colors duration-600 relative flex-1 p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
-                <div className="w-full flex justify-between items-center mt-4">
+                <div className="w-full flex flex-wrap gap-5 justify-between items-center mt-4">
                     <h1 className="text-4xl text-red-500 font-bold">Products</h1>
                     <div className="flex gap-5 flex-1 max-w-[600px]">
                         <CustomizedSelect 
@@ -150,8 +151,14 @@ const CustomerProducts = () => {
                     </div>
                 )}
             </div>
+            <div className="md:hidden p-10 bg-[#121212]">
+                <h1 className="text-4xl text-red-500 font-bold mb-4">Most Selling Products</h1>
+                <div className="grid grid-cols-2 gap-5">
+                    {topProducts.map(product => (<CustomerProductContainer key={product._id} product={product}/> ))}
+                </div>
+            </div>
             
-            <aside className={cn("transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
+            <aside className={cn("hidden md:flex transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
                 <div className="flex flex-col gap-6 px-5">
                     <h1 className={cn("mb-6 font-bold text-xl", isDark && 'text-white')}>Filter by Price</h1>
                     <Slider

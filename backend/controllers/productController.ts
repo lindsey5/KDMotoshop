@@ -297,6 +297,7 @@ export const get_top_products = async (req: Request, res: Response) => {
         product_name: product.product_name,
         image: product.thumbnail.imageUrl,
         totalQuantity: item.totalQuantity,
+        stock: product.product_type === 'Variable' ? product.variants.reduce((total, v) => total + (v.stock ?? 0), 0) : product.stock,
         price: product.product_type === 'Variable' ? product.variants?.sort((a, b) => (a.price || 0) - (b.price || 0))[0].price : product.price,
       };
     });

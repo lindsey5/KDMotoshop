@@ -1,6 +1,7 @@
 import { cn, formatNumber } from "../../../utils/utils";
 
 const CustomerProductContainer = ({ product, className } : { product: any, className?: string }) => {
+    const stock = (product.product_type === 'Single' ? product.stock : product.variants?.reduce((total : number, v : any) => total + v.stock,0) ?? product.stock)
 
     const handleClick = () => {
         window.location.href = `/product/${product._id}`
@@ -8,19 +9,18 @@ const CustomerProductContainer = ({ product, className } : { product: any, class
 
     return (
         <div 
-            className={cn("bg-black rounded-md overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer", className)}
+            className={cn("relative bg-black rounded-md overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer", className)}
             onClick={handleClick}
         >
             <img
                 src={product.image}
                 alt={product.product_name}
-                className="w-full h-[150px] md:h-[250px] 2xl:h-[300px]"
+                className={cn("w-full h-[150px] md:h-[250px] 2xl:h-[300px]", )}
             />
             <div className="p-3 flex flex-col gap-3">
                 <h1 className="text-sm md:text-lg font-bold text-white">{product.product_name}</h1>
-                <h1 className="md:text-2xl text-lg font-bold text-red-600">
-                  ₱{formatNumber(product.price)}
-                </h1>
+                <h1 className="md:text-2xl text-lg font-bold text-red-600">₱{formatNumber(product.price)}</h1>
+                {stock === 0 && <p className="text-red-600 text-lg">Out of stock</p>}
             </div>
         </div>
     )

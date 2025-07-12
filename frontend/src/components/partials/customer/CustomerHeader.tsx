@@ -12,9 +12,9 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CartContext } from "../../../context/CartContext";
 import { CustomerDropdownMenu } from "../../Menu";
+import { ThemeToggle } from "../../Toggle";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
-
     return (
         <Link href={path}>
             <Button
@@ -120,7 +120,7 @@ const HeaderSearchField = () => {
     const handleFocus = () => setAutoComplete(true)
 
     return (
-        <div className={cn('hidden lg:flex flex-1 max-w-[500px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
+        <div className={cn('flex flex-1 min-w-[130px] max-w-[500px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
             <SearchIcon className={cn(isDark && "text-gray-400")}/>
             <input
               type="text"
@@ -157,10 +157,11 @@ const CustomerHeader = () => {
     const { customer } = useContext(CustomerContext);
     const { cart } = useContext(CartContext);
     const navigate = useNavigate();
+    const [showNav, setShowNav] = useState<boolean>(false);
 
     return (
-        <header className="z-10 flex gap-10 items-center justify-between fixed top-0 left-0 right-0 px-10 py-3 bg-black transition-all duration-300">
-            <img className="w-30 h-15 cursor-pointer" 
+        <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-5 py-3 bg-black transition-all duration-300">
+            <img className="w-20 h-10 lg:w-30 lg:h-15 cursor-pointer" 
                 onClick={() => window.location.href = '/'} 
                 src="/kd-logo.png" alt="" 
             />
@@ -172,9 +173,6 @@ const CustomerHeader = () => {
                 </div>
                 {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
                 <>
-                <IconButton sx={{ color: 'white', ":hover": { color: 'red' }}}>
-                    <NotificationsOutlinedIcon />
-                </IconButton>
                 <Badge badgeContent={cart.length} color="primary">
                     <IconButton  
                         onClick={() => navigate('/cart')}
@@ -189,6 +187,7 @@ const CustomerHeader = () => {
                 <CustomerDropdownMenu image={customer.image.imageUrl}/>
                 </>
                 }
+                <ThemeToggle />
             </div>
         </header>
     )
