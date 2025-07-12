@@ -103,6 +103,7 @@ const CustomerProduct = () => {
                 variant_id: product.product_type === 'Single' ? '' : filteredVariants[0]._id ?? '',
                 quantity: quantity
             }]
+            
             localStorage.setItem('items', JSON.stringify(items))
             localStorage.removeItem('cart')
             navigate('/checkout')

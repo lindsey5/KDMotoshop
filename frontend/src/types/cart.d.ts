@@ -12,4 +12,5 @@ type CartItem = Cart & {
     product_name: string;
     price: number;
     image: string;
+    isSelected: boolean;
 }

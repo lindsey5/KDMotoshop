@@ -33,6 +33,7 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
         const variant = product.variants.find((v : any) => v._id === item.variant_id)
         return {
           ...item,
+          isSelected: true,
           quantity: item.quantity, 
           attributes: variant.attributes,
           stock: product.product_type === 'Single' ? product.stock : variant.stock,

@@ -1,10 +1,10 @@
-import { useContext } from "react"
+import { useContext, useMemo, useState } from "react"
 import { CartContext } from "../../../context/CartContext";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import Card from "../../../components/Card";
 import { CustomizedChip } from "../../../components/Chip";
 import useDarkmode from "../../../hooks/useDarkmode";
-import { cn } from "../../../utils/utils";
+import { cn, formatNumber } from "../../../utils/utils";
 import CartItemContainer from "../../../components/containers/customer/CartItem";
 import { deleteData } from "../../../services/api";
 import { confirmDialog, successAlert } from "../../../utils/swal";
@@ -32,8 +32,14 @@ const Cart = () => {
         }
     }
 
+    const selectedItem = useMemo(() => {
+        const items = cart.filter(item => item.isSelected)
+        const total = items.reduce((total, item) => total + (item.price * item.quantity), 0)
+        return { total, items }
+    }, [cart])
+
     const proceedToCheckout = () => {
-        const items = cart.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity}))
+        const items = selectedItem.items.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity}))
         localStorage.setItem('items', JSON.stringify(items))
         localStorage.setItem('cart', JSON.stringify(cart))
         navigate('/checkout')
@@ -57,8 +63,9 @@ const Cart = () => {
                     <RedButton onClick={()=> navigate('/products')}>Continue Shopping</RedButton>
                 </div>}
                 {cart.map((item) => <CartItemContainer key={item._id} item={item} remove={deleteCartItem} />)}
-                <div className="flex justify-end mt-8">
-                    <RedButton onClick={proceedToCheckout} disabled={cart.length === 0}>Checkout</RedButton>
+                <div className="flex justify-center lg:justify-end mt-8 gap-5 items-center">
+                    <h2 className='font-bold text-lg'>Total: ₱{formatNumber(selectedItem.total)}</h2>
+                    <RedButton onClick={proceedToCheckout} disabled={selectedItem.items.length === 0}>Checkout ({selectedItem.items.length} items)</RedButton>
                 </div>
             </Card>
         </div>
