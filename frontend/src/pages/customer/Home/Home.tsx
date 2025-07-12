@@ -8,6 +8,7 @@ import CustomerFooter from "../../../components/partials/customer/CustomerFooter
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import { CustomerContextProvider } from "../../../context/CustomerContext";
+import MobileHome from "./MobileView";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -16,7 +17,8 @@ const KDMotoshopHome = () => {
     return (
         <CustomerContextProvider>
             <div className="transition-colors duration-600 border-box">
-                <Parallax ref={parallax} pages={5} className={cn('bg-white', isDark && 'bg-[#1e1e1e]')}>
+                <MobileHome />
+                <Parallax ref={parallax} pages={5} className={cn('bg-white hidden lg:block', isDark && 'bg-[#1e1e1e]')}>
                     <ParallaxLayer
                     offset={0}
                     className='z-10'
