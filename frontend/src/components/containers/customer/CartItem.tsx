@@ -41,6 +41,7 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
                     '&.Mui-checked': {
                         color: red[600],
                     },
+                    color: isDark ? 'white' : ''
                 }}
             />
             <div className="flex flex-gap-5 flex-1 gap-5 flex-wrap">

@@ -65,7 +65,7 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
     };
   
     return (
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID}>
           <div className="border border-white w-full">
             <GoogleLogin 
               onSuccess={handleSuccess} 

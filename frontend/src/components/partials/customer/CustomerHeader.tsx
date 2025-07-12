@@ -1,4 +1,4 @@
-import { Avatar, Button, IconButton, Link, Badge } from "@mui/material";
+import { Button, IconButton, Link, Badge, Menu, MenuItem } from "@mui/material";
 import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn, formatNumber } from "../../../utils/utils";
@@ -6,12 +6,12 @@ import { RedButton } from "../../Button";
 import SearchIcon from '@mui/icons-material/Search';
 import { fetchData } from "../../../services/api";
 import { ProductThumbnail } from "../../image";
-import { ThemeToggle } from "../../Toggle";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CartContext } from "../../../context/CartContext";
+import { CustomerDropdownMenu } from "../../Menu";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
 
@@ -120,7 +120,7 @@ const HeaderSearchField = () => {
     const handleFocus = () => setAutoComplete(true)
 
     return (
-        <div className={cn('flex-1 relative max-w-[500px] relative flex items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
+        <div className={cn('hidden lg:flex flex-1 max-w-[500px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
             <SearchIcon className={cn(isDark && "text-gray-400")}/>
             <input
               type="text"
@@ -166,28 +166,29 @@ const CustomerHeader = () => {
             />
             <HeaderSearchField />
             <div className="flex gap-5 items-center">
-                <NavLink path="/" label="Home"/>
-                <NavLink  path="/products" label="Products"/>
+                <div className="gap-5 hidden lg:flex">
+                    <NavLink path="/" label="Home"/>
+                    <NavLink  path="/products" label="Products"/>
+                </div>
                 {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
                 <>
                 <IconButton sx={{ color: 'white', ":hover": { color: 'red' }}}>
                     <NotificationsOutlinedIcon />
                 </IconButton>
-                    <Badge badgeContent={cart.length} color="primary">
-                        <IconButton  
-                            onClick={() => navigate('/cart')}
-                            sx={{ 
-                                color: 'white', 
-                                ":hover": { color: 'red' } 
-                            }}
-                        >
-                            <ShoppingCartOutlinedIcon />
-                        </IconButton>
-                    </Badge>
-                    <Avatar src={customer.image.imageUrl} alt={customer.firstname} />
+                <Badge badgeContent={cart.length} color="primary">
+                    <IconButton  
+                        onClick={() => navigate('/cart')}
+                        sx={{ 
+                            color: 'white', 
+                            ":hover": { color: 'red' } 
+                        }}
+                    >
+                        <ShoppingCartOutlinedIcon />
+                    </IconButton>
+                </Badge>
+                <CustomerDropdownMenu image={customer.image.imageUrl}/>
                 </>
                 }
-                <ThemeToggle />
             </div>
         </header>
     )
