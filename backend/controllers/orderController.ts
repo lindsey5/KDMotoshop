@@ -136,13 +136,14 @@ export const get_order_by_id = async (req: Request, res: Response) => {
         }
 
         const orderItems = await OrderItem.find({ order_id: order._id })
-            .populate('product_id', 'thumbnail.imageUrl');
+            .populate('product_id');
 
         const formattedItems = orderItems.map(item => {
             const { product_id, ...rest } = item.toObject();
 
             return {
                 ...rest,
+                product_id: (product_id as any)._id,
                 image: (product_id as any)?.thumbnail?.imageUrl || null
             };
         });

@@ -34,12 +34,12 @@ export const decrementStock = async (item : any) => {
 
 export const incrementStock = async (item : any) => {
     try{
-        console.log(item)
         if (item.variant_id) {
-            await Product.updateOne(
+            const result = await Product.updateOne(
                 {  _id: item.product_id,  "variants._id": item.variant_id },
                 { $inc: { "variants.$.stock": item.quantity } }
             );
+
         } else {
             await Product.updateOne(
                 { _id: item.product_id },

@@ -33,6 +33,7 @@ const OrderDetails = () => {
             const response = await fetchData(`/api/order/${id}`)
             if(response.success){
                 const { customer, ...rest } = response.order
+                console.log(response.order)
                 setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
             }else window.location.href = '/admin/dashboard'
         }
