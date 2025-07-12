@@ -8,7 +8,6 @@ import { fetchData } from "../../../services/api";
 import { ProductThumbnail } from "../../image";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CartContext } from "../../../context/CartContext";
 import { CustomerDropdownMenu } from "../../Menu";
@@ -52,8 +51,6 @@ const NavLink = ({ label, path } : { path: string, label: string}) => {
 const HeaderSearchField = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [autoComplete, setAutoComplete] = useState<boolean>(false);
-    const observer = useRef<IntersectionObserver | null>(null);
-    const [hasMore, setHasMore] = useState<boolean>(false);
     const isDark = useDarkmode();
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
@@ -61,61 +58,32 @@ const HeaderSearchField = () => {
         totalPages: 1,
     });
 
-    const getProducts = useCallback( async (reset : boolean) => {
-        const response = await fetchData(`/api/product?page=${pagination.page}&limit=10&searchTerm=${pagination.searchTerm}`);
+    const getProducts = async () => {
+        const response = await fetchData(`/api/product?page=${pagination.page}&limit=30&searchTerm=${pagination.searchTerm}`);
 
         if(response.success) {
-            if (!reset && response.products.length === 0) {
-                setHasMore(false);
-                return;
-            }
-
             const mappedProducts = response.products.map((product : Product) => ({
                     ...product,
                     price: product.product_type === 'Single' ? product.price : product.variants.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0].price
             }))
 
-            if (reset) {
-                setProducts(mappedProducts)
-                setPagination(prev => ({...prev, page: 1}))
-                setHasMore(true);
-            }else {
-                setProducts(prev => [...prev, ...mappedProducts]);
-            }
+            setProducts(mappedProducts)
         }
-    }, [pagination.page, pagination.searchTerm])
+    }
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            getProducts(true);
+            getProducts();
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm])
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            getProducts(false)
-        }, 500); 
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.page]);
+    }, [pagination.searchTerm, pagination.page])
 
     const handleBlur = () => {
         setTimeout(() => {
             setAutoComplete(false);
         }, 200);
     };
-
-    const lastItemRef = useCallback((node : HTMLDivElement | null) => {
-        if (observer.current) observer.current.disconnect();
-            observer.current = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    setPagination(prev => ({...prev, page: prev.page + 1}))
-                }
-            });
-        if (node) observer.current.observe(node);
-        
-    },[hasMore]);
 
     const handleFocus = () => setAutoComplete(true)
 
@@ -131,12 +99,11 @@ const HeaderSearchField = () => {
               onBlur={handleBlur}
             />
             {autoComplete && pagination.searchTerm && <div className="bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-0 z-10 p-3 border border-gray-300 rounded-md">
-                {products.length > 0 ? products.map((product, index) => (
+                {products.length > 0 ? products.map((product) => (
                     <div 
                         key={product._id}
                         className="flex gap-5 cursor-pointer hover:bg-gray-100 px-3 py-2"
                         onClick={() => window.location.href = `/product/${product._id}`}
-                        ref={index === products.length - 1 ? lastItemRef : null}
                     >
                         <ProductThumbnail 
                             product={product}
@@ -157,7 +124,6 @@ const CustomerHeader = () => {
     const { customer } = useContext(CustomerContext);
     const { cart } = useContext(CartContext);
     const navigate = useNavigate();
-    const [showNav, setShowNav] = useState<boolean>(false);
 
     return (
         <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-5 py-3 bg-black transition-all duration-300">

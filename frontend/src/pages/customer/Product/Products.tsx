@@ -151,7 +151,7 @@ const CustomerProducts = () => {
                     </div>
                 )}
             </div>
-            <div className="md:hidden p-10 bg-[#121212]">
+            <div className={cn("md:hidden p-10 bg-gray-200", isDark && 'bg-[#121212]')}>
                 <h1 className="text-4xl text-red-500 font-bold mb-4">Most Selling Products</h1>
                 <div className="grid grid-cols-2 gap-5">
                     {topProducts.map(product => (<CustomerProductContainer key={product._id} product={product}/> ))}
