@@ -335,7 +335,7 @@ const CheckoutPage = () => {
                 >
                     <RedRadio label="Cash on delivery" value="CASH"/>
                     <div className="flex justify-between">
-                        <RedRadio label="E-Wallet" value="ONLINE PAYMENT" />
+                        <RedRadio label="E-Wallets" value="ONLINE PAYMENT" />
                         <div className="flex gap-2">
                             <img className="w-12 h-10" src="/icons/gcash.jpeg" alt="gcash" />
                             <img className="w-12 h-10" src="/icons/maya.png" alt="gcash" />
@@ -346,7 +346,7 @@ const CheckoutPage = () => {
                 <RedButton 
                     onClick={proceed}
                     disabled={(customer?.addresses?.length ?? 0) < 1}
-                >{paymentMethod === 'CASH' ? 'Create order' : 'Proceed to payment'}</RedButton>
+                >{paymentMethod === 'CASH' ? 'Checkout' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>
     )
