@@ -16,6 +16,7 @@ import { DarkmodeContextProvider } from "./context/DarkmodeContext";
 import { SocketContextProvider } from "./context/socketContext";
 import CheckoutPage from "./pages/customer/Order/Checkout";
 import Cart from "./pages/customer/Order/Cart";
+import CustomerOrders from "./pages/customer/Order/Orders";
 
 export default function App() {
   return (
@@ -30,16 +31,15 @@ export default function App() {
               <Route path="product/:id" element={<CustomerProduct />} />
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="cart" element={<Cart />} />
+              <Route path="orders" element={<CustomerOrders />} />
             </Route>
             <Route path="admin">
               <Route path="login" element={<AdminLogin />} />
               <Route element={<AdminLayout />}>
                 <Route index element={<Navigate to="/admin/dashboard" />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="products">
-                  <Route index element={<Products />} />
-                  <Route path="product" element={<ProductPage />} />
-                </Route>
+                <Route path="product" element={<ProductPage />} />
+                <Route path="products" element={<Products />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

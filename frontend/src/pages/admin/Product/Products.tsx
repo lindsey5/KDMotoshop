@@ -1,14 +1,12 @@
 import { Button } from "@mui/material"
 import CustomizedTable from "../../../components/Table"
 import { SearchField } from "../../../components/Textfield"
-import { RedButton } from "../../../components/Button"
 import { useEffect, useState } from "react"
 import CreateCategoryModal from "../../../components/modals/admin/CreateCategory"
 import { fetchData } from "../../../services/api"
 import { CustomizedChip } from "../../../components/Chip"
 import { confirmDialog } from "../../../utils/swal"
 import { deleteData } from "../../../services/api"
-import { useNavigate } from "react-router-dom"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/tables/ProductTable"
 import Card from "../../../components/Card"
@@ -32,8 +30,6 @@ const Products = () => {
     const [categories, setCategories] = useState<Category[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [products, setProducts] = useState<Product[]>();
-    const navigate = useNavigate();
-
     const getCategories = async () => {
         const response = await fetchData('/api/category');
 
@@ -99,7 +95,6 @@ const Products = () => {
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
                     >Add Category</Button>
-                    <RedButton onClick={() => navigate('/admin/products/product')}>Add Product</RedButton>
                 </div>
             </div>
             <Card className="flex-grow min-h-0 flex flex-col">

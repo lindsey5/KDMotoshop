@@ -199,3 +199,49 @@ export const update_order = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: err.message });
     }
 }
+
+export const get_customer_orders = async (req: AuthenticatedRequest, res: Response) => {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const status = req.query.status as string | undefined;
+    const startDate = req.query.startDate as string | undefined;
+    const endDate = req.query.endDate as string | undefined;
+    
+    try {
+        let filter: any = {
+            _id: req.user_id
+        };
+
+        if (status && status !== 'All') filter.status = status;
+
+        if (startDate && endDate) {
+            filter.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        } 
+        else if (startDate) filter.createdAt = { $gte: new Date(startDate) };
+        else if (endDate)  filter.createdAt = { $lte: new Date(endDate) };
+
+        const [orders, totalOrders] = await Promise.all([
+            Order.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .populate({ path: 'customer.customer_id' })
+                .sort({ createdAt: -1 }),
+            Order.countDocuments(filter),
+        ]);
+            
+
+        res.status(200).json({ 
+            success: true, 
+            orders,
+            page,
+            totalPages: Math.ceil(totalOrders / limit),
+            totalOrders,
+        });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}

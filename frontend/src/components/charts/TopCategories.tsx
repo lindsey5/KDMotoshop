@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
 import Card from "../Card";
 import useDarkmode from "../../hooks/useDarkmode";
+import { cn } from "../../utils/utils";
 
 const TopCategoriesChart = () => {
     const isDark = useDarkmode();
@@ -26,7 +27,7 @@ const TopCategoriesChart = () => {
 
     return (
         <Card className="flex-1">
-            <h1 className="font-bold text-xl mb-4 text-white">Top Categories</h1>
+            <h1 className={cn("font-bold text-xl mb-4", isDark && 'text-white')}>Top Categories</h1>
             <PieChart 
                 series={[ data ]}
                 height={300}

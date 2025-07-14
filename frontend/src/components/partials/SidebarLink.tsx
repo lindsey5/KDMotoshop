@@ -21,7 +21,7 @@ export const SidebarLink = ({ label, icon, path }: SidebarLinkProps) => {
       startIcon={icon}
       sx={{
         fontWeight: 'bold',
-        backgroundColor: pathname.includes(path) ? 'red' : isDark ? 'bg-[#1e1e1e]' : 'black',
+        backgroundColor: pathname === path ? 'red' : isDark ? 'bg-[#1e1e1e]' : 'black',
         '&:hover': {
           backgroundColor: 'red',
         },

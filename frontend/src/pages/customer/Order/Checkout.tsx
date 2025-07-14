@@ -96,8 +96,8 @@ const CheckoutPage = () => {
     }
 
     const proceed = async () => {
-        if(await confirmDialog(paymentMethod === 'CASH' ? 'Create order?' :'Proceed to payment?', '', isDark, "success")){
-
+        if(await confirmDialog(paymentMethod === 'CASH' ? 'Proceed to Checkout?' :'Proceed to payment?', '', isDark, "success")){
+            setLoading(true)
             const order = {
                 order_source: 'Website',
                 shipping_fee,
@@ -127,6 +127,8 @@ const CheckoutPage = () => {
 
             if(response.success) window.location.href = response.checkout_url
             else errorAlert(response.message, '', isDark)
+            
+            setLoading(false)
         }
     }
 
@@ -345,7 +347,7 @@ const CheckoutPage = () => {
 
                 <RedButton 
                     onClick={proceed}
-                    disabled={(customer?.addresses?.length ?? 0) < 1}
+                    disabled={(customer?.addresses?.length ?? 0) < 1 || loading}
                 >{paymentMethod === 'CASH' ? 'Checkout' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>

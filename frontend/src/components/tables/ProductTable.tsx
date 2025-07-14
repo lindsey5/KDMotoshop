@@ -22,7 +22,7 @@ export const ProductTableColumns = () => {
 const highLightLowStock = (product: Product, isDark: boolean): string => {
   if (product.product_type === 'Single') {
     return !product.stock || product.stock < 10
-      ? isDark ? 'bg-red-600' : 'bg-red-100'
+      ? isDark ? 'bg-red-600' : 'bg-red-400'
       : '';
   } else {
     const totalStock = product.variants.reduce((total, v) => total + (v.stock || 0), 0);

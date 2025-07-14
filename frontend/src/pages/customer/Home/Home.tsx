@@ -18,7 +18,7 @@ const KDMotoshopHome = () => {
         <CustomerContextProvider>
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
-                <Parallax ref={parallax} pages={5} className={cn('bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block', isDark && 'bg-[#1e1e1e]')}>
+                <Parallax ref={parallax} pages={4} className={cn('bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block', isDark && 'bg-[#1e1e1e]')}>
                     <ParallaxLayer
                     offset={0}
                     className='z-10'
@@ -79,15 +79,16 @@ const KDMotoshopHome = () => {
                         </div>
                     </div>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={-0.4} speed={-0.3}>
-                        <img src="/speedometer.jpg" className="w-full h-[1800px]"/>
+                    <ParallaxLayer offset={0} speed={-0.3}>
+                        <img src="/moto-pov.png" className="w-full xl:h-[1500px] 2xl:h-[2500px]"/>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={2} speed={1} factor={2}>
+                    <ParallaxLayer offset={1} speed={1} factor={2}>
                         <PopularProductsSection />
                         <PopularCategoriesSection />
                         <AboutSection />
+                        <iframe className={cn("w-full p-20 bg-gray-100 hidden xl:block", isDark && "bg-[#121212]")} height="700" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3862.349116006964!2d121.05185327507307!3d14.522012278995932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397bbee71caad35%3A0x8c8e2d4f2d0bdde3!2sKD%20Motoshop%20Pinagsama%20Branch!5e0!3m2!1sen!2sph!4v1752127835647!5m2!1sen!2sph" loading="lazy" />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={4} speed={1} className="flex items-end">
+                    <ParallaxLayer offset={3} speed={1} className="flex items-end">
                         <CustomerFooter />
                     </ParallaxLayer>
 

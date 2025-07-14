@@ -6,6 +6,7 @@ import TopCategoriesChart from "../../components/charts/TopCategories";
 import SalesPredictionChart from "../../components/charts/SalesPrediction";
 import { cn } from "../../utils/utils";
 import useDarkmode from "../../hooks/useDarkmode";
+import ItemForecastChart from "../../components/charts/ItemForecastChart";
 
 const AdminDashboard = () => {
     const isDark = useDarkmode();
@@ -22,6 +23,7 @@ const AdminDashboard = () => {
             <TopCategoriesChart />
             <SalesPredictionChart />
         </div>
+        <ItemForecastChart />
     </div>  
 }
 
