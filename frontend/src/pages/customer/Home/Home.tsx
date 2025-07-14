@@ -18,14 +18,14 @@ const KDMotoshopHome = () => {
         <CustomerContextProvider>
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
-                <Parallax ref={parallax} pages={4} className={cn('bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block', isDark && 'bg-[#1e1e1e]')}>
+                <Parallax ref={parallax} pages={4} className={cn('bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block', isDark && 'bg-[#1e1e1e] bg-[url(/dark-road.jpg)]')}>
                     <ParallaxLayer
                     offset={0}
                     className='z-10'
                     >
                     <div className='h-screen relative px-5 pt-20 overflow-hidden flex justify-center items-center gap-25'>
                         <motion.div 
-                        className="relative space-y-8 text-white max-w-lg flex flex-col items-center lg:items-start z-10"
+                        className="relative space-y-8 text-white max-w-lg flex flex-col items-center lg:items-start"
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
@@ -80,7 +80,7 @@ const KDMotoshopHome = () => {
                     </div>
                     </ParallaxLayer>
                     <ParallaxLayer offset={0} speed={-0.3}>
-                        <img src="/moto-pov.png" className="w-full xl:h-[1500px] 2xl:h-[2500px]"/>
+                        <img src="/moto-pov.png" className="w-full lg:h-[1000px] xl:h-[1500px] 2xl:h-[2000px]"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={1} speed={1} factor={2}>
                         <PopularProductsSection />
