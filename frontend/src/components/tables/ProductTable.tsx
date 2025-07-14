@@ -88,7 +88,7 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         align="center"
         isDark={isDark}
       >
-        <IconButton onClick={() => navigate(`/admin/products/product?id=${product._id}`)}>
+        <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
           <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
         </IconButton>
       </StyledTableCell>
