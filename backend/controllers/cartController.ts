@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Cart from "../models/Cart";
+import Product from "../models/Product";
+import Order from "../models/Order";
+import OrderItem from "../models/OrderItem";
+import { Types } from "mongoose";
 
 export const create_new_item = async (req : AuthenticatedRequest, res : Response) => {
     try{
@@ -51,16 +55,66 @@ export const updateCart = async (req : Request, res: Response) => {
     }
 }
 
-export const getCart = async (req : AuthenticatedRequest, res: Response) => {
-    try{
-        const carts = await Cart.find({ customer_id: req.user_id}).populate('product_id');
+export const getCart = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const carts = await Cart.find({ customer_id: req.user_id }).populate('product_id');
 
-        res.status(200).json({ success: true, carts })
+        // Get all accepted order IDs only once
+        const orders = await Order.find({ status: 'Accepted' }, '_id');
+        const orderIds = orders.map(order => order._id);
 
-    }catch(err : any){
-        res.status(500).json({ success: false, message: err.message})
+        // Get all orderItems for those orders (all products)
+        const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
+
+        // Build stock map
+        const stockMap = new Map<string, number>();
+        orderItems.forEach(item => {
+            const key = item.product_id.toString() + (item.variant_id?.toString() || '');
+            stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
+        });
+
+        // Build response
+        const completedCart = await Promise.all(
+            carts.map(async (item) => {
+                const product: any = item.product_id;
+
+                // Use .equals or .toString() to compare ObjectIds
+                const variant = product.variants?.find((v: any) => v._id.toString() === item.variant_id?.toString());
+
+                // Adjust stock
+                if (product.product_type === 'Single') {
+                    const key = product._id.toString();
+                    const orderedQty = stockMap.get(key) || 0;
+                    product.stock = Math.max((product.stock || 0) - orderedQty, 0);
+                } else {
+                    product.variants?.forEach((v: any) => {
+                        const varKey = product._id.toString() + v._id.toString();
+                        const varOrderedQty = stockMap.get(varKey) || 0;
+                        v.stock = Math.max((v.stock || 0) - varOrderedQty, 0);
+                    });
+                }
+
+                return {
+                    _id: item._id,
+                    customer_id: item.customer_id,
+                    product_id: product._id,
+                    variant_id: item.variant_id,
+                    quantity: item.quantity,
+                    attributes: variant?.attributes || [],
+                    stock: product.product_type === 'Single' ? product.stock : variant?.stock || 0,
+                    product_name: product.product_name,
+                    price: product.product_type === 'Single' ? product.price : variant?.price || 0,
+                    image: product.thumbnail?.imageUrl || ''
+                };
+            })
+        );
+
+        res.status(200).json({ success: true, carts: completedCart });
+    } catch (err: any) {
+        console.log('Error in getCart:', err);
+        res.status(500).json({ success: false, message: err.message });
     }
-}
+};
 
 export const delete_cart_item = async (req: AuthenticatedRequest, res: Response) => {
     try {

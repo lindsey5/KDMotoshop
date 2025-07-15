@@ -210,8 +210,10 @@ export const get_customer_orders = async (req: AuthenticatedRequest, res: Respon
     
     try {
         let filter: any = {
-            _id: req.user_id
+            'customer.customer_id': req.user_id
         };
+
+        console.log(filter)
 
         if (status && status !== 'All') filter.status = status;
 
@@ -232,7 +234,6 @@ export const get_customer_orders = async (req: AuthenticatedRequest, res: Respon
                 .sort({ createdAt: -1 }),
             Order.countDocuments(filter),
         ]);
-            
 
         res.status(200).json({ 
             success: true, 

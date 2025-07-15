@@ -35,15 +35,13 @@ const containerVariants = {
 }
 
 const PopularProductsSection = () => {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<TopProduct[]>([]);
     const isDark = useDarkmode()
 
     useEffect(() => {
         const getPopularProducts = async () => {
         const response = await fetchData("/api/product/top");
         if (response.success) {
-            console.log
-            (response)
             setProducts(response.topProducts);
         }
         };

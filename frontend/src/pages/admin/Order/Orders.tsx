@@ -92,7 +92,7 @@ const Orders = () => {
                     <div className="w-[200px]">
                         <CustomizedSelect 
                             sx={{ height: 55 }}
-                            menu={[{ label: 'All', value: 'All'}, ...Statuses]}
+                            menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}
                             icon={<FilterListIcon />}
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value as string)}

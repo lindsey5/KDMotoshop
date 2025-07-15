@@ -79,6 +79,7 @@ const CustomerProduct = () => {
                     index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
                 ))) : setCart(prev => [...prev, {
                     ...response.cart, 
+                    isSelected: true,
                     attributes: selectedAttributes,
                     stock:  product.product_type === 'Single' ? product.stock : filteredVariants[0].stock,
                     product_name: product.product_name,

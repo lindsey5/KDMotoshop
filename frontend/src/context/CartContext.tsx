@@ -27,32 +27,12 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
     const getCart = async () => {
       setLoading(true)
       const response = await fetchData('/api/cart');
-
-      if (response.success) setCart(response.carts.map((item : any) => {
-        const product = item.product_id
-        const variant = product.variants.find((v : any) => v._id === item.variant_id)
-        return {
-          ...item,
-          isSelected: true,
-          quantity: item.quantity, 
-          attributes: variant.attributes,
-          stock: product.product_type === 'Single' ? product.stock : variant.stock,
-          product_name: product.product_name,
-          price: product.product_type === 'Single' ? product.price : variant.price,
-          image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                ? product.thumbnail.imageUrl
-                    : typeof product?.thumbnail === 'string'
-                    ? product.thumbnail
-                : '/photo.png'
-        }
-      }));
+      if (response.success) setCart(response.carts.map((item : any) => ({...item, isSelected: true})));
       setLoading(false)
     };
 
     getCart()
   }, []);
-
-  useEffect(() => console.log(cart) ,[cart])
 
   return (
     <CartContext.Provider value={{ cart, setCart, loading }}>

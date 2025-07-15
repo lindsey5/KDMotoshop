@@ -3,12 +3,13 @@ import EmailIcon from '@mui/icons-material/Email';
 import * as motion from "motion/react-client"
 import { cn } from '../../../utils/utils';
 import useDarkmode from '../../../hooks/useDarkmode';
+import ProductsGrid from './ProductsGridGallery';
 
 const AboutSection = () => {
   const isDark = useDarkmode();
 
   return (
-    <div className={cn("relative transition-colors duration-600 flex lg:gap-50 justify-center p-20",
+    <div className={cn("relative transition-colors duration-600 flex lg:grid grid-cols-2 lg:gap-50 justify-center p-20",
       isDark ? "bg-[#1e1e1e] text-white" : 'bg-white'
     )}>
         <motion.div
@@ -32,11 +33,7 @@ const AboutSection = () => {
           whileInView={{ opacity: 1, x: 0}}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <img
-            className="hidden lg:block h-[500px]"
-            src="/bg.jpg"
-            alt=""
-          />
+          <ProductsGrid />
         </motion.div>
     </div>
   );

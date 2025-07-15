@@ -73,7 +73,6 @@ const PopularCategoriesSection = () => {
                 sx={{
                     position: "absolute",
                     left: 20,
-                    zIndex: 10,
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: isDark ? 'white' : ''
@@ -87,7 +86,6 @@ const PopularCategoriesSection = () => {
                 sx={{
                     position: "absolute",
                     right: 20,
-                    zIndex: 10,
                     top: "50%",
                     transform: "translateY(-50%)",
                     color: isDark ? 'white' : ''

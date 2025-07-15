@@ -15,6 +15,7 @@ import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
+import OrderStatusStepper from "../../../components/Stepper";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -69,6 +70,7 @@ const OrderDetails = () => {
             </div>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
+        <OrderStatusStepper order={order}/>
         <div className="flex items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
                 <OrderItemsContainer orderItems={order.orderItems}/>

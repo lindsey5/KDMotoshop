@@ -96,7 +96,7 @@ const CheckoutPage = () => {
     }
 
     const proceed = async () => {
-        if(await confirmDialog(paymentMethod === 'CASH' ? 'Proceed to Checkout?' :'Proceed to payment?', '', isDark, "success")){
+        if(await confirmDialog(paymentMethod === 'CASH' ? 'Place this Order?' :'Proceed to payment?', '', isDark, "success")){
             setLoading(true)
             const order = {
                 order_source: 'Website',
@@ -135,7 +135,7 @@ const CheckoutPage = () => {
     useEffect(() => {
         const getProducts = async () => {
             const items = await Promise.all(parsedItems.map(async (item : any) => {
-                const response = await fetchData(`/api/product/${item.product_id._id || item.product_id}`);
+                const response = await fetchData(`/api/product/${item.product_id}`);
 
                 if(response.success){
                     const product : Product = response.product
@@ -348,7 +348,7 @@ const CheckoutPage = () => {
                 <RedButton 
                     onClick={proceed}
                     disabled={(customer?.addresses?.length ?? 0) < 1 || loading}
-                >{paymentMethod === 'CASH' ? 'Checkout' : 'Proceed to payment'}</RedButton>
+                >{paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>
     )

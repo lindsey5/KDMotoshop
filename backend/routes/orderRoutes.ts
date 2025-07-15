@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/', userRequireAuth, create_order);
 router.post('/customer', customerRequireAuth, create_customer_order);
-router.get('/customer', get_customer_orders, get_customer_orders);
+router.get('/customer', customerRequireAuth, get_customer_orders);
 router.get('/', adminRequireAuth,  get_orders);
 router.get('/statistics', adminRequireAuth, get_orders_statistics); 
 router.get('/:id', adminRequireAuth,  get_order_by_id);
