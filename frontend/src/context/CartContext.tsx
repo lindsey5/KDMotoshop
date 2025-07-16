@@ -27,7 +27,10 @@ export const CartContextProvider = ({ children }: CartContextProviderProps) => {
     const getCart = async () => {
       setLoading(true)
       const response = await fetchData('/api/cart');
-      if (response.success) setCart(response.carts.map((item : any) => ({...item, isSelected: true})));
+      if (response.success) setCart(response.carts.map((item : any) => {
+        if(item.quantity > item.stock) item.quantity = item.stock;
+        return {...item, isSelected: true}
+      }));
       setLoading(false)
     };
 

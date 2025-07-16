@@ -13,6 +13,7 @@ import Card from "../../../components/Card"
 import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
+import { PaginationState } from "../../../constants/pagination"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -22,11 +23,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const Products = () => {
     const isDark = useDarkmode();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
-    const [pagination, setPagination] = useState<Pagination>({
-        totalPages: 1,
-        page: 1,
-        searchTerm: ''
-    });
+    const [pagination, setPagination] = useState<Pagination>(PaginationState);
     const [categories, setCategories] = useState<Category[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [products, setProducts] = useState<Product[]>();

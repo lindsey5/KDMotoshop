@@ -17,6 +17,7 @@ import { SocketContextProvider } from "./context/socketContext";
 import CheckoutPage from "./pages/customer/Order/Checkout";
 import Cart from "./pages/customer/Order/Cart";
 import CustomerOrders from "./pages/customer/Order/Orders";
+import CustomerOrderDetails from "./pages/customer/Order/Order";
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="cart" element={<Cart />} />
               <Route path="orders" element={<CustomerOrders />} />
+               <Route path="order/:id" element={<CustomerOrderDetails />} />
             </Route>
             <Route path="admin">
               <Route path="login" element={<AdminLogin />} />

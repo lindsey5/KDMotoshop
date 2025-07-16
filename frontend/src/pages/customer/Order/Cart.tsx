@@ -55,8 +55,8 @@ const Cart = () => {
                 </div>
                 {!loading && cart.length === 0 && <div className="flex flex-col items-center gap-2 mt-10">
                     <img className="w-[200px] h-[200px]" src={isDark ? "/white-cart.png" : "/cart.png"} />
-                    <h1 className="text-center text-4xl font-bold">Your Cart is empty.</h1>
-                    <p className="text-center text-lg mb-4">You have no items in your cart
+                    <h1 className={cn("text-center text-4xl font-bold text-gray-800", isDark && 'text-gray-300')}>Your Cart is empty.</h1>
+                    <p className={cn("text-center text-lg mb-4 text-gray-600", isDark && 'text-gray-400')}>You have no items in your cart
                         <br />
                         Let's go buy something
                     </p>

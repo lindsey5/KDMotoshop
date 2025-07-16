@@ -9,7 +9,6 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import { CustomerContextProvider } from "../../../context/CustomerContext";
 import MobileHome from "./MobileView";
-import ProductsGrid from "./ProductsGridGallery";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)

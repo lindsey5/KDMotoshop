@@ -1,5 +1,4 @@
-import CircleIcon from '@mui/icons-material/Circle';
-import { statusColorMap } from "../../constants/status";
+
 import { TableRow } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from '../Table';
 import { formatNumber } from '../../utils/utils';
@@ -7,29 +6,7 @@ import { formatDate } from '../../utils/dateUtils';
 import { RedButton } from '../Button';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
-
-export const Status: React.FC<{ status: string, isDark: boolean}> = ({ status, isDark }) => {
-  const { bg, icon } = statusColorMap[status] || {
-    bg: 'bg-gray-200',
-    icon: '#9ca3af',
-  };
-
-  return (
-    <div
-      className={`flex items-center gap-2 p-2 rounded-md ${
-        isDark ? 'bg-transparent' : bg
-      }`}
-    >
-      <CircleIcon sx={{ width: 15, height: 15, color: icon }} />
-      <h1
-        className="font-bold"
-        style={{ color: isDark ? icon : undefined }}
-      >
-        {status}
-      </h1>
-    </div>
-  );
-};
+import { Status } from "../Text";
 
 export const OrderTableColumns = () => {
     return (

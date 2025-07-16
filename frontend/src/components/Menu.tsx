@@ -16,13 +16,18 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const isDark = useDarkmode();
     const navigate = useNavigate();
 
-    const handleClick = () => {
+    const handleOpen = () => {
         setOpen(!open);
     };
 
+    const handleClick = (path : string) => {
+        navigate(path)
+        setOpen(false)
+    }
+
     return (
         <div className="relative">
-            <IconButton onClick={handleClick}>
+            <IconButton onClick={handleOpen}>
                 <Avatar 
                     className="cursor-pointer"
                     src={image} 
@@ -33,7 +38,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
                 <div className={cn("z-1 absolute right-3 -top-2 transform -translate-x-1/2 rotate-45 w-5 h-5 bg-white", isDark && 'bg-[#313131]')}></div>
                 <li 
                     className={cn("z-3 flex items-center gap-3 cursor-pointer hover:bg-gray-200 px-3 py-1", isDark && 'hover:bg-[#555555]')}
-                    onClick={() => navigate('/orders')}
+                    onClick={() => handleClick('/orders')}
                 >
                     <ReceiptIcon />
                     My Orders

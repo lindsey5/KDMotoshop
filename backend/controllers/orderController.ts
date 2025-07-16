@@ -160,11 +160,15 @@ export const get_order_by_id = async (req: Request, res: Response) => {
 export const update_order = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const order = await Order.findById(id);
+        const order = await Order.findById(id); 
 
         if(!order){
             res.status(404).json({ success: false, message: 'Order not found'});
             return;
+        }
+
+        if(order.customer.customer_id && order.status === 'Cancelled'){
+            req.body.status = 'Cancelled'
         }
 
         const updatedOrder = await Order.findByIdAndUpdate(
@@ -213,8 +217,6 @@ export const get_customer_orders = async (req: AuthenticatedRequest, res: Respon
             'customer.customer_id': req.user_id
         };
 
-        console.log(filter)
-
         if (status && status !== 'All') filter.status = status;
 
         if (startDate && endDate) {
@@ -235,12 +237,63 @@ export const get_customer_orders = async (req: AuthenticatedRequest, res: Respon
             Order.countDocuments(filter),
         ]);
 
+        const orderWithItems = await Promise.all(orders.map(async (order) => {
+            const orderItems = await OrderItem.find({ order_id: order._id })
+            .populate('product_id');
+
+            const formattedItems = orderItems.map(item => {
+                const { product_id, ...rest } = item.toObject();
+
+                return {
+                    ...rest,
+                    product_id: (product_id as any)._id,
+                    image: (product_id as any)?.thumbnail?.imageUrl || null
+                };
+            });
+            return { ...order.toObject(), orderItems: formattedItems }
+        }))
+
         res.status(200).json({ 
             success: true, 
-            orders,
+            orders: orderWithItems,
             page,
             totalPages: Math.ceil(totalOrders / limit),
             totalOrders,
+        });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+export const cancel_order = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const order = await Order.findById(id);
+
+        if(!order){
+            res.status(404).json({ success: false, message: 'Order not found'});
+            return;
+        }
+
+        if(order.status !== 'Pending' && order.status !== 'Accepted'){
+            res.status(400).json({ success: false, message: 'Order cannot be cancel'});
+            return;
+        }
+
+        order.status = 'Cancelled'
+
+        const orderItems = await OrderItem.find({ order_id: order._id});
+
+        for (const item of orderItems) {
+            await OrderItem.updateOne({_id: item._id}, { status: 'Cancelled' });
+        }
+
+        await order.save();
+
+        res.status(200).json({ 
+            success: true,  
+            order
         });
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message });
