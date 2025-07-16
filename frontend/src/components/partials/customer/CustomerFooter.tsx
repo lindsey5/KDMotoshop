@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
+import { ThemeToggle } from "../../Toggle";
 
 const CustomIcon = ({ src, alt, path }: { src: string; alt: string, path: string }) => (
   <a href={path} target="_blank">
@@ -44,10 +45,13 @@ const CustomerFooter = () => {
                     <Link href="/" underline="hover" sx={{ color: "white"}}>FAQ's</Link>
                 </div>
             </div>
-            <div className="flex justify-end gap-5 mt-20">
-                <CustomIcon src="/icons/facebook.png" alt="facebook" path="https://www.facebook.com/KDmotoshop" />
-                <CustomIcon src="/icons/youtube.svg" alt="lazada" path="https://www.youtube.com/@kdmotoshop3496" />
-                <CustomIcon src="/icons/tiktok.webp" alt="lazada" path="https://www.tiktok.com/@kdmotoshop_taguig" />
+            <div className="flex justify-between items-center gap-5 mt-20">
+                <ThemeToggle />
+                <div className="flex gap-5 items-center">
+                    <CustomIcon src="/icons/facebook.png" alt="facebook" path="https://www.facebook.com/KDmotoshop" />
+                    <CustomIcon src="/icons/youtube.svg" alt="lazada" path="https://www.youtube.com/@kdmotoshop3496" />
+                    <CustomIcon src="/icons/tiktok.webp" alt="lazada" path="https://www.tiktok.com/@kdmotoshop_taguig" />
+                </div>
             </div>
         </footer>
     )

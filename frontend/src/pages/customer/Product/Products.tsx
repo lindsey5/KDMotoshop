@@ -150,12 +150,6 @@ const CustomerProducts = () => {
                     </div>
                 )}
             </div>
-            <div className={cn("md:hidden p-10 bg-gray-200", isDark && 'bg-[#121212]')}>
-                <h1 className="text-4xl text-red-500 font-bold mb-4">Most Selling Products</h1>
-                <div className="grid grid-cols-2 gap-5">
-                    {topProducts.map(product => (<CustomerProductContainer key={product._id} product={product}/> ))}
-                </div>
-            </div>
             
             <aside className={cn("hidden md:flex transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
                 <div className="flex flex-col gap-6 px-5">

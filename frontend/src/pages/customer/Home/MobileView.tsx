@@ -35,14 +35,14 @@ const MobileHome = () => {
                         </motion.p>
                                                                 
                         <motion.button 
-                            className="z-10 relative border border-white cursor-pointer relative group mt-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-12 py-3 rounded-full font-bold overflow-hidden transition-all duration-300 shadow-2xl hover:shadow-red-600/50 hover:scale-105 border border-red-500/50"
+                            className="border border-white cursor-pointer relative group mt-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-12 py-3 rounded-full font-bold overflow-hidden transition-all duration-300 shadow-2xl hover:shadow-red-600/50 hover:scale-105 border border-red-500/50"
                             onClick={() => window.location.href = '/products'}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.8, delay: 0.8 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                        <span className="relative z-10 text-lg tracking-wide">SHOP NOW</span>
+                        <span className="text-lg tracking-wide">SHOP NOW</span>
                         </motion.button>
                     </motion.div>
              </div>
