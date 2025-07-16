@@ -158,7 +158,7 @@ const CustomerProducts = () => {
                         value={value}
                         onChange={handleSlider}
                         valueLabelDisplay="auto"
-                        step={1000}
+                        step={500}
                         marks={marks} 
                         min={0}
                         max={10000}
