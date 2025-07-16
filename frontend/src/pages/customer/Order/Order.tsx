@@ -14,6 +14,7 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/Button";
+import { Status } from "../../../components/Text";
 
 const CustomerOrderDetails = () => {
     const { id } = useParams();
@@ -74,9 +75,17 @@ const CustomerOrderDetails = () => {
             </div>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
-        <OrderStatusStepper order={order}/>
-        <div className="flex flex-wrap p-5 gap-5">
+        
+        <div className="lg:block hidden">
+            <OrderStatusStepper order={order}/>
+        </div>
+        <div className="flex items-start flex-wrap p-5 gap-5">
             <div className="flex flex-col gap-5 flex-2">
+                <div className="flex lg:hidden ">
+                    <div className={cn("font-bold px-3 py-1 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>
+                        <Status status={order.status} isDark={isDark} />
+                    </div>
+                </div>
                 <OrderItemsContainer orderItems={order.orderItems}/>
                 <Card>
                     <h1 className="font-bold text-xl">Payment Summary</h1>

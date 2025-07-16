@@ -69,7 +69,7 @@ const CustomerOrders = () => {
                     >
                     No Orders Found
                 </FuzzyText>
-                <strong className="text-xl">Status: {selectedStatus}</strong>
+                <strong className={cn("text-xl", isDark ? 'text-gray-300' : 'text-black')}>Status: {selectedStatus}</strong>
             </div>}
             {orders.map(order => (
                 <Card className="flex flex-col gap-5">
