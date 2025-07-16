@@ -76,7 +76,7 @@ const CustomerOrders = () => {
                     <div className="flex justify-between items-center">
                         <div className="flex flex-wrap gap-3 items-center">
                              <span className={cn("font-bold px-3 py-2 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>{order.order_id}</span>
-                             <span className="text-gray-400">Order Placed: {formatDateWithWeekday(order.createdAt)}</span>
+                             <span className="text-gray-400">Order Date: {formatDateWithWeekday(order.createdAt)}</span>
                         </div>
                         <Status status={order.status} isDark={isDark}/>
                     </div>

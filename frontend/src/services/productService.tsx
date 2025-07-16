@@ -1,13 +1,13 @@
 import { confirmDialog, errorAlert } from "../utils/swal";
 import { fetchData, postData, updateData } from "./api";
 
-const isVariantValid = (variant: Variant): boolean => {
+const isVariantNotValid = (variant: Variant): boolean => {
   return (
-    variant.sku.trim() !== '' &&
-    variant.price !== null &&
-    variant.stock !== null &&
-    Object.keys(variant.attributes).length > 0 &&
-    Object.values(variant.attributes).every((v) => v.trim() !== '')
+    variant.sku.trim() === '' ||
+    variant.price === null ||
+    (!variant.stock && variant.stock !== 0) ||
+    Object.keys(variant.attributes).length < 1 ||
+    Object.values(variant.attributes).every((v) => v.trim() === '')
   );
 };
 
@@ -51,6 +51,7 @@ export const saveProduct = async (
       errorAlert('Weight should not be 0', '');
       return;
     }
+    
 
     // --- Validate based on type ---
     if (product.product_type === 'Variable') {
@@ -60,7 +61,7 @@ export const saveProduct = async (
       } else if (product.attributes.length < 1) {
         errorAlert('Add at least one attribute', '');
         return;
-      } else if (!product.variants.every((v) => isVariantValid(v))) {
+      } else if (!product.variants.every((v) => !isVariantNotValid(v))) {
         errorAlert('Invalid Variant', 'Please fill in all fields for each variant.');
         return;
       }
@@ -97,6 +98,9 @@ export const saveProduct = async (
         return;
       } else if (!product.price) {
         errorAlert('Price is required', '');
+        return;
+      } else if (!product.stock && product.stock !== 0) {
+        errorAlert('Stock should not be empty', '');
         return;
       }
 

@@ -14,6 +14,8 @@ import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
 import { PaginationState } from "../../../constants/pagination"
+import { RedButton } from "../../../components/Button"
+import { useNavigate } from "react-router-dom"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -22,6 +24,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const Products = () => {
     const isDark = useDarkmode();
+    const navigate = useNavigate();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
     const [categories, setCategories] = useState<Category[]>();
@@ -92,6 +95,7 @@ const Products = () => {
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
                     >Add Category</Button>
+                    <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
                 </div>
             </div>
             <Card className="flex-grow min-h-0 flex flex-col">

@@ -50,6 +50,10 @@ const ProductPage = () => {
         { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
     ]
 
+    useEffect(() => {
+        console.log(product)
+    }, [product])
+
     const getCategories = async () => {
         const response = await fetchData('/api/category');
         if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
@@ -112,9 +116,9 @@ const ProductPage = () => {
         }))
     }
 
-    const handleNoDecimal = (input : string, field : string) => {
+    const handleNoDecimal = (input: string, field: string) => {
         if (input === '' || /^\d+$/.test(input)) {
-            setProduct({ ...product, [field]: input});
+            setProduct(prev => ({ ...prev, [field]: input }));
         }
     };
 
@@ -212,7 +216,7 @@ const ProductPage = () => {
                         label="Weight" 
                         type="number"
                         onChange={(e) => setProduct({ ...product, weight: Number(e.target.value)})}
-                        value={product?.weight || 0}
+                        value={product.weight}
                         placeholder="Add product weight"
                         fullWidth
                     />
@@ -227,7 +231,7 @@ const ProductPage = () => {
                         <RedTextField 
                             type="number"
                             label="Stock" 
-                            value={product?.stock}
+                            value={!product.stock && product.stock !== 0 ? '' :product.stock}
                             placeholder="Enter stock"
                             onChange={(e) => handleNoDecimal(e.target.value, 'stock')}
                         />

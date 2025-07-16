@@ -1,10 +1,6 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PersonIcon from '@mui/icons-material/Person';
-import BadgeIcon from '@mui/icons-material/Badge';
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Button } from '@mui/material';
 import { SidebarLink } from '../SidebarLink';
@@ -34,16 +30,11 @@ export const AdminSidebar = () => {
         path="/admin/products"
       />
       <SidebarLink 
-        label="Add Product" 
-        icon={<AddCircleRoundedIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/product"
-      />
-      <SidebarLink 
         label="Orders" 
         icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} 
         path="/admin/orders"
       />
-      <SidebarLink 
+      {/*<SidebarLink 
         label="Employees" 
         icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 
         path="/admin/employees"
@@ -57,7 +48,7 @@ export const AdminSidebar = () => {
         label="Settings" 
         icon={<SettingsIcon sx={{ width: 25, height: 25 }} />} 
         path="/admin/settings"
-      />
+      />*/}
       <Button
         onClick={signout}
         fullWidth
