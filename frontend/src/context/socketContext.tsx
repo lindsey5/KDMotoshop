@@ -38,10 +38,6 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
             console.log("Connected to Socket");
           });
 
-          newSocket.on("connect_error", (err : any) => {
-            console.error("Socket Connection Error:", err.message);
-          });
-
           setSocket(newSocket);
         }
       } catch (error : any) {

@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Cart from "../models/Cart";
-import Product from "../models/Product";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
-import { Types } from "mongoose";
 
 export const create_new_item = async (req : AuthenticatedRequest, res : Response) => {
     try{

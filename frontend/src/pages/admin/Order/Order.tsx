@@ -22,6 +22,7 @@ const OrderDetails = () => {
     const [order, setOrder] = useState<Order>();
     const navigate = useNavigate();
     const isDark = useDarkmode();
+    const [status, setSelectedStatus] = useState(order?.status);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },

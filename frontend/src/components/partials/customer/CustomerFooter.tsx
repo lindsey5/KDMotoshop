@@ -46,7 +46,9 @@ const CustomerFooter = () => {
                 </div>
             </div>
             <div className="flex justify-between items-center gap-5 mt-20">
-                <ThemeToggle />
+                <div className="sm:hidden">
+                    <ThemeToggle />
+                </div>
                 <div className="flex gap-5 items-center">
                     <CustomIcon src="/icons/facebook.png" alt="facebook" path="https://www.facebook.com/KDmotoshop" />
                     <CustomIcon src="/icons/youtube.svg" alt="lazada" path="https://www.youtube.com/@kdmotoshop3496" />

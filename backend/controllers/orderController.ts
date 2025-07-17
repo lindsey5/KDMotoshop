@@ -4,6 +4,7 @@ import OrderItem from '../models/OrderItem';
 import { AuthenticatedRequest } from '../types/auth';
 import { createNewOrder, generateOrderId } from '../services/orderService';
 import { incrementStock, decrementStock } from '../services/orderService';
+import { sendCustomerNotification } from '../services/notificationService';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -88,7 +89,6 @@ export const get_orders = async (req: Request, res: Response) => {
                 .sort({ createdAt: -1 }),
             Order.countDocuments(filter),
         ]);
-            
 
         res.status(200).json({ 
             success: true, 
@@ -193,6 +193,15 @@ export const update_order = async (req: Request, res: Response) => {
                 if(order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
             }
+        }
+
+        if(req.body.status !== order.status) {
+            await sendCustomerNotification(
+                order.customer?.customer_id?.toString() || '', 
+                order._id as string, 
+                `${order.order_id} has been updated to ${req.body.status}`,
+                req.body.status
+            );
         }
 
         res.status(200).json({ 

@@ -11,9 +11,11 @@ interface AuthenticatedSocket extends Socket {
   user?: JwtPayload;
 }
 
-let socketInstance: AuthenticatedSocket | undefined;
+export let socketInstance: AuthenticatedSocket | undefined;
 
-const initializeSocket = (server: HTTPServer): void => {
+export const userSocketMap = new Map<string, string>();
+
+export const initializeSocket = (server: HTTPServer): void => {
   const origin = [
     'http://localhost:5173',
     'https://kdmotoshop.onrender.com',
@@ -28,25 +30,26 @@ const initializeSocket = (server: HTTPServer): void => {
     },
   });
 
-  const userSocketMap = new Map<string, string>();
-
   io.on('connection', (socket: AuthenticatedSocket) => {
     const token = socket.handshake.auth.token;
 
     socket.on('disconnect', () => {
+      for (const [id, sId] of userSocketMap) {
+        if (sId === socket.id) {
+          userSocketMap.delete(id);
+          break;
+        }
+      }
       socketInstance = undefined;
       console.log('User disconnected:', socket.id);
     });
-
-    socket.on('add-to-cart', () => {
-        socket.emit('add-to-cart');
-    })
 
     try {
       if (token) {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
         socket.user = decodedToken;
         userSocketMap.set(socket.user.id, socket.id);
+        console.log('User connected:', socket.id)
       }
     } catch (err: any) {
       console.log('Error verifying token:', err.message);
@@ -56,5 +59,3 @@ const initializeSocket = (server: HTTPServer): void => {
     socketInstance = socket;
   });
 };
-
-export { initializeSocket, socketInstance };

@@ -1,4 +1,4 @@
-import { Button, IconButton, Link, Badge } from "@mui/material";
+import { Button, IconButton, Link } from "@mui/material";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../Button";
@@ -8,6 +8,7 @@ import { CartContext } from "../../../context/CartContext";
 import { CustomerDropdownMenu } from "../../Menu";
 import { ThemeToggle } from "../../Toggle";
 import { HeaderSearchField } from "../../Textfield";
+import RedBadge from "../../Badge";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -63,7 +64,7 @@ const CustomerHeader = () => {
                 </div>
                 {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
                 <>
-                <Badge badgeContent={cart.length} color="primary">
+                <RedBadge content={cart.length}>
                     <IconButton  
                         onClick={() => navigate('/cart')}
                         sx={{ 
@@ -73,7 +74,7 @@ const CustomerHeader = () => {
                     >
                         <ShoppingCartOutlinedIcon />
                     </IconButton>
-                </Badge>
+                    </RedBadge>
                 <CustomerDropdownMenu image={customer.image.imageUrl}/>
                 </>
                 }

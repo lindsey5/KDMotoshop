@@ -18,7 +18,7 @@ const KDMotoshopHome = () => {
         <CustomerContextProvider>
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
-                <Parallax ref={parallax} pages={4} className={cn('bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block ', isDark && 'bg-[url(/dark-road.jpg)]')}>
+                <Parallax ref={parallax} pages={4} className='bg-[url(/road.jpg)] bg-cover bg-white hidden lg:block'>
                     <ParallaxLayer offset={0} speed={0.2} className="z-10">
                          <div className='h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
                             <motion.div 

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import { fetchData } from "../services/api";
+import { CustomerNotificationContextProvider } from "./CustomerNotifContext";
 
 // Context type
 interface CustomerContextType {
@@ -10,7 +11,7 @@ interface CustomerContextType {
 // Create the context with a default value
 export const CustomerContext = createContext<CustomerContextType>({
   customer: null,
-  setCustomer: () => {}
+  setCustomer: () => {},
 });
 
 interface CustomerContextProviderProps {
@@ -31,8 +32,10 @@ export const CustomerContextProvider = ({ children }: CustomerContextProviderPro
   }, []);
 
   return (
-    <CustomerContext.Provider value={{ customer, setCustomer }}>
-      {children}
-    </CustomerContext.Provider>
+    <CustomerNotificationContextProvider>
+      <CustomerContext.Provider value={{ customer, setCustomer }}>
+        {children}
+      </CustomerContext.Provider>
+    </CustomerNotificationContextProvider>
   );
 };
