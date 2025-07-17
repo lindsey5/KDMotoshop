@@ -20,8 +20,7 @@ interface Order extends Document {
         city: string;
         region: string;
     };
-    payment_method: "CASH" | "GCASH" | "COD" | "OTHER";
-    note?: string;
+    payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
     createdBy?: Types.ObjectId;
 }
 
@@ -63,11 +62,10 @@ const OrderSchema: Schema<Order> = new Schema(
     },
     payment_method: {
       type: String,
-      enum: ["CASH", "GCASH", "COD", "OTHER"],
+      enum: ["CASH", "GCASH", "PAYMAYA", "CARD"],
       default: "CASH",
       required: true
     },
-    note: { type: String, required: false },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: false }
   },
   { timestamps: true }

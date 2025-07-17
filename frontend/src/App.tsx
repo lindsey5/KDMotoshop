@@ -18,10 +18,13 @@ import CheckoutPage from "./pages/customer/Order/Checkout";
 import Cart from "./pages/customer/Order/Cart";
 import CustomerOrders from "./pages/customer/Order/Orders";
 import CustomerOrderDetails from "./pages/customer/Order/Order";
+import { ToastContainer } from 'react-toastify';
+import AdminInbox from "./pages/admin/Inbox";
 
 export default function App() {
   return (
     <DarkmodeContextProvider>
+      <ToastContainer />
       <SocketContextProvider>
         <BrowserRouter>
           <Routes>
@@ -42,6 +45,7 @@ export default function App() {
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="product" element={<ProductPage />} />
                 <Route path="products" element={<Products />} />
+                <Route path="inbox" element={<AdminInbox />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

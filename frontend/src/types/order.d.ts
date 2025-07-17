@@ -21,8 +21,7 @@ type Order = {
         region: string;
     };
     payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
-    note?: string;
-    createdBy?: string;
+    createdBy?: any;
     createdAt?: Date;
     orderItems?: OrderItem[];
 }

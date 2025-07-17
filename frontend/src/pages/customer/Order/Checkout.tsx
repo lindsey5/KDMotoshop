@@ -336,11 +336,13 @@ const CheckoutPage = () => {
                     onChange={handlePaymentMethod}
                 >
                     <RedRadio label="Cash on delivery" value="CASH"/>
-                    <div className="flex justify-between">
-                        <RedRadio label="E-Wallets" value="ONLINE PAYMENT" />
+                    <div className="flex justify-between items-center">
+                        <RedRadio label="E-Wallets / Card" value="ONLINE PAYMENT" />
                         <div className="flex gap-2">
-                            <img className="w-12 h-10" src="/icons/gcash.jpeg" alt="gcash" />
-                            <img className="w-12 h-10" src="/icons/maya.png" alt="gcash" />
+                            <img className="w-8 h-6" src="/icons/gcash.jpeg" alt="gcash" />
+                            <img className="w-8 h-6" src="/icons/maya.png" alt="gcash" />
+                            <img className="w-9 h-6" src="/icons/mastercard.png" alt="gcash" />
+                            <img className="w-8 h-6" src="/icons/visa.jpg" alt="gcash" />
                         </div>
                     </div>
                 </RadioGroup>

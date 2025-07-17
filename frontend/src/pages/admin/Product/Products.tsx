@@ -16,6 +16,7 @@ import CustomizedPagination from "../../../components/Pagination"
 import { PaginationState } from "../../../constants/pagination"
 import { RedButton } from "../../../components/Button"
 import { useNavigate } from "react-router-dom"
+import { Title } from "../../../components/Text"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -83,7 +84,7 @@ const Products = () => {
             <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
             <div className="flex items-center mb-6 justify-between">
                 <div>
-                    <h1 className={cn("font-bold text-4xl mb-4 text-red-500", isDark && 'text-white')}>Products</h1>
+                    <Title className="mb-4">Products</Title>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 </div>
                 <div className="flex gap-10">

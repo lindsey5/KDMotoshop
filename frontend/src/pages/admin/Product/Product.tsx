@@ -16,6 +16,7 @@ import Card from "../../../components/Card";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
+import { Title } from "../../../components/Text";
 
 const productInitialState = {
     product_name: '',
@@ -170,7 +171,7 @@ const ProductPage = () => {
             <CircularProgress color="inherit" />
         </Backdrop>
         <div>
-            <h1 className="font-bold text-4xl mb-4 text-red-500">{id ? 'Edit' : 'Create'} Product</h1>
+            <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
         <div className="flex items-start gap-10 mt-6">

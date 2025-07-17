@@ -133,10 +133,6 @@ const CustomerOrderDetails = () => {
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
                 </Card>
-                <Card className="w-full">
-                    <h1 className="font-bold mb-4">Note:</h1>
-                    <p>{order.note || 'N/A'}</p>
-                </Card>
             </div>
         </div>
        <div className="lg:hidden flex justify-end p-5">

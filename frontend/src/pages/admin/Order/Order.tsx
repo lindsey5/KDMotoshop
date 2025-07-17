@@ -16,13 +16,13 @@ import { confirmDialog, errorAlert } from "../../../utils/swal";
 import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
+import { Title } from "../../../components/Text";
 
 const OrderDetails = () => {
     const { id } = useParams();
     const [order, setOrder] = useState<Order>();
     const navigate = useNavigate();
     const isDark = useDarkmode();
-    const [status, setSelectedStatus] = useState(order?.status);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -64,10 +64,10 @@ const OrderDetails = () => {
     return <div className={cn("transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
-                <IconButton onClick={() => navigate('/admin/orders')} sx={{ color: isDark? 'white' : ''}}>
+                <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
                     <ArrowBackIosIcon />
                 </IconButton>
-                <h1 className="font-bold text-2xl">{order?.order_id}</h1>
+                <Title fontSize="xl">{order.order_id}</Title>
             </div>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
@@ -128,8 +128,11 @@ const OrderDetails = () => {
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
                 </Card>
                 <Card className="w-full">
-                    <h1 className="font-bold mb-4">Note:</h1>
-                    <p>{order.note || 'N/A'}</p>
+                    <h1 className="font-bold mb-4">Created by:</h1>
+                    <div className="flex items-center gap-3">
+                        <Avatar src={order?.createdBy?.image?.imageUrl} />
+                        <p>{order?.createdBy?.firstname} {order?.createdBy?.lastname}</p>
+                    </div>
                 </Card>
             </div>
         </div>

@@ -3,18 +3,35 @@ import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Button } from '@mui/material';
+import { Badge, Button } from '@mui/material';
 import { SidebarLink } from '../SidebarLink';
 import { ThemeToggle } from '../../Toggle';
 import { cn } from '../../../utils/utils';
 import useDarkmode from '../../../hooks/useDarkmode';
+import { useContext } from 'react';
+import { AdminNotificationContext } from '../../../context/AdminNotificationContext';
 
 const signout = async () => {
   localStorage.removeItem('token');
   window.location.href = '/admin/login';
 };
+
+const InboxLink = () => {
+  const { unread } = useContext(AdminNotificationContext);
+
+  return (
+    <Badge badgeContent={unread} color='primary'>
+      <SidebarLink 
+        label="Inbox" 
+        icon={<MailIcon sx={{ width: 25, height: 25 }} />} 
+        path="/admin/inbox"
+      />
+    </Badge>
+  )
+}
 
 export const AdminSidebar = () => {
   const isDark = useDarkmode();
@@ -37,6 +54,7 @@ export const AdminSidebar = () => {
         icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} 
         path="/admin/orders"
       />
+      <InboxLink />
       <SidebarLink 
         label="Employees" 
         icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 

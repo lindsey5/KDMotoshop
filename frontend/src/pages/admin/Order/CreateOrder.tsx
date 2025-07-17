@@ -14,6 +14,7 @@ import CategoryFilter from "../../../components/cards/admin/CategoryFilter";
 import ProductContainer from "../../../components/containers/admin/OrderProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
 import useDarkmode from "../../../hooks/useDarkmode";
+import { Title } from "../../../components/Text";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -28,7 +29,6 @@ const OrderState : Order = {
         email: ''
     },
     payment_method: 'CASH',
-    note: '',
 }
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -182,7 +182,7 @@ const CreateOrderPage = () => {
             setOrder={setOrder}
         />
         <div className="flex-1 flex flex-col p-5">
-            <h1 className="font-bold text-3xl mb-4">Create Order</h1>
+            <Title className="mb-4">Create Order</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
 
             <div className="flex justify-between items-center mt-6">

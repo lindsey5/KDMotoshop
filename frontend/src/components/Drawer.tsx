@@ -41,7 +41,7 @@ export const NotificationsDrawerList = () => {
 
     const navigateToOrder = (order_id : string, notification : any) => {
         navigate(`/order/${order_id}`)
-        if(!notification.isViewer) updateNotification(notification._id);
+        if(!notification.isViewed) updateNotification(notification._id);
     }
 
     return (

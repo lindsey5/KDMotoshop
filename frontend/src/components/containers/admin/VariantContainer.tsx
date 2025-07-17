@@ -59,7 +59,8 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
                 <h1 className='font-bold'>Variant {index + 1}</h1>
                 <p>{variant.sku}</p>
             </div>
-            <div className='flex items-center'>
+            {variant._id && variant.stock === 0 && <p className='text-red-600'>Out of Stock</p>}
+            <div className='flex items-center gap-3'>
                 <IconButton 
                     onClick={removeVariant}
                     color='inherit'

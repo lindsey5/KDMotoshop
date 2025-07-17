@@ -4,7 +4,7 @@ import OrderItem from '../models/OrderItem';
 import { AuthenticatedRequest } from '../types/auth';
 import { createNewOrder, generateOrderId } from '../services/orderService';
 import { incrementStock, decrementStock } from '../services/orderService';
-import { sendCustomerNotification } from '../services/notificationService';
+import { sendAdminsNotification, sendCustomerNotification } from '../services/notificationService';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -58,6 +58,7 @@ export const get_orders = async (req: Request, res: Response) => {
     const status = req.query.status as string | undefined;
     const startDate = req.query.startDate as string | undefined;
     const endDate = req.query.endDate as string | undefined;
+    const payment_method = req.query.payment_method as string | undefined;
     
     try {
         let filter: any = {};
@@ -80,6 +81,10 @@ export const get_orders = async (req: Request, res: Response) => {
         } 
         else if (startDate) filter.createdAt = { $gte: new Date(startDate) };
         else if (endDate)  filter.createdAt = { $lte: new Date(endDate) };
+
+        if(payment_method && payment_method !== 'All'){
+            filter.payment_method = payment_method
+        }
 
         const [orders, totalOrders] = await Promise.all([
             Order.find(filter)
@@ -128,7 +133,9 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
 
 export const get_order_by_id = async (req: Request, res: Response) => {
     try {
-        const order = await Order.findById(req.params.id).populate('customer.customer_id', 'image.imageUrl');
+        const order = await Order.findById(req.params.id)
+        .populate('customer.customer_id', 'image.imageUrl')
+        .populate('createdBy');
 
         if(!order){
             res.status(404).json({ success: false, message: 'Order not found'})
@@ -200,7 +207,6 @@ export const update_order = async (req: Request, res: Response) => {
                 order.customer?.customer_id?.toString() || '', 
                 order._id as string, 
                 `${order.order_id} has been updated to ${req.body.status}`,
-                req.body.status
             );
         }
 

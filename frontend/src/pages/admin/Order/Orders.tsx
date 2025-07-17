@@ -19,16 +19,20 @@ import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
 import { PaginationState } from "../../../constants/pagination";
+import { Title } from "../../../components/Text";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
     { label: 'Orders', href: '/admin/orders' },
 ]
 
+const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
+
 const Orders = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const [paymentMethod, setPaymentMethod] = useState<string>('All');
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
@@ -42,7 +46,7 @@ const Orders = () => {
         const startDate = selectedDates?.[0] ? new Date(selectedDates[0].toString()) : '';
         const endDate = selectedDates?.[1] ? new Date(selectedDates[1].toString()) : '';
 
-        const response = await fetchData(`/api/order?page=${pagination.page}&limit=100&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}`);
+        const response = await fetchData(`/api/order?page=${pagination.page}&limit=100&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}`);
         if(response.success) {
             setPagination(prev => ({...prev, totalPages: response.totalPages }));
             setOrders(response.orders);
@@ -63,12 +67,12 @@ const Orders = () => {
 
     useEffect(() => {
         getOrdersAsync();
-    }, [selectedDates, selectedStatus, pagination.page])
+    }, [selectedDates, selectedStatus, pagination.page, paymentMethod])
 
     return <div className={cn("transition-colors duration-600 flex flex-col p-5 bg-gray-100", isDark && 'bg-[#121212]')}>
         <div className="flex justify-between items-center mb-6">
             <div>
-                <h1 className={cn("font-bold text-4xl mb-4 text-red-500", isDark && 'text-white')}>Orders List</h1>
+                <Title className="mb-4">Orders</Title>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
             <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
@@ -80,17 +84,26 @@ const Orders = () => {
                 <SearchField
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value as string)}
-                    placeholder="Search by Customer Name, Order ID, Payment Method..." 
+                    placeholder="Search by Customer Name, Order ID" 
                     sx={{ flex: 1, height: 55 }}
                 />
                 <div className="flex items-center gap-5">
-                    <div className="w-[200px]">
+                    <div className="w-[400px] flex gap-10">
                         <CustomizedSelect 
                             sx={{ height: 55 }}
+                            label="Status"
                             menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}
                             icon={<FilterListIcon />}
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value as string)}
+                        />
+                        <CustomizedSelect 
+                            sx={{ height: 55 }}
+                            label="Payment Method"
+                            menu={payment_methods.map(pm => ({ label: pm, value: pm}))}
+                            icon={<FilterListIcon />}
+                            value={paymentMethod}
+                            onChange={(e) => setPaymentMethod(e.target.value as string)}
                         />
                     </div>
                     <CustomDateRangePicker 

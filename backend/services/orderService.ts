@@ -3,6 +3,7 @@ import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
 import Product from "../models/Product";
 import { ICart } from "../models/Cart";
+import { sendAdminsNotification } from "./notificationService";
 
 export const generateOrderId = async () : Promise<string> => {
   const prefix = 'ORD-';
@@ -79,6 +80,11 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
         }
 
         const savedOrder = await newOrder.save();
+
+        const customer = order.customer
+        if(customer.customer_id){
+            await sendAdminsNotification(customer.customer_id.toString(), savedOrder._id as string, `${customer.firstname} ${customer.lastname} placed an order`);
+        }
 
         return savedOrder
     }catch(err : any){

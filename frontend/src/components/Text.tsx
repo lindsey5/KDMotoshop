@@ -1,6 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import CircleIcon from '@mui/icons-material/Circle';
 import { statusColorMap } from "../constants/status";
+import { cn } from "../utils/utils";
+import useDarkmode from "../hooks/useDarkmode";
 
 export const ExpandableText = ({ text = "", limit = 150 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -45,3 +47,26 @@ export const Status: React.FC<{ status: string, isDark: boolean}> = ({ status, i
     </div>
   );
 };
+
+const TextSize :  Record<string, string> = {
+  "small" : "text-lg",
+  "medium" : "text-xl",
+  "large" : "text-2xl",
+  "xl" : "text-3xl",
+  "xxl" : "text-4xl"
+}
+
+type TitleProps = {
+  children: React.ReactNode;
+  fontSize?: "small" | "medium" | "large" | "xl" | "xxl";
+  className?: string;
+}
+
+export const Title = ({ children, fontSize = "xxl", className } : TitleProps) => {
+  const isDark = useDarkmode();
+
+  return (
+    <h1 className={cn("font-bold text-red-500", isDark && 'text-white', TextSize[fontSize], className)}
+    >{children}</h1>
+  )
+}

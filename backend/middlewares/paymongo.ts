@@ -17,10 +17,9 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
         
         const payment_method = parsedOrder.payment_method === 'ONLINE PAYMENT' ? 
             payload.data.attributes.data.attributes.payment_method_used.toUpperCase() : parsedOrder.payment_method
-
+        console.log(payment_method)
         const savedOrder = { ...parsedOrder, payment_method, order_id: await generateOrderId() }
         const createdOrder = await createNewOrder({ orderItems: JSON.parse(orderItems), order: savedOrder, cart: Array.isArray(parsedCart) ? parsedCart : [] });
-        console.log(cart)
         if(!createdOrder){
           res.status(400)
           return;
