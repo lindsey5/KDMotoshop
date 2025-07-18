@@ -1,36 +1,19 @@
-import { cn } from "../utils/utils"
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton, Modal } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { DarkmodeContext } from "../context/DarkmodeContext";
-
-export const ProductThumbnail = ({ product, className } : { product : Product | undefined, className?: string}) => {
-    return (
-        <img 
-            className={cn('bg-gray-100', className)}
-            src={
-                typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                ? product.thumbnail.imageUrl
-                    : typeof product?.thumbnail === 'string'
-                    ? product.thumbnail
-                : '/photo.png'
-            }
-        />
-    )
-}
+import { cn } from "../../utils/utils";
+import useDarkmode from "../../hooks/useDarkmode";
 
 const imagesPerPage = 3;
 const delay = 5000; 
 
-export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
+const MultiImageSlideshow = ({ images } : { images: string[] }) => {
     const [page, setPage] = useState<number>(0);
     const totalPages = Math.ceil(images.length / imagesPerPage);
     const [selectedImage, setSelectedImage] = useState<string | undefined>();
-    const context = useContext(DarkmodeContext);
-    if (!context) throw new Error("DarkmodeContext must be used inside the provider.");
-    const { theme } = context;
+    const isDark = useDarkmode()
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -89,7 +72,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
                 left: 10,
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: theme === 'dark' ? 'white' : ''
+                color: isDark ? 'white' : ''
             }}
             onClick={handlePrev}
             >
@@ -101,7 +84,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
                 right: 10,
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: theme === 'dark' ? 'white' : ''
+                color: isDark ? 'white' : ''
             }}
             onClick={handleNext}
             >
@@ -111,3 +94,5 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
         </div>
     );
 };
+
+export default MultiImageSlideshow

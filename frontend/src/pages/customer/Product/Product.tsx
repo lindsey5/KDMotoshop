@@ -1,7 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchData, postData } from "../../../services/api";
-import { ProductThumbnail, MultiImageSlideshow } from "../../../components/image";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
 import { cn, formatNumber } from "../../../utils/utils";
@@ -13,6 +12,8 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
 import { successAlert } from "../../../utils/swal";
 import { CartContext } from "../../../context/CartContext";
+import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
+import ProductThumbnail from "../../../components/images/ProductThumbnail";
 
 const CustomerProduct = () => {
     const { id } = useParams();

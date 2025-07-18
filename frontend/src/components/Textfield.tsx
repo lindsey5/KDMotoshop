@@ -5,7 +5,7 @@ import useDarkmode from "../hooks/useDarkmode";
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/api";
 import { cn, formatNumber } from "../utils/utils";
-import { ProductThumbnail } from "./image";
+import ProductThumbnail from "./images/ProductThumbnail";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
