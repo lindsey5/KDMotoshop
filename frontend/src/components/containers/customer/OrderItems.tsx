@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../utils/utils"
 import { RedButton } from "../../Button";

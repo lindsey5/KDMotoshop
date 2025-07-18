@@ -32,31 +32,33 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
 
     
     return (
-        <div className={cn("flex flex-wrap gap-5 py-5 border-b border-gray-300 items-center", isDark && 'border-gray-500')}>
-            <Checkbox
-                checked={item.isSelected}
-                onChange={handleCheck}
-                sx={{ 
-                    '& .MuiSvgIcon-root': { fontSize: 28 } ,
-                    '&.Mui-checked': {
-                        color: red[600],
-                    },
-                    color: isDark ? 'white' : ''
-                }}
-            />
-            <div className="flex flex-gap-5 flex-1 gap-5 flex-wrap">
-                <img className="w-25 h-25" src={item?.image || '/photo.png'} alt="" />
-                <div className="flex flex-col gap-5 flex-1">
-                    <h1 className="font-bold">{item?.product_name}</h1>
-                    <p>Price: {item?.price}</p>
-                    <div className="flex gap-2">
-                        {Object.values(item?.attributes || {}).map((attribute, i) => <CustomizedChip key={i} label={attribute} />)}
+        <div className={cn("flex lg:flex-row flex-col gap-5 py-5 border-b border-gray-300 items-start lg:items-center", isDark && 'border-gray-500')}>
+            <div className="flex flex-1 gap-5">
+                <Checkbox
+                    checked={item.isSelected}
+                    onChange={handleCheck}
+                    sx={{ 
+                        '& .MuiSvgIcon-root': { fontSize: 28 } ,
+                        '&.Mui-checked': {
+                            color: red[600],
+                        },
+                        color: isDark ? 'white' : ''
+                    }}
+                />
+                <div className="flex flex-1 gap-5">
+                    <img className="w-25 h-25" src={item?.image || '/photo.png'} alt="" />
+                    <div className="flex flex-col gap-5 flex-1">
+                        <h1 className="font-bold">{item?.product_name}</h1>
+                        <p>Price: {item?.price}</p>
+                        <div className="flex gap-2 flex-wrap">
+                            {Object.values(item?.attributes || {}).map((attribute, i) => <CustomizedChip key={i} label={attribute} />)}
+                        </div>
+                        {(item?.stock ?? 0) > 0 ? <Counter 
+                            limit={item?.stock || 1} 
+                            setValue={setValue} 
+                            value={value}
+                        /> : <p className="text-red-600">Out of Stock</p>}
                     </div>
-                    {(item?.stock ?? 0) > 0 ? <Counter 
-                        limit={item?.stock || 1} 
-                        setValue={setValue} 
-                        value={value}
-                    /> : <p className="text-red-600">Out of Stock</p>}
                 </div>
             </div>
             <div className="flex flex-col gap-5 justify-between">
