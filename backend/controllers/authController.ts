@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import User from "../models/User";
 import { verifyPassword, createToken } from "../utils/authUtils";
 import { createCustomer, findCustomer } from "../services/customerService";
+import Admin from "../models/Admin";
 
-export const login = async (req: Request, res: Response) => {
-    const { email, password, role } = req.body;
+export const adminLogin = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
     try {
-      const user = await User.findOne({ email, role });
+      const user = await Admin.findOne({ email });
     
       if (!user) {
          res.status(404).json({ success: false, message: 'Email not found'})

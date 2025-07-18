@@ -10,6 +10,6 @@ router.get('/reserved', get_products_with_reserved);
 router.get('/top', get_top_products);
 router.get('/:id/reserved', get_product_by_id_with_reserved);
 router.get('/:id', get_product_by_id);
-router.put('/:id', update_product);
+router.put('/:id', adminRequireAuth, update_product);
 
 export default router;

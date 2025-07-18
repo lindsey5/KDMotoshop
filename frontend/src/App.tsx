@@ -19,7 +19,8 @@ import Cart from "./pages/customer/Order/Cart";
 import CustomerOrders from "./pages/customer/Order/Orders";
 import CustomerOrderDetails from "./pages/customer/Order/Order";
 import { ToastContainer } from 'react-toastify';
-import AdminInbox from "./pages/admin/Inbox";
+import AdminNotifications from "./pages/admin/Notifications";
+import ActivityLogs from "./pages/admin/ActivityLogs";
 
 export default function App() {
   return (
@@ -45,7 +46,8 @@ export default function App() {
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="product" element={<ProductPage />} />
                 <Route path="products" element={<Products />} />
-                <Route path="inbox" element={<AdminInbox />} />
+                <Route path="notifications" element={<AdminNotifications />} />
+                <Route path="activities" element={<ActivityLogs />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

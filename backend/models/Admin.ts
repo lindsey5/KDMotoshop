@@ -2,18 +2,17 @@ import mongoose, { Document, Schema } from 'mongoose';
 import { hashPassword } from '../utils/authUtils';
 import { UploadedImage } from '../types/types';
 
-export interface IUser extends Document {
+export interface IAdmin extends Document {
   email: string;
   password: string;
   firstname: string;
   lastname: string;
   phone: string;
   image: UploadedImage;
-  role: string
 }
 
 // Define the schema
-const UserSchema: Schema<IUser> = new Schema(
+const AdminSchema: Schema<IAdmin> = new Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -24,13 +23,12 @@ const UserSchema: Schema<IUser> = new Schema(
       public_id: { type: String, required: false },
       url: { type: String, required: false },
     },
-    role: { type: String, required: true, enum: ['Admin', 'Staff'], default: 'Staff'}
   },
   { timestamps: true }
 );
 
 // Hash password before saving if modified or new
-UserSchema.pre<IUser>('save', async function (next) {
+AdminSchema.pre<IAdmin>('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -39,5 +37,5 @@ UserSchema.pre<IUser>('save', async function (next) {
 });
 
 // Create the model
-const User = mongoose.model<IUser>('User', UserSchema);
-export default User;
+const Admin = mongoose.model<IAdmin>('Admin', AdminSchema);
+export default Admin;

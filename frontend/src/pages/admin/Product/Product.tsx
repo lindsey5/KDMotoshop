@@ -51,10 +51,6 @@ const ProductPage = () => {
         { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
     ]
 
-    useEffect(() => {
-        console.log(product)
-    }, [product])
-
     const getCategories = async () => {
         const response = await fetchData('/api/category');
         if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));

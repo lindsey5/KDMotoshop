@@ -22,7 +22,7 @@ const MonthlySales = () => {
     }, [])
 
     return (
-        <Card className="h-[400px] bg-white flex-3 px-5 pb-5 pt-0">
+        <Card className="h-[400px] bg-white flex-3 px-5 pb-5 pt-0 mt-10">
             <AreaChart 
                 label="Monthly Sales"
                 data={data}

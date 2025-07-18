@@ -125,7 +125,7 @@ const CheckoutPage = () => {
                 cart: parsedCartItems
             });
 
-            if(response.success) window.location.href = response.checkout_url
+            if(response.success) window.open(response.checkout_url, '_blank')
             else errorAlert(response.message, '', isDark)
             
             setLoading(false)

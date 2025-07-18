@@ -5,6 +5,7 @@ import { AuthenticatedRequest } from '../types/auth';
 import { createNewOrder, generateOrderId } from '../services/orderService';
 import { incrementStock, decrementStock } from '../services/orderService';
 import { sendAdminsNotification, sendCustomerNotification } from '../services/notificationService';
+import { create_activity_log } from '../services/activityLogServices';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -21,6 +22,12 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             res.status(400).json({ success: false, message: 'Creating order error'});
             return;
         }
+
+        await create_activity_log({
+            admin_id: req.user_id ?? '',
+            description: 'created a new order',
+            order_id: savedOrder._id as string
+        })
 
         res.status(201).json({ success: true, order: savedOrder });
     } catch (err: any) {
@@ -67,7 +74,7 @@ export const get_orders = async (req: Request, res: Response) => {
                 { order_id: { $regex: searchTerm, $options: 'i' } },
                 { 'customer.firstname': { $regex: searchTerm, $options: 'i' } },
                 { 'customer.lastname': { $regex: searchTerm, $options: 'i' } },
-                { payment_method: { $regex: searchTerm, $options: 'i' } },
+                { order_source: { $regex: searchTerm, $options: 'i' } },
             ];
         }
 
@@ -164,7 +171,7 @@ export const get_order_by_id = async (req: Request, res: Response) => {
     }
 }
 
-export const update_order = async (req: Request, res: Response) => {
+export const update_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
         const order = await Order.findById(id); 
@@ -208,6 +215,13 @@ export const update_order = async (req: Request, res: Response) => {
                 order._id as string, 
                 `${order.order_id} has been updated to ${req.body.status}`,
             );
+            await create_activity_log({
+                admin_id: req.user_id ?? '',
+                description: 'updated an order',
+                order_id: id,
+                prev_value: order.status,
+                new_value: req.body.status,
+            })
         }
 
         res.status(200).json({ 
@@ -305,6 +319,15 @@ export const cancel_order = async (req: Request, res: Response) => {
         }
 
         await order.save();
+
+        const customer = order.customer
+        if(customer.customer_id){
+            await sendAdminsNotification(
+                customer.customer_id?.toString(), 
+                order._id as string, 
+                `${order.customer.firstname} ${order.customer.lastname} has cancelled the order.`
+            )
+        }
 
         res.status(200).json({ 
             success: true,  

@@ -18,7 +18,7 @@ const TopProductsChart = () => {
     }, [])
 
     return (
-        <Card className="flex-1 h-[400px] flex flex-col gap-5">
+        <Card className="flex-1 2xl:w-[350px] h-[400px] flex flex-col gap-5 mt-10">
             <h1 className="font-bold text-lg">Most Selling Products</h1>
             <div className="flex flex-col gap-5 flex-grow overflow-y-auto py-2">
                 {topProducts.map(product => (

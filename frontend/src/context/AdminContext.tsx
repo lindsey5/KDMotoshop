@@ -4,41 +4,29 @@ import { CircularProgress } from "@mui/material";
 import { cn } from "../utils/utils";
 import useDarkmode from "../hooks/useDarkmode";
 
-interface User {
-  email: string;
-  firstname: string;
-  lastname: string;
-  phone: string;
-  image: {
-    public_id: string;
-    url: string;
-  };
-  role: string;
-}
-
 // Context type
-interface UserContextType {
-  user: User | null;
+interface AdminContextType {
+  admin: Admin | null;
 }
 
 // Create the context with a default value
-export const UserContext = createContext<UserContextType>({
-  user: null,
+export const AdminContext = createContext<AdminContextType>({
+  admin: null,
 });
 
-interface UserContextProviderProps {
+interface AdminContextProviderProps {
   children: ReactNode;
 }
 
-export const UserContextProvider = ({ children }: UserContextProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AdminContextProvider = ({ children }: AdminContextProviderProps) => {
+  const [admin, setAdmin] = useState<Admin | null>(null);
   const isDark = useDarkmode();
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await fetchData('/api/user');
-
-      if (response.user) setUser(response.user);
+      const response = await fetchData('/api/admin');
+      console.log(response)
+      if (response.success) setAdmin(response.admin);
       else {
         window.location.href = '/admin/login';
       }
@@ -47,15 +35,15 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     getUser()
   }, []);
 
-  if(!user) return (
+  if(!admin) return (
     <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
       <CircularProgress sx={{ color: 'red'}}/>
     </div>
   )
 
   return (
-    <UserContext.Provider value={{ user }}>
+    <AdminContext.Provider value={{ admin }}>
       {children}
-    </UserContext.Provider>
+    </AdminContext.Provider>
   );
 };

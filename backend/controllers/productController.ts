@@ -6,6 +6,8 @@ import { UploadedImage } from "../types/types";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
 import { Types } from "mongoose";
+import { create_activity_log } from "../services/activityLogServices";
+import Admin from "../models/Admin";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -22,6 +24,16 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
         })
 
         await newProduct.save();
+
+        const admin = await Admin.findById(req.user_id);
+
+        if(admin){
+          await create_activity_log({
+            admin_id: req.user_id ?? '',
+            description: 'created a new product',
+            product_id: newProduct._id as string,
+          })
+        }
 
         res.status(201).json({ success: true, newProduct});
 
@@ -85,7 +97,6 @@ export const get_products = async (req: Request, res: Response) => {
       totalProducts: total,
     });
   } catch (err: any) {
-    console.log(err)
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -213,7 +224,7 @@ export const get_product_by_id_with_reserved = async (req: Request, res: Respons
   }
 };
 
-export const update_product = async (req: Request, res: Response) => {
+export const update_product = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
     const product = req.body;
@@ -251,6 +262,16 @@ export const update_product = async (req: Request, res: Response) => {
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, { ...product, thumbnail, images }, { new: true });
+
+    if(updatedProduct){
+      await create_activity_log({ 
+        admin_id: req.user_id ?? '',
+        description: `updated ${updatedProduct?.product_name}`,
+        product_id: updatedProduct._id as string,
+        prev_value: JSON.stringify(oldProduct),
+        new_value: JSON.stringify(product)
+      })
+    }
 
     res.status(200).json({
       success: true,

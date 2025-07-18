@@ -11,10 +11,10 @@ import CustomizedPagination from "../../components/Pagination";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Inbox', href: '/admin/inbox' },
+    { label: 'Notifications', href: '/admin/notifications' },
 ]
 
-const AdminInbox = () => {
+const AdminNotifications = () => {
     const isDark = useDarkmode();
     const { notifications, setPage, total } = useContext(AdminNotificationContext);
 
@@ -24,19 +24,19 @@ const AdminInbox = () => {
 
     return (
          <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>
-            <Title className="mb-4">Inbox</Title>
+            <Title className="mb-4">Notifications</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <Card className="flex flex-col h-screen mt-10 gap-5">
+            <Card className="flex-grow min-h-0 flex flex-col mt-10 gap-5">
                 <div className="flex justify-end">
                     <CustomizedPagination count={Math.ceil(total / 30)} onChange={handlePage} />
                 </div>
                 <CustomizedTable
                     cols={<NotificationsTableColumns />}
-                    rows={notifications.map(n => <NotificationTableRow notification={n}/>)}
+                    rows={notifications.map(n => <NotificationTableRow key={n._id} notification={n}/>)}
                 />
             </Card>
         </div>
     )
 }
 
-export default AdminInbox
+export default AdminNotifications

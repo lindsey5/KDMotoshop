@@ -56,7 +56,7 @@ export const MultiImageSlideshow = ({ images } : { images: string[] }) => {
     return (
         <div className="relative px-15">
             <Modal open={selectedImage !== undefined} onClose={() => setSelectedImage(undefined)}>
-                <img className="absolute inset-1/2 transform -translate-1/2" src={selectedImage}/>
+                <img className="border-2 border-white w-[350px] h-[350px] absolute inset-1/2 transform -translate-1/2" src={selectedImage}/>
             </Modal>
         <AnimatePresence mode="wait">
             <motion.div

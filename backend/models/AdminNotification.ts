@@ -8,7 +8,7 @@ interface IAdminNotification extends INotification{
 // Define the schema
 const AdminNotificationSchema: Schema<IAdminNotification> = new Schema(
   {
-    to: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    to: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
     from: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
     order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
     content: { type: String, required: true },

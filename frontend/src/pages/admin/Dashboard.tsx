@@ -15,10 +15,8 @@ const AdminDashboard = () => {
         <h1 className={cn("font-bold text-4xl text-red-500", isDark && 'text-white')}>Dashboard</h1>
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
         <DashboardCards />
-        <div className="flex items-center mt-14 gap-5">
-            <MonthlySales />
-            <TopProductsChart />
-        </div>
+        <MonthlySales />
+        <TopProductsChart />
         <div className="flex mt-14 gap-5">
             <TopCategoriesChart />
             <SalesPredictionChart />

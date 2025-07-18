@@ -40,7 +40,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     product_type: { type: String, required: true },
     visibility: { type: String, required: true },
     weight: { type: Number, required: true },
-    added_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    added_by: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
     images: { 
         type: [
             {

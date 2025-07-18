@@ -84,7 +84,7 @@ const Orders = () => {
                 <SearchField
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value as string)}
-                    placeholder="Search by Customer Name, Order ID" 
+                    placeholder="Search by Customer Name, Order ID, Order Source" 
                     sx={{ flex: 1, height: 55 }}
                 />
                 <div className="flex items-center gap-5">

@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { type ReactNode } from 'react';
 import { Button } from '@mui/material';
-import useDarkmode from '../../hooks/useDarkmode';
 
 type SidebarLinkProps = {
   icon: ReactNode;
@@ -11,7 +10,6 @@ type SidebarLinkProps = {
 
 export const SidebarLink = ({ label, icon, path }: SidebarLinkProps) => {
   const pathname = useLocation().pathname;
-  const isDark = useDarkmode()
     
   return (
     <Button
@@ -21,12 +19,13 @@ export const SidebarLink = ({ label, icon, path }: SidebarLinkProps) => {
       startIcon={icon}
       sx={{
         fontWeight: 'bold',
-        backgroundColor: pathname === path ? 'red' : isDark ? 'bg-[#1e1e1e]' : 'black',
+        backgroundColor: pathname === path ? 'red' : '#1e1e1e',
         '&:hover': {
           backgroundColor: 'red',
         },
         color: 'white',
         justifyContent: 'flex-start',
+        textTransform: 'capitalize',
       }}
     >
       {label}

@@ -1,4 +1,4 @@
-import userRoutes from './routes/userRoutes';
+import adminRoutes from './routes/adminRoutes';
 import authRoutes from './routes/authRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import productRoutes from './routes/productRoutes';
@@ -8,6 +8,7 @@ import customerRoutes from './routes/customerRoutes';
 import cartRoutes from './routes/cartRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import notificationRoutes from './routes/notificationRoutes';
+import activityLogRoutes from './routes/activityLogRoutes';
 import { paymongoWebhook } from './middlewares/paymongo';
 import cors from 'cors';
 import express from 'express'
@@ -57,7 +58,7 @@ app.get('/api/cities-municipalities/:cityOrMunicipalityCode/barangays', async (r
 
 app.post('/api/paymongo/webhook', paymongoWebhook)
 
-app.use("/api/user", userRoutes)
+app.use("/api/admin", adminRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/category", categoryRoutes)
 app.use("/api/product", productRoutes)
@@ -66,6 +67,7 @@ app.use('/api/sales', salesRoutes)
 app.use('/api/customer', customerRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/payment', paymentRoutes)
-app.use('/api/notification', notificationRoutes);
+app.use('/api/notification', notificationRoutes)
+app.use('/api/activity', activityLogRoutes)
 
 export default app

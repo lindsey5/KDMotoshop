@@ -197,14 +197,6 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                         menu={['CASH', 'GCASH', 'PAYMAYA', "CARD"].map(method => ({ value: method, label: method }))}
                     />
                 </div>
-                <RedTextField 
-                    label="Note (Optional)" 
-                    fullWidth 
-                    multiline 
-                    rows={4} 
-                    value={order.note || ''}
-                    onChange={(e) => setOrder(prev => ({ ...prev, note: e.target.value }))}
-                />
                 <div className="w-full flex justify-end gap-5 mt-5">
                     <Button 
                         variant="outlined" 

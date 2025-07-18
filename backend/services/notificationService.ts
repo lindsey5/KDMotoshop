@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { socketInstance, userSocketMap } from "../middlewares/socket"
 import AdminNotification from "../models/AdminNotification";
 import CustomerNotification from "../models/CustomerNotification"
-import User from "../models/User";
+import Admin from "../models/Admin";
 
 export const sendCustomerNotification = async (customer_id : string, order_id: string, content : string) => {
     try{
@@ -15,8 +15,6 @@ export const sendCustomerNotification = async (customer_id : string, order_id: s
         await notification.save();
 
         const socketId = userSocketMap.get(customer_id);
-        
-        console.log(socketId)
 
         if(socketId){
             socketInstance?.to(socketId).emit('customerNotification', notification);
@@ -29,7 +27,7 @@ export const sendCustomerNotification = async (customer_id : string, order_id: s
 
 export const sendAdminsNotification = async (customer_id : string, order_id: string, content : string) => {
     try{
-        const admins = await User.find({ role: 'Admin' });
+        const admins = await Admin.find();
 
         for(const admin of admins){
             const notification = new AdminNotification({

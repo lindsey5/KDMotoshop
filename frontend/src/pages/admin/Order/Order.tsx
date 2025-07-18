@@ -35,7 +35,6 @@ const OrderDetails = () => {
             const response = await fetchData(`/api/order/${id}`)
             if(response.success){
                 const { customer, ...rest } = response.order
-                console.log(response.order)
                 setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
             }else window.location.href = '/admin/dashboard'
         }
@@ -127,13 +126,13 @@ const OrderDetails = () => {
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
                 </Card>
-                <Card className="w-full">
+                {order.createdBy && <Card className="w-full">
                     <h1 className="font-bold mb-4">Created by:</h1>
                     <div className="flex items-center gap-3">
                         <Avatar src={order?.createdBy?.image?.imageUrl} />
                         <p>{order?.createdBy?.firstname} {order?.createdBy?.lastname}</p>
                     </div>
-                </Card>
+                </Card>}
             </div>
         </div>
     </div>

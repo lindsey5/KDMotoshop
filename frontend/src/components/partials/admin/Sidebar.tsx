@@ -3,93 +3,97 @@ import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
-import MailIcon from '@mui/icons-material/Mail';
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Badge, Button } from '@mui/material';
-import { SidebarLink } from '../SidebarLink';
+import { Badge, Button, Divider } from '@mui/material';
+import { SidebarLink } from './SidebarLink';
 import { ThemeToggle } from '../../Toggle';
-import { cn } from '../../../utils/utils';
-import useDarkmode from '../../../hooks/useDarkmode';
 import { useContext } from 'react';
 import { AdminNotificationContext } from '../../../context/AdminNotificationContext';
+import HistoryIcon from '@mui/icons-material/History';
 
 const signout = async () => {
   localStorage.removeItem('token');
   window.location.href = '/admin/login';
 };
 
-const InboxLink = () => {
+const NotificationLink = () => {
   const { unread } = useContext(AdminNotificationContext);
 
   return (
     <Badge badgeContent={unread} color='primary'>
       <SidebarLink 
-        label="Inbox" 
-        icon={<MailIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/inbox"
+        label="Notifications" 
+        icon={<NotificationsRoundedIcon sx={{ width: 25, height: 25 }} />} 
+        path="/admin/notifications"
       />
     </Badge>
   )
 }
 
 export const AdminSidebar = () => {
-  const isDark = useDarkmode();
 
   return (
-    <aside className={cn("w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col gap-5", isDark ? 'bg-[#1e1e1e] border-r border-gray-600' : 'bg-black')}>
+    <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#1e1e1e] border-r border-gray-600">
       <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
-      <SidebarLink 
-        label="Dashboard" 
-        icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/dashboard"
-      />
-      <SidebarLink 
-        label="Products" 
-        icon={<SportsMotorsportsIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/products"
-      />
-      <SidebarLink 
-        label="Orders" 
-        icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/orders"
-      />
-      <InboxLink />
-      <SidebarLink 
-        label="Employees" 
-        icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/employees"
-      />
-      <SidebarLink 
-        label="Customers" 
-        icon={<PersonIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/customers"
-      />
-      <SidebarLink 
-        label="Settings" 
-        icon={<SettingsIcon sx={{ width: 25, height: 25 }} />} 
-        path="/admin/settings"
-      />
-      <Button
-        onClick={signout}
-        fullWidth
-        startIcon={<LogoutIcon sx={{ width: 25, height: 25 }} />}
-        sx={{
-          fontWeight: 'bold',
-          backgroundColor: isDark ? 'bg-[#1e1e1e]' : 'black',
-          '&:hover': {
-            backgroundColor: 'red',
-          },
-          color: 'white',
-          justifyContent: 'flex-start',
-          textTransform: 'none',
-        }}
-      >
-        Logout
-      </Button>
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-        <ThemeToggle />
+      <div className='w-full flex-col flex gap-3 flex-1'>
+        <SidebarLink 
+          label="Dashboard" 
+          icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/dashboard"
+        />
+        <SidebarLink 
+          label="Products" 
+          icon={<SportsMotorsportsIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/products"
+        />
+        <SidebarLink 
+          label="Orders" 
+          icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/orders"
+        />
+        <SidebarLink 
+          label="Customers" 
+          icon={<PersonIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/customers"
+        />
+        <SidebarLink 
+          label="Admins" 
+          icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/admins"
+        />
+        <Divider sx={{ backgroundColor: '#9CA3AF' }}/>
+        <NotificationLink />
+        <SidebarLink 
+          label="Activity Logs" 
+          icon={<HistoryIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/activities"
+        />
+        <SidebarLink 
+          label="Settings" 
+          icon={<SettingsIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/settings"
+        />
+        <Button
+          onClick={signout}
+          fullWidth
+          startIcon={<LogoutIcon sx={{ width: 25, height: 25 }} />}
+          sx={{
+            fontWeight: 'bold',
+            backgroundColor: '#1e1e1e]',
+            '&:hover': {
+              backgroundColor: 'red',
+            },
+            color: 'white',
+            justifyContent: 'flex-start',
+            textTransform: 'none',
+          }}
+        >
+          Logout
+        </Button>
       </div>
+      <ThemeToggle />
     </aside>
   );
 };

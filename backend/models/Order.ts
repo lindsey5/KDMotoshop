@@ -66,7 +66,7 @@ const OrderSchema: Schema<Order> = new Schema(
       default: "CASH",
       required: true
     },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: false }
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: false }
   },
   { timestamps: true }
 );
