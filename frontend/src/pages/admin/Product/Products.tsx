@@ -99,35 +99,33 @@ const Products = () => {
                     <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
                 </div>
             </div>
-            <Card className="flex-grow min-h-0 flex flex-col">
-                <div className="flex items-center justify-between mb-6">
-                    <SearchField 
+            <div className="flex flex-wrap gap-2">
+                <CustomizedChip 
+                    onClick={() => setSelectedCategory('All')} 
+                    label="All"
+                    isSelected={selectedCategory === 'All'}
+                 />
+                {categories && categories.map(category => 
+                    <CustomizedChip 
+                        key={category.category_name}
+                        onClick={() => setSelectedCategory(category.category_name)}
+                        isSelected={selectedCategory === category.category_name}
+                        label={category.category_name} 
+                        onDelete={() => deleteCategory(category._id)} 
+                    />
+                )}
+            </div>
+            <Card className="flex-grow min-h-0 flex flex-col mt-5">
+                <div className="w-full mb-6 flex items-center justify-between">
+                   <SearchField 
                         sx={{ width: '400px'}}
                         onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
                         placeholder="Search by Product name, SKU, Category..."
                     />
-                    <div className="flex items-center gap-5">
-                        <div className="flex overflow-x-auto gap-2">
-                            <CustomizedChip 
-                                onClick={() => setSelectedCategory('All')} 
-                                label="All"
-                                isSelected={selectedCategory === 'All'}
-                            />
-                            {categories && categories.map(category => 
-                                <CustomizedChip 
-                                    key={category.category_name}
-                                    onClick={() => setSelectedCategory(category.category_name)}
-                                    isSelected={selectedCategory === category.category_name}
-                                    label={category.category_name} 
-                                    onDelete={() => deleteCategory(category._id)} 
-                                />
-                            )}
-                        </div>
-                        <CustomizedPagination 
-                            count={pagination.totalPages} 
-                            onChange={handlePage} 
-                        />
-                    </div>
+                    <CustomizedPagination 
+                        count={pagination.totalPages} 
+                        onChange={handlePage} 
+                    />
                 </div>
                 <CustomizedTable
                     cols={<ProductTableColumns />}

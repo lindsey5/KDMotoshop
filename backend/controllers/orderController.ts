@@ -122,7 +122,7 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
         const [overallTotalOrders, pendingOrders, completedOrders, cancelledOrders] = await Promise.all([ 
             Order.countDocuments({ createdAt: { $gte: last365Days } }),
             Order.countDocuments({ status: 'Pending', createdAt: { $gte: last365Days } }),
-            Order.countDocuments({ status: 'Completed', createdAt: { $gte: last365Days } }),
+            Order.countDocuments({ status: { $in: ['Completed', 'Rated']}, createdAt: { $gte: last365Days } }),
             Order.countDocuments({ status: 'Cancelled', createdAt: { $gte: last365Days } })
         ]);
 

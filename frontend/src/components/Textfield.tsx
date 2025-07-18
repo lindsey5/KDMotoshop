@@ -41,6 +41,9 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
         borderRadius: 3,
         '& .MuiInputLabel-root': {
           color: isDark ?  '#bdbdbd' : '',
+          '&.Mui-focused': {
+            color: isDark ? 'white' : 'red', 
+          },
         },
         '& .MuiOutlinedInput-root': {
           borderRadius: 3,

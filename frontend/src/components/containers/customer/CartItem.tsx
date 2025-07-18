@@ -33,7 +33,7 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
     
     return (
         <div className={cn("flex lg:flex-row flex-col gap-5 py-5 border-b border-gray-300 items-start lg:items-center", isDark && 'border-gray-500')}>
-            <div className="flex flex-1 gap-5">
+            <div className="flex flex-1 gap-5 items-center">
                 <Checkbox
                     checked={item.isSelected}
                     onChange={handleCheck}
