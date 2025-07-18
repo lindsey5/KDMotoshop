@@ -11,7 +11,7 @@ import {
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { fetchData } from '../../services/api';
-import Card from '../Card';
+import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
 import CustomizedPagination from '../Pagination';
 

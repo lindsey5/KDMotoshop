@@ -10,7 +10,6 @@ import { formatDate } from "../utils/dateUtils";
 import { useContext, useState, type JSX } from "react";
 import { CustomerNotificationContext } from "../context/CustomerNotifContext";
 import useDarkmode from "../hooks/useDarkmode";
-import { useNavigate } from "react-router-dom";
 
 const statusMap: Record<string, JSX.Element> = {
     'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,
@@ -28,9 +27,8 @@ const extractStatus = (content: string): string | undefined => {
 };
 
 export const NotificationsDrawerList = () => {
-    const { notifications, nextPage, total, updateNotification } = useContext(CustomerNotificationContext);
+    const { notifications, nextPage, total, updateNotifications } = useContext(CustomerNotificationContext);
     const [page, setPage] = useState(1);
-    const navigate = useNavigate();
     const isDark = useDarkmode();
 
     const handleNextPage = () => {
@@ -39,9 +37,9 @@ export const NotificationsDrawerList = () => {
         nextPage(next);
     };
 
-    const navigateToOrder = (order_id : string, notification : any) => {
-        navigate(`/order/${order_id}`)
-        if(!notification.isViewed) updateNotification(notification._id);
+    const navigateToOrder = (order_id : string) => {
+        updateNotifications()
+        window.location.href = `/order/${order_id}`
     }
 
     return (
@@ -56,7 +54,7 @@ export const NotificationsDrawerList = () => {
                 return (
                     <ListItem key={n._id} disablePadding>
                     <ListItemButton
-                        onClick={() => navigateToOrder(n.order_id, n)}
+                        onClick={() => navigateToOrder(n.order_id)}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',

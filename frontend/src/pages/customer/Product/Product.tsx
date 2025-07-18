@@ -4,10 +4,10 @@ import { fetchData, postData } from "../../../services/api";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
 import { cn, formatNumber } from "../../../utils/utils";
-import { ExpandableText } from "../../../components/Text";
+import { ExpandableText } from "../../../components/text/Text";
 import { RedButton } from "../../../components/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
 import { successAlert } from "../../../utils/swal";
@@ -24,6 +24,8 @@ const CustomerProduct = () => {
     const { cart, setCart } = useContext(CartContext);
     const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
+    const [rating, setRating] = useState<number>(0);
+    const [totalReviews, setTotalReviews] = useState<number>(0);
     
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
@@ -37,7 +39,17 @@ const CustomerProduct = () => {
             if(response.success) setProduct(response.product)
         }
 
+        const get_reviews = async () => {
+            const response = await fetchData(`/api/review/product/${id}`);
+            if(response.success){
+                console.log(response)
+                setRating(response.rating)
+                setTotalReviews(response.totalReviews)
+            }
+        }
+
         getProduct();
+        get_reviews();
     }, [])
 
     const filteredVariants = useMemo(() => {
@@ -138,6 +150,10 @@ const CustomerProduct = () => {
                 </div>
                 <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] border-gray-500 text-white')}>
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
+                    {rating !== 0 ? <div className="flex gap-3 items-center">
+                        <Rating sx={{ fontSize: 35 }} name="read-only" value={rating} readOnly />
+                        <p className="text-xl">({totalReviews} Reviews)</p>
+                    </div> : <p className="text-white">No Reviews</p>}
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 
                             <h1 className="font-bold text-3xl">₱{formatNumber((

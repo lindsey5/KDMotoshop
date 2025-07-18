@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { fetchData, postData, updateData } from "../../../services/api";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import { CustomerContext } from "../../../context/CustomerContext";
 import LocationPinIcon from '@mui/icons-material/LocationPin';
 import AddIcon from '@mui/icons-material/Add';
@@ -125,7 +125,9 @@ const CheckoutPage = () => {
                 cart: parsedCartItems
             });
 
-            if(response.success) window.open(response.checkout_url, '_blank')
+            if(response.success) {
+                paymentMethod === 'CASH' ? window.location.href = `/order/${response.order._id}` : window.open(response.checkout_url, '_blank')
+            }
             else errorAlert(response.message, '', isDark)
             
             setLoading(false)

@@ -16,8 +16,6 @@ export const create_new_item = async (req : AuthenticatedRequest, res : Response
         if(variant_id) query.variant_id = variant_id
 
         const existedCart = await Cart.findOne(query)
-
-        console.log(quantity)
           
         if(existedCart){
             existedCart.quantity += quantity;

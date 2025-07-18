@@ -1,7 +1,7 @@
 import { PieChart } from "@mui/x-charts"
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
-import Card from "../Card";
+import Card from "../cards/Card";
 import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
 

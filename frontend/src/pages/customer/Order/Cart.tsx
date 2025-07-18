@@ -1,7 +1,7 @@
 import { useContext, useMemo } from "react"
 import { CartContext } from "../../../context/CartContext";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import { CustomizedChip } from "../../../components/Chip";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";

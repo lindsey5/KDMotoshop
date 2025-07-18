@@ -12,11 +12,11 @@ import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import AddProductThumbnail from "../../../components/cards/admin/AddProductThumbnail";
 import ProductImages from "../../../components/images/ProductImages";
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
-import { Title } from "../../../components/Text";
+import { Title } from "../../../components/text/Text";
 
 const productInitialState = {
     product_name: '',

@@ -3,18 +3,18 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn } from "../../../utils/utils"
 import { fetchData } from "../../../services/api";
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/Button";
 import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
-import { Status } from "../../../components/Text";
+import { Status } from "../../../components/text/Text";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Statuses } from "../../../constants/status";
 import { PaginationState } from "../../../constants/pagination";
 import CustomizedPagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
-import FuzzyText from "../../../components/FuzzyText";
+import FuzzyText from "../../../components/text/FuzzyText";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -82,7 +82,7 @@ const CustomerOrders = () => {
                     </div>
                     <OrderItemsContainer orderItems={order.orderItems} />
                     <div className="flex justify-end">
-                        <RedButton onClick={() => navigate(`/order/${order._id}`)}>Track order</RedButton>
+                        <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Completed' ? 'Rate your order' : 'Track Order'}</RedButton>
                     </div>
                 </Card>
             ))}

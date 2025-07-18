@@ -19,7 +19,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const isDark = useDarkmode();
     const navigate = useNavigate();
     const [showDrawer, setShowDrawer] = useState<boolean>();
-    const { unread } = useContext(CustomerNotificationContext);
+    const { unread, updateNotifications } = useContext(CustomerNotificationContext);
 
     const handleOpen = () => {
         setOpen(!open);
@@ -38,7 +38,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
       ) {
         return;
       }
-
+      if(!open) updateNotifications()
       setShowDrawer(open)
     };
 

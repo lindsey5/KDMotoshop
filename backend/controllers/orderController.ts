@@ -181,19 +181,15 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
-        if(order.customer.customer_id && order.status === 'Cancelled'){
-            req.body.status = 'Cancelled'
-        }
-
         const updatedOrder = await Order.findByIdAndUpdate(
             id, 
             req.body, 
             { new: true }
         );
 
-        if(req.body.status !== 'Completed' && (order.status === 'Shipped' || order.status === 'Completed')){
+        if(req.body.status !== 'Completed'){
             for (const item of req.body.orderItems) {
-                await incrementStock(item)
+                if(order.status === 'Shipped' || order.status === 'Completed') await incrementStock(item)
                 if(req.body.status === 'Pending'){
                     await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
                 }else if(req.body.status === 'Refunded'){
@@ -202,7 +198,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                     await OrderItem.updateOne({_id: item._id}, { status: 'Cancelled' });
                 }
             }
-        }else if(req.body.status === 'Completed' || req.body.status === 'Shipped'){
+        }
+        
+        if(req.body.status === 'Completed' || req.body.status === 'Shipped'){
             for (const item of req.body.orderItems) {
                 if(order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
@@ -217,7 +215,7 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             );
             await create_activity_log({
                 admin_id: req.user_id ?? '',
-                description: 'updated an order',
+                description: `updated ${order.order_id}`,
                 order_id: id,
                 prev_value: order.status,
                 new_value: req.body.status,

@@ -1,6 +1,6 @@
 import React from "react";
-import { cn } from "../utils/utils";
-import useDarkmode from "../hooks/useDarkmode";
+import { cn } from "../../utils/utils";
+import useDarkmode from "../../hooks/useDarkmode";
 
 interface CardProps {
   className?: string;

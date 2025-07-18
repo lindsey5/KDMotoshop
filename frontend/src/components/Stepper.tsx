@@ -5,6 +5,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import GradeIcon from '@mui/icons-material/Grade';
 import WarningIcon from '@mui/icons-material/Warning';
+import React from "react";
 
 type OrderStatusStepperProps = {
     order: Order | undefined
@@ -48,7 +49,7 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
         {linearSteps.map((step, i) => {
             const active = i <= currentStep;
             return (
-                <>
+                <React.Fragment key={i}>
                     {/* circle */}
                     <div className="flex flex-col items-center gap-3">
                         <div
@@ -73,7 +74,7 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
                     {i !== linearSteps.length - 1 && (
                     <div className={cn('flex-1 h-1', active ? (isAltTerminal ? altStyles.color : "bg-blue-600") : "bg-gray-300")}/>
                     )}
-                </>
+                </React.Fragment>
             );
         })}
         {isAltTerminal && (

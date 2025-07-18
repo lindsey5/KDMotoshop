@@ -1,6 +1,6 @@
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
-import Card from "../../Card";
+import Card from "../Card";
 
 type PaymentSummaryCard = {
     subtotal: number;

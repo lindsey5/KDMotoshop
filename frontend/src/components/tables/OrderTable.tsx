@@ -6,7 +6,7 @@ import { formatDate } from '../../utils/dateUtils';
 import { RedButton } from '../Button';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
-import { Status } from "../Text";
+import { Status } from "../text/Text";
 
 export const OrderTableColumns = () => {
     return (

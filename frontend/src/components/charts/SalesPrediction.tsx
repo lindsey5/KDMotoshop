@@ -1,4 +1,4 @@
-import Card from "../Card"
+import Card from "../cards/Card"
 import { useEffect, useState } from "react"
 import { fetchData } from "../../services/api";
 import AreaChart from "./AreaChart";

@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import Card from "../../components/Card";
+import Card from "../../components/cards/Card";
 import CustomizedTable from "../../components/Table";
 import { NotificationsTableColumns, NotificationTableRow } from "../../components/tables/NotificationTable";
-import { Title } from "../../components/Text";
+import { Title } from "../../components/text/Text";
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils";
 import { AdminNotificationContext } from "../../context/AdminNotificationContext";

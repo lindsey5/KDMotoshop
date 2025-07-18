@@ -38,13 +38,12 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
       sx={{
         backgroundColor: isDark ? '#313131' : 'white',
         width: '100%',
+        borderRadius: 3,
         '& .MuiInputLabel-root': {
           color: isDark ?  '#bdbdbd' : '',
-          '&.Mui-focused': {
-            color: isDark ? 'white' : 'red', 
-          },
         },
         '& .MuiOutlinedInput-root': {
+          borderRadius: 3,
           fontSize: 15,
           color: isDark ? 'white' : 'black', // Text color
           '& input::placeholder': {
@@ -58,7 +57,7 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
             borderColor:  isDark ? '#919191' : '',
           },
           '&.Mui-focused fieldset': {
-            borderColor: isDark ? '#919191' : 'red',
+            borderColor: 'red',
           },
         },
         ...sx

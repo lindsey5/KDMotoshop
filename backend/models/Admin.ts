@@ -8,7 +8,7 @@ export interface IAdmin extends Document {
   firstname: string;
   lastname: string;
   phone: string;
-  image: UploadedImage;
+  image?: UploadedImage;
 }
 
 // Define the schema
@@ -20,8 +20,11 @@ const AdminSchema: Schema<IAdmin> = new Schema(
     lastname: { type: String, required: true },
     phone: { type: String, required: false },
     image: {
-      public_id: { type: String, required: false },
-      url: { type: String, required: false },
+      type: {
+        imageUrl: { type: String, required: true },
+        imagePublicId: { type: String, required: true }
+      },
+      required: false
     },
   },
   { timestamps: true }

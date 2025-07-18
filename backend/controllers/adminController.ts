@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import { createAdmin, findAdmin } from "../services/userService";
 import Admin from "../models/Admin";
+import { deleteImage, uploadImage } from "../services/cloudinary";
 
 export const create_new_admin = async(req: Request, res: Response) => {
     try{
@@ -32,27 +33,39 @@ export const get_admin= async(req: AuthenticatedRequest, res: Response) => {
     }
 }
 
-export const update_admin = async (req: Request, res: Response) => {
+export const update_admin = async (req: AuthenticatedRequest, res: Response) => {
     try{
-        const { id } = req.params;
-        const admin = await findAdmin({ _id: { $ne: id }, email: req.body.email });
-        if(admin) {
+        const id = req.user_id;
+        const updatedData = req.body;
+
+        const isEmailExist = await findAdmin({ _id: { $ne: id }, email: req.body.email });
+        if(isEmailExist) {
             res.status(409).json({ success: false, message: "Email already used"});
             return;
         }
 
-        if(req.body.file){
+        const admin = await Admin.findById(id);
 
+        if(!admin){
+            res.status(404).json({success: false, message: 'Admin not found'})
+            return;
         }
 
-        const updatedAdmin = await Admin.findOneAndUpdate(
-            { _id: id }, 
-            req.body, 
-            { new: true });
+        let image : any = admin.image;
 
-        return res.status(200).json({success: true, updatedAdmin});
+        if (typeof updatedData.image === 'string') {
+            if (image && typeof image !== 'string') {
+                await deleteImage(image.imagePublicId);
+            }
+            image = await uploadImage(updatedData.image);
+            updatedData.image = image;
+        }
+
+        const updatedAdmin = await Admin.findByIdAndUpdate(id, req.body, { new: true });
+
+        res.status(200).json({success: true, updatedAdmin});
         
     }catch(err : any){
-        return res.status(500).json({ success: false, message: err.message || 'Server error' });
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }

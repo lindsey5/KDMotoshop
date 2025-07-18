@@ -4,6 +4,6 @@ interface Admin {
   firstname: string;
   lastname: string;
   phone: string;
-  image: UploadedImage | string | ArrayBuffer | null,
+  image: UploadedImage | string | ArrayBuffer | null | undefined,
   role: string;
 }

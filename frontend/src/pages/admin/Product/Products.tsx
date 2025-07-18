@@ -9,14 +9,14 @@ import { confirmDialog } from "../../../utils/swal"
 import { deleteData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/tables/ProductTable"
-import Card from "../../../components/Card"
+import Card from "../../../components/cards/Card"
 import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
 import { PaginationState } from "../../../constants/pagination"
 import { RedButton } from "../../../components/Button"
 import { useNavigate } from "react-router-dom"
-import { Title } from "../../../components/Text"
+import { Title } from "../../../components/text/Text"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },

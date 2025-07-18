@@ -2,11 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import { fetchData } from "../../services/api";
-import { Title } from "../../components/Text";
+import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import Card from "../../components/Card";
+import Card from "../../components/cards/Card";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { Avatar } from "@mui/material";
 import { RedButton } from "../../components/Button";
 import { AdminContext } from "../../context/AdminContext";
 import { useNavigate } from "react-router-dom";
@@ -15,17 +14,7 @@ import CustomizedPagination from "../../components/Pagination";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import { CustomDateRangePicker } from "../../components/DatePicker";
-
-const UserAvatar = ({ image, sx } : { image : Admin['image'], sx?: Object }) => {
-    const avatar = typeof  image === 'object' &&  image !== null && 'imageUrl' in  image
-                ?  image.imageUrl
-                    : typeof  image === 'string'
-                    ? image
-                : ''
-    return (
-        <Avatar src={avatar} sx={sx}/>
-    )
-}
+import UserAvatar from "../../components/images/UserAvatar";
 
 const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
     const isDark = useDarkmode();
@@ -109,7 +98,7 @@ const ActivityLogs = () => {
             const response = await fetchData(`/api/activity?limit=100&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
             if(response.success){
                 const groupedLogs = response.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
-                    const dateKey = new Date(item.createdAt).toISOString().split("T")[0];
+                    const dateKey = formatDateWithWeekday(item.createdAt);
                     if (!acc[dateKey]) {
                         acc[dateKey] = [];
                     }
@@ -139,7 +128,7 @@ const ActivityLogs = () => {
             
             {Object.entries(activityLogs).map(([key, value]) => (
                 <Card key={key} className="mt-5 flex flex-col gap-5">
-                    <h1 className="font-bold text-lg">{formatDateWithWeekday(new Date(key))}</h1>
+                    <h1 className="font-bold text-lg">{key}</h1>
                     {value.map(act => <ActiviyContainer key={act._id} activityLog={act}/>)}
                 </Card>
             ))}

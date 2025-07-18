@@ -7,15 +7,15 @@ import { Avatar, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/Button";
-import { Status } from "../../../components/Text";
+import { Status } from "../../../components/text/Text";
 import { CustomerContext } from "../../../context/CustomerContext";
+import CustomerOrderItems from "../../../components/containers/customer/OrderItems";
 
 const CustomerOrderDetails = () => {
     const { id } = useParams();
@@ -88,7 +88,7 @@ const CustomerOrderDetails = () => {
                             <Status status={order.status} isDark={isDark} />
                         </div>
                     </div>
-                    <OrderItemsContainer orderItems={order.orderItems}/>
+                    <CustomerOrderItems order={order}/>
                     <Card>
                         <h1 className="font-bold text-xl">Payment Summary</h1>
                         <div className="my-6 grid grid-cols-2 gap-5 p-2">

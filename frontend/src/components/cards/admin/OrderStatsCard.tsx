@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "../../../utils/utils";
 import { fetchData } from "../../../services/api";
-import Card from "../../Card";
+import Card from "../Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 
 type StatCardProps = {

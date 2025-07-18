@@ -62,20 +62,14 @@ export const get_admin_notifications =  async(req: AuthenticatedRequest, res: Re
     }
 }
 
-export const update_customer_notification =  async(req: AuthenticatedRequest, res: Response) => {
+export const update_customer_notifications =  async(req: AuthenticatedRequest, res: Response) => {
     try{
-        const notification = await CustomerNotification.findById(req.params.id);
+        await CustomerNotification.updateMany(
+            { to: req.user_id }, 
+            { $set: { isViewed: true } } 
+        );
 
-        if(!notification){
-            res.status(404).json({ success: false, message: 'Notification not found'})
-            return
-        }
-        
-        notification.isViewed = true
-
-        await notification.save();
-
-        res.status(200).json({ success: true, notification });
+        res.status(200).json({ success: true, message: 'Customer notifications successfully updated' });
 
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message || 'Server error' });

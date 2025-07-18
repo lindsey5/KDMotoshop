@@ -17,7 +17,7 @@ interface CustomerNotificationContextType {
   total: number;
   unread: number;
   nextPage: (page : number) => void;
-  updateNotification: (id : string) => Promise<void>;
+  updateNotifications: () => Promise<void>;
 }
 
 // Create the context with a default value
@@ -26,7 +26,7 @@ export const CustomerNotificationContext = createContext<CustomerNotificationCon
   total: 0,
   unread: 0,
   nextPage: () => {},
-  updateNotification: async () => {}
+  updateNotifications: async () => {}
 });
 
 interface CustomerNotificationContextProviderProps {
@@ -39,13 +39,13 @@ export const CustomerNotificationContextProvider = ({ children }: CustomerNotifi
     const [unread, setUnread] = useState<number>(0);
     const { socket } = useContext(SocketContext);
 
-    const updateNotification = async (id : string) => {
-        const response = await updateData(`/api/notification/${id}/customer`, {});
+    const updateNotifications = async () => {
+        const response = await updateData(`/api/notification/customer`, {});
         if(response.success){
             setNotifications(prev => prev.map(n => {
-                return n._id === id ? {...n, isViewed: true } : n 
+                return {...n, isViewed: true }
             }))
-            setUnread(prev => prev - 1)
+            setUnread(0)
         }
     }
 
@@ -82,7 +82,7 @@ export const CustomerNotificationContextProvider = ({ children }: CustomerNotifi
     }, [socket]);
 
     return (
-        <CustomerNotificationContext.Provider value={{ notifications, nextPage, total, unread, updateNotification }}>
+        <CustomerNotificationContext.Provider value={{ notifications, nextPage, total, unread, updateNotifications }}>
         {children}
         </CustomerNotificationContext.Provider>
     );

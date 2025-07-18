@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import CircleIcon from '@mui/icons-material/Circle';
-import { statusColorMap } from "../constants/status";
-import { cn } from "../utils/utils";
-import useDarkmode from "../hooks/useDarkmode";
+import { statusColorMap } from "../../constants/status";
+import { cn } from "../../utils/utils";
+import useDarkmode from "../../hooks/useDarkmode";
 
 export const ExpandableText = ({ text = "", limit = 150 }) => {
   const [expanded, setExpanded] = useState(false);

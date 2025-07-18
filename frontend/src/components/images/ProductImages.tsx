@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RedButton } from "../Button";
 import AddIcon from '@mui/icons-material/Add';
-import Card from "../Card";
+import Card from "../cards/Card";
 
 type ProductImageProps = {
     index: number;

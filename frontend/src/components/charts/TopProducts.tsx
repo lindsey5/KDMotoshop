@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../../services/api";
-import Card from "../Card";
+import Card from "../cards/Card";
 import TopProductsContainer from "../containers/TopProductContainer";
 
 const TopProductsChart = () => {

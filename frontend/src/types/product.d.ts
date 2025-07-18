@@ -45,3 +45,12 @@ type TopProduct = {
     stock: number;
     totalQuantity: number;
 }
+
+type Review = {
+    _id: string;
+    rating: number;
+    review: string;
+    customer_id: Customer;
+    orderItemId: OrderItem;
+    product_id: Product;
+}

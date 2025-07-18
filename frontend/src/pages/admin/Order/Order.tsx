@@ -13,10 +13,10 @@ import OrderItemsContainer from "../../../components/containers/admin/OrderItems
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
-import Card from "../../../components/Card";
+import Card from "../../../components/cards/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
-import { Title } from "../../../components/Text";
+import { Title } from "../../../components/text/Text";
 
 const OrderDetails = () => {
     const { id } = useParams();

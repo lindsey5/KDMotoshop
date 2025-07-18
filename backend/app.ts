@@ -9,6 +9,7 @@ import cartRoutes from './routes/cartRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import activityLogRoutes from './routes/activityLogRoutes';
+import reviewRoutes from './routes/reviewRoutes';
 import { paymongoWebhook } from './middlewares/paymongo';
 import cors from 'cors';
 import express from 'express'
@@ -69,5 +70,6 @@ app.use('/api/cart', cartRoutes)
 app.use('/api/payment', paymentRoutes)
 app.use('/api/notification', notificationRoutes)
 app.use('/api/activity', activityLogRoutes)
+app.use('/api/review', reviewRoutes)
 
 export default app

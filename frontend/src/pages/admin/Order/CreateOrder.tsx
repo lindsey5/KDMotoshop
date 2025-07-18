@@ -14,7 +14,7 @@ import CategoryFilter from "../../../components/cards/admin/CategoryFilter";
 import ProductContainer from "../../../components/containers/admin/OrderProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
 import useDarkmode from "../../../hooks/useDarkmode";
-import { Title } from "../../../components/Text";
+import { Title } from "../../../components/text/Text";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -161,14 +161,10 @@ const CreateOrderPage = () => {
 
     return <div className={cn("transition-colors duration-600 flex h-full bg-gray-100 gap-5", isDark && 'text-white bg-[#121212]')}>
         <Backdrop
-            sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
         >
-            <div className="w-[250px] p-5 bg-white flex flex-col items-center rounded-lg gap-5">
-                <h1 className="text-gray-600 text-2xl">Saving Order</h1>
-                <CircularProgress sx={{ color: 'red' }} size={60}/>
-                <p className="text-gray-600 text-xl">Please wait...</p>
-            </div>
+            <CircularProgress color="inherit" />
         </Backdrop>
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
