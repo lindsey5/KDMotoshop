@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { RedTextField } from "../../../components/Textfield"
 import { fetchData } from "../../../services/api";
 import { CustomizedSelect } from "../../../components/Select";
@@ -12,11 +12,11 @@ import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import AddProductThumbnail from "../../../components/cards/admin/AddProductThumbnail";
 import ProductImages from "../../../components/images/ProductImages";
-import Card from "../../../components/cards/Card";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
+import Card from "../../../components/cards/Card";
 
 const productInitialState = {
     product_name: '',
@@ -34,12 +34,38 @@ const productInitialState = {
     weight: 0.5,
 }
 
+type CategorySelectProps = {
+    value: string;
+    handleChange: (value : string) => void
+}
+
+const CategorySelect : React.FC<CategorySelectProps> = ({ value, handleChange }) => {
+    const [categories, setCategories] = useState<Menu[]>([]);
+
+    const getCategories = async () => {
+        const response = await fetchData('/api/category');
+        if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
+    }
+
+    useEffect(() =>{
+        getCategories()
+    }, [])
+
+    return (
+        <CustomizedSelect 
+            label="Category" 
+            menu={categories} 
+            value={value}
+            onChange={(e) => handleChange(e.target.value as string)}
+        />
+    )
+}
+
 const ProductPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
     const isDark = useDarkmode();
-    const [categories, setCategories] = useState<Menu[]>([]);
     const [attributeName, setAttributeName] = useState<string>('');
     const [selectedImage, setSelectedImage] = useState<string>('/photo.png');
     const [loading, setLoading] = useState<boolean>(false)
@@ -51,10 +77,6 @@ const ProductPage = () => {
         { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
     ]
 
-    const getCategories = async () => {
-        const response = await fetchData('/api/category');
-        if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
-    }
 
     const getProduct = async (id : string) => {
         const response = await fetchData(`/api/product/${id}`);
@@ -64,7 +86,6 @@ const ProductPage = () => {
 
     useEffect(() => {
         if(id) getProduct(id as string);
-        getCategories();
     }, [])
 
     const handleProductType = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, product_type: event.target.value});
@@ -80,6 +101,8 @@ const ProductPage = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    console.log('Render')
 
     const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -159,6 +182,10 @@ const ProductPage = () => {
         }
     };
 
+    const handleCategoryChange = (newValue : string) => {
+        setProduct({ ...product, category: newValue})
+    }
+
     return <div className={cn("transition-colors duration-600 min-w-[1000px] min-h-full p-5 bg-gray-100 relative", isDark && 'text-white bg-[#121212]')}>
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
@@ -181,12 +208,8 @@ const ProductPage = () => {
                         onChange={(e) => setProduct({ ...product, product_name: e.target.value })}
                         value={product.product_name}
                     />
-                    <CustomizedSelect 
-                        label="Category" 
-                        menu={categories} 
-                        value={product.category}
-                        onChange={(e) => setProduct({ ...product, category: e.target.value as string})}
-                    />
+                    <CategorySelect value={product.category} handleChange={handleCategoryChange}/>
+
                     </div>
                     <RedTextField 
                         label="Description" 

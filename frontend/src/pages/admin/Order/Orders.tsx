@@ -4,7 +4,7 @@ import CustomizedTable from "../../../components/Table";
 import { SearchField } from "../../../components/Textfield";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../../components/DatePicker";
@@ -42,16 +42,19 @@ const Orders = () => {
         setPagination(prev => ({...prev, page: value}))
     };
 
-    const getOrdersAsync = async () => {
+    const getOrdersAsync = useCallback(async () => {
         const startDate = selectedDates?.[0] ? new Date(selectedDates[0].toString()) : '';
         const endDate = selectedDates?.[1] ? new Date(selectedDates[1].toString()) : '';
 
-        const response = await fetchData(`/api/order?page=${pagination.page}&limit=100&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}`);
-        if(response.success) {
-            setPagination(prev => ({...prev, totalPages: response.totalPages }));
+        const response = await fetchData(
+            `/api/order?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}`
+        );
+
+        if (response.success) {
+            setPagination(prev => ({ ...prev, totalPages: response.totalPages }));
             setOrders(response.orders);
         }
-    }
+    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, searchTerm]);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -62,12 +65,12 @@ const Orders = () => {
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
-
     }, [searchTerm]);
 
     useEffect(() => {
         getOrdersAsync();
     }, [selectedDates, selectedStatus, pagination.page, paymentMethod])
+
 
     return <div className={cn("transition-colors duration-600 flex flex-col p-5 bg-gray-100", isDark && 'bg-[#121212]')}>
         <div className="flex justify-between items-center mb-6">

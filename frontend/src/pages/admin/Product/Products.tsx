@@ -31,40 +31,31 @@ const Products = () => {
     const [categories, setCategories] = useState<Category[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [products, setProducts] = useState<Product[]>();
-    const getCategories = async () => {
-        const response = await fetchData('/api/category');
-
-        if(response.success) setCategories(response.categories)
-    }
-
-    const getProducts = async () => {
-        const response = await fetchData(`/api/product?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
-
-        if(response.success) {
-            setPagination(prev => ({
-                ...prev,
-                totalPages: response.totalPages,
-            }))
-            setProducts(response.products)
-        }
-    }
-
-    useEffect(() => {
-        getProducts();
-        getCategories();
-    }, [pagination.page, selectedCategory])
-
-    useEffect(() => {
-        setSelectedCategory('All')
-    }, [pagination.searchTerm])
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            getProducts();
-        }, 300); 
-        
+            setSelectedCategory('All');
+
+            const fetchDataTogether = async () => {
+                const [categoryRes, productRes] = await Promise.all([
+                    fetchData('/api/category'),
+                    fetchData(`/api/product?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=All`)
+                ]);
+
+                if (categoryRes.success) setCategories(categoryRes.categories);
+
+                if (productRes.success) {
+                    setPagination(prev => ({...prev,totalPages: productRes.totalPages,}));
+                    setProducts(productRes.products);
+                }
+            };
+
+            fetchDataTogether();
+        }, 300);
+
         return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm])
+    }, [pagination.searchTerm, pagination.page]);
+
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
