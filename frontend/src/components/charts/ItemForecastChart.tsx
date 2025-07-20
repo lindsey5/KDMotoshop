@@ -9,7 +9,7 @@ import {
   Legend,
   type ScriptableContext,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import { fetchData } from '../../services/api';
 import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
@@ -121,11 +121,10 @@ const ItemForecastChart: React.FC = () => {
     return (
         <Card className=" bg-white mt-10">
             <h2 className='mb-4 font-bold'>Quantities Sold by Product (Next Month)</h2>
-            <Chart 
-                className='w-full'
-                type="bar" 
-                data={chartData}
-                options={options} 
+            <Bar 
+            className='w-full'
+            data={chartData}
+            options={options}
             />
             <CustomizedPagination 
                 count={Math.ceil(data.length / ITEMS_PER_PAGE)} 

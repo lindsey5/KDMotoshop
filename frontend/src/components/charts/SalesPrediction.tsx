@@ -12,7 +12,9 @@ const SalesPredictionChart = () => {
 
     useEffect(() => {
         const getForecastSales = async () => {
-            const response = await fetchData(`${url}predict`)
+            console.log('URL', url)
+            const response = await fetchData(`https://kdmotoshop-api.onrender.com/predict`)
+            console.log('URL', url)
             if(response.success){
                 setForecastSales(response.forecast.map((sales : number) => sales.toFixed(0)))
                 setDateLabels(response.dates)
