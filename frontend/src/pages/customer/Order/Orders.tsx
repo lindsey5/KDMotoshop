@@ -6,7 +6,6 @@ import { fetchData } from "../../../services/api";
 import Card from "../../../components/cards/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/Button";
-import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
 import { Status } from "../../../components/text/Text";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
