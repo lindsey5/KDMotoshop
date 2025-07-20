@@ -14,6 +14,7 @@ import { fetchData } from '../../services/api';
 import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
 import CustomizedPagination from '../Pagination';
+import { url } from '../../constants/url';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, Tooltip, Legend);
 
@@ -31,7 +32,7 @@ const ItemForecastChart: React.FC = () => {
 
     useEffect(() => {
         const getData = async () => {
-            const response = await fetchData('http://127.0.0.1:5000/predict/items');
+            const response = await fetchData(`${url}predict/items`);
 
             if(response.success){
                 setData(response.forecast

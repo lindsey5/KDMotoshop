@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { fetchData } from "../../services/api";
 import AreaChart from "./AreaChart";
 import useDarkmode from "../../hooks/useDarkmode";
+import { url } from "../../constants/url";
 
 const SalesPredictionChart = () => {
     const [forecastSales, setForecastSales] = useState<number[]>([]);
@@ -11,7 +12,7 @@ const SalesPredictionChart = () => {
 
     useEffect(() => {
         const getForecastSales = async () => {
-            const response = await fetchData('http://127.0.0.1:5000/predict')
+            const response = await fetchData(`${url}/predict`)
             if(response.success){
                 setForecastSales(response.forecast.map((sales : number) => sales.toFixed(0)))
                 setDateLabels(response.dates)
