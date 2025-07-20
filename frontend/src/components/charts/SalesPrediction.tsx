@@ -12,7 +12,7 @@ const SalesPredictionChart = () => {
 
     useEffect(() => {
         const getForecastSales = async () => {
-            const response = await fetchData(`${url}/predict`)
+            const response = await fetchData(`${url}predict`)
             if(response.success){
                 setForecastSales(response.forecast.map((sales : number) => sales.toFixed(0)))
                 setDateLabels(response.dates)
