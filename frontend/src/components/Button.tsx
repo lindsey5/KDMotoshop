@@ -70,6 +70,7 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
             <GoogleLogin 
               onSuccess={handleSuccess} 
               onError={handleError} 
+              width={"100%"}
               size="large"
               theme={theme}
             />
