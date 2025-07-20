@@ -41,7 +41,7 @@ const CustomerOrders = () => {
         }
 
         getOrders();
-    }, [selectedStatus])
+    }, [selectedStatus, pagination.page])
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
@@ -72,7 +72,7 @@ const CustomerOrders = () => {
                 <strong className={cn("text-xl", isDark ? 'text-gray-300' : 'text-black')}>Status: {selectedStatus}</strong>
             </div>}
             {orders.map(order => (
-                <Card className="flex flex-col gap-5">
+                <Card key={order._id} className="flex flex-col gap-5">
                     <div className="flex justify-between items-center">
                         <div className="flex flex-wrap gap-3 items-center">
                              <span className={cn("font-bold px-3 py-2 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>{order.order_id}</span>

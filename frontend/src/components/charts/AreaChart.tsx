@@ -50,6 +50,7 @@ const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill 
             ],
         }} 
         options={{
+            responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
