@@ -32,8 +32,8 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
 
     
     return (
-        <div className={cn("flex lg:flex-row flex-col gap-5 py-5 border-b border-gray-300 items-start lg:items-center", isDark && 'border-gray-500')}>
-            <div className="flex flex-1 gap-5 items-center">
+        <div className={cn("flex flex-wrap justify-between gap-5 py-5 border-b border-gray-300 items-start", isDark && 'border-gray-500')}>
+            <div className="flex flex-row-reverse lg:flex-row gap-5 items-center">
                 <Checkbox
                     checked={item.isSelected}
                     onChange={handleCheck}
@@ -45,7 +45,7 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
                         color: isDark ? 'white' : ''
                     }}
                 />
-                <div className="flex flex-1 gap-5">
+                <div className="flex flex-1 gap-5 flex-wrap">
                     <img className="w-25 h-25" src={item?.image || '/photo.png'} alt="" />
                     <div className="flex flex-col gap-5 flex-1">
                         <h1 className="font-bold">{item?.product_name}</h1>
@@ -61,10 +61,8 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col gap-5 justify-between">
-                <strong className="text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
-                <Button sx={{ color: 'red'}} onClick={() => remove(item._id || '')}>Remove</Button>
-            </div>
+            <strong className="text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
+            <Button sx={{ color: 'red'}} onClick={() => remove(item._id || '')}>Remove</Button>
         </div>
     )
 }

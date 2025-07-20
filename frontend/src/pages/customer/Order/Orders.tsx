@@ -15,6 +15,7 @@ import { PaginationState } from "../../../constants/pagination";
 import CustomizedPagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
+import OrderItem from "../../../components/containers/OrderItem";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -80,7 +81,7 @@ const CustomerOrders = () => {
                         </div>
                         <Status status={order.status} isDark={isDark}/>
                     </div>
-                    <OrderItemsContainer orderItems={order.orderItems} />
+                    {order.orderItems?.map(item => <OrderItem item={item}/>)}
                     <div className="flex justify-end">
                         <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Completed' ? 'Rate your order' : 'Track Order'}</RedButton>
                     </div>

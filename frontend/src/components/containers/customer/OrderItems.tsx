@@ -23,23 +23,22 @@ const CustomerOrderItems = ({ order } : { order : Order}) => {
             />
             <h1 className="font-bold text-xl">Items:</h1>
             {order.orderItems?.map(item => (
-                <div key={item._id} className={cn("flex justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
-                    <div className="w-[50%] flex gap-5">
+                <div key={item._id} className={cn("flex flex-wrap gap-5 justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
+                    <div className="flex gap-5">
                         <img className='w-15 h-15' src={item.image || ''} alt="" />
                         <div>
                             <h1 className="font-bold mb-4">{item.product_name}</h1>
                             {item.attributes && Object.entries(item.attributes).map(([key, value]) => (
                                 <p key={value} className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{key}: {value}</p>
                             ))}
+                            <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
                             <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{item.status}</p>
-                            {order.status === 'Completed' && item.status === 'Fulfilled' && (
-                                <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
-                            )}
                         </div>
                     </div>
-                    <h1 className="font-bold">₱{formatNumber(item.price)}</h1>
-                    <h1 className="font-bold">{item.quantity}</h1>
                     <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
+                    {order.status === 'Completed' && item.status === 'Fulfilled' && (
+                        <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
+                    )}
                 </div>
             ))}
         </Card>
