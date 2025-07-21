@@ -45,7 +45,7 @@ const CustomerFooter = () => {
                     <Link href="/" underline="hover" sx={{ color: "white"}}>FAQ's</Link>
                 </div>
             </div>
-            <div className="flex justify-between items-center gap-5 mt-20">
+            <div className="flex flex-wrap justify-between items-center gap-5 mt-20">
                 <div className="sm:hidden">
                     <ThemeToggle />
                 </div>

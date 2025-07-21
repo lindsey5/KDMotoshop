@@ -14,11 +14,11 @@ export const get_activity_logs = async (req : Request, res : Response) => {
         if (startDate && endDate) {
             filter.createdAt = {
                 $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $lte: new Date(new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000))
             };
         } 
         else if (startDate) filter.createdAt = { $gte: new Date(startDate) };
-        else if (endDate)  filter.createdAt = { $lte: new Date(endDate) };
+        else if (endDate)  filter.createdAt = { $lte: new Date(new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000)) };
 
         const [activityLogs, totalActivities] = await Promise.all([
             ActivityLog
@@ -39,6 +39,7 @@ export const get_activity_logs = async (req : Request, res : Response) => {
         });
 
     }catch(err : any){
+        console.log(err)
         res.status(500).json({ success: false, message: err.message || 'Server error'})
     }
 }

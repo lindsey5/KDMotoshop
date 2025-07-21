@@ -73,7 +73,7 @@ const CustomerOrders = () => {
             </div>}
             {orders.map(order => (
                 <Card key={order._id} className="flex flex-col gap-5">
-                    <div className="flex justify-between items-center">
+                    <div className={cn("flex justify-between items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                         <div className="flex flex-wrap gap-3 items-center">
                              <span className={cn("font-bold px-3 py-2 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>{order.order_id}</span>
                              <span className="text-gray-400">Order Date: {formatDateWithWeekday(order.createdAt)}</span>

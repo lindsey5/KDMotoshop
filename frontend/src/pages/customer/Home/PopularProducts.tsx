@@ -12,7 +12,7 @@ const itemVariants = {
         y: 0,
         opacity: 1,
         transition: {
-            duration: 0.6,
+            duration: 0.8,
             y: { stiffness: 1000, velocity: -100 },
         },
     },
@@ -27,10 +27,10 @@ const itemVariants = {
 
 const containerVariants = {
     visible: {
-        transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+        transition: { staggerChildren: 0.2, delayChildren: 0.5 },
     },
     hidden: {
-        transition: { staggerChildren: 0.05, staggerDirection: -1 },
+        transition: { staggerChildren: 0.5, staggerDirection: -1 },
     },
 }
 
@@ -49,7 +49,7 @@ const PopularProductsSection = () => {
     }, []);
 
     return (
-        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-10 pt-30 pb-10 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
+        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-10 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
         <div className="w-full">
             <h1 className="text-4xl md:text-5xl font-bold text-red-600">Best Selling Products</h1>
         </div>
@@ -58,7 +58,7 @@ const PopularProductsSection = () => {
             initial="hidden"
             whileInView="visible"
             variants={containerVariants}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 my-12 md:gap-10 gap-5"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 my-12 md:gap-10 gap-5"
             >
             {products.map((product) => (
             <motion.div

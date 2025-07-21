@@ -26,6 +26,11 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         const review = new Review({...req.body, customer_id: req.user_id});
         await review.save();
 
+        const productReviews = await Review.find({ product_id: product._id });
+        const totalRating = productReviews.reduce((total, review) => total + review.rating, 0);
+        product.rating = productReviews.length > 0 ? Number((totalRating / productReviews.length).toFixed(1)) : 0;
+        await product.save();
+
         orderItem.status = 'Rated';
         await orderItem.save();
         
@@ -42,30 +47,53 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
     }
 }
 
+export const get_item_review = async (req: Request, res: Response) => {
+    try{
+        const review = await Review.findOne({ orderItemId: req.params.id })
+
+        if(!review){
+            res.status(404).json({ success: false, message: 'Review not found' });
+            return;
+        }
+
+        res.status(200).json({ success: true, review });
+
+    }catch(err : any){
+        res.status(500).json({ success: false, message: err.message || 'Server Error'})
+    }
+}
+
 export const get_product_reviews = async (req: Request, res: Response) => {
     try{
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
-        const [reviews, totalReviews] = await Promise.all([
-            Review.find({ product_id: req.params.id})
+        const rating = parseInt(req.query.rating as string) || 0;
+
+        const query: any = { product_id: req.params.id };
+        if (rating > 0) query.rating = rating ;
+
+        const [reviews, totalReviews, overallTotal] = await Promise.all([
+            Review.find(query)
                 .skip(skip)
                 .limit(limit)
                 .populate('customer_id', ['image', 'firstname', 'lastname'])
+                .populate('orderItemId')
                 .sort({ createdAt: -1 }),
-            Review.countDocuments({ product_id: req.params.id}),
+            Review.countDocuments(query),
+            Review.countDocuments({ product_id: req.params.id })
         ]);
-
-        const rating = reviews.length > 0 ? (reviews.reduce((total, review) => review.rating + total, 0) / totalReviews).toFixed(1) : 0
 
         res.status(200).json({ 
             success: true, 
             reviews, 
-            rating, 
             totalPages: Math.ceil(totalReviews / limit),
+            currentPage: page,
+            overallTotal,
             totalReviews,
         });
     }catch(err : any){
+        console.log(err);
         res.status(500).json({ success: false, message: err.message || 'Server Error'})
     }
 }

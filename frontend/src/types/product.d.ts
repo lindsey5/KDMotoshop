@@ -36,6 +36,7 @@ type Product = {
     variants: Variant[];
     attributes: string[];
     createdAt?: Date;
+    rating?: number;
 }
 
 type TopProduct = {
@@ -53,4 +54,5 @@ type Review = {
     customer_id: Customer;
     orderItemId: OrderItem;
     product_id: Product;
+    createdAt: Date;
 }

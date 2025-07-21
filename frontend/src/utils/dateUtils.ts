@@ -33,6 +33,20 @@ export const formatDate = (date: Date | string | null | undefined): string => {
   return `${year}-${month}-${day} ${formattedHours}:${minutes} ${ampm}`;
 };
 
+export const formatToShortDate = (date: Date | string | null | undefined): string => {
+  if (!date) return '';
+
+  const d = typeof date === 'string' ? new Date(date) : date;
+
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Manila' 
+  });
+};
+
+
 export const formatToLongDateFormat = (date: Date | string | null | undefined): string => {
   if (!date) return '';
 

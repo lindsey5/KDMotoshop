@@ -92,13 +92,13 @@ const OrderDetails = () => {
                 </Card>
             </div>
             <div className="w-[350px] flex flex-col gap-5">
-                <Card className="flex flex-col gap-5 w-full ">
+                {<Card className="flex flex-col gap-5 w-full ">
                     <StatusSelect 
                         menu={Statuses}
                         value={order.status}
                         onChange={(e) => setOrder(prev => ({...prev!, status: e.target.value as Order['status']}))}
                     />
-                </Card>
+                </Card>}
                 <Card className="w-full flex flex-col gap-5">
                     <h1 className="font-bold text-xl">Customer</h1>
                     <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>

@@ -1,9 +1,10 @@
-import { TableRow, IconButton } from "@mui/material"
+import { TableRow, IconButton, Tooltip } from "@mui/material"
 import { StyledTableCell, StyledTableRow } from "../Table";
 import { useNavigate } from "react-router-dom"
 import { formatDate } from "../../utils/dateUtils";
 import EditIcon from '@mui/icons-material/Edit';
 import useDarkmode from "../../hooks/useDarkmode";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 export const ProductTableColumns = () => {
   
@@ -14,6 +15,7 @@ export const ProductTableColumns = () => {
             <StyledTableCell align="center">Category</StyledTableCell>
             <StyledTableCell align="center">Product Type</StyledTableCell>
             <StyledTableCell align="center">Created at</StyledTableCell>
+            <StyledTableCell align="center">Rating</StyledTableCell>
             <StyledTableCell align="center">Action</StyledTableCell>
         </TableRow>
     )
@@ -87,10 +89,22 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
+      >{product.rating} / 5</StyledTableCell>
+      <StyledTableCell 
+        className={highLightLowStock(product, isDark)} 
+        align="center"
+        isDark={isDark}
       >
+        <Tooltip title="Edit Product">
         <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
           <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
         </IconButton>
+        </Tooltip>
+        <Tooltip title="View Reviews">
+        <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+          <ThumbUpIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+        </IconButton>
+        </Tooltip>
       </StyledTableCell>
     </StyledTableRow>
     )

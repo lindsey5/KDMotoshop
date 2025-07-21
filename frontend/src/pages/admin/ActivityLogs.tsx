@@ -5,7 +5,7 @@ import { fetchData } from "../../services/api";
 import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
-import { formatDateWithWeekday } from "../../utils/dateUtils";
+import { formatDate, formatDateWithWeekday, formatToShortDate } from "../../utils/dateUtils";
 import { RedButton } from "../../components/Button";
 import { AdminContext } from "../../context/AdminContext";
 import { useNavigate } from "react-router-dom";
@@ -93,9 +93,9 @@ const ActivityLogs = () => {
 
     useEffect(() => {
         const get_activity_logs = async () => {
-            const startDate = selectedDates?.[0] ? new Date(selectedDates[0].toString()) : '';
-             const endDate = selectedDates?.[1] ? new Date(selectedDates[1].toString()) : '';
-            const response = await fetchData(`/api/activity?limit=100&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
+            const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
+            const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
+            const response = await fetchData(`/api/activity?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
             if(response.success){
                 const groupedLogs = response.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
                     const dateKey = formatDateWithWeekday(item.createdAt);

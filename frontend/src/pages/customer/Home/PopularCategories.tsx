@@ -105,7 +105,7 @@ const PopularCategoriesSection = () => {
                 exit="exit"
                 transition={{
                     x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.4 },
+                    opacity: { duration: 0.4, delay: 0.5 },
                 }}
                 className="flex flex-wrap gap-20 justify-center w-full"
             >

@@ -22,3 +22,11 @@ export function normalizeCityName(name: string): string {
   // Otherwise, return as-is
   return name;
 }
+
+export function maskMiddle(str : string) : string{
+  if (str.length <= 2) return str;
+  const firstChar = str[0];
+  const lastChar = str[str.length - 1];
+  const middleMask = '*'.repeat(str.length - 2);
+  return firstChar + middleMask + lastChar;
+}

@@ -297,7 +297,7 @@ const ProductPage = () => {
                     )}
                 </Card>
 
-                {product.product_type === 'Variable' && <Card className="mt-8 bg-white p-5 rounded-lg shadow-md border-1 border-gray-300">
+                {product.product_type === 'Variable' && <Card className="mt-8 p-5 rounded-lg shadow-md border-1 border-gray-300">
                     <div className="flex items-center justify-between mb-6">
                          <h1 className="text-lg font-bold">Product Variations</h1>
                          <RedButton
@@ -324,7 +324,7 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </Card>}
-                <Card className="flex justify-end gap-5 bg-white border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
+                <Card className="flex justify-end gap-5 border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
                     <Button 
                         variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
                         onClick={() => navigate(-1)}

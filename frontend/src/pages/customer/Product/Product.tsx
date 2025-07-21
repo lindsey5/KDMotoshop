@@ -14,6 +14,7 @@ import { successAlert } from "../../../utils/swal";
 import { CartContext } from "../../../context/CartContext";
 import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
 import ProductThumbnail from "../../../components/images/ProductThumbnail";
+import ProductReviews from "./ProductReviews";
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -24,7 +25,6 @@ const CustomerProduct = () => {
     const { cart, setCart } = useContext(CartContext);
     const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
-    const [rating, setRating] = useState<number>(0);
     const [totalReviews, setTotalReviews] = useState<number>(0);
     
     const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -34,22 +34,19 @@ const CustomerProduct = () => {
     ]
 
     useEffect(() => {
-        const getProduct = async () => {
-            const response = await fetchData(`/api/product/${id}/reserved`)
-            if(response.success) setProduct(response.product)
+        const fetchDataAsync = async () => {
+            const [productResponse, reviewsResponse] = await Promise.all([
+                fetchData(`/api/product/${id}/reserved`),   
+                fetchData(`/api/review/product/${id}`)
+            ]);
+
+            console.log(productResponse)
+
+            productResponse.success ?  setProduct(productResponse.product) : navigate('/products');
+            if (reviewsResponse.success) setTotalReviews(reviewsResponse.totalReviews);
         }
 
-        const get_reviews = async () => {
-            const response = await fetchData(`/api/review/product/${id}`);
-            if(response.success){
-                console.log(response)
-                setRating(response.rating)
-                setTotalReviews(response.totalReviews)
-            }
-        }
-
-        getProduct();
-        get_reviews();
+        fetchDataAsync();
     }, [])
 
     const filteredVariants = useMemo(() => {
@@ -129,8 +126,8 @@ const CustomerProduct = () => {
     return (
          <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
-            <div className="flex flex-col md:flex-row gap-10 py-10">
-                <div className="flex flex-col gap-5 md:items-center">
+            <div className="flex flex-col lg:flex-row gap-10 py-10">
+                <div className="flex gap-5 items-start flex-col lg:items-center">
                     <ProductThumbnail 
                         product={product} 
                         className={cn("w-[200px] h-[200px] lg:w-[350px] lg:h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
@@ -150,10 +147,13 @@ const CustomerProduct = () => {
                 </div>
                 <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] border-gray-500 text-white')}>
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
-                    {rating !== 0 ? <div className="flex gap-3 items-center">
-                        <Rating sx={{ fontSize: 35 }} name="read-only" value={rating} readOnly />
+                    {product.rating !== 0 ? <div>
+                        <div className="flex gap-3 items-center">
+                            <Rating sx={{ fontSize: 35 }} name="read-only" value={product.rating} readOnly />
+                            <p className="text-xl">{product.rating} / 5</p>
+                        </div>
                         <p className="text-xl">({totalReviews} Reviews)</p>
-                    </div> : <p className="text-white">No Reviews</p>}
+                    </div> : <p className={cn("text-gray-500", isDark && 'text-white')}>No Reviews</p>}
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 
                             <h1 className="font-bold text-3xl">₱{formatNumber((
@@ -164,10 +164,7 @@ const CustomerProduct = () => {
                         : <h1 className="text-red-500">Not Available</h1>)
                     : <h1 className="font-bold text-2xl">₱{formatNumber(product?.price ?? 0)}</h1>}
 
-                    {(
-                    (product?.product_type === 'Variable' && (filteredVariants[0]?.stock ?? 0) < 1 && filteredVariants.length > 0) ||
-                    (product?.product_type === 'Single' && (product?.stock ?? 0) < 1)
-                    ) && <h1 className="text-red-500">Out of stock</h1>}
+                    <p className="text-lg">Stock: {product?.product_type === 'Variable' ? filteredVariants[0] ? filteredVariants[0]?.stock : 'none' : product?.stock}</p>
 
                     <div className="flex flex-col gap-4 mb-4">
                         <Attributes 
@@ -200,6 +197,7 @@ const CustomerProduct = () => {
                     </div>
                 </div>
             </div>
+            <ProductReviews product_id={product._id ?? ''} />
          </div>
     )
 }

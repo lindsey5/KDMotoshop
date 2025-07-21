@@ -43,8 +43,8 @@ const Orders = () => {
     };
 
     const getOrdersAsync = useCallback(async () => {
-        const startDate = selectedDates?.[0] ? new Date(selectedDates[0].toString()) : '';
-        const endDate = selectedDates?.[1] ? new Date(selectedDates[1].toString()) : '';
+        const startDate = selectedDates?.[0] ? selectedDates[0].toString() : '';
+        const endDate = selectedDates?.[1] ? selectedDates[1].toString() : '';
 
         const response = await fetchData(
             `/api/order?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}`

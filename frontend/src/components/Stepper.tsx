@@ -15,7 +15,6 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
     if(!order) return null
 
     const status = order.status;
-    // happy‑path stages
     const linearSteps = [
         { status: 'Pending', icon: <PendingActionsOutlinedIcon fontSize="large" />},
         { status: 'Accepted', icon: <CheckCircleIcon fontSize="large" />},
@@ -27,18 +26,15 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
         status: 'Rated', icon: <GradeIcon fontSize="large" />
     });
 
-    // statuses that short‑circuit the flow
     const terminalAlt = {
         Cancelled: { color: "bg-red-600", text: "text-red-600" },
         Rejected: { color: "bg-red-600", text: "text-red-600" },
         Refunded: { color: "bg-amber-500", text: "text-amber-500" },
     };
 
-    // merge into a single list so .indexOf() still works
     const allStatuses = [...linearSteps.map(step => step.status), ...Object.keys(terminalAlt)];
     const currentStep = allStatuses.indexOf(status);
 
-    // little helpers for colour decisions
     const isAltTerminal = status in terminalAlt;
     const altStyles = isAltTerminal
         ? terminalAlt[status as keyof typeof terminalAlt]

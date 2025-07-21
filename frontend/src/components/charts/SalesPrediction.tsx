@@ -23,7 +23,7 @@ const SalesPredictionChart = () => {
     }, [])
 
     return (
-        <Card className="h-[450px] bg-white flex-3">
+        <Card className="h-[450px] flex-3">
             <h1 className="font-bold text-xl">Expected Sales Trend (This Month)</h1>
             <AreaChart 
                 data={forecastSales}

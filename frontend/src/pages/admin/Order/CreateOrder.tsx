@@ -96,7 +96,6 @@ const CreateOrderPage = () => {
     };
 
     const addOrder = (product : Product) => {
-        console.log(product)
         if(product.product_type === 'Variable'){
             setSelectProduct(product)
         }else{

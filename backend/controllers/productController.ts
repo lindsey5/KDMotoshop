@@ -8,6 +8,7 @@ import OrderItem from "../models/OrderItem";
 import { Types } from "mongoose";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
+import Review from "../models/Review";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -55,6 +56,7 @@ export const get_products = async (req: Request, res: Response) => {
 
   try {
     let filter: any = {};
+    let sortOption: any = { createdAt: -1 };
 
     if (searchTerm) {
       filter.$or = [
@@ -63,6 +65,14 @@ export const get_products = async (req: Request, res: Response) => {
         { category: { $regex: searchTerm, $options: "i" } },
         { "variants.sku": { $regex: searchTerm, $options: "i" } },
       ];
+    }
+
+    if (req.query.sort) {
+      const sort = req.query.sort as string;
+      if (sort === "ratingDesc") sortOption = { rating: -1 };
+      else if (sort === "ratingAsc") sortOption = { rating: 1 };
+      else if (sort === "newest") sortOption = { createdAt: -1 };
+      else if (sort === "oldest") sortOption = { createdAt: 1 };
     }
 
     if (min && max) {
@@ -85,6 +95,7 @@ export const get_products = async (req: Request, res: Response) => {
       Product.find(filter)
         .populate("added_by")
         .skip(skip)
+        .sort(sortOption)
         .limit(limit),
       Product.countDocuments(filter),
     ]);
@@ -164,6 +175,7 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
       totalProducts: total,
     });
   } catch (err: any) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -180,6 +192,7 @@ export const get_product_by_id = async (req: Request, res: Response) => {
     res.status(200).json({ success: true, product })
 
   } catch (err: any) {
+    console.log(err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
@@ -314,6 +327,7 @@ export const get_top_products = async (req: Request, res: Response) => {
         _id: product._id,
         product_name: product.product_name,
         image: product.thumbnail.imageUrl,
+        rating: product.rating,
         totalQuantity: item.totalQuantity,
         stock: product.product_type === 'Variable' ? product.variants.reduce((total, v) => total + (v.stock ?? 0), 0) : product.stock,
         price: product.product_type === 'Variable' ? product.variants?.sort((a, b) => (a.price || 0) - (b.price || 0))[0].price : product.price,

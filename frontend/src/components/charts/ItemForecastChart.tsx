@@ -119,7 +119,7 @@ const ItemForecastChart: React.FC = () => {
     };
 
     return (
-        <Card className=" bg-white mt-10">
+        <Card className="mt-10">
             <h2 className='mb-4 font-bold'>Quantities Sold by Product (Next Month)</h2>
             <Bar 
             className='w-full'

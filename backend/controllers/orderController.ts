@@ -83,11 +83,11 @@ export const get_orders = async (req: Request, res: Response) => {
         if (startDate && endDate) {
             filter.createdAt = {
                 $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $lte: new Date(new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000))
             };
         } 
         else if (startDate) filter.createdAt = { $gte: new Date(startDate) };
-        else if (endDate)  filter.createdAt = { $lte: new Date(endDate) };
+        else if (endDate)  filter.createdAt = { $lte: new Date(new Date(new Date(endDate).getTime() + 24 * 60 * 60 * 1000)) };
 
         if(payment_method && payment_method !== 'All'){
             filter.payment_method = payment_method

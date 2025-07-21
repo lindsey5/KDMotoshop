@@ -45,7 +45,7 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
                         color: isDark ? 'white' : ''
                     }}
                 />
-                <div className="flex flex-1 gap-5 flex-wrap">
+                <div className="flex gap-5 flex-wrap">
                     <img className="w-25 h-25" src={item?.image || '/photo.png'} alt="" />
                     <div className="flex flex-col gap-5 flex-1">
                         <h1 className="font-bold">{item?.product_name}</h1>
@@ -61,8 +61,10 @@ const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) 
                     </div>
                 </div>
             </div>
-            <strong className="text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
-            <Button sx={{ color: 'red'}} onClick={() => remove(item._id || '')}>Remove</Button>
+            <div className="flex flex-1 items-end justify-between md:flex-col gap-2">
+                <strong className="text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
+                <Button sx={{ color: 'red'}} onClick={() => remove(item._id || '')}>Remove</Button>
+            </div>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
@@ -17,7 +17,12 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Products', href: '/products'}
 ]
 
-const options = ['Rating high to low', 'Rating low to high', 'Price low to high', 'Price high to low']
+const options = [
+    { label: 'Rating high to low', value: 'ratingDesc' },
+    { label: 'Rating low to high', value: 'ratingAsc' },
+    { label: 'Newest', value: 'newest' },
+    { label: 'Oldest', value: 'oldest' }
+];
 
 const CustomerProducts = () => {
     const navigate = useNavigate();
@@ -26,7 +31,7 @@ const CustomerProducts = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>(category || 'All');
-    const [selectedSort, setSelectedSort] = useState<string>(options[0]);
+    const [selectedSort, setSelectedSort] = useState<string>(options[0].value);
     const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
     const isDark = useDarkmode();
     const [pagination, setPagination] = useState<Pagination>({
@@ -61,7 +66,7 @@ const CustomerProducts = () => {
     }
 
     const getAllProducts = async () => {
-        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published`);
+        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
         
         if(response.success) {
             setPagination(prev => ({
@@ -87,14 +92,14 @@ const CustomerProducts = () => {
         }, 300); 
 
         return () => clearTimeout(delayDebounce);
-    }, [pagination.page, selectedCategory])
+    }, [pagination.page, selectedCategory, selectedSort])
 
     const handlePage = (_: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value }))
     };
 
     const filterProducts = async () => {
-        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published`);
+        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
         
         if(response.success) {
             setPagination(prev => ({
@@ -116,7 +121,7 @@ const CustomerProducts = () => {
 
     return (
         <div className="flex flex-col md:flex-row pt-20">
-            <div className={cn("transition-colors duration-600 relative flex-1 p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
+            <div className={cn("transition-colors duration-600 relative flex-1 p-3 lg:p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex flex-wrap gap-5 justify-between items-center mt-4">
                     <h1 className="text-4xl text-red-500 font-bold">Products</h1>
@@ -130,7 +135,7 @@ const CustomerProducts = () => {
                             onChange={(e) => setSelectedCategory(e.target.value as string)}
                         />
                         <CustomizedSelect 
-                            menu={options.map(option => ({ label: option, value: option}))}
+                            menu={options.map(option => ({ label: option.label, value: option.value }))}
                             value={selectedSort}
                             onChange={(e) => setSelectedSort(e.target.value as string)}
                         />
@@ -151,7 +156,7 @@ const CustomerProducts = () => {
                 )}
             </div>
             
-            <aside className={cn("hidden md:flex transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
+            <aside className={cn("hidden xl:flex transition-colors duration-600 px-5 py-10 w-[330px] border-l border-gray-300 flex-col gap-10", isDark && 'bg-[#121212] border-gray-600')}>
                 <div className="flex flex-col gap-6 px-5">
                     <h1 className={cn("mb-6 font-bold text-xl", isDark && 'text-white')}>Filter by Price</h1>
                     <Slider

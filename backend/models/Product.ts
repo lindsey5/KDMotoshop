@@ -27,6 +27,7 @@ interface IProduct extends Document {
   thumbnail: UploadedImage;
   variants: Variant[]; 
   attributes: string[];
+  rating: Number;
 }
 
 const ProductSchema: Schema<IProduct> = new Schema(
@@ -67,7 +68,8 @@ const ProductSchema: Schema<IProduct> = new Schema(
             }
         ],
     },
-    attributes: { type: [String] }
+    attributes: { type: [String] },
+    rating: { type: Number, default: 0 }
   },
   { timestamps: true }
 );
