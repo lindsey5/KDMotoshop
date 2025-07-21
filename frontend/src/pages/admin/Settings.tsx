@@ -48,6 +48,7 @@ const Settings = () => {
             setLoading(true)
             const response = await updateData('/api/admin', updatedAdmin)
             if(response.success) window.location.reload()
+            else errorAlert('Error', response.message, isDark)
             setLoading(false)
         }
     }
