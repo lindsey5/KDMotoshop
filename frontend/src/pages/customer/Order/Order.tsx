@@ -84,7 +84,7 @@ const CustomerOrderDetails = () => {
             <div className="flex items-start flex-wrap p-5 gap-5">
                 <div className="flex flex-col gap-5 flex-2">
                     <div className="flex lg:hidden ">
-                        <div className={cn("font-bold px-3 py-1 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>
+                        <div className={cn("font-bold px-3 py-1 rounded-full", isDark && 'bg-[#313131] text-white')}>
                             <Status status={order.status} isDark={isDark} />
                         </div>
                     </div>
