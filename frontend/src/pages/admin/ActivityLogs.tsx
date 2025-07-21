@@ -5,7 +5,7 @@ import { fetchData } from "../../services/api";
 import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
-import { formatDate, formatDateWithWeekday, formatToShortDate } from "../../utils/dateUtils";
+import { formatDateWithWeekday } from "../../utils/dateUtils";
 import { RedButton } from "../../components/Button";
 import { AdminContext } from "../../context/AdminContext";
 import { useNavigate } from "react-router-dom";

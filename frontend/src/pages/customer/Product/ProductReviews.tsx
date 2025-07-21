@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { fetchData } from "../../../services/api";
 import { cn, maskMiddle } from "../../../utils/utils";
-import { Title } from "../../../components/text/Text";
 import { Rating } from "@mui/material";
 import Card from "../../../components/cards/Card";
 import { formatDate } from "../../../utils/dateUtils";
