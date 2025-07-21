@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import useDarkmode from "../../../hooks/useDarkmode"
-import { fetchData } from "../../../services/api";
-import { cn, maskMiddle } from "../../../utils/utils";
+import useDarkmode from "../hooks/useDarkmode"
+import { fetchData } from "../services/api";
+import { cn, maskMiddle } from "../utils/utils";
 import { Rating } from "@mui/material";
-import Card from "../../../components/cards/Card";
-import { formatDate } from "../../../utils/dateUtils";
-import CustomizedPagination from "../../../components/Pagination";
-import { CustomizedChip } from "../../../components/Chip";
+import Card from "../components/cards/Card";
+import { formatDate } from "../utils/dateUtils";
+import CustomizedPagination from "../components/Pagination";
+import { CustomizedChip } from "../components/Chip";
 
 const ProductReviews = ({ product_id } : { product_id : string }) => {  
     const isDark = useDarkmode();

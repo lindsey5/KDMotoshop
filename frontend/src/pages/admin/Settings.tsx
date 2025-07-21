@@ -3,7 +3,7 @@ import { Title } from "../../components/text/Text"
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import UserAvatar from "../../components/images/UserAvatar"
-import { useContext, useState} from "react"
+import React, { useContext, useState} from "react"
 import { AdminContext } from "../../context/AdminContext"
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { Backdrop, Button, CircularProgress } from "@mui/material"
@@ -14,6 +14,7 @@ import { RedButton } from "../../components/Button"
 import { updateData } from "../../services/api"
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
 import HistoryIcon from '@mui/icons-material/History';
+import PageContainer from "../../components/containers/admin/PageContainer"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -41,19 +42,9 @@ const Settings = () => {
         setUpdatedAdmin(prev => ({...prev!, [field]: value}))
     }
 
-    const requiredFields = ['firstname', 'lastname', 'email']
-
-    const handleSave = async() => {
+    const handleSave = async(e : React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         if(await confirmDialog('Are you sure you want to save changes?', 'Your updated profile information will be saved.', isDark)){
-            const isFieldsFilled = requiredFields.every(field => {
-                const value = updatedAdmin?.[field as keyof typeof updatedAdmin];
-                return value !== undefined && value !== null && String(value).trim() !== '';
-            });
-            if (!isFieldsFilled) {
-                errorAlert('Missing Fields', 'Please complete all required fields before saving.');
-                return;
-            }
-
             setLoading(true)
             const response = await updateData('/api/admin', updatedAdmin)
             if(response.success) window.location.reload()
@@ -62,7 +53,8 @@ const Settings = () => {
     }
 
     return (
-        <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>
+        <form onSubmit={handleSave}>
+        <PageContainer className="flex flex-col h-full">
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
                 open={loading}
@@ -102,17 +94,21 @@ const Settings = () => {
                 <RedTextField 
                     label="Firstname" 
                     value={updatedAdmin?.firstname}
+                    required
                     onChange={(e) => handleChange('firstname', e.target.value) }
                 />
                 <RedTextField 
                     label="Lastname" 
                     value={updatedAdmin?.lastname}
+                    required
                     onChange={(e) => handleChange('lastname', e.target.value) }
                 />
 
                 <RedTextField 
                     label="Email" 
                     value={updatedAdmin?.email}
+                    type="email"
+                    required
                     onChange={(e) => handleChange('email', e.target.value) }
                 />
                 <PhoneInput
@@ -132,9 +128,10 @@ const Settings = () => {
                 />
             </div>
             <div className="flex justify-between">
-                <RedButton onClick={handleSave}>Save Changes</RedButton>
+                <RedButton type="submit">Save Changes</RedButton>
             </div>
-        </div>
+        </PageContainer>
+        </form>
     )
 }
 

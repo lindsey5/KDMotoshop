@@ -12,11 +12,11 @@ import { ProductTableColumns, ProductTableRow } from "../../../components/tables
 import Card from "../../../components/cards/Card"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
-import { PaginationState } from "../../../constants/pagination"
 import { RedButton } from "../../../components/Button"
 import { useNavigate } from "react-router-dom"
 import { Title } from "../../../components/text/Text"
 import PageContainer from "../../../components/containers/admin/PageContainer"
+import usePagination from "../../../hooks/usePagination"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -27,7 +27,7 @@ const Products = () => {
     const isDark = useDarkmode();
     const navigate = useNavigate();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
-    const [pagination, setPagination] = useState<Pagination>(PaginationState);
+    const { pagination, setPagination } = usePagination();
     const [categories, setCategories] = useState<Category[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [products, setProducts] = useState<Product[]>();
@@ -71,9 +71,9 @@ const Products = () => {
     }
 
     return( 
-        <PageContainer className="flex flex-col">
+        <PageContainer className="w-full flex flex-col">
             <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
-            <div className="flex items-center mb-6 justify-between">
+            <div className="flex items-start mb-6 justify-between gap-5 flex-wrap">
                 <div>
                     <Title className="mb-4">Products</Title>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
@@ -107,9 +107,9 @@ const Products = () => {
                 )}
             </div>
             <Card className="h-screen flex flex-col mt-5">
-                <div className="w-full mb-6 flex items-center justify-between">
+                <div className="w-full mb-6 flex items-center justify-between gap-5">
                    <SearchField 
-                        sx={{ width: '400px'}}
+                        sx={{ width: '100%', maxWidth: '350px' }}
                         onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
                         placeholder="Search by Product name, SKU, Category..."
                     />

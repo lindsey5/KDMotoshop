@@ -44,7 +44,7 @@ const OrderDetails = () => {
     }, [id])
 
     const updateOrder = async () => {
-        if(await confirmDialog('Save update?', '', isDark)){
+        if(await confirmDialog('Save Changes?', '', isDark)){
             const response = await updateData(`/api/order/${id}`, order);
             if(response.success){
                 window.location.reload();
@@ -72,7 +72,7 @@ const OrderDetails = () => {
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
         <OrderStatusStepper order={order}/>
-        <div className="flex items-start p-5 gap-5">
+        <div className="flex flex-wrap items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
                 <OrderItemsContainer orderItems={order.orderItems}/>
                 <Card>
@@ -88,11 +88,11 @@ const OrderDetails = () => {
                         <h1 className="font-bold text-xl">₱{formatNumber(order.total)}</h1>
                     </div>
                 </Card>
-                <Card className="flex justify-end ">
+                <Card className="justify-end hidden lg:flex">
                     <RedButton onClick={updateOrder}>Save</RedButton>
                 </Card>
             </div>
-            <div className="w-[350px] flex flex-col gap-5">
+            <div className="w-full lg:w-[350px] flex flex-col gap-5">
                 {<Card className="flex flex-col gap-5 w-full ">
                     <StatusSelect 
                         menu={Statuses}
@@ -134,6 +134,9 @@ const OrderDetails = () => {
                         <p>{order?.createdBy?.firstname} {order?.createdBy?.lastname}</p>
                     </div>
                 </Card>}
+                <Card className="flex justify-end lg:hidden">
+                    <RedButton onClick={updateOrder}>Save</RedButton>
+                </Card>
             </div>
         </div>
     </PageContainer>

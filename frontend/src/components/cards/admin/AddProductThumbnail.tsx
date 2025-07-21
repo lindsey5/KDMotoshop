@@ -12,7 +12,7 @@ const AddProductThumbnail = ({ product, handleThumbnail } : AddProductThumbnailP
         <Card>
             <strong>Product Thumbnail</strong>
             <div className="flex flex-col items-center gap-5 mt-4"> 
-                <ProductThumbnail product={product} className="w-[90%] bg-gray-100 h-[150px] lg:h-[230px]"/>
+                <ProductThumbnail product={product} className="w-[90%] bg-gray-100 h-[300px] xl:h-[250px]"/>
                 <input
                     type="file"
                     accept="image/*"

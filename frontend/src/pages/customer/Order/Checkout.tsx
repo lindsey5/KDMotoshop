@@ -230,7 +230,7 @@ const CheckoutPage = () => {
                 </Card>
                 <PaymentSummaryCard shipping_fee={shipping_fee} subtotal={subtotal} total={total}/>
             </div>
-            <Card className="pt-5 py-10 px-10 flex flex-1 flex-col gap-5">
+            <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
                 <h1 className="font-bold text-lg">Delivery</h1>
                 <RadioGroup
                     className="flex flex-col gap-5"

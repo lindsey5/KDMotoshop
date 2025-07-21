@@ -78,8 +78,16 @@ export const NotificationTableRow = ({ notification } : { notification : Notific
                 </div>
             </div>
             </NotificationCell>
-            <NotificationCell isDark={isDark} isViewed={notification.isViewed}>{notification.content}</NotificationCell>
-            <NotificationCell isDark={isDark} isViewed={notification.isViewed}>{formatDate(notification.createdAt)}</NotificationCell>
+            <NotificationCell isDark={isDark} isViewed={notification.isViewed}>
+                <div className="min-w-[200px]">
+                    {notification.content}
+                </div>
+            </NotificationCell>
+            <NotificationCell isDark={isDark} isViewed={notification.isViewed}>
+                <div className="min-w-[150px]">
+                    {formatDate(notification.createdAt)}
+                </div>
+            </NotificationCell>
             <NotificationCell isDark={isDark} isViewed={notification.isViewed}>
                 {!notification.isViewed && <div className="flex">
                     <div className="p-[5px] bg-red-600 rounded-full" />

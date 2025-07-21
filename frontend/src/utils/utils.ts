@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function isStrongPassword(password : string) : boolean {
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return strongRegex.test(password);
+  };
+
 export function formatNumber(number : number){
   return number.toLocaleString('en-US', {
     minimumFractionDigits: 2,

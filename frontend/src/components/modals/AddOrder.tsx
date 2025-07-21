@@ -1,5 +1,5 @@
 import { Modal } from "@mui/material";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { RedButton } from "../Button";
 import { successAlert } from "../../utils/swal";
 import { cn, formatNumber } from "../../utils/utils";
@@ -133,4 +133,4 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
     </Modal>
 }
 
-export default AddOrderModal
+export default memo(AddOrderModal)

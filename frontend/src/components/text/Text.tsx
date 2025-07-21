@@ -25,7 +25,7 @@ export const ExpandableText = ({ text = "", limit = 150 }) => {
   );
 };
 
-export const Status: React.FC<{ status: string, isDark: boolean}> = ({ status, isDark }) => {
+export const Status = ({ status, isDark } : { status: string, isDark: boolean}) => {
   const { bg, icon } = statusColorMap[status] || {
     bg: 'bg-gray-200',
     icon: '#9ca3af',

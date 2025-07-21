@@ -12,6 +12,7 @@ import { ThemeToggle } from '../../Toggle';
 import { useContext } from 'react';
 import { AdminNotificationContext } from '../../../context/AdminNotificationContext';
 import HistoryIcon from '@mui/icons-material/History';
+import { AdminContext } from '../../../context/AdminContext';
 
 const signout = async () => {
   localStorage.removeItem('token');
@@ -33,6 +34,7 @@ const NotificationLink = () => {
 }
 
 export const AdminSidebar = () => {
+  const { admin } = useContext(AdminContext);
 
   return (
     <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#1e1e1e] border-r border-gray-600">
@@ -58,18 +60,18 @@ export const AdminSidebar = () => {
           icon={<PersonIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/customers"
         />
-        <SidebarLink 
+        {admin?.role === 'Super Admin' && <SidebarLink 
           label="Admins" 
           icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/admins"
-        />
+        />}
         <Divider sx={{ backgroundColor: '#9CA3AF' }}/>
         <NotificationLink />
-        <SidebarLink 
+        {admin?.role === 'Super Admin' && <SidebarLink 
           label="Activity Logs" 
           icon={<HistoryIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/activities"
-        />
+        />}
         <SidebarLink 
           label="Settings" 
           icon={<SettingsIcon sx={{ width: 25, height: 25 }} />} 

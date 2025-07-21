@@ -2,6 +2,7 @@ import Category from "../models/Category";
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import OrderItem from "../models/OrderItem";
+import { create_activity_log } from "../services/activityLogServices";
 
 export const create_category = async(req: AuthenticatedRequest, res: Response) => {
     try{
@@ -22,6 +23,11 @@ export const create_category = async(req: AuthenticatedRequest, res: Response) =
         const newCategory = new Category({category_name, added_by: req.user_id});
 
         await newCategory.save();
+
+        await create_activity_log({
+          admin_id: req.user_id ?? '',
+          description: `created new category - ${category_name}`
+         });
 
         res.status(201).json({ success: true, newCategory });
 
@@ -51,6 +57,11 @@ export const delete_category = async (req: AuthenticatedRequest, res: Response) 
         }
 
         await Category.findByIdAndDelete(req.params.id);
+
+        await create_activity_log({
+          admin_id: req.user_id ?? '',
+          description: `deleted category - ${category.category_name}`
+        });
 
         res.status(200).json({ success: true, message: 'Category deleted successfully' });
 

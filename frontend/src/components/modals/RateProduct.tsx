@@ -7,13 +7,12 @@ import GradeIcon from '@mui/icons-material/Grade';
 import useDarkmode from "../../hooks/useDarkmode";
 import { RedButton } from "../Button";
 import { postData } from "../../services/api";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 interface RateProductModalProps extends ModalProps {
     orderItemId: string;
     product_id: string;
 }
-
 
 const RateProductModal : React.FC<RateProductModalProps> = ({ open, close, orderItemId, product_id}) => {
     const isDark = useDarkmode();
@@ -61,4 +60,4 @@ const RateProductModal : React.FC<RateProductModalProps> = ({ open, close, order
     )
 }
 
-export default RateProductModal
+export default memo(RateProductModal)

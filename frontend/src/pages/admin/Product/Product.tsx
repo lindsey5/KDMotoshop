@@ -103,8 +103,6 @@ const ProductPage = () => {
         }
     };
 
-    console.log('Render')
-
     const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -198,8 +196,8 @@ const ProductPage = () => {
             <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
-        <div className="flex flex-wrap items-start gap-10 mt-6">
-            <div className="flex-1">
+        <div className="flex xl:flex-row flex-col items-start gap-10 mt-6">
+            <div className="w-full xl:flex-1">
                 <Card className="flex flex-col gap-5">
                     <h1 className="text-lg font-bold">Basic Information</h1>
                     <div className="grid grid-cols-2 gap-10">
@@ -325,7 +323,7 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </Card>}
-                <Card className="flex justify-end gap-5 border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
+                <Card className="hidden xl:flex justify-end gap-5 border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
                     <Button 
                         variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
                         onClick={() => navigate(-1)}
@@ -334,7 +332,7 @@ const ProductPage = () => {
                 </Card>
             </div>
             
-            <div className="w-[30%] max-w-[350px] flex flex-col gap-6">
+            <div className="w-full xl:w-[30%] xl:max-w-[350px] flex flex-col gap-6">
                 <AddProductThumbnail 
                     product={product}
                     handleThumbnail={handleThumbnail}
@@ -356,6 +354,13 @@ const ProductPage = () => {
                         <RedRadio label="Published" value="Published" />
                         <RedRadio label="Hidden" value="Hidden" />
                     </RadioGroup>
+                </Card>
+                <Card className="flex xl:hidden justify-end gap-5 border-1 border-gray-300 p-5 rounded-lg shadow-lg mt-8">
+                    <Button 
+                        variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
+                        onClick={() => navigate(-1)}
+                    >Cancel</Button>
+                    <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
                 </Card>
             </div>
         </div>

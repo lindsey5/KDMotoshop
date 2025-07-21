@@ -5,6 +5,10 @@
   --color-secondary: #1e1e1e;
 }
 
+body{
+  padding: 0;
+}
+
 .notailwind * {
   all: revert;
 }

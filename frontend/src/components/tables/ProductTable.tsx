@@ -44,7 +44,7 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         className={highLightLowStock(product, isDark)}
         isDark={isDark}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-[200px]">
           <img 
             className="bg-gray-100 w-12 h-12 object-cover rounded"
             src={

@@ -8,7 +8,7 @@ import Card from "../../components/cards/Card";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
 import { RedButton } from "../../components/Button";
 import { AdminContext } from "../../context/AdminContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import CustomizedPagination from "../../components/Pagination";
 import type { DateRange } from "@mui/x-date-pickers-pro";
@@ -16,6 +16,8 @@ import type { Dayjs } from "dayjs";
 import { CustomDateRangePicker } from "../../components/DatePicker";
 import UserAvatar from "../../components/images/UserAvatar";
 import PageContainer from "../../components/containers/admin/PageContainer";
+import usePagination from "../../hooks/usePagination";
+import { CircularProgress } from "@mui/material";
 
 const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
     const isDark = useDarkmode();
@@ -35,14 +37,18 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
         }
     }
 
+
+
     return (
         <div className={cn("flex p-5 border-b border-gray-300 justify-between items-center", isDark && 'border-gray-500')}>
             <div className="flex gap-5 items-center">
                 <UserAvatar image={activityLog.admin_id.image} sx={{ width: 60, height: 60}}/>
                 <div>
-                    <div className="flex items-center gap-2">
-                        <span className="font-bold">{admin?._id === activityLog.admin_id._id ? 'You' : `${activityLog.admin_id.firstname} ${activityLog.admin_id.lastname}`}</span>
-                        {activityLog.description}
+                    <div className="flex flex-wrap items-center gap-2">
+                        <p>
+                            <span className="font-bold mr-1">{admin?._id === activityLog.admin_id._id ? 'You' : `${activityLog.admin_id.firstname} ${activityLog.admin_id.lastname}`}</span>
+                            {activityLog.description}
+                        </p>
                         {activityLog.order_id?._id && activityLog.prev_value && activityLog.new_value && (
                         <div className={cn("flex items-center gap-3 bg-gray-200 px-3 py-1 rounded-full", isDark && 'bg-gray-600')}>
                             {activityLog.prev_value}
@@ -53,7 +59,7 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
                     <p className="mt-2">{time}</p>
                 </div>
             </div>
-            <RedButton onClick={handleClick}>View</RedButton>
+           {(activityLog.order_id || activityLog.product_id) && <RedButton onClick={handleClick}>View</RedButton>}
         </div>
     )
 }
@@ -81,11 +87,9 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const ActivityLogs = () => {
     const [activityLogs, setActivityLogs] = useState<GroupedActivityLogs>({})
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
-    const [pagination, setPagination] = useState<Pagination>({
-        page: 1,
-        searchTerm: '',
-        totalPages: 1,
-    });
+    const { pagination, setPagination } = usePagination();
+    const { admin } = useContext(AdminContext);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
@@ -93,6 +97,7 @@ const ActivityLogs = () => {
 
     useEffect(() => {
         const get_activity_logs = async () => {
+            setLoading(true);
             const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
             const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
             const response = await fetchData(`/api/activity?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
@@ -108,10 +113,15 @@ const ActivityLogs = () => {
                 setPagination(prev => ({ ...prev, totalPages: response.totalPages}))
                 setActivityLogs(groupedLogs)
             }
+            setLoading(false);
         }
 
         get_activity_logs()
     }, [pagination.page, selectedDates])
+    
+    if(admin && admin.role !== 'Super Admin'){
+        return <Navigate to="/admin/dashboard"/>
+    }
 
     return (
         <PageContainer className="min-h-full">
@@ -125,16 +135,20 @@ const ActivityLogs = () => {
                     setValue={setSelectedDates}
                 />
             </div>
-            
-            {Object.entries(activityLogs).map(([key, value]) => (
+
+            {loading ? <div className="w-full h-[400px] flex justify-center items-center">
+                <CircularProgress sx={{ color: 'red'}}/>
+            </div> :
+
+            Object.entries(activityLogs).map(([key, value]) => (
                 <Card key={key} className="mt-5 flex flex-col gap-5">
                     <h1 className="font-bold text-lg">{key}</h1>
                     {value.map(act => <ActiviyContainer key={act._id} activityLog={act}/>)}
                 </Card>
             ))}
-            <div className="flex justify-end mt-6">
+            {!loading && <div className="flex justify-end mt-6">
                 <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
-            </div>
+            </div>}
         </PageContainer>
     )
 }

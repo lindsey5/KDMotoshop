@@ -2,7 +2,7 @@ import {  useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
-import { Slider } from "@mui/material";
+import { CircularProgress, Slider } from "@mui/material";
 import { CustomizedSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/Button";
 import { getProducts } from "../../../services/productService";
@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
+import usePagination from "../../../hooks/usePagination";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -34,12 +35,9 @@ const CustomerProducts = () => {
     const [selectedSort, setSelectedSort] = useState<string>(options[0].value);
     const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
     const isDark = useDarkmode();
-    const [pagination, setPagination] = useState<Pagination>({
-        totalPages: 1,
-        page: 1,
-        searchTerm: ''
-    });
+    const { pagination, setPagination } = usePagination();
     const [value, setValue] = useState<number[]>([0, 10000]);
+    const [loading, setLoading] = useState<boolean>(true);
     const minDistance = 1000;
     
     const marks = [
@@ -66,6 +64,7 @@ const CustomerProducts = () => {
     }
 
     const getAllProducts = async () => {
+        setLoading(true);
         const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
         
         if(response.success) {
@@ -79,6 +78,7 @@ const CustomerProducts = () => {
                 price: product.product_type === 'Variable' ?  product.variants.sort((a : any, b: any) => (a.price - b.price))[0].price : product.price
                 })))
         }
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -99,6 +99,7 @@ const CustomerProducts = () => {
     };
 
     const filterProducts = async () => {
+        setLoading(true);
         const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
         
         if(response.success) {
@@ -116,7 +117,7 @@ const CustomerProducts = () => {
                     : product.price
                 })))
         }
-
+        setLoading(false);
     }
 
     return (
@@ -141,9 +142,12 @@ const CustomerProducts = () => {
                         />
                     </div>
                 </div>
+                {loading ? <div className="w-full h-[400px] flex justify-center items-center">
+                    <CircularProgress sx={{ color: 'red'}}/>
+                </div> : 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-10 md:gap-10 gap-5">
-                {products.map((product : any) => <CustomerProductContainer key={product._id} product={product}/>)}
-                </div>
+                    {products.map((product : any) => <CustomerProductContainer key={product._id} product={product}/>)}
+                </div>}
                 {products.length > 0 &&  (
                     <div className="flex justify-end">
                         <CustomizedPagination 

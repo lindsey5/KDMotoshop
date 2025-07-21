@@ -14,7 +14,7 @@ import { successAlert } from "../../../utils/swal";
 import { CartContext } from "../../../context/CartContext";
 import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
 import ProductThumbnail from "../../../components/images/ProductThumbnail";
-import ProductReviews from "./ProductReviews";
+import ProductReviews from "../../ProductReviews";
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -39,8 +39,6 @@ const CustomerProduct = () => {
                 fetchData(`/api/product/${id}/reserved`),   
                 fetchData(`/api/review/product/${id}`)
             ]);
-
-            console.log(productResponse)
 
             productResponse.success ?  setProduct(productResponse.product) : navigate('/products');
             if (reviewsResponse.success) setTotalReviews(reviewsResponse.totalReviews);

@@ -18,7 +18,7 @@ const AdminDashboard = () => {
         <DashboardCards />
         <MonthlySales />
         <TopProductsChart />
-        <div className="flex mt-14 gap-5">
+        <div className="flex xl:flex-row flex-col mt-14 gap-5">
             <TopCategoriesChart />
             <SalesPredictionChart />
         </div>

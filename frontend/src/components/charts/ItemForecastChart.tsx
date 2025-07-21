@@ -15,6 +15,7 @@ import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
 import CustomizedPagination from '../Pagination';
 import { url } from '../../constants/url';
+import { CircularProgress } from '@mui/material';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, Tooltip, Legend);
 
@@ -29,17 +30,19 @@ const ItemForecastChart = () => {
     const [data, setData] = useState<Prediction[]>([]);
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const getData = async () => {
+            setLoading(true);
             const response = await fetchData(`${url}predict/items`);
-
             if(response.success){
                 setData(response.forecast
                     .map((item : any)=> ({...item, predicted_qty: Math.round(item.predicted_qty) }))
                     .sort((a : any, b : any) => b.predicted_qty - a.predicted_qty)
                 )
             }
+            setLoading(false);
         }
 
         getData();
@@ -121,15 +124,23 @@ const ItemForecastChart = () => {
     return (
         <Card className="mt-10">
             <h2 className='mb-4 font-bold'>Quantities Sold by Product (Next Month)</h2>
-            <Bar 
-            className='w-full'
-            data={chartData}
-            options={options}
-            />
-            <CustomizedPagination 
-                count={Math.ceil(data.length / ITEMS_PER_PAGE)} 
-                onChange={handlePage} 
-            />
+            {loading ? <div className="w-full h-[300px] flex justify-center items-center">
+                <CircularProgress sx={{ color: 'red'}}/> 
+            </div> :
+            paginatedData.length === 0 ? <div className="w-full h-[300px] flex justify-center items-center">
+                <p className="text-gray-500">No data available</p>
+            </div> :
+            <>
+                <Bar 
+                    className='w-full'
+                    data={chartData}
+                    options={options}
+                />
+                <CustomizedPagination 
+                    count={Math.ceil(data.length / ITEMS_PER_PAGE)} 
+                    onChange={handlePage} 
+                />
+                </>}
         </Card>
     );
 };

@@ -159,7 +159,7 @@ const CreateOrderPage = () => {
         setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
     }, [order.shipping_fee])
 
-    return <PageContainer className="flex h-full">
+    return <PageContainer className="flex h-full p-0">
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -181,7 +181,7 @@ const CreateOrderPage = () => {
             <Title className="mb-4">Create Order</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
 
-            <div className="flex justify-between items-center mt-6">
+            <div className="flex flex-wrap gap-5 justify-between items-center mt-6">
                 <SearchField 
                     onChange={(e) => setPagination({...pagination, searchTerm: e.target.value })}
                     sx={{ maxWidth: '450px' }}
@@ -201,7 +201,7 @@ const CreateOrderPage = () => {
             
             {/* Products */}
             <div className="flex flex-col flex-grow min-h-0 mt-4 overflow-y-auto">
-                <div className="2xl:grid-cols-5 grid grid-cols-3 flex flex-wrap gap-5 p-3">
+                <div className="xl:grid-cols-3 lg:grid-cols-4 grid grid-cols-3 flex flex-wrap gap-5 p-3">
                     {products.map(product => (
                         <ProductContainer 
                             product={product}
@@ -214,7 +214,7 @@ const CreateOrderPage = () => {
 
         </div>
 
-        <div className={cn("w-[400px] flex flex-col border-l-1 border-gray-300 bg-white", isDark && 'bg-[#1e1e1e] border-gray-600')}>
+        <div className={cn("w-[400px] fixed xl:static right-0 inset-y-0 flex flex-col border-l-1 border-gray-300 bg-white", isDark && 'bg-[#1e1e1e] border-gray-600')}>
             <div className={cn("flex justify-between p-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                 <Button 
                     variant="contained" 

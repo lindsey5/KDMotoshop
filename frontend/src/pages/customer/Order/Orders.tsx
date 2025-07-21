@@ -10,11 +10,12 @@ import { Status } from "../../../components/text/Text";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Statuses } from "../../../constants/status";
-import { PaginationState } from "../../../constants/pagination";
 import CustomizedPagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
 import OrderItem from "../../../components/containers/OrderItem";
+import usePagination from "../../../hooks/usePagination";
+import { CircularProgress } from "@mui/material";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -26,10 +27,12 @@ const CustomerOrders = () => {
     const navigate = useNavigate();
     const [orders, setOrders] = useState<Order[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
-    const [pagination, setPagination] = useState<Pagination>(PaginationState);
+    const [loading, setLoading] = useState<boolean>(true);
+    const { pagination, setPagination } = usePagination();
     
     useEffect(() => {
         const getOrders = async () => {
+            setLoading(true);
             const today = new Date();
             const sixtyDaysAgo = new Date();
             sixtyDaysAgo.setDate(today.getDate() - 60);
@@ -38,6 +41,7 @@ const CustomerOrders = () => {
                 setOrders(response.orders)
                 setPagination(prev => ({...prev, totalPages: response.totalPages }));
             }
+            setLoading(false);
         }
 
         getOrders();
@@ -46,6 +50,12 @@ const CustomerOrders = () => {
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
+
+    if(loading) return (
+        <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+            <CircularProgress sx={{ color: 'red'}}/>
+        </div>
+    )
 
     return (
         <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
@@ -58,7 +68,7 @@ const CustomerOrders = () => {
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value as string)}
             />
-            {orders.length === 0 && <div className="flex flex-col gap-5 items-center p-30">
+            {!loading && orders.length === 0 && <div className="flex flex-col gap-5 items-center p-30">
                 <img className="w-[200px] h-[200px]" src={isDark ? "/white-cart.png" : "/cart.png"} />
                 <FuzzyText 
                     baseIntensity={0.2} 

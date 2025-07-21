@@ -9,6 +9,7 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import { CustomerContextProvider } from "../../../context/CustomerContext";
 import MobileHome from "./MobileView";
+import CustomerHeader from "../../../components/partials/customer/CustomerHeader";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -19,22 +20,25 @@ const KDMotoshopHome = () => {
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
                 <Parallax ref={parallax} pages={6} className='bg-[url(/bg.jpg)] bg-cover bg-white hidden lg:block'>
-                    <ParallaxLayer offset={0} speed={-0.3}>
-                        <img src="/moon.png" className="w-full"/>
+                    <ParallaxLayer className="relative z-10">
+                        <CustomerHeader />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0} speed={0.3}>
-                        <img src="/mountain.png" className="w-full h-screen"/>
+                    <ParallaxLayer offset={0} speed={-0.3}>
+                        <img src="/moon.png" className="w-full filter grayscale sepia hue-rotate-[0deg] saturate-[10000%] brightness-100"/>
+                    </ParallaxLayer>
+                    <ParallaxLayer offset={0} speed={0.1}>
+                        <img src="/mountain.png" className="w-full h-screen grayscale"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={0} speed={-0.2}>
-                         <div className='relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
+                         <div className='hero relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
                             <motion.div 
-                                className="space-y-8 text-white max-w-lg flex flex-col items-center"
+                                className="space-y-8 text-white max-w-xl flex flex-col items-center"
                                 initial={{ opacity: 0, y: 50 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.2 }}
                             >
                                 <motion.h2 
-                                    className={cn("text-5xl lg:text-6xl font-black text-center text-white")}
+                                    className={cn("text-5xl lg:text-7xl font-black text-center text-white")}
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.4 }}
@@ -43,23 +47,14 @@ const KDMotoshopHome = () => {
                                 <br />
                                 <span className="text-red-500">SHOP BETTER.</span>
                                 </motion.h2>
-                                                        
-                                <motion.p 
-                                    className="text-center text-2xl  text-white text-shadow-lg text-shadow-black"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.6 }}
-                                >
-                                Your shop for legit and affordable helmets, racks, intercoms, and riding gear—trusted by riders, built for every journey.
-                                </motion.p>
-                                            
+                                                    
                             </motion.div>
                         </div>
                     </ParallaxLayer>
                     <ParallaxLayer offset={0}>
                         <img src="/road.png" className="w-full h-screen"/>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.4} speed={0.5}>
+                    <ParallaxLayer offset={0.25} speed={-0.2}>
                         <img src="/moto-pov.png" className="w-full h-screen"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={1} factor={4}>

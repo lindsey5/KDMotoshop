@@ -13,7 +13,6 @@ const TopProductsChart = () => {
                 setTopProducts(response.topProducts)
             }
         }
-
         getTopProductsAsync();
     }, [])
 
@@ -22,7 +21,7 @@ const TopProductsChart = () => {
             <h1 className="font-bold text-lg">Most Selling Products</h1>
             <div className="flex flex-col gap-5 flex-grow overflow-y-auto py-2">
                 {topProducts.map(product => (
-                    <TopProductsContainer product={product}/>
+                    <TopProductsContainer key={product._id} product={product}/>
                 ))}
             </div>
         </Card>

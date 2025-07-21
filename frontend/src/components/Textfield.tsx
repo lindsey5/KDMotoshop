@@ -1,6 +1,5 @@
 import { InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
-import type React from "react";
 import useDarkmode from "../hooks/useDarkmode";
 import { useEffect, useState } from "react";
 import { fetchData } from "../services/api";

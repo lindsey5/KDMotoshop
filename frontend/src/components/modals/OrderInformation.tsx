@@ -1,5 +1,5 @@
 import { Button, FormControlLabel, Modal, Switch } from "@mui/material";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { RedTextField } from "../Textfield";
 import { useAddress } from "../../hooks/useAddress";
 import { CustomizedSelect, StatusSelect } from "../Select";
@@ -208,4 +208,4 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
     )
 }
 
-export default OrderInformationModal
+export default memo(OrderInformationModal)

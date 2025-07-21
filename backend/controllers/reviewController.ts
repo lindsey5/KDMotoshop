@@ -4,10 +4,19 @@ import Review from "../models/Review";
 import Order from "../models/Order";
 import Product from "../models/Product";
 import OrderItem from "../models/OrderItem";
+import Customer from "../models/Customer";
+import { sendAdminsNotification } from "../services/notificationService";
 
 export const create_review = async (req: AuthenticatedRequest, res: Response) => {
     try{
         const { orderItemId, product_id } = req.body;
+
+        const customer = await Customer.findById(req.user_id);
+
+        if(!customer){
+            res.status(404).json({ success: false, message: 'Customer Id not found'})
+            return;
+        }
 
         const orderItem= await OrderItem.findById(orderItemId);
 
@@ -39,6 +48,12 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         if(orderItems.every(item => item.status === 'Rated')){
             await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
         }
+
+        await sendAdminsNotification(
+            req.user_id ?? '', 
+            orderItem.order_id.toString(), 
+            `${customer?.firstname} ${customer?.lastname} has submitted a review for ${orderItem.product_name}`
+        )
 
         res.status(201).json({ success: true, review })
 

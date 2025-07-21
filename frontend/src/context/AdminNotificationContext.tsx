@@ -64,7 +64,7 @@ export const AdminNotificationContextProvider = ({ children }: AdminNotification
         }
 
         getNotifications()
-    }, [])
+    }, [page])
 
     useEffect(() => {
         if (!socket) return;

@@ -16,13 +16,13 @@ import { Statuses } from "../../../constants/status";
 import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard";
 import Card from "../../../components/cards/Card";
 import CustomizedPagination from "../../../components/Pagination";
-import { PaginationState } from "../../../constants/pagination";
 import { Title } from "../../../components/text/Text";
 import PageContainer from "../../../components/containers/admin/PageContainer";
+import usePagination from "../../../hooks/usePagination";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Orders', href: '/admin/orders' },
+    { label: 'Orders', href: '/admin/ovrders' },
 ]
 
 const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
@@ -33,7 +33,7 @@ const Orders = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [paymentMethod, setPaymentMethod] = useState<string>('All');
     const navigate = useNavigate();
-    const [pagination, setPagination] = useState<Pagination>(PaginationState);
+    const { pagination, setPagination } = usePagination();
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
  
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -56,7 +56,7 @@ const Orders = () => {
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            setPagination({...PaginationState, searchTerm });
+            setPagination(prev => ({...prev, searchTerm }));
             setSelectedStatus('All');
             setSelectedDates(undefined);
             getOrdersAsync();
@@ -81,15 +81,15 @@ const Orders = () => {
         <OrderStatsCards />
         
         <Card className="h-screen flex flex-col mt-6">
-            <div className="flex justify-between items-center mb-6 gap-10">
+            <div className="flex flex-wrap justify-between mb-6 gap-10">
                 <SearchField
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value as string)}
                     placeholder="Search by Customer Name, Order ID, Order Source" 
                     sx={{ flex: 1, height: 55 }}
                 />
-                <div className="flex items-center gap-5">
-                    <div className="w-[400px] flex gap-10">
+                <div className="flex flex-wrap gap-5 justify-end">
+                    <div className="w-full xl:w-[400px] flex gap-10">
                         <CustomizedSelect 
                             sx={{ height: 55 }}
                             label="Status"

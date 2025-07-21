@@ -23,7 +23,7 @@ const DashboardCards = () => {
     }, [])
 
     return (
-        <div className="grid grid-cols-4 gap-5 mt-10">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-5 mt-10">
             <DashboardCard label="Sales Today" value={`₱${formatNumber(data.today)}`} />
             <DashboardCard label="Sales this week" value={`₱${formatNumber(data.thisWeek)}`} />
             <DashboardCard label="Sales This Month" value={`₱${formatNumber(data.thisMonth)}`} />
