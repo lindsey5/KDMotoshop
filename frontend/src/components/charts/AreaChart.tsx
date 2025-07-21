@@ -31,7 +31,7 @@ type AreaChartProps = {
     fill?: boolean;
 }
 
-const AreaChart : React.FC<AreaChartProps> = ({title, labels, label, data, fill = true}) => {
+const AreaChart = ({title, labels, label, data, fill = true} : AreaChartProps) => {
     const isDark = useDarkmode();
 
     return (

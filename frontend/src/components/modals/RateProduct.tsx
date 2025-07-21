@@ -9,9 +9,7 @@ import { RedButton } from "../Button";
 import { postData } from "../../services/api";
 import { useState } from "react";
 
-interface RateProductModalProps {
-    open: boolean;
-    close: () => void
+interface RateProductModalProps extends ModalProps {
     orderItemId: string;
     product_id: string;
 }

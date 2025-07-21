@@ -11,7 +11,7 @@ type StatCardProps = {
   color?: 'green' | 'purple' | 'red' | 'yellow'; 
 };
 
-const StatsCard = ({ title, value, subtitle, color = "green" }: StatCardProps) => {
+const StatsCard = ({ title, value, subtitle, color = "green" } : StatCardProps) => {
     const isDark = useDarkmode();
 
     const colorMap: Record<string, string> = {

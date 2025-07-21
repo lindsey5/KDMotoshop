@@ -9,6 +9,7 @@ export interface IAdmin extends Document {
   lastname: string;
   phone: string;
   image?: UploadedImage;
+  role: string;
 }
 
 // Define the schema
@@ -26,6 +27,7 @@ const AdminSchema: Schema<IAdmin> = new Schema(
       },
       required: false
     },
+    role: { type: String, required: true, enum: ['Admin', 'Super Admin'], default: 'Admin' }
   },
   { timestamps: true }
 );

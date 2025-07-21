@@ -1,4 +1,4 @@
-interface Admin {
+type Admin = {
   _id?: string;
   email: string;
   firstname: string;

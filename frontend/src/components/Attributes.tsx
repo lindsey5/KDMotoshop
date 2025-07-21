@@ -8,7 +8,7 @@ type AttributesProps = {
     handleSelect: (attribute: string, value: string) => void;
 }
 
-const Attributes : React.FC<AttributesProps> = ({ product, selectedAttributes, handleSelect}) => {
+const Attributes = ({ product, selectedAttributes, handleSelect} : AttributesProps) => {
     const context = useContext(DarkmodeContext);
     
     return ( 

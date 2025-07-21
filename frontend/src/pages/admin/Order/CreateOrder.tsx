@@ -15,6 +15,7 @@ import ProductContainer from "../../../components/containers/admin/OrderProductC
 import CircularProgress from '@mui/material/CircularProgress';
 import useDarkmode from "../../../hooks/useDarkmode";
 import { Title } from "../../../components/text/Text";
+import PageContainer from "../../../components/containers/admin/PageContainer";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -158,7 +159,7 @@ const CreateOrderPage = () => {
         setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
     }, [order.shipping_fee])
 
-    return <div className={cn("transition-colors duration-600 flex h-full bg-gray-100 gap-5", isDark && 'text-white bg-[#121212]')}>
+    return <PageContainer className="flex h-full">
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -172,7 +173,7 @@ const CreateOrderPage = () => {
         />}
         <OrderInformationModal
             open={showCustomerModal} 
-            onClose={() => setShowCustomerModal(false)}
+            close={() => setShowCustomerModal(false)}
             order={order}
             setOrder={setOrder}
         />
@@ -256,7 +257,7 @@ const CreateOrderPage = () => {
                 >Proceed</RedButton>
             </div>
         </div>
-    </div>
+    </PageContainer>
 }
 
 export default CreateOrderPage

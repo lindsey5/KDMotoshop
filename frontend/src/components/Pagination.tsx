@@ -1,7 +1,7 @@
 import useDarkmode from "../hooks/useDarkmode"
 import { Pagination, type PaginationProps } from "@mui/material"
 
-const CustomizedPagination : React.FC<PaginationProps> = ({ sx,  ...props}) => {
+const CustomizedPagination  = ({ sx,  ...props} : PaginationProps) => {
     const isDark = useDarkmode()
 
     return (

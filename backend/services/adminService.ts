@@ -9,11 +9,10 @@ export const createAdmin = async (userData : Partial<IAdmin>) : Promise<IAdmin> 
 
 // Service to find a user based on the query and exclude the password field
 export const findAdmin = async (query: FilterQuery< IAdmin>) : Promise<any> => {
-    const admin = await Admin.findOne(query).exec();
-    if (admin) {
-        const { password, ...userWithoutPassword } = admin.toObject(); // Remove the password field
-        return userWithoutPassword; // Return the admin object without the password
-    }
+    const admin = await Admin.findOne(query).select('-password').exec();
+
+    if(admin)
+        return admin; // Return the found user if exists
 
     return null; // Return null if no user is found
 };

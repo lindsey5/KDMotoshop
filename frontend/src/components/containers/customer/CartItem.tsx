@@ -13,7 +13,7 @@ type CartItemContainerProps = {
     remove: (id : string) => void;
 }
 
-const CartItemContainer : React.FC<CartItemContainerProps> = ({ item, remove }) => {
+const CartItemContainer = ({ item, remove } : CartItemContainerProps) => {
     const isDark = useDarkmode();
     const [value, setValue] = useState<number>(item.quantity);
     const { setCart } = useContext(CartContext);

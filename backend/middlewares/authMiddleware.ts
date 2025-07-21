@@ -1,8 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import User from '../models/Admin'; 
 import { AuthenticatedRequest } from '../types/auth';
-import { findAdmin } from '../services/userService';
+import { findAdmin } from '../services/adminService';
 import Customer from '../models/Customer';
 
 export const adminRequireAuth = async (

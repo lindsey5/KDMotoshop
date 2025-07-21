@@ -11,14 +11,12 @@ import Card from "../cards/Card";
 import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
 
-type OrderInformationModalProps = {
-    open: boolean;
-    onClose: () => void;
+interface OrderInformationModalProps extends ModalProps {
     setOrder: React.Dispatch<React.SetStateAction<Order>>;
     order: Order;
 }
 
-const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, onClose, setOrder, order }) => {
+const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformationModalProps) => {
     const [addAddress, setAddAddress] = useState<boolean>(false);
     const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
     const isDark = useDarkmode();
@@ -71,7 +69,7 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
     return(
         <Modal 
             open={open}
-            onClose={onClose} 
+            onClose={close} 
             className="z-99 p-5 flex justify-center items-start overflow-y-auto"
         >
             <Card className="w-[90%] max-w-[600px] items-start p-5 rounded-md flex flex-col gap-5">
@@ -201,9 +199,9 @@ const OrderInformationModal : React.FC<OrderInformationModalProps> = ({ open, on
                     <Button 
                         variant="outlined" 
                         sx={{ border: 1, borderColor: 'gray', color: 'gray'}}
-                        onClick={onClose}
+                        onClick={close}
                     >Close</Button>
-                    <RedButton onClick={onClose}>Save</RedButton>
+                    <RedButton onClick={close}>Save</RedButton>
                 </div>
             </Card>
         </Modal>

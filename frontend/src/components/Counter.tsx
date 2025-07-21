@@ -13,7 +13,7 @@ type CounterProps = {
     showLabel?: boolean;
 }
 
-const Counter : React.FC<CounterProps>= ({ value, setValue, limit, disabled, showLabel}) => {
+const Counter = ({ value, setValue, limit, disabled, showLabel} : CounterProps) => {
     const context = useContext(DarkmodeContext)
 
     const incrementQuantity = () => {

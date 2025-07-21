@@ -19,13 +19,13 @@ const KDMotoshopHome = () => {
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
                 <Parallax ref={parallax} pages={6} className='bg-[url(/bg.jpg)] bg-cover bg-white hidden lg:block'>
-                    <ParallaxLayer offset={0} speed={0.3}>
+                    <ParallaxLayer offset={0} speed={-0.3}>
                         <img src="/moon.png" className="w-full"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={0} speed={0.3}>
                         <img src="/mountain.png" className="w-full h-screen"/>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0} speed={-0.5}>
+                    <ParallaxLayer offset={0} speed={-0.2}>
                          <div className='relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
                             <motion.div 
                                 className="space-y-8 text-white max-w-lg flex flex-col items-center"
@@ -59,7 +59,7 @@ const KDMotoshopHome = () => {
                     <ParallaxLayer offset={0}>
                         <img src="/road.png" className="w-full h-screen"/>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.4} speed={0.3}>
+                    <ParallaxLayer offset={0.4} speed={0.5}>
                         <img src="/moto-pov.png" className="w-full h-screen"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={1} factor={4}>

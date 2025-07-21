@@ -9,7 +9,7 @@ type CategoryFilterProps = {
     setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CategoryFilterCard : React.FC<CategoryFilterProps> = ({ selectedCategory, setSelectedCategory }) => {
+const CategoryFilterCard = ({ selectedCategory, setSelectedCategory } : CategoryFilterProps) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const isDark = useDarkmode();
     

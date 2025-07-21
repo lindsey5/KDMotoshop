@@ -1,4 +1,4 @@
-interface Customer {
+type Customer = {
   _id: string;
   email: string;
   firstname: string;

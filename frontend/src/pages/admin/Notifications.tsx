@@ -4,10 +4,9 @@ import Card from "../../components/cards/Card";
 import CustomizedTable from "../../components/Table";
 import { NotificationsTableColumns, NotificationTableRow } from "../../components/tables/NotificationTable";
 import { Title } from "../../components/text/Text";
-import useDarkmode from "../../hooks/useDarkmode"
-import { cn } from "../../utils/utils";
 import { AdminNotificationContext } from "../../context/AdminNotificationContext";
 import CustomizedPagination from "../../components/Pagination";
+import PageContainer from "../../components/containers/admin/PageContainer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -15,7 +14,6 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const AdminNotifications = () => {
-    const isDark = useDarkmode();
     const { notifications, setPage, total } = useContext(AdminNotificationContext);
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
@@ -23,7 +21,7 @@ const AdminNotifications = () => {
     };
 
     return (
-         <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>
+        <PageContainer className="h-full flex flex-col">
             <Title className="mb-4">Notifications</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             <Card className="flex-grow min-h-0 flex flex-col mt-10 gap-5">
@@ -35,7 +33,7 @@ const AdminNotifications = () => {
                     rows={notifications.map(n => <NotificationTableRow key={n._id} notification={n}/>)}
                 />
             </Card>
-        </div>
+        </PageContainer>
     )
 }
 

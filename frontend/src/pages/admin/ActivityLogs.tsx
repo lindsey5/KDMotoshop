@@ -15,6 +15,7 @@ import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import { CustomDateRangePicker } from "../../components/DatePicker";
 import UserAvatar from "../../components/images/UserAvatar";
+import PageContainer from "../../components/containers/admin/PageContainer";
 
 const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
     const isDark = useDarkmode();
@@ -78,7 +79,6 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const ActivityLogs = () => {
-    const isDark = useDarkmode();
     const [activityLogs, setActivityLogs] = useState<GroupedActivityLogs>({})
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
     const [pagination, setPagination] = useState<Pagination>({
@@ -114,7 +114,7 @@ const ActivityLogs = () => {
     }, [pagination.page, selectedDates])
 
     return (
-        <div className={cn("transition-colors duration-600  min-h-full p-5 bg-gray-100", isDark && 'text-white bg-[#121212]')}>
+        <PageContainer className="min-h-full">
             <div className="flex items-center justify-between">
                 <div>
                     <Title className="mb-4">Activity Logs</Title>
@@ -135,7 +135,7 @@ const ActivityLogs = () => {
             <div className="flex justify-end mt-6">
                 <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
             </div>
-        </div>
+        </PageContainer>
     )
 }
 

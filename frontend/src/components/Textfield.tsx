@@ -11,7 +11,7 @@ interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
 }
 
-export const LineTextField: React.FC<LineTextFieldProps> = ({ label, ...props }) => {
+export const LineTextField = ({ label, ...props } : LineTextFieldProps) => {
   return (
     <TextField
       variant="standard" 
@@ -29,7 +29,7 @@ export const LineTextField: React.FC<LineTextFieldProps> = ({ label, ...props })
   );
 };
 
-export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
+export const RedTextField = ({ sx, ...props } : TextFieldProps) => {
   const isDark = useDarkmode()
   
   return (
@@ -71,7 +71,7 @@ export const RedTextField  : React.FC<TextFieldProps> = ({ sx, ...props }) => {
   )
 }
 
-export const SearchField: React.FC<TextFieldProps> = ({ sx, placeholder, onChange }) => {
+export const SearchField = ({ sx, placeholder, onChange } : TextFieldProps) => {
   const isDark = useDarkmode()
 
   return (

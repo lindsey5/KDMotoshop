@@ -14,7 +14,7 @@ type AddOrderModalProps = {
     close: () => void;
 }
 
-const AddOrderModal : React.FC<AddOrderModalProps> = ({ close, selectedProduct, setOrderItems }) => {
+const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModalProps) => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
     const isDark = useDarkmode()

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { postData } from "../../services/api";
 import { errorAlert } from "../../utils/swal";
 
-const CreateCategoryModal : React.FC<ModalProps> = ({ open, close }) => {
+const CreateCategoryModal = ({ open, close } : ModalProps) => {
     const [category, setCategory] = useState<string>('');
 
     const CreateCategpry = async  () => {

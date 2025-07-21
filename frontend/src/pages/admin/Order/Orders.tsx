@@ -15,11 +15,10 @@ import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
 import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard";
 import Card from "../../../components/cards/Card";
-import { cn } from "../../../utils/utils";
-import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
 import { PaginationState } from "../../../constants/pagination";
 import { Title } from "../../../components/text/Text";
+import PageContainer from "../../../components/containers/admin/PageContainer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -36,8 +35,7 @@ const Orders = () => {
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>(PaginationState);
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
-    const isDark = useDarkmode();
-    
+ 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
@@ -72,7 +70,7 @@ const Orders = () => {
     }, [selectedDates, selectedStatus, pagination.page, paymentMethod])
 
 
-    return <div className={cn("transition-colors duration-600 flex flex-col p-5 bg-gray-100", isDark && 'bg-[#121212]')}>
+    return <PageContainer className="flex flex-col">
         <div className="flex justify-between items-center mb-6">
             <div>
                 <Title className="mb-4">Orders</Title>
@@ -123,7 +121,7 @@ const Orders = () => {
                 <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
             </div>
         </Card>
-    </div>
+    </PageContainer>
 }
 
 export default Orders

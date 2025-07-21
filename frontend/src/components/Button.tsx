@@ -5,7 +5,7 @@ import { postData } from "../services/api";
 import { errorAlert } from "../utils/swal";
 import { useNavigate } from "react-router-dom";
 
-export const RedButton: React.FC<ButtonProps> = ({sx, ...props}) => {
+export const RedButton = ({sx, ...props} : ButtonProps) => {
     const isDark = useDarkmode();
 
     return <Button 

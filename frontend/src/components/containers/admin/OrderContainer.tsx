@@ -14,7 +14,7 @@ type OrderContainerProps = {
     setOrderItems: React.Dispatch<React.SetStateAction<OrderItem[]>>
 }
 
-const OrderContainer : React.FC<OrderContainerProps> = ({ orderItem, index, setOrderItems }) => {
+const OrderContainer = ({ orderItem, index, setOrderItems } : OrderContainerProps) => {
     const [show, setShow] = useState<boolean>(false);
     const [quantity, setQuantity] = useState<number>(orderItem.quantity);
     const isDark = useDarkmode();

@@ -1,5 +1,4 @@
 import { Chip, type SxProps, type Theme } from "@mui/material";
-import type React from "react";
 import useDarkmode from "../hooks/useDarkmode";
 
 type CustomizedChipProps = {
@@ -10,13 +9,13 @@ type CustomizedChipProps = {
   sx?: SxProps<Theme>;
 }
 
-export const CustomizedChip: React.FC<CustomizedChipProps> = ({
+export const CustomizedChip = ({
   isSelected,
   label,
   onClick,
   onDelete,
   sx
-}) => {
+} : CustomizedChipProps) => {
   const isDark = useDarkmode();
 
   return (

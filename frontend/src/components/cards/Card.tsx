@@ -7,7 +7,7 @@ interface CardProps {
   children?: React.ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({ className = "", children }) => {
+const Card  = ({ className = "", children } : CardProps) => {
     const isDark = useDarkmode();
     
     return (

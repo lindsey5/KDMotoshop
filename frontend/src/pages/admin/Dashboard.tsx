@@ -7,11 +7,12 @@ import SalesPredictionChart from "../../components/charts/SalesPrediction";
 import { cn } from "../../utils/utils";
 import useDarkmode from "../../hooks/useDarkmode";
 import ItemForecastChart from "../../components/charts/ItemForecastChart";
+import PageContainer from "../../components/containers/admin/PageContainer";
 
 const AdminDashboard = () => {
     const isDark = useDarkmode();
 
-    return <div className={cn("transition-colors duration-600  min-h-full p-5 bg-gray-100", isDark && 'text-white bg-[#121212]')}>
+    return <PageContainer className="min-h-full">
         <h1 className={cn("font-bold text-4xl text-red-500", isDark && 'text-white')}>Dashboard</h1>
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
         <DashboardCards />
@@ -22,7 +23,7 @@ const AdminDashboard = () => {
             <SalesPredictionChart />
         </div>
         <ItemForecastChart />
-    </div>  
+    </PageContainer>
 }
 
 export default AdminDashboard

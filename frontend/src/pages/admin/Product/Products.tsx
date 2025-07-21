@@ -10,13 +10,13 @@ import { deleteData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import { ProductTableColumns, ProductTableRow } from "../../../components/tables/ProductTable"
 import Card from "../../../components/cards/Card"
-import { cn } from "../../../utils/utils"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
 import { PaginationState } from "../../../constants/pagination"
 import { RedButton } from "../../../components/Button"
 import { useNavigate } from "react-router-dom"
 import { Title } from "../../../components/text/Text"
+import PageContainer from "../../../components/containers/admin/PageContainer"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -71,7 +71,7 @@ const Products = () => {
     }
 
     return( 
-        <div className={cn("transition-colors duration-600 flex flex-col bg-gray-100 h-full p-5", isDark && 'text-white bg-[#121212]')}>
+        <PageContainer className="flex flex-col">
             <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
             <div className="flex items-center mb-6 justify-between">
                 <div>
@@ -106,7 +106,7 @@ const Products = () => {
                     />
                 )}
             </div>
-            <Card className="flex-grow min-h-0 flex flex-col mt-5">
+            <Card className="h-screen flex flex-col mt-5">
                 <div className="w-full mb-6 flex items-center justify-between">
                    <SearchField 
                         sx={{ width: '400px'}}
@@ -123,7 +123,7 @@ const Products = () => {
                     rows={products?.map(product => <ProductTableRow key={product._id} product={product}/>)}
                 />
             </Card>
-        </div>
+        </PageContainer>
     )
 }
 

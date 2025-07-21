@@ -12,7 +12,7 @@ interface CustomizedSelectProps extends BaseSelectProps{
     icon?: React.ReactNode;
 }
 
-export const CustomizedSelect : React.FC<CustomizedSelectProps> = ({ sx, label, menu, icon, ...props}) => {
+export const CustomizedSelect = ({ sx, label, menu, icon, ...props} : CustomizedSelectProps) => {
     const isDark = useDarkmode();
     
     return <FormControl fullWidth>

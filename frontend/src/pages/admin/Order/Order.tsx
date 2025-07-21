@@ -17,6 +17,7 @@ import Card from "../../../components/cards/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { Title } from "../../../components/text/Text";
+import PageContainer from "../../../components/containers/admin/PageContainer";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -60,7 +61,7 @@ const OrderDetails = () => {
          </div>
     )
 
-    return <div className={cn("transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
+    return <PageContainer className="flex flex-col justify-start p-0">
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
                 <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
@@ -135,7 +136,7 @@ const OrderDetails = () => {
                 </Card>}
             </div>
         </div>
-    </div>
+    </PageContainer>
 }
 
 export default OrderDetails

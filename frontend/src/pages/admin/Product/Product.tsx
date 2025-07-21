@@ -17,6 +17,7 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
 import Card from "../../../components/cards/Card";
+import PageContainer from "../../../components/containers/admin/PageContainer";
 
 const productInitialState = {
     product_name: '',
@@ -186,7 +187,7 @@ const ProductPage = () => {
         setProduct({ ...product, category: newValue})
     }
 
-    return <div className={cn("transition-colors duration-600 min-w-[1000px] min-h-full p-5 bg-gray-100 relative", isDark && 'text-white bg-[#121212]')}>
+    return <PageContainer>
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
             open={loading}
@@ -197,7 +198,7 @@ const ProductPage = () => {
             <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
-        <div className="flex items-start gap-10 mt-6">
+        <div className="flex flex-wrap items-start gap-10 mt-6">
             <div className="flex-1">
                 <Card className="flex flex-col gap-5">
                     <h1 className="text-lg font-bold">Basic Information</h1>
@@ -358,7 +359,7 @@ const ProductPage = () => {
                 </Card>
             </div>
         </div>
-    </div>
+   </PageContainer>
 }
 
 export default ProductPage

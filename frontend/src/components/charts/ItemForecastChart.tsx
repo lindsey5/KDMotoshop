@@ -25,7 +25,7 @@ interface Prediction {
 
 const ITEMS_PER_PAGE = 10;
 
-const ItemForecastChart: React.FC = () => {
+const ItemForecastChart = () => {
     const [data, setData] = useState<Prediction[]>([]);
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);

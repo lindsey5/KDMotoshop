@@ -11,10 +11,7 @@ type CustomDateRangePickerProps = {
   setValue: React.Dispatch<React.SetStateAction<DateRange<Dayjs> | undefined>>;
 }
 
-export const CustomDateRangePicker: React.FC<CustomDateRangePickerProps> = ({
-  value,
-  setValue,
-}) => {
+export const CustomDateRangePicker = ({ value, setValue } : CustomDateRangePickerProps) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

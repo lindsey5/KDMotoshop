@@ -22,6 +22,7 @@ import { ToastContainer } from 'react-toastify';
 import AdminNotifications from "./pages/admin/Notifications";
 import ActivityLogs from "./pages/admin/ActivityLogs";
 import Settings from "./pages/admin/Settings";
+import Admins from "./pages/admin/Admins";
 
 export default function App() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="activities" element={<ActivityLogs />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="admins" element={<Admins />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
-import { createAdmin, findAdmin } from "../services/userService";
+import { createAdmin, findAdmin } from "../services/adminService";
 import Admin from "../models/Admin";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 
@@ -66,6 +66,32 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
         res.status(200).json({success: true, updatedAdmin});
         
     }catch(err : any){
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
+
+export const get_all_admins = async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const searchTerm = req.query.search as string | undefined;
+        const isSuperAdmin = await findAdmin({ _id: req.user_id, role: 'Super Admin' });
+
+        if(!isSuperAdmin) {
+            res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
+            return;
+        }
+        const query: any = { _id: { $ne: req.user_id } };
+        if (searchTerm) {
+            query.$or = [
+                { email: { $regex: searchTerm, $options: 'i' } },
+                { firstname: { $regex: searchTerm, $options: 'i' } },
+                { lastname: { $regex: searchTerm, $options: 'i' } }
+            ];
+        }
+
+        const admins = await Admin.find(query).select('-password').sort({ createdAt: -1 });
+
+        res.status(200).json({ success: true, admins });
+    } catch (err: any) {
         res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }

@@ -1,5 +1,4 @@
 import { Breadcrumbs, Chip, Link, type BreadcrumbsProps } from "@mui/material";
-import type React from "react";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import useDarkmode from "../hooks/useDarkmode";
 
@@ -7,7 +6,7 @@ interface BreadCrumbsProps extends BreadcrumbsProps{
     breadcrumbs: { label: string; href: string }[];
 }
 
-const BreadCrumbs : React.FC<BreadCrumbsProps> = ({ breadcrumbs, ...props }) => {
+const BreadCrumbs = ({ breadcrumbs, ...props } : BreadCrumbsProps) => {
     const isDark = useDarkmode();
 
     return (

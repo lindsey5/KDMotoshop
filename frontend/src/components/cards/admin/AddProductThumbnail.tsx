@@ -7,7 +7,7 @@ type AddProductThumbnailProps = {
     handleThumbnail: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const AddProductThumbnail : React.FC<AddProductThumbnailProps> = ({ product, handleThumbnail }) => {
+const AddProductThumbnail = ({ product, handleThumbnail } : AddProductThumbnailProps) => {
     return (
         <Card>
             <strong>Product Thumbnail</strong>
