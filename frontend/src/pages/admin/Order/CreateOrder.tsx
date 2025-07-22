@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { fetchData, postData } from "../../../services/api";
-import { Backdrop, Button,Pagination } from "@mui/material";
+import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/Button";
 import AddIcon from '@mui/icons-material/Add';
@@ -15,7 +15,9 @@ import ProductContainer from "../../../components/containers/admin/OrderProductC
 import CircularProgress from '@mui/material/CircularProgress';
 import useDarkmode from "../../../hooks/useDarkmode";
 import { Title } from "../../../components/text/Text";
+import MenuIcon from '@mui/icons-material/Menu';
 import PageContainer from "../../../components/containers/admin/PageContainer";
+import CloseIcon from '@mui/icons-material/Close';
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -52,6 +54,7 @@ const CreateOrderPage = () => {
     const [order, setOrder] = useState<Order>(OrderState);
     const [loading, setLoading] = useState<boolean>(false);
     const isDark = useDarkmode()
+    const [showSide, setShowSide] = useState<boolean>(false);
 
     useEffect(() => {
         setOrder(prev => (
@@ -178,8 +181,18 @@ const CreateOrderPage = () => {
             setOrder={setOrder}
         />
         <div className="flex-1 flex flex-col p-5">
-            <Title className="mb-4">Create Order</Title>
-            <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
+            <div className="flex justify-between gap-5 items-start">
+                <div>
+                    <Title className="mb-4">Create Order</Title>
+                    <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
+                </div>
+                {!showSide && <IconButton onClick={() => setShowSide(true)}>
+                    <Badge badgeContent={orderItems.length} color="primary">
+                        <MenuIcon sx={{ color: isDark ? 'white' : 'black'}} fontSize="large"/>
+                    </Badge>
+                </IconButton>}
+            </div>
+            
 
             <div className="flex flex-wrap gap-5 justify-between items-center mt-6">
                 <SearchField 
@@ -214,8 +227,8 @@ const CreateOrderPage = () => {
 
         </div>
 
-        <div className={cn("w-[400px] fixed xl:static right-0 inset-y-0 flex flex-col border-l-1 border-gray-300 bg-white", isDark && 'bg-[#1e1e1e] border-gray-600')}>
-            <div className={cn("flex justify-between p-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
+        <div className={cn("w-[400px] fixed xl:static hidden right-0 inset-y-0 xl:flex flex-col border-l-1 border-gray-300 bg-white", isDark && 'bg-[#1e1e1e] border-gray-600', showSide && 'flex')}>
+            <div className={cn("flex items-center justify-between p-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                 <Button 
                     variant="contained" 
                     startIcon={<AddIcon />} 
@@ -227,6 +240,9 @@ const CreateOrderPage = () => {
                     onClick={clear} 
                     disabled={orderItems.length === 0}
                 >Clear</Button>
+                <IconButton onClick={() => setShowSide(false)}>
+                    <CloseIcon sx={{ color: isDark ? 'white' : 'black'}}/>
+                </IconButton>
             </div>
             <div className="flex-grow min-h-0 overflow-y-auto">
             {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
