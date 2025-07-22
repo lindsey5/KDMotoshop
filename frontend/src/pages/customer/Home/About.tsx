@@ -10,10 +10,11 @@ const AboutSection = () => {
   const isDark = useDarkmode();
 
   return (
-    <div className={cn("relative transition-colors duration-600 flex lg:grid grid-cols-2 lg:gap-50 justify-center p-20",
-      isDark ? "bg-[#1e1e1e] text-white" : 'bg-white'
+    <div className={cn("relative transition-colors duration-600 flex lg:grid grid-cols-2 lg:gap-50 justify-center px-10",
+      isDark ? "transparent text-white" : 'bg-white'
     )}>
         <motion.div
+          className='flex flex-col justify-center'
           initial={{ opacity: 0, x: -50}}
           whileInView={{ opacity: 1, x: 0}}
           transition={{ duration: 0.4, delay: 0.4 }}

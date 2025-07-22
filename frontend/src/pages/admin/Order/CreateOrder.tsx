@@ -186,11 +186,13 @@ const CreateOrderPage = () => {
                     <Title className="mb-4">Create Order</Title>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 </div>
-                {!showSide && <IconButton onClick={() => setShowSide(true)}>
-                    <Badge badgeContent={orderItems.length} color="primary">
-                        <MenuIcon sx={{ color: isDark ? 'white' : 'black'}} fontSize="large"/>
-                    </Badge>
-                </IconButton>}
+                {!showSide && <div className="block xl:hidden">
+                    <IconButton onClick={() => setShowSide(true)}>
+                        <Badge badgeContent={orderItems.length} color="primary">
+                            <MenuIcon sx={{ color: isDark ? 'white' : 'black'}} fontSize="large"/>
+                        </Badge>
+                    </IconButton>
+                </div>}
             </div>
             
 
@@ -214,7 +216,7 @@ const CreateOrderPage = () => {
             
             {/* Products */}
             <div className="flex flex-col flex-grow min-h-0 mt-4 overflow-y-auto">
-                <div className="xl:grid-cols-3 lg:grid-cols-4 grid grid-cols-3 flex flex-wrap gap-5 p-3">
+                <div className="2xl:grid-cols-4 lg:grid-cols-3 grid grid-cols-2 flex flex-wrap gap-5 p-3">
                     {products.map(product => (
                         <ProductContainer 
                             product={product}
@@ -240,9 +242,11 @@ const CreateOrderPage = () => {
                     onClick={clear} 
                     disabled={orderItems.length === 0}
                 >Clear</Button>
-                <IconButton onClick={() => setShowSide(false)}>
-                    <CloseIcon sx={{ color: isDark ? 'white' : 'black'}}/>
-                </IconButton>
+                <div className="block xl:hidden">
+                    <IconButton onClick={() => setShowSide(false)}>
+                        <CloseIcon sx={{ color: isDark ? 'white' : 'black'}}/>
+                    </IconButton>
+                </div>
             </div>
             <div className="flex-grow min-h-0 overflow-y-auto">
             {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
