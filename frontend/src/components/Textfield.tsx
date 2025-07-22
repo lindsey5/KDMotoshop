@@ -175,7 +175,7 @@ export const HeaderSearchField = () => {
                         />
                         <div>
                              <strong className={cn(isDark && 'text-white')}>{product.product_name}</strong>
-                            <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>₱{formatNumber(Number(product.price))}</p>
+                              <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>₱{formatNumber(Number(product.price))}</p>
                         </div>
                     </div>
                 )) : <p>No results</p>}

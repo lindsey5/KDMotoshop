@@ -71,6 +71,7 @@ const PopularCategoriesSection = () => {
                 size="large"
                 sx={{
                     position: "absolute",
+                    display: { xs: 'none', lg: 'block' },
                     left: 20,
                     top: "50%",
                     transform: "translateY(-50%)",
@@ -84,6 +85,7 @@ const PopularCategoriesSection = () => {
                 size="large"
                 sx={{
                     position: "absolute",
+                    display: { xs: 'none', lg: 'block' },
                     right: 20,
                     top: "50%",
                     transform: "translateY(-50%)",

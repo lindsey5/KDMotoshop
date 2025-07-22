@@ -51,7 +51,7 @@ const CustomerHeader = () => {
     const navigate = useNavigate();
 
     return (
-        <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-5 py-3 bg-black transition-all duration-300">
+        <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-2 sm:px-5 py-3 bg-black transition-all duration-300">
             <img className="w-20 h-10 lg:w-30 lg:h-15 cursor-pointer" 
                 onClick={() => window.location.href = '/'} 
                 src="/kd-logo.png" alt="" 

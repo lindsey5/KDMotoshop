@@ -3,21 +3,21 @@ import EmailIcon from '@mui/icons-material/Email';
 import * as motion from "motion/react-client"
 import { cn } from '../../../utils/utils';
 import useDarkmode from '../../../hooks/useDarkmode';
-import ProductsGrid from './ProductsGridGallery';
 import { Title } from '../../../components/text/Text';
 
-const AboutSection = () => {
+const AboutSection = ({ isParallax } : { isParallax : boolean}) => {
   const isDark = useDarkmode();
 
   return (
-    <div className={cn("relative transition-colors duration-600 flex lg:grid grid-cols-2 lg:gap-50 justify-center px-10",
-      isDark ? "transparent text-white" : 'bg-white'
+    <div className={cn("h-screen relative transition-colors duration-600 flex justify-center lg:justify-end p-10",
+      isDark ? isParallax ? "transparent text-white" : 'bg-[#1e1e1e] text-white' : isParallax ? 'transparent text-white' : 'bg-white',
     )}>
+        <div></div>
         <motion.div
           className='flex flex-col justify-center'
-          initial={{ opacity: 0, x: -50}}
-          whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.4, delay: 0.4 }}
+          initial={{ opacity: 0, y: 50}}
+          whileInView={{ opacity: 1, y: 0}}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
           <Title>ABOUT</Title>
           <p className='max-w-lg text-lg mt-10'>
@@ -28,15 +28,6 @@ const AboutSection = () => {
           </div>
           <div className='flex gap-2 mt-4'>
             <EmailIcon />KDmotoshop@gmail.com
-          </div>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 50}}
-          whileInView={{ opacity: 1, x: 0}}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <div className='hidden lg:block'>
-            <ProductsGrid />
           </div>
         </motion.div>
     </div>

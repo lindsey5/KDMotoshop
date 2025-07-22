@@ -26,9 +26,8 @@ export const confirmDialog = async (
   return result.isConfirmed === true;
 };
 
-export const successAlert = (title: string, text: string, isDark : boolean = false) => {
-
-  return MySwal.fire({
+export const successAlert = async (title: string, text: string, isDark : boolean = false) => {
+  return await MySwal.fire({
     icon: 'success',
     title,
     text,
@@ -38,8 +37,8 @@ export const successAlert = (title: string, text: string, isDark : boolean = fal
 };
 
 
-export const errorAlert = (title: string, text: string, isDark : boolean = false) => {
-  return MySwal.fire({
+export const errorAlert = async (title: string, text: string, isDark : boolean = false) => {
+  return await MySwal.fire({
     icon: 'error',
     title,
     text,
