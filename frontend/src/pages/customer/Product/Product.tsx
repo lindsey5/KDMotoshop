@@ -15,6 +15,7 @@ import { CartContext } from "../../../context/CartContext";
 import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
 import ProductThumbnail from "../../../components/images/ProductThumbnail";
 import ProductReviews from "../../ProductReviews";
+import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -147,7 +148,14 @@ const CustomerProduct = () => {
                     <h1 className="font-bold text-3xl">{product?.product_name}</h1>
                     {product.rating !== 0 ? <div>
                         <div className="flex gap-3 items-center">
-                            <Rating sx={{ fontSize: 35 }} name="read-only" value={product.rating} readOnly />
+                            <Rating 
+                                sx={{ fontSize: 35 }} 
+                                name="read-only" 
+                                value={product.rating} 
+                                readOnly 
+                                precision={0.5}
+                                emptyIcon={<GradeOutlinedIcon fontSize="inherit" sx={{ color: isDark ? 'white' : ''}}/>}
+                            />
                             <p className="text-xl">{product.rating} / 5</p>
                         </div>
                         <p className="text-xl">({totalReviews} Reviews)</p>

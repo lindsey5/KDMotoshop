@@ -23,6 +23,7 @@ import AdminNotifications from "./pages/admin/Notifications";
 import ActivityLogs from "./pages/admin/ActivityLogs";
 import Settings from "./pages/admin/Settings";
 import Admins from "./pages/admin/Admins";
+import AdminProductReviews from "./pages/admin/Product/Reviews";
 
 export default function App() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
                 <Route path="activities" element={<ActivityLogs />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="admins" element={<Admins />} />
+                <Route path="reviews/:id" element={<AdminProductReviews />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

@@ -10,6 +10,7 @@ import { formatDate } from "../utils/dateUtils";
 import { useContext, useState, type JSX } from "react";
 import { CustomerNotificationContext } from "../context/CustomerNotifContext";
 import useDarkmode from "../hooks/useDarkmode";
+import { Title } from "./text/Text";
 
 const statusMap: Record<string, JSX.Element> = {
     'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,
@@ -44,7 +45,7 @@ export const NotificationsDrawerList = () => {
 
     return (
         <Box sx={{ width: 300, backgroundColor: isDark ? '#2a2a2a' : 'white', color: isDark ? 'white' : 'black'}}>
-            <h1 className="pt-10 px-3 pb-3 text-2xl font-bold text-red-500">Notifications</h1>
+            <Title className="pt-10 px-3 pb-3">Notifications</Title>
             {notifications.length < 1 && <p className="w-full text-center mt-4">No notifications yet</p>}
             <List sx={{ backgroundColor: isDark ? '#2a2a2a' : 'white' }}>
                 {notifications.map((n) => {

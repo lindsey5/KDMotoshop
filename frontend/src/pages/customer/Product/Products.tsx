@@ -12,6 +12,7 @@ import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
 import usePagination from "../../../hooks/usePagination";
+import { Title } from "../../../components/text/Text";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -125,7 +126,7 @@ const CustomerProducts = () => {
             <div className={cn("transition-colors duration-600 relative flex-1 p-3 lg:p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex flex-wrap gap-5 justify-between items-center mt-4">
-                    <h1 className="text-4xl text-red-500 font-bold">Products</h1>
+                    <Title>Products</Title>
                     <div className="flex gap-5 flex-1 max-w-[600px]">
                         <CustomizedSelect 
                             menu={[

@@ -41,9 +41,9 @@ const MobileHome = () => {
                         </motion.p>
                                                             
                     </motion.div>
-                    <img src="/mountain.png" className="w-full absolute bottom-0"/>
-                    <img src="/road.png" className="w-full absolute bottom-0"/>
-                    <img src="/moto-pov.png" className="w-full absolute sm:-bottom-50 bottom-0"/>
+                    <img src="/mountain.png" className="w-full h-[80%] absolute bottom-0"/>
+                    <img src="/road.png" className="w-full h-[80%] absolute bottom-0"/>
+                    <img src="/moto-pov.png" className="w-full absolute sm:-bottom-50 -bottom-20"/>
              </div>
                 <PopularProductsSection />
                 <PopularCategoriesSection />

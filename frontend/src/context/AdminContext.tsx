@@ -25,7 +25,6 @@ export const AdminContextProvider = ({ children }: AdminContextProviderProps) =>
   useEffect(() => {
     const getUser = async () => {
       const response = await fetchData('/api/admin');
-      console.log(response)
       if (response.success) setAdmin(response.admin);
       else window.location.href = '/admin/login';
     };

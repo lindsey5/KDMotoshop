@@ -15,6 +15,7 @@ export const ProductTableColumns = () => {
             <StyledTableCell align="center">Category</StyledTableCell>
             <StyledTableCell align="center">Product Type</StyledTableCell>
             <StyledTableCell align="center">Created at</StyledTableCell>
+            <StyledTableCell align="center">Created by</StyledTableCell>
             <StyledTableCell align="center">Rating</StyledTableCell>
             <StyledTableCell align="center">Action</StyledTableCell>
         </TableRow>
@@ -89,6 +90,11 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
+      >{`${product.added_by?.firstname} ${product.added_by?.lastname}`}</StyledTableCell>
+      <StyledTableCell 
+        className={highLightLowStock(product, isDark)} 
+        align="center"
+        isDark={isDark}
       >{product.rating} / 5</StyledTableCell>
       <StyledTableCell 
         className={highLightLowStock(product, isDark)} 
@@ -101,7 +107,7 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         </IconButton>
         </Tooltip>
         <Tooltip title="View Reviews">
-        <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+        <IconButton onClick={() => navigate(`/admin/reviews/${product._id}`)}>
           <ThumbUpIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
         </IconButton>
         </Tooltip>

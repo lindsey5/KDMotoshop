@@ -162,11 +162,11 @@ export const HeaderSearchField = () => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {autoComplete && pagination.searchTerm && <div className="bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-0 z-10 p-3 border border-gray-300 rounded-md">
+            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-0 z-10 p-3 border border-gray-300 rounded-md", isDark && 'bg-[#121212]')}>
                 {products.length > 0 ? products.map((product) => (
                     <div 
                         key={product._id}
-                        className="flex gap-5 cursor-pointer hover:bg-gray-100 px-3 py-2"
+                        className={cn("flex gap-5 cursor-pointer hover:bg-gray-100 px-3 py-2", isDark && 'hover:bg-[#313131]')}
                         onClick={() => window.location.href = `/product/${product._id}`}
                     >
                         <ProductThumbnail 
@@ -174,8 +174,8 @@ export const HeaderSearchField = () => {
                             className="w-15 h-15"
                         />
                         <div>
-                             <strong>{product.product_name}</strong>
-                            <p className="text-gray-500 mt-2">₱{formatNumber(Number(product.price))}</p>
+                             <strong className={cn(isDark && 'text-white')}>{product.product_name}</strong>
+                            <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>₱{formatNumber(Number(product.price))}</p>
                         </div>
                     </div>
                 )) : <p>No results</p>}

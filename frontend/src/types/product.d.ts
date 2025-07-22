@@ -29,7 +29,7 @@ type Product = {
     stock?: number | null;
     product_type: "Single" | "Variable" | string;
     visibility: string;
-    added_by?: string; 
+    added_by?: Admin; 
     images: (UploadedImage | string | ArrayBuffer)[], 
     thumbnail: UploadedImage | string | ArrayBuffer | null,
     weight: number;

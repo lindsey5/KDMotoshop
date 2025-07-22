@@ -6,7 +6,7 @@ import { fetchData } from "../../../services/api";
 import Card from "../../../components/cards/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/Button";
-import { Status } from "../../../components/text/Text";
+import { Status, Title } from "../../../components/text/Text";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { Statuses } from "../../../constants/status";
@@ -60,7 +60,7 @@ const CustomerOrders = () => {
     return (
         <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <h1 className="text-3xl font-bold text-red-500">My Orders</h1>
+            <Title>My Orders</Title>
             <CustomizedSelect 
                 sx={{ height: 55, maxWidth: '300px' }}
                 menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}

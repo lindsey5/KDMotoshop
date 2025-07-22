@@ -4,6 +4,7 @@ import * as motion from "motion/react-client"
 import { cn } from '../../../utils/utils';
 import useDarkmode from '../../../hooks/useDarkmode';
 import ProductsGrid from './ProductsGridGallery';
+import { Title } from '../../../components/text/Text';
 
 const AboutSection = () => {
   const isDark = useDarkmode();
@@ -17,7 +18,7 @@ const AboutSection = () => {
           whileInView={{ opacity: 1, x: 0}}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <h1 className="text-4xl lg:text-6xl font-bold text-red-600 dark:text-white">ABOUT</h1>
+          <Title>ABOUT</Title>
           <p className='max-w-lg text-lg mt-10'>
             <span className='font-bold text-red-600'>KD</span> MOTOSHOP is your motorsports store, offering legit and affordable motorcycle gear and accessories. As a trusted APB & DC Monorack dealer, we proudly carry top brands like EVO, Gille, MT, SEC, Spyder, and Zebra helmets, along with Duhan, Hybriid, MC riding gear and SEC top boxes. We also offer FreedConn intercoms, Motowolf phone holders, and a wide range of motorcycle accessories.
           </p>

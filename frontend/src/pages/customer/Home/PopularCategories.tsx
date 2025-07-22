@@ -7,6 +7,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
+import { Title } from "../../../components/text/Text";
 
 type TopCategory = {
   totalQuantity: number;
@@ -64,9 +65,7 @@ const PopularCategoriesSection = () => {
             isDark && 'bg-[#121212]'
         )}
         >
-        <h1 className="text-center text-5xl font-bold text-red-600 mb-12">
-            Popular Categories
-        </h1>
+        <Title className="w-full text-center mb-20">Popular Categories</Title>
         <div className="relative flex justify-center items-center overflow-hidden min-h-[400px]">
             <IconButton
                 size="large"

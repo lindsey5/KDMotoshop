@@ -10,6 +10,7 @@ import { deleteData } from "../../../services/api";
 import { confirmDialog, successAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
+import { Title } from "../../../components/text/Text";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -48,7 +49,7 @@ const Cart = () => {
     return (
         <div className={cn("flex flex-col gap-5 transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <h1 className="text-3xl font-bold text-red-500">Cart</h1>
+            <Title>Cart</Title>
             <Card>
                 <div className={cn("flex items-center gap-5 pb-5 border-b border-gray-300", isDark && 'border-gray-500')}>
                     <CustomizedChip label={`${cart.length} items`} />

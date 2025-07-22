@@ -54,7 +54,7 @@ const Settings = () => {
     }
 
     return (
-        <form onSubmit={handleSave}>
+        <form className="h-full" onSubmit={handleSave}>
         <PageContainer className="flex flex-col h-full">
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}

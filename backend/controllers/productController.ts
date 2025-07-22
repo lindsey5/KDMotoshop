@@ -8,7 +8,6 @@ import OrderItem from "../models/OrderItem";
 import { Types } from "mongoose";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
-import Review from "../models/Review";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -93,7 +92,7 @@ export const get_products = async (req: Request, res: Response) => {
 
     const [products, total] = await Promise.all([
       Product.find(filter)
-        .populate("added_by")
+        .populate("added_by", ["firstname", "lastname"])
         .skip(skip)
         .sort(sortOption)
         .limit(limit),

@@ -6,6 +6,7 @@ import CustomerProductContainer from "../../../components/containers/customer/Cu
 import * as motion from "motion/react-client"
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
+import { Title } from "../../../components/text/Text";
 
 const itemVariants = {
     visible: {
@@ -51,7 +52,7 @@ const PopularProductsSection = () => {
     return (
         <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-10 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
         <div className="w-full">
-            <h1 className="text-4xl md:text-5xl font-bold text-red-600">Best Selling Products</h1>
+            <Title>Most Selling Products</Title>
         </div>
 
         <motion.div 
