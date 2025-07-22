@@ -273,21 +273,21 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
       if (!stillUsed) await deleteImage(oldImg.imagePublicId);
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(id, { ...product, thumbnail, images }, { new: true });
+    oldProduct.set({ ...product, thumbnail, images });
 
-    if(updatedProduct){
-      await create_activity_log({ 
-        admin_id: req.user_id ?? '',
-        description: `updated ${updatedProduct?.product_name}`,
-        product_id: updatedProduct._id as string,
-        prev_value: JSON.stringify(oldProduct),
-        new_value: JSON.stringify(product)
-      })
-    }
+    await oldProduct.save();  
+
+    await create_activity_log({ 
+      admin_id: req.user_id ?? '',
+      description: `updated ${product?.product_name}`,
+      product_id: oldProduct._id as string,
+      prev_value: JSON.stringify(oldProduct),
+      new_value: JSON.stringify(product)
+    })
 
     res.status(200).json({
       success: true,
-      product: updatedProduct,
+      product,
     });
   } catch (err: any) {
     console.error(err);

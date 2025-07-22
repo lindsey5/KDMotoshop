@@ -53,7 +53,7 @@ const VariantContainer : React.FC<VariantContainerProps> = ({ index, setProduct,
         }
     };
 
-    return <div className={cn('border-1 border-gray-300 rounded-lg', isDark ? 'bg-[#121212]' : 'bg-white')}>
+    return <div className={cn('border-1 border-gray-300 rounded-lg', isDark ? 'bg-[#121212] border-gray-600' : 'bg-white')}>
         <div className="p-5 flex justify-between items-center rounded-lg">
             <div>
                 <h1 className='font-bold'>Variant {index + 1}</h1>
