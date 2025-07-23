@@ -74,9 +74,7 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
         let image : any = admin.image;
 
         if (typeof updatedData.image === 'string') {
-            if (image && typeof image !== 'string') {
-                await deleteImage(image.imagePublicId);
-            }
+            await deleteImage(image.imagePublicId);
             image = await uploadImage(updatedData.image);
             updatedData.image = image;
         }

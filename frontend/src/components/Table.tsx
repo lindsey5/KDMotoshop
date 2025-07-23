@@ -12,8 +12,8 @@ export const StyledTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => prop !== 'isDark',
 })<{isDark?: boolean}>(({ theme, isDark }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+    color: 'white',
+    backgroundColor: theme.palette.common.black
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,

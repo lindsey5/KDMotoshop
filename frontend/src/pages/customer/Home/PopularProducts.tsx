@@ -28,14 +28,14 @@ const itemVariants = {
 
 const containerVariants = {
     visible: {
-        transition: { staggerChildren: 0.2, delayChildren: 0.5 },
+        transition: { staggerChildren: 0.2, delayChildren: 0.1 },
     },
     hidden: {
         transition: { staggerChildren: 0.5, staggerDirection: -1 },
     },
 }
 
-const PopularProductsSection = () => {
+const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
     const [products, setProducts] = useState<TopProduct[]>([]);
     const isDark = useDarkmode()
 
@@ -50,7 +50,7 @@ const PopularProductsSection = () => {
     }, []);
 
     return (
-        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-20 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]')}>
+        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-20 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]',isDark && isParallax && 'bg-gray-900/20 backdrop-blur-md rounded-xl shadow-lg')}>
         <div className="w-full">
             <Title>Most Selling Products</Title>
         </div>

@@ -19,7 +19,7 @@ export const SidebarLink = ({ label, icon, path }: SidebarLinkProps) => {
       startIcon={icon}
       sx={{
         fontWeight: 'bold',
-        backgroundColor: pathname === path ? 'red' : '#1e1e1e',
+        backgroundColor: pathname === path ? 'red' : '#2A2A2A',
         '&:hover': {
           backgroundColor: 'red',
         },

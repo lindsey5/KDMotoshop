@@ -11,6 +11,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
     try{
         const { orderItemId, product_id } = req.body;
 
+        // Find customer
         const customer = await Customer.findById(req.user_id);
 
         if(!customer){
@@ -18,6 +19,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
             return;
         }
 
+        // Find order item
         const orderItem= await OrderItem.findById(orderItemId);
 
         if(!orderItem){
@@ -25,6 +27,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
             return;
         }
 
+        // Find product
         const product = await Product.findById(product_id);
 
         if(!product){
@@ -32,22 +35,25 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
             return;
         }
 
+        // Create new review
         const review = new Review({...req.body, customer_id: req.user_id});
         await review.save();
 
+        // Calculate rating based on reviews
         const productReviews = await Review.find({ product_id: product._id });
         const totalRating = productReviews.reduce((total, review) => total + review.rating, 0);
-        product.rating = productReviews.length > 0 ? Number((totalRating / productReviews.length).toFixed(1)) : 0;
+        product.rating = Number((totalRating / productReviews.length).toFixed(1));
         await product.save();
 
+        // Change the order item status to rated
         orderItem.status = 'Rated';
         await orderItem.save();
         
+        //  Get order items
         const orderItems = await OrderItem.find({ order_id: orderItem.order_id });
 
-        if(orderItems.every(item => item.status === 'Rated')){
-            await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
-        }
+        // If every order items is "Rated" update the status of order to "Rated"
+        if(orderItems.every(item => item.status === 'Rated')) await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
 
         await sendAdminsNotification(
             req.user_id ?? '', 

@@ -55,7 +55,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const carts = await Cart.find({ customer_id: req.user_id }).populate('product_id');
 
-        // Get all accepted order IDs only once
+        // Get all accepted order IDs
         const orders = await Order.find({ status: 'Accepted' }, '_id');
         const orderIds = orders.map(order => order._id);
 
@@ -70,40 +70,37 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
         });
 
         // Build response
-        const completedCart = await Promise.all(
-            carts.map(async (item) => {
-                const product: any = item.product_id;
+        const completedCart = carts.map((item) => {
+            const product: any = item.product_id;
 
-                // Use .equals or .toString() to compare ObjectIds
-                const variant = product.variants?.find((v: any) => v._id.toString() === item.variant_id?.toString());
+            const variant = product.variants?.find((v: any) => v._id.toString() === item.variant_id?.toString());
 
-                // Adjust stock
-                if (product.product_type === 'Single') {
-                    const key = product._id.toString();
-                    const orderedQty = stockMap.get(key) || 0;
-                    product.stock = Math.max((product.stock || 0) - orderedQty, 0);
-                } else {
-                    product.variants?.forEach((v: any) => {
-                        const varKey = product._id.toString() + v._id.toString();
-                        const varOrderedQty = stockMap.get(varKey) || 0;
-                        v.stock = Math.max((v.stock || 0) - varOrderedQty, 0);
-                    });
-                }
+            // Adjust stock
+            if (product.product_type === 'Single') {
+                const key = product._id.toString();
+                const orderedQty = stockMap.get(key) || 0;
+                product.stock = Math.max((product.stock || 0) - orderedQty, 0);
+            } else {
+                product.variants?.forEach((v: any) => {
+                    const varKey = product._id.toString() + v._id.toString();
+                    const varOrderedQty = stockMap.get(varKey) || 0;
+                    v.stock = Math.max((v.stock || 0) - varOrderedQty, 0);
+                });
+            }
 
-                return {
-                    _id: item._id,
-                    customer_id: item.customer_id,
-                    product_id: product._id,
-                    variant_id: item.variant_id,
-                    quantity: item.quantity,
-                    attributes: variant?.attributes || [],
-                    stock: product.product_type === 'Single' ? product.stock : variant?.stock || 0,
-                    product_name: product.product_name,
-                    price: product.product_type === 'Single' ? product.price : variant?.price || 0,
-                    image: product.thumbnail?.imageUrl || ''
-                };
-            })
-        );
+            return {
+                _id: item._id,
+                customer_id: item.customer_id,
+                product_id: product._id,
+                variant_id: item.variant_id,
+                quantity: item.quantity,
+                attributes: variant?.attributes || [],
+                stock: product.product_type === 'Single' ? product.stock : variant?.stock || 0,
+                product_name: product.product_name,
+                price: product.product_type === 'Single' ? product.price : variant?.price || 0,
+                image: product.thumbnail?.imageUrl || ''
+            };
+        })
 
         res.status(200).json({ success: true, carts: completedCart });
     } catch (err: any) {

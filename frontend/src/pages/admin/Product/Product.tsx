@@ -11,7 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import AddProductThumbnail from "../../../components/cards/admin/AddProductThumbnail";
-import ProductImages from "../../../components/images/ProductImages";
+import ProductImages from "../../../components/cards/admin/ProductImages";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
@@ -196,8 +196,8 @@ const ProductPage = () => {
             <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
-        <div className="flex xl:flex-row flex-col items-start gap-10 mt-6">
-            <div className="w-full xl:flex-1">
+        <div className="grid xl:grid-cols-[2fr_370px] gap-x-10 gap-y-10 mt-6">
+            <div className="w-full">
                 <Card className="flex flex-col gap-5">
                     <h1 className="text-lg font-bold">Basic Information</h1>
                     <div className="grid grid-cols-2 gap-10">
@@ -323,16 +323,9 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </Card>}
-                <Card className="hidden xl:flex justify-end gap-5 mt-8">
-                    <Button 
-                        variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
-                        onClick={() => navigate(-1)}
-                    >Cancel</Button>
-                    <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
-                </Card>
             </div>
             
-            <div className="w-full xl:w-[30%] xl:max-w-[350px] flex flex-col gap-6">
+            <div className="grid grid-cols-2 xl:flex xl:flex-col gap-6">
                 <AddProductThumbnail 
                     product={product}
                     handleThumbnail={handleThumbnail}
@@ -355,14 +348,14 @@ const ProductPage = () => {
                         <RedRadio label="Hidden" value="Hidden" />
                     </RadioGroup>
                 </Card>
-                <Card className="flex xl:hidden justify-end gap-5 mt-8">
-                    <Button 
-                        variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
-                        onClick={() => navigate(-1)}
-                    >Cancel</Button>
-                    <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
-                </Card>
             </div>
+            <Card className="flex justify-end gap-5">
+                <Button 
+                    variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
+                    onClick={() => navigate(-1)}
+                >Cancel</Button>
+                <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
+            </Card>
         </div>
    </PageContainer>
 }

@@ -6,15 +6,13 @@ export const createPaymentCheckout = async (req : Request, res: Response) => {
     try{
         const { order, orderItems, cart } = req.body
 
-        const line_items = [
-            ...orderItems.map((item : any) => ({ 
-                images: [item.image],
-                currency: "PHP", 
-                amount: item.price * 100, 
-                name: item.product_name,  
-                quantity: item.quantity 
-            }))
-        ]
+        const line_items = orderItems.map((item : any) => ({ 
+            images: [item.image],
+            currency: "PHP", 
+            amount: item.price * 100, 
+            name: item.product_name,  
+            quantity: item.quantity 
+        }))
 
         line_items.push({
             currency: "PHP",

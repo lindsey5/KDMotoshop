@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { RedButton } from "../Button";
+import { RedButton } from "../../Button";
 import AddIcon from '@mui/icons-material/Add';
-import Card from "../cards/Card";
+import Card from "../Card";
 
 type ProductImageProps = {
     index: number;
@@ -61,7 +61,7 @@ const ProductImages : React.FC<ProductImagesProps> = ({ images, setSelectedImage
         <Card>
             <strong>Product Images</strong>
             <div className="flex flex-col items-center gap-10 mt-4">
-                <img className="w-[170px] h-[170px] bg-gray-100 lg:h-[150px]" src={selectedImage} />
+                <img className="w-[170px] h-[170px]" src={selectedImage} />
                                 
                 <div className="w-full flex gap-5 items-center">
                     <div className="flex gap-5 flex-grow min-w-0 overflow-auto scrollbar-hidden py-3">

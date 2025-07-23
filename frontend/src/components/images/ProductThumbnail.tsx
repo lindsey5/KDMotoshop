@@ -3,7 +3,7 @@ import { cn } from "../../utils/utils"
 const ProductThumbnail = ({ product, className } : { product : Product | undefined, className?: string}) => {
     return (
         <img 
-            className={cn('bg-gray-100', className)}
+            className={cn(className)}
             src={
                 typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
                 ? product.thumbnail.imageUrl

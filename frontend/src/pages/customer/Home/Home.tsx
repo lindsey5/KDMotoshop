@@ -4,33 +4,31 @@ import PopularProductsSection from "./PopularProducts";
 import * as motion from "motion/react-client"
 import { Parallax, ParallaxLayer, type IParallax } from '@react-spring/parallax'
 import { useRef, } from "react";
-import CustomerFooter from "../../../components/partials/customer/CustomerFooter";
-import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import { CustomerContextProvider } from "../../../context/CustomerContext";
 import MobileHome from "./MobileView";
 import CustomerHeader from "../../../components/partials/customer/CustomerHeader";
+import SplashCursor from "../../../components/SplashCursor";
+import useDarkmode from "../../../hooks/useDarkmode";
+import RippleGrid from "../../../components/backgrounds/RippleGrid";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
     const isDark = useDarkmode();
 
+    const scrollToTop = () => {
+        parallax.current.scrollTo(0);
+    };
+
     return (
         <CustomerContextProvider>
+            {isDark && <SplashCursor />}
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
                 <Parallax ref={parallax} pages={6} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
-                    <ParallaxLayer className="relative z-10">
+                    <ParallaxLayer className="relative z-100" offset={0}>
                         <CustomerHeader />
-                    </ParallaxLayer>
-                    <ParallaxLayer offset={0}>
-                        <img className="w-full h-screen" src="/night.jpg" alt="" />
-                    </ParallaxLayer>
-                    <ParallaxLayer offset={0} speed={-0.3}>
-                        <img src="/moon.png" className="w-full filter grayscale sepia hue-rotate-[0deg] saturate-[10000%] brightness-100"/>
-                    </ParallaxLayer>
-                    <ParallaxLayer offset={0} speed={-0.2}>
-                         <div className='hero relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
+                         <div className='relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
                             <motion.div 
                                 className="space-y-8 text-white max-w-xl flex flex-col items-center"
                             >
@@ -51,28 +49,63 @@ const KDMotoshopHome = () => {
                                     transition={{ duration: 0.8, delay: 0.8 }}
                                 >
                                     Your shop for legit and affordable helmets, racks, intercoms, and riding gear—trusted by riders, built for every journey.
-                                </motion.p>
-                                                    
+                                </motion.p>  
+                                <motion.button 
+                                    className="relative border border-white cursor-pointer relative group mt-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-12 py-3 rounded-full font-bold overflow-hidden shadow-2xl shadow-red-600 hover:scale-105 border border-red-500/50"
+                                    onClick={() => window.location.href = '/products'}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.8, delay: 1.5 }}
+                                >
+                                <span className="relative text-lg tracking-wide">SHOP NOW</span>
+                                </motion.button> 
                             </motion.div>
                         </div>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.2} speed={0.2}>
-                        <img src="/mountain.png" className="w-full h-screen grayscale"/>
+
+                    <ParallaxLayer offset={1} speed={0.3}>
+                        <RippleGrid
+                            enableRainbow
+                            rippleIntensity={0.05}
+                            gridSize={10}
+                            gridThickness={15}
+                            mouseInteraction={true}
+                            mouseInteractionRadius={1.2}
+                            opacity={0.8}
+                        />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.3}>
-                        <img src="/road.png" className="w-full h-screen"/>
+
+                    <ParallaxLayer className="flex justify-center items-center z-10" offset={1}>
+                        <h1 className="text-white text-5xl font-bold text-shadow-lg text-shadow-red-600/50">Welcome to KD Motoshop</h1>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.4} speed={-0.2}>
-                        <img src="/moto-pov.png" className="w-full h-screen"/>
+
+                    <ParallaxLayer offset={2}>
+                        <PopularProductsSection isParallax />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={1.3} factor={4}>
-                        <PopularProductsSection />
+                    <ParallaxLayer offset={3}>
                         <PopularCategoriesSection />
-                        <AboutSection isParallax={true}/>
-                        <iframe className={cn("w-full p-20 bg-gray-100 hidden xl:block", isDark && "bg-[#121212]")} height="700" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3862.349116006964!2d121.05185327507307!3d14.522012278995932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397bbee71caad35%3A0x8c8e2d4f2d0bdde3!2sKD%20Motoshop%20Pinagsama%20Branch!5e0!3m2!1sen!2sph!4v1752127835647!5m2!1sen!2sph" loading="lazy" />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={5} className={cn("flex items-end bg-gray-100", isDark && "bg-[#121212]")}>
-                        <CustomerFooter />
+                    <ParallaxLayer offset={4}>
+                        <AboutSection isParallax={true}/>
+                    </ParallaxLayer>
+
+                    <ParallaxLayer offset={5} speed={-0.4}>
+                        <img className="w-full h-screen" src="/mountain.png" />
+                    </ParallaxLayer>
+                
+                    <ParallaxLayer offset={5}>
+                        <img className="w-full h-screen" src="/road.png" />
+                    </ParallaxLayer>
+
+                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4 }}>
+                        <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
+                    </ParallaxLayer>
+                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
+                        <img className="cursor-pointer absolute right-20 bottom-10 w-30 h-30" src="/icons/Shopping Cart.gif" onClick={scrollToTop}/>
+                    </ParallaxLayer>
+
+                    <ParallaxLayer offset={5.3} speed={-0.3}>
+                        <img className="w-full h-screen" src="/moto-pov.png" />
                     </ParallaxLayer>
                 </Parallax>
             </div>

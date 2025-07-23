@@ -37,7 +37,7 @@ export const AdminSidebar = () => {
   const { admin } = useContext(AdminContext);
 
   return (
-    <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#1e1e1e] border-r border-gray-600">
+    <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#2A2A2A]">
       <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
       <div className='w-full flex-col flex gap-3 flex-1'>
         <SidebarLink 

@@ -62,7 +62,7 @@ const PopularCategoriesSection = () => {
 
     return (
         <section className={cn('min-h-screen bg-gray-100 transition-colors duration-600 py-20', 
-            isDark && 'bg-[#121212]'
+            isDark && 'bg-black'
         )}
         >
         <Title className="w-full text-center mb-20">Popular Categories</Title>
