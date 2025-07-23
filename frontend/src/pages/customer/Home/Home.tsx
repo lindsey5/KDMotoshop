@@ -11,6 +11,8 @@ import CustomerHeader from "../../../components/partials/customer/CustomerHeader
 import SplashCursor from "../../../components/SplashCursor";
 import useDarkmode from "../../../hooks/useDarkmode";
 import RippleGrid from "../../../components/backgrounds/RippleGrid";
+import Squares from "../../../components/backgrounds/Squares";
+import TextType from "../../../components/text/TextType";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -63,7 +65,7 @@ const KDMotoshopHome = () => {
                         </div>
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={1} speed={0.3}>
+                    <ParallaxLayer offset={0} speed={-0.2}>
                         <RippleGrid
                             enableRainbow
                             rippleIntensity={0.05}
@@ -75,8 +77,19 @@ const KDMotoshopHome = () => {
                         />
                     </ParallaxLayer>
 
-                    <ParallaxLayer className="flex justify-center items-center z-10" offset={1}>
-                        <h1 className="text-white text-5xl font-bold text-shadow-lg text-shadow-red-600/50">Welcome to KD Motoshop</h1>
+                    <ParallaxLayer className="relative" sticky={{ start: 0.7, end: 1 }}>
+                        <img className="w-100 h-45 absolute right-20 bottom-[60%]" src="/icons/satellite.png" />
+                    </ParallaxLayer>
+
+                    <ParallaxLayer className="relative flex justify-center items-center z-10" offset={1} speed={1}>
+                        <TextType 
+                            text ={["Welcome to KD Motoshop", "Find everything you need", "Enjoy seamless checkout!", "Thanks for shopping with us!"]}
+                            typingSpeed={75}
+                            className="text-6xl font-bold"
+                            pauseDuration={1500}
+                            showCursor={true}
+                            cursorCharacter="|"
+                        />
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={2}>
@@ -85,8 +98,20 @@ const KDMotoshopHome = () => {
                     <ParallaxLayer offset={3}>
                         <PopularCategoriesSection />
                     </ParallaxLayer>
+
                     <ParallaxLayer offset={4}>
                         <AboutSection isParallax={true}/>
+                    </ParallaxLayer>
+
+                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4 }}>
+                        <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
+                    </ParallaxLayer>
+                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
+                        <img className="cursor-pointer absolute right-20 bottom-10 w-30 h-30" src="/icons/Shopping Cart.gif" onClick={scrollToTop}/>
+                    </ParallaxLayer>
+
+                    <ParallaxLayer offset={5} speed={0.3}>
+                        <img className="w-full h-screen" src="/moon.png" />
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={5} speed={-0.4}>
@@ -95,13 +120,6 @@ const KDMotoshopHome = () => {
                 
                     <ParallaxLayer offset={5}>
                         <img className="w-full h-screen" src="/road.png" />
-                    </ParallaxLayer>
-
-                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4 }}>
-                        <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
-                    </ParallaxLayer>
-                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
-                        <img className="cursor-pointer absolute right-20 bottom-10 w-30 h-30" src="/icons/Shopping Cart.gif" onClick={scrollToTop}/>
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={5.3} speed={-0.3}>
