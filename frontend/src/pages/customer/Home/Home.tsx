@@ -56,7 +56,7 @@ const KDMotoshopHome = () => {
                             </motion.div>
                         </div>
                     </ParallaxLayer>
-                    <ParallaxLayer offset={0.2} speed={0.1}>
+                    <ParallaxLayer offset={0.2} speed={0.2}>
                         <img src="/mountain.png" className="w-full h-screen grayscale"/>
                     </ParallaxLayer>
                     <ParallaxLayer offset={0.3}>
