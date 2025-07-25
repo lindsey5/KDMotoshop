@@ -7,7 +7,7 @@ import CustomizedPagination from "../../components/Pagination";
 import PageContainer from "../../components/containers/admin/PageContainer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
-import { notificationsPage } from "../../redux/customer-notification-reducer";
+import { notificationsPage } from "../../redux/notification-reducer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },

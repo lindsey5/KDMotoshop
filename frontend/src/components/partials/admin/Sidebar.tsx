@@ -14,7 +14,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import { AdminContext } from '../../../context/AdminContext';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../redux/store';
-import { addNotification, fetchNotifications } from '../../../redux/customer-notification-reducer';
+import { addNotification, fetchNotifications } from '../../../redux/notification-reducer';
 import { SocketContext } from '../../../context/socketContext';
 
 const signout = async () => {

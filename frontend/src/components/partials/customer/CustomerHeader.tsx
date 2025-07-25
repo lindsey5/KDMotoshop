@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../../../redux/cart-reducer";
 import type { AppDispatch, RootState } from "../../../redux/store";
 import { SocketContext } from "../../../context/socketContext";
-import { addNotification, fetchNotifications } from "../../../redux/customer-notification-reducer";
+import { addNotification, fetchNotifications } from "../../../redux/notification-reducer";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
     return (

@@ -12,7 +12,7 @@ import useDarkmode from "../hooks/useDarkmode";
 import { Title } from "./text/Text";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
-import { notificationsNextPage, updateAllNotifications } from "../redux/customer-notification-reducer";
+import { notificationsNextPage, updateAllNotifications } from "../redux/notification-reducer";
 
 const statusMap: Record<string, JSX.Element> = {
     'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,

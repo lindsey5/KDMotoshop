@@ -14,7 +14,7 @@ import { NotificationsDrawerList } from "./Drawer";
 import RedBadge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
-import { updateAllNotifications } from "../redux/customer-notification-reducer";
+import { updateAllNotifications } from "../redux/notification-reducer";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const [open, setOpen] = useState<boolean>(false);
