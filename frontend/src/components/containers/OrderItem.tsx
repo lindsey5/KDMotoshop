@@ -15,7 +15,7 @@ const OrderItem = ({ item } : { item : OrderItem}) => {
                 setReview(response.review);
             }
         }
-        fetchReview()
+        if(item.status === 'Rated') fetchReview()
     }, [item])
 
     return (

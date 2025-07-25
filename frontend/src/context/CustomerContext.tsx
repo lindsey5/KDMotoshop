@@ -1,17 +1,14 @@
-import { createContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 import { fetchData } from "../services/api";
-import { CustomerNotificationContextProvider } from "./CustomerNotifContext";
 
 // Context type
 interface CustomerContextType {
   customer: Customer | null;
-  setCustomer: Dispatch<SetStateAction<Customer | null>>;
 }
 
 // Create the context with a default value
 export const CustomerContext = createContext<CustomerContextType>({
   customer: null,
-  setCustomer: () => {},
 });
 
 interface CustomerContextProviderProps {
@@ -32,10 +29,8 @@ export const CustomerContextProvider = ({ children }: CustomerContextProviderPro
   }, []);
 
   return (
-    <CustomerNotificationContextProvider>
-      <CustomerContext.Provider value={{ customer, setCustomer }}>
+      <CustomerContext.Provider value={{ customer }}>
         {children}
       </CustomerContext.Provider>
-    </CustomerNotificationContextProvider>
   );
 };

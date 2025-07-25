@@ -10,18 +10,44 @@ interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
 }
 
-export const LineTextField = ({ label, ...props } : LineTextFieldProps) => {
+export const LineTextField = ({ label, sx, ...props }: LineTextFieldProps) => {
+  const isDark = useDarkmode();
+
   return (
     <TextField
-      variant="standard" 
+      variant="standard"
       label={label}
+      InputProps={{
+        sx: {
+          color: isDark ? 'white' : 'black', // input text color
+          '& input::placeholder': {
+            color: isDark ? '#aaa' : '#666', // placeholder color
+            opacity: 1, // ensure visibility
+          },
+        },
+      }}
       sx={{
+        // underline default color
+        '& .MuiInput-underline:before': {
+          borderBottomColor: isDark ? '#555' : '#ccc',
+        },
+        // underline on hover (not focused)
+        '& .MuiInput-underline:hover:before': {
+          borderBottomColor: isDark ? 'red' : '#666',
+        },
+        // underline when focused
         '& .MuiInput-underline:after': {
-          borderBottomColor: 'red',
+          borderBottomColor: 'red', // customize focused underline
         },
+        // label when focused
         '& label.Mui-focused': {
-          color: 'red', 
+          color: 'red',
         },
+        // label default color
+        '& label': {
+          color: isDark ? '#aaa' : '#555',
+        },
+        ...sx,
       }}
       {...props}
     />

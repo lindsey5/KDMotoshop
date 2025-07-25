@@ -11,7 +11,6 @@ import CustomerHeader from "../../../components/partials/customer/CustomerHeader
 import SplashCursor from "../../../components/SplashCursor";
 import useDarkmode from "../../../hooks/useDarkmode";
 import RippleGrid from "../../../components/backgrounds/RippleGrid";
-import Squares from "../../../components/backgrounds/Squares";
 import TextType from "../../../components/text/TextType";
 
 const KDMotoshopHome = () => {
@@ -99,11 +98,11 @@ const KDMotoshopHome = () => {
                         <PopularCategoriesSection />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={4}>
+                    <ParallaxLayer offset={4} speed={0.5}>
                         <AboutSection isParallax={true}/>
                     </ParallaxLayer>
 
-                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4 }}>
+                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4.2 }}>
                         <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
                     </ParallaxLayer>
                     <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
@@ -114,7 +113,7 @@ const KDMotoshopHome = () => {
                         <img className="w-full h-screen" src="/moon.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={5} speed={-0.4}>
+                    <ParallaxLayer offset={5} speed={-0.3}>
                         <img className="w-full h-screen" src="/mountain.png" />
                     </ParallaxLayer>
                 

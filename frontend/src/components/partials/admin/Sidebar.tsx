@@ -9,10 +9,13 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { Badge, Button, Divider } from '@mui/material';
 import { SidebarLink } from './SidebarLink';
 import { ThemeToggle } from '../../Toggle';
-import { useContext } from 'react';
-import { AdminNotificationContext } from '../../../context/AdminNotificationContext';
+import { useContext, useEffect } from 'react';
 import HistoryIcon from '@mui/icons-material/History';
 import { AdminContext } from '../../../context/AdminContext';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../redux/store';
+import { addNotification, fetchNotifications } from '../../../redux/customer-notification-reducer';
+import { SocketContext } from '../../../context/socketContext';
 
 const signout = async () => {
   localStorage.removeItem('token');
@@ -20,8 +23,8 @@ const signout = async () => {
 };
 
 const NotificationLink = () => {
-  const { unread } = useContext(AdminNotificationContext);
-
+  const { unread } = useSelector((state : RootState) => state.notification)
+  
   return (
     <Badge badgeContent={unread} color='primary'>
       <SidebarLink 
@@ -35,6 +38,19 @@ const NotificationLink = () => {
 
 export const AdminSidebar = () => {
   const { admin } = useContext(AdminContext);
+  const { socket } = useContext(SocketContext); 
+
+  const dispatch = useDispatch<AppDispatch>();
+  dispatch(fetchNotifications('admin'));
+
+  useEffect(() => {
+      if (!socket) return;
+      
+      socket.on('adminNotification', (notification) => {
+          dispatch(addNotification(notification))
+      });
+      
+  }, [socket]);
 
   return (
     <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#2A2A2A]">

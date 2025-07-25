@@ -1,25 +1,26 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../utils/utils"
 import { CustomizedChip } from "../../Chip";
 import Counter from "../../Counter";
 import { updateData } from "../../../services/api";
 import { Button, Checkbox } from "@mui/material";
-import { CartContext } from "../../../context/CartContext";
 import { red } from "@mui/material/colors";
+import type { AppDispatch } from "../../../redux/store";
+import { useDispatch } from "react-redux";
+import { deleteCartItem, updateCartItem } from "../../../redux/cart-reducer";
 
 type CartItemContainerProps = {
     item : CartItem;
-    remove: (id : string) => void;
 }
 
-const CartItemContainer = ({ item, remove } : CartItemContainerProps) => {
+const CartItemContainer = ({ item } : CartItemContainerProps) => {
     const isDark = useDarkmode();
     const [value, setValue] = useState<number>(item.quantity);
-    const { setCart } = useContext(CartContext);
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        setCart(prev => prev.map(i => i._id === item._id ? ({...i, quantity: value }) : i))
+        dispatch(updateCartItem({...item, quantity: value}))
         const delayDebounce = setTimeout(async () => {
             await updateData(`/api/cart/${item._id}`, { quantity: value });
         }, 500); 
@@ -27,9 +28,8 @@ const CartItemContainer = ({ item, remove } : CartItemContainerProps) => {
     }, [value]);
 
     const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCart(prev => prev.map(i => i._id === item._id ? ({...i, isSelected: event.target.checked }) : i))
+        dispatch(updateCartItem({...item, isSelected: event.target.checked}))
     };
-
     
     return (
         <div className={cn("flex flex-wrap justify-between gap-5 py-5 border-b border-gray-300 items-start", isDark && 'border-gray-500')}>
@@ -63,7 +63,7 @@ const CartItemContainer = ({ item, remove } : CartItemContainerProps) => {
             </div>
             <div className="flex flex-1 items-end justify-between md:flex-col gap-2">
                 <strong className="text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
-                <Button sx={{ color: 'red'}} onClick={() => remove(item._id || '')}>Remove</Button>
+                <Button sx={{ color: 'red'}} onClick={async () => dispatch(await deleteCartItem({id: item._id ?? '', isDark}))}>Remove</Button>
             </div>
         </div>
     )

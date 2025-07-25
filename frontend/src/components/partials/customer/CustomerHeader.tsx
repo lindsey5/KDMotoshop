@@ -1,14 +1,18 @@
 import { Button, IconButton, Link } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../Button";
 import { CustomerContext } from "../../../context/CustomerContext";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { CartContext } from "../../../context/CartContext";
 import { CustomerDropdownMenu } from "../../Menu";
 import { ThemeToggle } from "../../Toggle";
 import { HeaderSearchField } from "../../Textfield";
 import RedBadge from "../../Badge";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart } from "../../../redux/cart-reducer";
+import type { AppDispatch, RootState } from "../../../redux/store";
+import { SocketContext } from "../../../context/socketContext";
+import { addNotification, fetchNotifications } from "../../../redux/customer-notification-reducer";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -47,8 +51,24 @@ const NavLink = ({ label, path } : { path: string, label: string}) => {
 
 const CustomerHeader = () => {
     const { customer } = useContext(CustomerContext);
-    const { cart } = useContext(CartContext);
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const cart = useSelector((state : RootState) => state.cart.cart)
+    const { socket } = useContext(SocketContext);
+
+    useEffect(() => {
+        dispatch(fetchCart());
+        dispatch(fetchNotifications('customer'));
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!socket) return;
+    
+        socket.on('customerNotification', (notification) => {
+            dispatch(addNotification(notification))
+        });
+    
+    }, [socket]);
 
     return (
         <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-2 sm:px-5 py-3 bg-black transition-all duration-300">

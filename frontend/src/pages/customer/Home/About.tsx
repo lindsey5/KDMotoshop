@@ -2,25 +2,21 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import * as motion from "motion/react-client"
 import { cn } from '../../../utils/utils';
-import useDarkmode from '../../../hooks/useDarkmode';
 import { Title } from '../../../components/text/Text';
 import Orb from '../../../components/backgrounds/Orb';
 
 const AboutSection = ({ isParallax } : { isParallax : boolean}) => {
-  const isDark = useDarkmode();
 
   return (
-    <div className={cn("h-screen relative transition-colors duration-600 flex justify-center lg:justify-end p-10",
-      isDark ? isParallax ? "transparent text-white" : 'bg-[#1e1e1e] text-white' : isParallax ? 'transparent text-white' : 'bg-white',
-    )}>
-          {isParallax && <Orb 
+    <div className={cn("h-screen relative transition-colors duration-600 flex justify-center lg:justify-end p-10 text-white", !isParallax && 'bg-[url(/bg.png)] bg-cover')}>
+          <Orb 
             hoverIntensity={0.5}
             rotateOnHover={true}
             hue={0}
             forceHoverState={false}
-          />}
+          />
           <motion.div
-            className='lg:w-[50%] lg:h-[50%] lg:flex lg:flex-col lg:justify-center items-center lg:absolute lg:inset-1/2 lg:transform lg:-translate-1/2'
+            className='w-[90%] lg:w-[50%] lg:h-[50%] flex flex-col justify-center items-center absolute inset-1/2 transform -translate-1/2'
             initial={{ opacity: 0, y: 50}}
             whileInView={{ opacity: 1, y: 0}}
             transition={{ duration: 0.8, delay: 0.2 }}

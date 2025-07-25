@@ -34,7 +34,7 @@ const CustomerLogin = () => {
 
             <div className="p-5 relative hidden lg:block">
                 <motion.img 
-                    className="z-1 absolute w-1/2 h-[45%] left-10 top-20 rounded-xl" src="/evo.jpg" alt="helmet"
+                    className="z-1 absolute w-1/2 h-[45%] left-10 top-20 rounded-xl" src="/helmet.png" alt="helmet"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }} 
                     transition={{ duration: 0.6, type: "spring", stiffness: 100, }}

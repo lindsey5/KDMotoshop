@@ -1,12 +1,13 @@
-import { useContext } from "react";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
 import CustomizedTable from "../../components/Table";
 import { NotificationsTableColumns, NotificationTableRow } from "../../components/tables/NotificationTable";
 import { Title } from "../../components/text/Text";
-import { AdminNotificationContext } from "../../context/AdminNotificationContext";
 import CustomizedPagination from "../../components/Pagination";
 import PageContainer from "../../components/containers/admin/PageContainer";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../redux/store";
+import { notificationsPage } from "../../redux/customer-notification-reducer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -14,10 +15,11 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const AdminNotifications = () => {
-    const { notifications, setPage, total } = useContext(AdminNotificationContext);
-
-    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
+    const { notifications, total } = useSelector((state : RootState) => state.notification)
+    const dispatch = useDispatch<AppDispatch>();
+    
+    const handlePage = async (_event: React.ChangeEvent<unknown>, value: number) => {
+        await dispatch(notificationsPage({ page: value, user: 'admin'}))
     };
 
     return (

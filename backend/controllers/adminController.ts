@@ -33,7 +33,7 @@ export const create_new_admin = async(req: AuthenticatedRequest, res: Response) 
 
 export const get_admin= async(req: AuthenticatedRequest, res: Response) => {
     try{
-        const admin = await Admin.findById(req.user_id).select(['-password', '-_id']);
+        const admin = await Admin.findById(req.user_id).select(['-password']);
 
         res.status(201).json({ success: true, admin });
 

@@ -23,68 +23,72 @@ ChartJS.register(
   Legend
 );
 
+type Dataset = {
+  label: string;
+  data: number[];
+  borderColor?: string;
+  backgroundColor?: string;
+  fill?: boolean;
+};
+
 type AreaChartProps = {
-    title?: string;
-    labels: string[];
-    label: string;
-    data: number[];
-    fill?: boolean;
-}
+  title?: string;
+  labels: string[];
+  datasets: Dataset[];
+};
 
-const AreaChart = ({title, labels, label, data, fill = true} : AreaChartProps) => {
-    const isDark = useDarkmode();
+const AreaChart = ({ title, labels, datasets }: AreaChartProps) => {
+  const isDark = useDarkmode();
 
-    return (
-    <Line 
-        data={{
-            labels: labels,
-            datasets: [
-                {
-                label: label,
-                data: data,
-                fill: fill,
-                backgroundColor: 'rgba(224, 104, 104, 0.2)',
-                borderColor: 'red',
-                tension: 0.1, 
-                },
-            ],
-        }} 
-        options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: isDark ? 'white' : 'black', 
-                    },
-                    position: 'top' as const,
-                },
-                title: {
-                    display: true,
-                    text: title,
-                },
+  return (
+    <Line
+      data={{
+        labels: labels,
+        datasets: datasets.map(ds => ({
+          ...ds,
+          tension: 0.1,
+          fill: ds.fill ?? true,
+          backgroundColor: ds.backgroundColor ?? 'rgba(224, 104, 104, 0.2)',
+          borderColor: ds.borderColor ?? 'red',
+        }))
+      }}
+      options={{
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: isDark ? 'white' : 'black',
             },
-            scales: {
-                y: {
-                ticks: {
-                    color: isDark ? '	#e0e0e0' : 'black', 
-                },
-                grid: {
-                    color: isDark ? '#444' : '#ccc',
-                }
-                },
-                x: {
-                ticks: {
-                    color: isDark ? '#969696' : 'black', 
-                },
-                grid: {
-                    color: isDark ? '#444' : '#ccc',
-                }
-                }
+            position: 'top' as const,
+          },
+          title: {
+            display: !!title,
+            text: title,
+          },
+        },
+        scales: {
+          y: {
+            ticks: {
+              color: isDark ? '#e0e0e0' : 'black',
             },
-        }} 
+            grid: {
+              color: isDark ? '#444' : '#ccc',
+            }
+          },
+          x: {
+            ticks: {
+              color: isDark ? '#969696' : 'black',
+            },
+            grid: {
+              color: isDark ? '#444' : '#ccc',
+            }
+          }
+        },
+      }}
     />
-    )
-}
+  );
+};
+
 
 export default AreaChart

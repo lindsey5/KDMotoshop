@@ -198,7 +198,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                 <div className="w-full flex justify-end gap-5 mt-5">
                     <Button 
                         variant="outlined" 
-                        sx={{ border: 1, borderColor: 'gray', color: 'gray'}}
+                        sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : ''}}
                         onClick={close}
                     >Close</Button>
                     <RedButton onClick={close}>Save</RedButton>

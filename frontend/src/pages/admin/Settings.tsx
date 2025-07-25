@@ -15,6 +15,7 @@ import { updateData } from "../../services/api"
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
 import HistoryIcon from '@mui/icons-material/History';
 import PageContainer from "../../components/containers/admin/PageContainer"
+import { useNavigate } from "react-router-dom"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -26,6 +27,7 @@ const Settings = () => {
     const { admin } = useContext(AdminContext);
     const [updatedAdmin, setUpdatedAdmin] = useState<Admin | null>(admin);
     const [loading, setLoading] = useState<boolean>(false);
+    const navigate = useNavigate()
 
     const handleAdminImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -55,7 +57,7 @@ const Settings = () => {
 
     return (
         <form className="h-full" onSubmit={handleSave}>
-        <PageContainer className="flex flex-col h-full">
+        <PageContainer className="bg-white flex flex-col h-full">
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
                 open={loading}
@@ -87,8 +89,16 @@ const Settings = () => {
                     </label>
                 </div>
                 <div className="flex gap-5">
-                    <Button sx={{ color: isDark ? 'white' : 'red' }} startIcon={<LockOutlineIcon/>}>Change Password</Button>
-                    <Button sx={{ color: isDark ? 'white' : 'red' }} startIcon={<HistoryIcon/>}>My Activity</Button>
+                    <Button
+                        sx={{ color: isDark ? 'white' : 'red' }} 
+                        startIcon={<LockOutlineIcon/>}
+                        
+                    >Change Password</Button>
+                    <Button 
+                        sx={{ color: isDark ? 'white' : 'red' }} 
+                        startIcon={<HistoryIcon/>}
+                        onClick={() => navigate('/admin/myactivity')}
+                    >My Activity</Button>
                 </div>
             </div>
             <div className={cn("py-10 grid grid-cols-2 gap-x-20 gap-y-5 border-t border-gray-300", isDark && "border-gray-500")}>

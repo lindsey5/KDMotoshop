@@ -1,16 +1,15 @@
-import { useContext, useMemo } from "react"
-import { CartContext } from "../../../context/CartContext";
+import { useMemo } from "react"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import Card from "../../../components/cards/Card";
 import { CustomizedChip } from "../../../components/Chip";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
 import CartItemContainer from "../../../components/containers/customer/CartItem";
-import { deleteData } from "../../../services/api";
-import { confirmDialog, successAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -18,20 +17,9 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const Cart = () => {
-    const { cart, setCart, loading } = useContext(CartContext);
+    const { cart, loading } = useSelector((state : RootState) => state.cart)
     const isDark = useDarkmode();
     const navigate = useNavigate();
-
-    const deleteCartItem = async (id : string) => {
-        if(await confirmDialog('Remove this item?', '', isDark)){
-            const response = await deleteData(`/api/cart/${id}`);
-
-            if(response.success){ 
-                successAlert('Item successfully removed', '', isDark)
-                setCart(prev => prev.filter(item => item._id !== id))
-            }
-        }
-    }
 
     const selectedItem = useMemo(() => {
         const items = cart.filter(item => item.isSelected)
@@ -63,7 +51,7 @@ const Cart = () => {
                     </p>
                     <RedButton onClick={()=> navigate('/products')}>Continue Shopping</RedButton>
                 </div>}
-                {cart.map((item) => <CartItemContainer key={item._id} item={item} remove={deleteCartItem} />)}
+                {cart.map((item) => <CartItemContainer key={item._id} item={item} />)}
                 <div className="flex flex-col justify-center lg:flex-row lg:justify-end mt-8 gap-5">
                     <h2 className='font-bold text-lg'>Total: ₱{formatNumber(selectedItem.total)}</h2>
                     <RedButton onClick={proceedToCheckout} disabled={selectedItem.items.length === 0}>Checkout ({selectedItem.items.length} items)</RedButton>

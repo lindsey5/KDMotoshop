@@ -1,8 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { AdminContext } from "../../context/AdminContext";
-import { Navigate } from "react-router-dom";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import usePagination from "../../hooks/usePagination";
@@ -25,14 +23,13 @@ type GroupedActivityLogs = {
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Activity Logs', href: '/admin/activities' },
+    { label: 'My Activity', href: '/admin/myactivity' },
 ]
 
-const ActivityLogs = () => {
+const MyActivity = () => {
     const [activityLogs, setActivityLogs] = useState<GroupedActivityLogs>({})
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
     const { pagination, setPagination } = usePagination();
-    const { admin } = useContext(AdminContext);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -40,7 +37,7 @@ const ActivityLogs = () => {
             setLoading(true);
             const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
             const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
-            const response = await fetchData(`/api/activity?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
+            const response = await fetchData(`/api/activity/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
             if(response.success){
                 const groupedLogs = response.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
                     const dateKey = formatDateWithWeekday(item.createdAt);
@@ -58,14 +55,10 @@ const ActivityLogs = () => {
 
         get_activity_logs()
     }, [pagination.page, selectedDates])
-    
-    if(admin && admin.role !== 'Super Admin'){
-        return <Navigate to="/admin/dashboard"/>
-    }
 
     return (
         <ActivityLogsPage 
-            title="Activity Logs"
+            title="My Activity"
             activityLogs={activityLogs}
             selectedDates={selectedDates}
             setSelectedDates={setSelectedDates}
@@ -77,4 +70,4 @@ const ActivityLogs = () => {
     )
 }
 
-export default ActivityLogs
+export default MyActivity

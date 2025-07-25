@@ -21,7 +21,8 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
             const response = await fetchData(`/api/review/item/${item._id}`);
             if(response.success) setReview(response.review);
         }
-        fetchReview()
+        
+        if(item.status === 'Rated') fetchReview()
     }, [item])
 
     return (

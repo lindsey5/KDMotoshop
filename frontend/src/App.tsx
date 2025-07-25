@@ -24,6 +24,7 @@ import ActivityLogs from "./pages/admin/ActivityLogs";
 import Settings from "./pages/admin/Settings";
 import Admins from "./pages/admin/Admins";
 import AdminProductReviews from "./pages/admin/Product/Reviews";
+import MyActivity from "./pages/admin/MyActivity";
 
 export default function App() {
   return (
@@ -51,6 +52,7 @@ export default function App() {
                 <Route path="products" element={<Products />} />
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="activities" element={<ActivityLogs />} />
+                <Route path="myactivity" element={<MyActivity />}/>
                 <Route path="settings" element={<Settings />} />
                 <Route path="admins" element={<Admins />} />
                 <Route path="reviews/:id" element={<AdminProductReviews />} />

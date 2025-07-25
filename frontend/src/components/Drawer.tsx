@@ -7,10 +7,12 @@ import GradeIcon from '@mui/icons-material/Grade';
 import WarningIcon from '@mui/icons-material/Warning';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { formatDate } from "../utils/dateUtils";
-import { useContext, useState, type JSX } from "react";
-import { CustomerNotificationContext } from "../context/CustomerNotifContext";
+import { useState, type JSX } from "react";
 import useDarkmode from "../hooks/useDarkmode";
 import { Title } from "./text/Text";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
+import { notificationsNextPage, updateAllNotifications } from "../redux/customer-notification-reducer";
 
 const statusMap: Record<string, JSX.Element> = {
     'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,
@@ -28,18 +30,19 @@ const extractStatus = (content: string): string | undefined => {
 };
 
 export const NotificationsDrawerList = () => {
-    const { notifications, nextPage, total, updateNotifications } = useContext(CustomerNotificationContext);
+    const { notifications, total } = useSelector((state : RootState) => state.notification)
     const [page, setPage] = useState(1);
     const isDark = useDarkmode();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleNextPage = () => {
         const next = page + 1;
         setPage(next);
-        nextPage(next);
+        dispatch(notificationsNextPage({ page: next, user: 'customer'}));
     };
 
     const navigateToOrder = (order_id : string) => {
-        updateNotifications()
+        dispatch(updateAllNotifications("customer"))
         window.location.href = `/order/${order_id}`
     }
 

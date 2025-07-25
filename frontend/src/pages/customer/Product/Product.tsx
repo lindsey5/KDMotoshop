@@ -11,11 +11,13 @@ import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { CustomerContext } from "../../../context/CustomerContext";
 import { successAlert } from "../../../utils/swal";
-import { CartContext } from "../../../context/CartContext";
 import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
 import ProductThumbnail from "../../../components/images/ProductThumbnail";
 import ProductReviews from "../../ProductReviews";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../../redux/store";
+import { setCart } from "../../../redux/cart-reducer";
 
 const CustomerProduct = () => {
     const { id } = useParams();
@@ -23,7 +25,8 @@ const CustomerProduct = () => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
     const isDark = useDarkmode();
-    const { cart, setCart } = useContext(CartContext);
+    const { cart } = useSelector((state : RootState) => state.cart)
+    const dispatch = useDispatch<AppDispatch>();
     const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
     const [totalReviews, setTotalReviews] = useState<number>(0);
@@ -84,9 +87,9 @@ const CustomerProduct = () => {
             if(response.success){
                 const existedCartIndex = cart.findIndex(item => item._id === response.cart._id);
 
-                existedCartIndex !== -1 ? setCart(cart.map((item, index) => (
+                existedCartIndex !== -1 ? dispatch(setCart(cart.map((item, index) => (
                     index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
-                ))) : setCart(prev => [...prev, {
+                )))) : dispatch(setCart([...cart, {
                     ...response.cart, 
                     isSelected: true,
                     attributes: selectedAttributes,
@@ -98,7 +101,7 @@ const CustomerProduct = () => {
                             : typeof product?.thumbnail === 'string'
                             ? product.thumbnail
                         : '/photo.png'
-                }])
+                }]))
                 successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
             }
         }else{

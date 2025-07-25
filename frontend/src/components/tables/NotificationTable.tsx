@@ -1,17 +1,14 @@
-
 import { Avatar, TableRow } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from '../Table';
 import { formatDate } from '../../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
 import { cn } from "../../utils/utils";
-import { useContext } from "react";
-import { AdminNotificationContext } from "../../context/AdminNotificationContext";
 
 type Notification = {
     _id: string;
     to: string;
-    from: string | Customer;
+    from?: string | Customer;
     order_id:  string;
     isViewed: boolean;
     content: string;
@@ -50,13 +47,12 @@ const NotificationCell = ({ children, isDark, isViewed } : NotificationCellProps
 export const NotificationTableRow = ({ notification } : { notification : Notification }) => {
     const navigate = useNavigate();
     const isDark = useDarkmode();
-    const { updateNotification } = useContext(AdminNotificationContext);
 
     const customer = typeof notification.from === 'object' ? notification.from : undefined
 
     const navigateToOrder = () => {
         navigate(`/admin/orders/${notification.order_id}`)
-        if(!notification.isViewed) updateNotification(notification._id);
+        //if(!notification.isViewed) updateNotification(notification._id);
     }
 
     return (

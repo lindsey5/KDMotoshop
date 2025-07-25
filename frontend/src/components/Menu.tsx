@@ -1,5 +1,5 @@
 import { Avatar, Divider, Drawer, IconButton } from "@mui/material"
-import { useContext, useState, } from "react";
+import { useState, } from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useDarkmode from "../hooks/useDarkmode";
@@ -10,16 +10,19 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./Toggle";
-import { CustomerNotificationContext } from "../context/CustomerNotifContext";
 import { NotificationsDrawerList } from "./Drawer";
 import RedBadge from "./Badge";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
+import { updateAllNotifications } from "../redux/customer-notification-reducer";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const [open, setOpen] = useState<boolean>(false);
     const isDark = useDarkmode();
     const navigate = useNavigate();
     const [showDrawer, setShowDrawer] = useState<boolean>();
-    const { unread, updateNotifications } = useContext(CustomerNotificationContext);
+    const { unread } = useSelector((state : RootState) => state.notification)
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleOpen = () => {
         setOpen(!open);
@@ -38,7 +41,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
       ) {
         return;
       }
-      if(!open) updateNotifications()
+      if(!open) dispatch(updateAllNotifications('customer'))
       setShowDrawer(open)
     };
 

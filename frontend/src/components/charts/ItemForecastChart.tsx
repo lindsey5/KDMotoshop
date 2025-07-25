@@ -123,7 +123,7 @@ const ItemForecastChart = () => {
 
     return (
         <Card className="mt-10">
-            <h2 className='mb-4 font-bold'>Quantities Sold by Product (Next Month)</h2>
+            <h2 className='mb-4 font-bold'>Expected Demand by Product (This Month)</h2>
             {loading ? <div className="w-full h-[300px] flex justify-center items-center">
                 <CircularProgress sx={{ color: 'red'}}/> 
             </div> :
