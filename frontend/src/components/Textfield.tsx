@@ -2,7 +2,6 @@ import { InputAdornment, TextField, type StandardTextFieldProps, type TextFieldP
 import SearchIcon from '@mui/icons-material/Search';
 import useDarkmode from "../hooks/useDarkmode";
 import { useEffect, useState } from "react";
-import { fetchData } from "../services/api";
 import { cn, formatNumber } from "../utils/utils";
 import ProductThumbnail from "./images/ProductThumbnail";
 import { getProducts } from "../services/productService";
