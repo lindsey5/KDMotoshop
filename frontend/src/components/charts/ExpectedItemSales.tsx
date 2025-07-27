@@ -100,7 +100,7 @@ const ExpectedItemSales = () => {
     useEffect(() => {
         const getData = async () => {
             setLoading(true);
-            const response = await fetchData(`${url}predict/items`);
+            const response = await fetchData(`${url}api/predict/items`);
             if(response.success){
                 setData(response.forecast
                     .map((item : any)=> ({...item, sales: Number(item.sales.toFixed(2)) }))

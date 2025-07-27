@@ -16,7 +16,7 @@ const SalesPredictionChart = () => {
     useEffect(() => {
         const getSales = async () => {
             setLoading(true);
-            const [forecastRes, actualRes] = await Promise.all([fetchData(`${url}predict`), fetchData('/api/sales/daily')])
+            const [forecastRes, actualRes] = await Promise.all([fetchData(`${url}api/predict`), fetchData('/api/sales/daily')])
 
             if (forecastRes.success && actualRes.success) {
             const forecast = forecastRes.forecast.map((sales: number) => Number(sales.toFixed(0)));

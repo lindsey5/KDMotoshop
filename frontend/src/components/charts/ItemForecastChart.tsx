@@ -35,7 +35,7 @@ const ItemForecastChart = () => {
     useEffect(() => {
         const getData = async () => {
             setLoading(true);
-            const response = await fetchData(`${url}predict/items`);
+            const response = await fetchData(`${url}api/predict/items`);
             if(response.success){
                 setData(response.forecast
                     .map((item : any)=> ({...item, predicted_qty: Math.round(item.predicted_qty) }))
