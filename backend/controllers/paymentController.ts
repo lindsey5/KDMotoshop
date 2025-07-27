@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 
-const url = process.env.NODE_ENV === 'production' ? 'https://kdmotoshop.onrender.com/' : 'http://localhost:5173';
+const url = process.env.NODE_ENV === 'production' ? process.env.URL : 'http://localhost:5173';
 
 export const createPaymentCheckout = async (req : Request, res: Response) => {
     try{

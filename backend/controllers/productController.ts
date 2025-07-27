@@ -87,20 +87,12 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
     const skip = (page - 1) * limit;
     const searchTerm = req.query.searchTerm as string | undefined;
     const category = req.query.category as string | undefined;
+    const min = req.query.min as number | undefined;
+    const max = req.query.max as number | undefined;
+    const visibility = req.query.visibility as string | undefined;
 
     try {
-      let filter: any = {};
-
-      if (searchTerm) {
-        filter.$or = [
-          { product_name: { $regex: searchTerm, $options: "i" } },
-          { sku: { $regex: searchTerm, $options: "i" } },
-          { category: { $regex: searchTerm, $options: "i" } },
-          { "variants.sku": { $regex: searchTerm, $options: "i" } },
-        ];
-      }
-
-      if (category && category !== "All") filter.category = category;
+      const filter = createProductFilter({ searchTerm, category, min, max, visibility})
 
       const [products, total] = await Promise.all([
         Product.find(filter)

@@ -16,9 +16,15 @@ import express from 'express'
 import morgan from 'morgan';
 
 const app = express();
+
+const origins = ['http://localhost:5173', 'http://192.168.1.3:5000']
+
+if(process.env.VIEW_PREDICT_URL)
+  origins.push(process.env.VITE_PREDICT_URL ?? '')
+
 // middleware & static files
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: origins,
     credentials: true
 }))
 app.use(morgan('dev'));

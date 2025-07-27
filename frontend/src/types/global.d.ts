@@ -17,3 +17,8 @@ type Pagination = {
 type ChartData = {
     data: { value: number; label: string} []
 }
+
+type UploadedImage = {
+  imageUrl: string;
+  imagePublicId: string;
+};

@@ -14,7 +14,8 @@ import { NotificationsDrawerList } from "./Drawer";
 import RedBadge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
-import { updateAllNotifications } from "../redux/notification-reducer";
+import { resetNotifications, updateAllNotifications } from "../redux/notification-reducer";
+import { clearCart } from "../redux/cart-reducer";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const [open, setOpen] = useState<boolean>(false);
@@ -44,6 +45,12 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
       if(!open) dispatch(updateAllNotifications('customer'))
       setShowDrawer(open)
     };
+
+    const handleSignout = () => {
+      dispatch(clearCart())
+      dispatch(resetNotifications())   
+      signout('/')
+    }
 
     return (
         <div className="relative">
@@ -95,7 +102,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
                     Profile
                 </li>
                 <li 
-                    onClick={signout}
+                    onClick={handleSignout}
                     className={cn("z-3 flex items-center gap-3 cursor-pointer hover:bg-gray-200 px-3 py-2", isDark && 'hover:bg-[#555555]')}>
                     <LogoutIcon/>
                     Sign out

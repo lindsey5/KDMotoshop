@@ -14,13 +14,9 @@ import HistoryIcon from '@mui/icons-material/History';
 import { AdminContext } from '../../../context/AdminContext';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../redux/store';
-import { addNotification, fetchNotifications } from '../../../redux/notification-reducer';
+import { addNotification, fetchNotifications, resetNotifications } from '../../../redux/notification-reducer';
 import { SocketContext } from '../../../context/socketContext';
-
-const signout = async () => {
-  localStorage.removeItem('token');
-  window.location.href = '/admin/login';
-};
+import { signout } from '../../../services/auth';
 
 const NotificationLink = () => {
   const { unread } = useSelector((state : RootState) => state.notification)
@@ -51,6 +47,11 @@ export const AdminSidebar = () => {
       });
       
   }, [socket]);
+
+  const handleSignout = () => {
+      dispatch(resetNotifications())   
+      signout('/admin/login')
+  }
 
   return (
     <aside className="w-[200px] fixed left-0 inset-y-0 p-5 flex flex-col items-center gap-5 bg-[#2A2A2A]">
@@ -94,7 +95,7 @@ export const AdminSidebar = () => {
           path="/admin/settings"
         />
         <Button
-          onClick={signout}
+          onClick={handleSignout}
           fullWidth
           startIcon={<LogoutIcon sx={{ width: 25, height: 25 }} />}
           sx={{

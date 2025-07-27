@@ -14,11 +14,6 @@ type Variant = {
     };
 }
 
-type UploadedImage = {
-  imageUrl: string;
-  imagePublicId: string;
-};
-
 type Product = {
     _id?: string;
     product_name: string;

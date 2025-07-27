@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchData } from "../services/api";
 import { cn, formatNumber } from "../utils/utils";
 import ProductThumbnail from "./images/ProductThumbnail";
+import { getProducts } from "../services/productService";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
@@ -148,8 +149,8 @@ export const HeaderSearchField = () => {
         totalPages: 1,
     });
 
-    const getProducts = async () => {
-        const response = await fetchData(`/api/product?page=${pagination.page}&limit=30&searchTerm=${pagination.searchTerm}`);
+    const getProductsAsync = async () => {
+        const response = await getProducts(`limit=30&searchTerm=${pagination.searchTerm}`)
 
         if(response.success) {
             const mappedProducts = response.products.map((product : Product) => ({
@@ -163,7 +164,7 @@ export const HeaderSearchField = () => {
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            getProducts();
+            getProductsAsync();
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
