@@ -21,10 +21,13 @@ export const fetchCart = createAsyncThunk<CartItem[]>(
   async () => {
     const response = await fetchData('/api/cart');
     if (!response.success) throw new Error('Failed to fetch cart');
-    
+
     return response.carts.map((item: any) => {
-      if (item.quantity > item.stock) item.quantity = item.stock;
-      return { ...item, isSelected: true };
+      if (item.quantity > item.stock){
+        item.quantity = item.stock;
+      }
+      
+      return { ...item, isSelected: item.stock === 0 ? false : true };
     });
   }
 );

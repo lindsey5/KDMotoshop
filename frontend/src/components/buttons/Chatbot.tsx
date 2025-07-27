@@ -41,11 +41,11 @@ const ChatbotButton = () => {
             <button className="w-full h-full cursor-pointer" onClick={() => setIsHide(!isHide)}>
                 <img className="" src="/icons/Live chatbot.gif" alt="chatbot"/>
             </button>
-            {!isHide && <form className="animate-fade-in-scale border border-gray-300 rounded-xl w-[400px] bg-white absolute bottom-[calc(100%+20px)] right-3" onSubmit={submitMessage}>
+            {!isHide && <form className="bg-white absolute z-99 flex flex-col animate-fade-in-scale border border-gray-300 rounded-xl w-[90vw] h-[70vh] sm:w-[400px] bottom-[calc(100%+10px)] right-1 sm:bottom-[calc(100%+20px)] sm:right-3" onSubmit={submitMessage}>
                 <div className="rounded-t-xl p-5 bg-black">
-                    <h1 className="text-white text-2xl">Hi 👋 How can we help?</h1>
+                    <h1 className="text-white text-2xl">Hi 👋 How can I help?</h1>
                 </div>
-                <div className="bg-white p-3 h-[400px] overflow-y-auto">
+                <div className="bg-white p-3 flex-grow overflow-y-auto">
                     {messages.map((message, index) => (
                         <div  
                             ref={index === messages.length -1 ? bottomRef : undefined}  

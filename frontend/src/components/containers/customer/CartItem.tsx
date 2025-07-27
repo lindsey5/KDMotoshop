@@ -35,6 +35,7 @@ const CartItemContainer = ({ item } : CartItemContainerProps) => {
         <div className={cn("flex flex-wrap justify-between gap-5 py-5 border-b border-gray-300 items-start", isDark && 'border-gray-500')}>
             <div className="flex flex-row-reverse lg:flex-row gap-5 items-center">
                 <Checkbox
+                    disabled={item.stock === 0}
                     checked={item.isSelected}
                     onChange={handleCheck}
                     sx={{ 

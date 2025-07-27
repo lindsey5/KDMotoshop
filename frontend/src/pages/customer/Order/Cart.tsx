@@ -22,7 +22,7 @@ const Cart = () => {
     const navigate = useNavigate();
 
     const selectedItem = useMemo(() => {
-        const items = cart.filter(item => item.isSelected)
+        const items = cart.filter(item => item.isSelected && item.stock !== 0)
         const total = items.reduce((total, item) => total + (item.price * item.quantity), 0)
         return { total, items }
     }, [cart])
