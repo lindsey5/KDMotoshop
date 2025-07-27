@@ -1,8 +1,8 @@
 import { Button, type ButtonProps } from "@mui/material"
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import useDarkmode from "../hooks/useDarkmode";
-import { postData } from "../services/api";
-import { errorAlert } from "../utils/swal";
+import useDarkmode from "../../hooks/useDarkmode";
+import { postData } from "../../services/api";
+import { errorAlert } from "../../utils/swal";
 import { useNavigate } from "react-router-dom";
 
 export const RedButton = ({sx, ...props} : ButtonProps) => {

@@ -4,7 +4,7 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import { CircularProgress, Slider } from "@mui/material";
 import { CustomizedSelect } from "../../../components/Select";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../../components/containers/TopProductContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";

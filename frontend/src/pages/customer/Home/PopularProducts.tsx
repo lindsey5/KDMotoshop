@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { Link } from "@mui/material";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
 import * as motion from "motion/react-client"
 import { cn } from "../../../utils/utils";

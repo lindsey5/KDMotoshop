@@ -5,7 +5,7 @@ import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
 import { cn, formatNumber } from "../../../utils/utils";
 import { ExpandableText } from "../../../components/text/Text";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";

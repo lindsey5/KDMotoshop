@@ -1,4 +1,4 @@
-import { GoogleButton, RedButton } from "../../components/Button";
+import { GoogleButton, RedButton } from "../../components/buttons/Button";
 import { cn } from "../../utils/utils";
 import { ThemeToggle } from "../../components/Toggle";
 import { RedTextField } from "../../components/Textfield";

@@ -34,7 +34,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<CustomerLogin />} />
-             <Route index element={<Home />} />
+            <Route index element={<Home />} />
             <Route element={<CustomerLayout />}>
               <Route path="products" element={<CustomerProducts />} />
               <Route path="product/:id" element={<CustomerProduct />} />

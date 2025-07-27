@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { LineTextField } from "../../components/Textfield"
-import { RedButton } from "../../components/Button";
+import { RedButton } from "../../components/buttons/Button";
 import { fetchData, postData } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 

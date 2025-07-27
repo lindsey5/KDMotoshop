@@ -5,7 +5,7 @@ import { cn } from "../../../utils/utils"
 import { fetchData } from "../../../services/api";
 import Card from "../../../components/cards/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';

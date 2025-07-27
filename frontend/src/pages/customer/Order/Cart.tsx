@@ -5,7 +5,7 @@ import { CustomizedChip } from "../../../components/Chip";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
 import CartItemContainer from "../../../components/containers/customer/CartItem";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";
 import { useSelector } from "react-redux";

@@ -2,7 +2,7 @@ import { Modal } from "@mui/material";
 import { memo, useEffect, useState } from "react";
 import Card from "../cards/Card";
 import { RedTextField } from "../Textfield";
-import { RedButton } from "../Button";
+import { RedButton } from "../buttons/Button";
 import PhoneInput from "react-phone-input-2";
 import useDarkmode from "../../hooks/useDarkmode";
 import { postData, updateData } from "../../services/api";

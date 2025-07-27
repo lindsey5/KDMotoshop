@@ -11,7 +11,7 @@ import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import Card from "../../../components/cards/Card";
 import useDarkmode from "../../../hooks/useDarkmode";

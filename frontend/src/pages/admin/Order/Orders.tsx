@@ -1,6 +1,6 @@
-import { RedButton } from "../../../components/Button"
+import { RedButton } from "../../../components/buttons/Button"
 import AddIcon from '@mui/icons-material/Add';
-import CustomizedTable from "../../../components/Table";
+import CustomizedTable from "../../../components/tables/Table";
 import { SearchField } from "../../../components/Textfield";
 import { CustomizedSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';

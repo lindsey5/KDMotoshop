@@ -1,7 +1,7 @@
 import { Button, IconButton, Link } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { RedButton } from "../../Button";
+import { RedButton } from "../../buttons/Button";
 import { CustomerContext } from "../../../context/CustomerContext";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CustomerDropdownMenu } from "../../Menu";

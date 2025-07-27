@@ -3,6 +3,17 @@
 @theme {
   --color-primary: #121212;
   --color-secondary: #1e1e1e;
+  --animate-fade-in-scale: fade-in-scale 0.3s ease-in-out;
+  @keyframes fade-in-scale {
+    0% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }
 
 body{

@@ -3,7 +3,7 @@ import { RedTextField } from "../../../components/Textfield"
 import { fetchData } from "../../../services/api";
 import { CustomizedSelect } from "../../../components/Select";
 import { Backdrop, Button, CircularProgress, IconButton, RadioGroup } from "@mui/material";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import VariantContainer from "../../../components/containers/admin/VariantContainer";

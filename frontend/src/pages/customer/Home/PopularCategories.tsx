@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../services/api";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";

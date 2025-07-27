@@ -1,5 +1,5 @@
 import { IconButton, TableRow } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../Table';
+import { StyledTableCell, StyledTableRow } from './Table';
 import { formatDate } from '../../utils/dateUtils';
 import useDarkmode from '../../hooks/useDarkmode';
 import UserAvatar from "../images/UserAvatar";

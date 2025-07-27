@@ -1,6 +1,6 @@
 import { Modal } from "@mui/material";
 import { memo, useMemo, useState } from "react";
-import { RedButton } from "../Button";
+import { RedButton } from "../buttons/Button";
 import { successAlert } from "../../utils/swal";
 import { cn, formatNumber } from "../../utils/utils";
 import Counter from "../Counter";

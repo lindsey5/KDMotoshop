@@ -5,7 +5,7 @@ import Card from "../cards/Card";
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import GradeIcon from '@mui/icons-material/Grade';
 import useDarkmode from "../../hooks/useDarkmode";
-import { RedButton } from "../Button";
+import { RedButton } from "../buttons/Button";
 import { postData } from "../../services/api";
 import { memo, useState } from "react";
 

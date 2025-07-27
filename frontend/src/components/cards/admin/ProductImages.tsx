@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RedButton } from "../../Button";
+import { RedButton } from "../../buttons/Button";
 import AddIcon from '@mui/icons-material/Add';
 import Card from "../Card";
 

@@ -1,5 +1,5 @@
 import { Avatar, TableRow } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../Table';
+import { StyledTableCell, StyledTableRow } from './Table';
 import { formatDate } from '../../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';

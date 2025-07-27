@@ -1,9 +1,9 @@
 
 import { TableRow } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../Table';
+import { StyledTableCell, StyledTableRow } from './Table';
 import { formatNumber } from '../../utils/utils';
 import { formatDate } from '../../utils/dateUtils';
-import { RedButton } from '../Button';
+import { RedButton } from '../buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
 import { Status } from "../text/Text";

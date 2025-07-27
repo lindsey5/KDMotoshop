@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../utils/utils"
-import { RedButton } from "../../Button";
+import { RedButton } from "../../buttons/Button";
 import Card from "../../cards/Card";
 import RateProductModal from "../../modals/RateProduct";
 import { fetchData } from "../../../services/api";
@@ -21,7 +21,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
             const response = await fetchData(`/api/review/item/${item._id}`);
             if(response.success) setReview(response.review);
         }
-        
+
         if(item.status === 'Rated') fetchReview()
     }, [item])
 

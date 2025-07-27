@@ -1,6 +1,6 @@
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
-import CustomizedTable from "../../components/Table";
+import CustomizedTable from "../../components/tables/Table";
 import { NotificationsTableColumns, NotificationTableRow } from "../../components/tables/NotificationTable";
 import { Title } from "../../components/text/Text";
 import CustomizedPagination from "../../components/Pagination";

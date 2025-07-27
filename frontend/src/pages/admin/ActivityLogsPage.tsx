@@ -4,7 +4,7 @@ import { cn } from "../../utils/utils"
 import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
-import { RedButton } from "../../components/Button";
+import { RedButton } from "../../components/buttons/Button";
 import { AdminContext } from "../../context/AdminContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';

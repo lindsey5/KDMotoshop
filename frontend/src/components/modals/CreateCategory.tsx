@@ -1,6 +1,6 @@
 import { Button, Modal } from "@mui/material"
 import { LineTextField } from "../Textfield";
-import { RedButton } from "../Button";
+import { RedButton } from "../buttons/Button";
 import { useState } from "react";
 import { postData } from "../../services/api";
 import { errorAlert } from "../../utils/swal";

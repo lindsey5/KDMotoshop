@@ -12,7 +12,7 @@ import Card from "../../../components/cards/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import { Status } from "../../../components/text/Text";
 import { CustomerContext } from "../../../context/CustomerContext";
 import CustomerOrderItems from "../../../components/containers/customer/OrderItems";

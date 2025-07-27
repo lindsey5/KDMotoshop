@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { fetchData, postData } from "../../../services/api";
 import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
-import { RedButton } from "../../../components/Button";
+import { RedButton } from "../../../components/buttons/Button";
 import AddIcon from '@mui/icons-material/Add';
 import AddOrderModal from "../../../components/modals/AddOrder";
 import { confirmDialog, successAlert } from "../../../utils/swal";

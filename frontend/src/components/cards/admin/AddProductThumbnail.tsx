@@ -1,4 +1,4 @@
-import { RedButton } from "../../Button"
+import { RedButton } from "../../buttons/Button"
 import Card from "../Card";
 import ProductThumbnail from "../../images/ProductThumbnail";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';

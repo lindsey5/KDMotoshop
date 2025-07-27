@@ -62,6 +62,7 @@ const KDMotoshopHome = () => {
                                 </motion.button> 
                             </motion.div>
                         </div>
+                        
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={0} speed={-0.2}>
@@ -76,10 +77,6 @@ const KDMotoshopHome = () => {
                         />
                     </ParallaxLayer>
 
-                    <ParallaxLayer className="relative" sticky={{ start: 0.7, end: 1 }}>
-                        <img className="w-100 h-45 absolute right-20 bottom-[60%]" src="/icons/satellite.png" />
-                    </ParallaxLayer>
-
                     <ParallaxLayer className="relative flex justify-center items-center z-10" offset={1} speed={1}>
                         <TextType 
                             text ={["Welcome to KD Motoshop", "Find everything you need", "Enjoy seamless checkout!", "Thanks for shopping with us!"]}
@@ -89,6 +86,10 @@ const KDMotoshopHome = () => {
                             showCursor={true}
                             cursorCharacter="|"
                         />
+                    </ParallaxLayer>
+
+                    <ParallaxLayer className="relative" sticky={{ start: 1, end: 1.3 }}>
+                        <img className="w-100 h-45 absolute right-20 bottom-[60%]" src="/icons/satellite.png" />
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={2}>
@@ -105,6 +106,7 @@ const KDMotoshopHome = () => {
                     <ParallaxLayer className="relative" sticky={{ start: 4, end: 4.2 }}>
                         <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
                     </ParallaxLayer>
+
                     <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
                         <img className="cursor-pointer absolute right-20 bottom-10 w-30 h-30" src="/icons/Shopping Cart.gif" onClick={scrollToTop}/>
                     </ParallaxLayer>

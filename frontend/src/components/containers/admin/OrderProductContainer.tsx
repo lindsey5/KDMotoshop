@@ -1,5 +1,5 @@
 import { formatNumber } from "../../../utils/utils"
-import { RedButton } from "../../Button"
+import { RedButton } from "../../buttons/Button"
 import Card from "../../cards/Card";
 import { Rating } from "@mui/material";
 
