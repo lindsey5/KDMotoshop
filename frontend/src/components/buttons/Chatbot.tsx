@@ -35,8 +35,8 @@ const ChatbotButton = () => {
     }, [messages]);
 
     return (
-        <div className="bg-black shadow-lg shadow-red-500/50 border border-gray-500 rounded-full w-20 h-20 md:w-25 md:h-25 fixed bottom-5 right-5">
-            <button className="w-full h-full cursor-pointer" onClick={() => setIsHide(!isHide)}>
+        <div className="w-20 h-20 fixed bottom-5 right-5">
+            <button className="bg-black shadow-lg shadow-red-500/50 border border-gray-500 rounded-full w-full h-full cursor-pointer hover:scale-110 transition-all 0.3s ease-in" onClick={() => setIsHide(!isHide)}>
                 <img className="" src="/icons/Live chatbot.gif" alt="chatbot"/>
             </button>
             {!isHide && <form className="bg-white absolute z-99 flex flex-col animate-fade-in-scale border border-gray-300 rounded-xl w-[90vw] h-[70vh] sm:w-[400px] bottom-[calc(100%+10px)] right-1 sm:bottom-[calc(100%+20px)] sm:right-3" onSubmit={submitMessage}>
