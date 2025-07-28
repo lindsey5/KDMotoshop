@@ -4,6 +4,9 @@ import { formatDate } from '../../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
 import { cn } from "../../utils/utils";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../redux/store";
+import { updateNotification } from "../../redux/notification-reducer";
 
 type Notification = {
     _id: string;
@@ -47,12 +50,13 @@ const NotificationCell = ({ children, isDark, isViewed } : NotificationCellProps
 export const NotificationTableRow = ({ notification } : { notification : Notification }) => {
     const navigate = useNavigate();
     const isDark = useDarkmode();
+    const dispatch = useDispatch<AppDispatch>();
 
     const customer = typeof notification.from === 'object' ? notification.from : undefined
 
     const navigateToOrder = () => {
         navigate(`/admin/orders/${notification.order_id}`)
-        //if(!notification.isViewed) updateNotification(notification._id);
+        if(!notification.isViewed)  dispatch(updateNotification({ id: notification._id, user: "admin"}));
     }
 
     return (

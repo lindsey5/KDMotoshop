@@ -56,6 +56,26 @@ export const updateAllNotifications = createAsyncThunk(
     }
 );
 
+interface UpdateNotificationArgs {
+  user: 'customer' | 'admin';
+  id: string;
+}
+
+export const updateNotification = createAsyncThunk<
+  string, // Return type
+  UpdateNotificationArgs, 
+  { rejectValue: string } 
+>(
+  'notification/updateNotification',
+  async ({ user, id }) => {
+    const response = await updateData(`/api/notification/${id}/${user}`, {});
+      if (!response.success) {
+        throw new Error('Failed to fetch next page');
+      }
+      return id
+  }
+);
+
 export const notificationsNextPage = createAsyncThunk<
   { notifications: Notification[]; page: number },
   { page: number; user: 'customer' | 'admin' }
@@ -122,6 +142,10 @@ const notificationSlice = createSlice({
         .addCase(notificationsPage.fulfilled, (state, action) => {
             state.notifications =action.payload.notifications
             state.page = action.payload.page
+        })
+        .addCase(updateNotification.fulfilled, (state, action) => {
+            state.notifications = state.notifications.map(n => (n._id === action.payload ? { ...n, isViewed: true} : n));
+            state.unread -= 1;
         })
     },
 });

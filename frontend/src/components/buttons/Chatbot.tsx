@@ -10,20 +10,18 @@ const ChatbotButton = () => {
     const [isHide, setIsHide] = useState<boolean>(true);
     const [message, setMessage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-    const [messages, setMessages] = useState(
-        [
-            { from: 'bot', content: 'Hi' }
-        ]
-    );
+    const [messages, setMessages] = useState([ { from: 'bot', content: 'Hi' } ] );
 
     const submitMessage = async (e :React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setMessage('');
         if(message){
             setLoading(true)
+            const thread_id = localStorage.getItem('thread_id')
             setMessages(prev => [...prev, { from: 'user', content: message }])
-            const response = await postData(`${url}/api/chat`, { message: message });
+            const response = await postData(`${url}/api/chat`, { message: message, thread_id });
             if(response.success){
+                if(!thread_id) localStorage.setItem('thread_id', response.thread_id)
                 setMessages(prev => [...prev, { from: 'bot', content: response.response }])
             }
             setLoading(false)
@@ -56,7 +54,7 @@ const ChatbotButton = () => {
                             </div>
                         </div>
                     ))}
-                    {loading && <img className="mt-5 w-35 h-25 tranform -translate-5" src="/icons/typing.gif" alt="Typing..." />}
+                    {loading && <img className="mt-8 w-35 h-25 tranform -translate-6" src="/icons/typing.gif" alt="Typing..." />}
                 </div>
                 <div className="flex gap-5 px-2 py-5 border-t border-gray-300  rounded-b-xl">
                     <input 
