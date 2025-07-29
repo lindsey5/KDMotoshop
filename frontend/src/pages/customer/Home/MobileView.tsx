@@ -12,11 +12,11 @@ const MobileHome = () => {
     const isDark = useDarkmode();
 
     return (
-            <div className="relative bg-white block lg:hidden">
+            <div className="bg-white block lg:hidden">
                 <CustomerHeader />
                 <div className='relative bg-[url(/bg.png)] bg-cover h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
                     <motion.div 
-                        className="z-5 space-y-8 text-white max-w-lg flex flex-col items-center"
+                        className="space-y-8 text-white max-w-lg flex flex-col items-center"
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
@@ -47,7 +47,7 @@ const MobileHome = () => {
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.8, delay: 1 }}
                         >
-                            <span className="relative text-lg tracking-wide">SHOP NOW</span>
+                            <span className="text-lg tracking-wide">SHOP NOW</span>
                         </motion.button> 
                                                             
                     </motion.div>
