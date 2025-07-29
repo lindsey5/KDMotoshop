@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import SendIcon from '@mui/icons-material/Send';
 import { postData } from "../../services/api";
-import { url } from "../../constants/url";
 import { cn } from "../../utils/utils";
 import { IconButton } from "@mui/material";
 
