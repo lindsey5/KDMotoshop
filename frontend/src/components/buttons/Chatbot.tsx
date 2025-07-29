@@ -34,7 +34,7 @@ const ChatbotButton = () => {
     }, [messages]);
 
     return (
-        <div className="w-20 h-20 fixed bottom-5 right-5">
+        <div className="z-99 w-20 h-20 fixed bottom-5 right-5">
             <button className="bg-black shadow-lg shadow-red-500/50 border border-gray-500 rounded-full w-full h-full cursor-pointer hover:scale-110 transition-all 0.3s ease-in" onClick={() => setIsHide(!isHide)}>
                 <img className="" src="/icons/Live chatbot.gif" alt="chatbot"/>
             </button>
