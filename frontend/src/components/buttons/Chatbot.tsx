@@ -3,6 +3,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { postData } from "../../services/api";
 import { cn } from "../../utils/utils";
 import { IconButton } from "@mui/material";
+import { url } from "../../constants/url";
 
 const ChatbotButton = () => {
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -18,7 +19,7 @@ const ChatbotButton = () => {
             setLoading(true)
             const thread_id = localStorage.getItem('thread_id')
             setMessages(prev => [...prev, { from: 'user', content: message }])
-            const response = await postData(`http://localhost:5000/api/chat`, { message: message, thread_id });
+            const response = await postData(`${url}api/chat`, { message: message, thread_id });
             if(response.success){
                 if(!thread_id) localStorage.setItem('thread_id', response.thread_id)
                 setMessages(prev => [...prev, { from: 'bot', content: response.response }])
