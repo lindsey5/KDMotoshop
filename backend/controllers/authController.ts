@@ -3,6 +3,8 @@ import { verifyPassword, createToken } from "../utils/authUtils";
 import { createCustomer, findCustomer } from "../services/customerService";
 import Admin from "../models/Admin";
 
+const maxAge = 1 * 24 * 60 * 60; 
+
 export const adminLogin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
@@ -21,8 +23,14 @@ export const adminLogin = async (req: Request, res: Response) => {
         return;
       }
       const token = createToken(user._id);
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+        sameSite: 'none',      // important for cross-site cookies
+        secure: true           // only send cookie over HTTPS
+      });
 
-      res.status(201).json({ success: true, token, user })
+      res.status(201).json({ success: true })
     } catch (err : any) {
       res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
@@ -39,8 +47,13 @@ export const signupCustomer = async (req : Request, res: Response) => {
 
     const newCustomer = await createCustomer(req.body);
     const token = createToken(newCustomer._id);
-
-    res.status(201).json({ success: true, newCustomer, token });
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      sameSite: 'none',      // important for cross-site cookies
+      secure: true           // only send cookie over HTTPS
+    });
+    res.status(201).json({ success: true });
 
   }catch(err : any){
     res.status(500).json({ success: false, message: err.message || 'Server error'})
@@ -50,15 +63,27 @@ export const signupCustomer = async (req : Request, res: Response) => {
 export const signinWithGoogle = async (req: Request, res: Response) => {
   try{
     const customer = await findCustomer({ email: req.body.email });
-
+    
     if(customer){
       const token = createToken(customer._id);
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+        sameSite: 'none',    
+        secure: true           
+      });
       res.status(201).json({ success: true, customer, token });
       return
     }
 
     const newCustomer = await createCustomer(req.body);
     const token = createToken(newCustomer._id);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      maxAge: maxAge * 1000,
+      sameSite: 'none',    
+      secure: true           
+    });
     res.status(201).json({ success: true, customer: newCustomer, token });
 
   }catch(err : any){

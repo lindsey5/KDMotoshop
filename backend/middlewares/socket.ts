@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { Server as HTTPServer } from 'http';
+import cookie from 'cookie';
 
 interface JwtPayload {
   id: string;
@@ -31,7 +32,16 @@ export const initializeSocket = (server: HTTPServer): void => {
   });
 
   io.on('connection', (socket: AuthenticatedSocket) => {
-    const token = socket.handshake.auth.token;
+    const rawCookie = socket.handshake.headers.cookie || '';
+    const cookies: { [key: string]: string } = {};
+
+    rawCookie.split(';').forEach(cookieStr => {
+      const [name, ...rest] = cookieStr.trim().split('=');
+      cookies[name] = decodeURIComponent(rest.join('='));
+    });
+
+    // Get the 'jwt' token from the cookies
+    const token = cookies.jwt;
 
     socket.on('disconnect', () => {
       for (const [id, sId] of userSocketMap) {

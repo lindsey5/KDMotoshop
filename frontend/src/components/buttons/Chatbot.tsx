@@ -18,7 +18,7 @@ const ChatbotButton = () => {
             setLoading(true)
             const thread_id = localStorage.getItem('thread_id')
             setMessages(prev => [...prev, { from: 'user', content: message }])
-            const response = await postData(`https://ce7521f398d4.ngrok-free.app/api/chat`, { message: message, thread_id });
+            const response = await postData(`http://localhost:5000/api/chat`, { message: message, thread_id });
             if(response.success){
                 if(!thread_id) localStorage.setItem('thread_id', response.thread_id)
                 setMessages(prev => [...prev, { from: 'bot', content: response.response }])

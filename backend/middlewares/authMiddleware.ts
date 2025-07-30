@@ -9,14 +9,14 @@ export const adminRequireAuth = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1]?.replace(/"/g, '');
-
-  if (!token) {
-    res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });
-    return;
-  }
 
   try {
+    const token = req.cookies?.jwt;
+
+    if (!token) {
+      res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });
+      return;
+    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
 
     req.user_id = decoded.id;
@@ -38,7 +38,7 @@ export const customerRequireAuth = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1]?.replace(/"/g, '');
+  const token = req.cookies?.jwt;
 
   if (!token) {
     res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });

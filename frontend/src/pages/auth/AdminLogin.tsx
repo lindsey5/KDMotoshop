@@ -15,9 +15,7 @@ const AdminLogin = () => {
         setError('')
         const response = await postData('/api/auth/admin/login', { email, password });
         if(response.success){
-            localStorage.setItem('token', response.token)
             window.location.href = '/admin/dashboard'
-
         }else{
             setError(response.message)
         }

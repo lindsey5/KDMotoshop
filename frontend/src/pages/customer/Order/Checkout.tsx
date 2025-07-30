@@ -127,7 +127,12 @@ const CheckoutPage = () => {
             });
 
             if(response.success) {
-                paymentMethod === 'CASH' ? window.location.href = `/order/${response.order._id}` : window.open(response.checkout_url, '_blank')
+                if(paymentMethod === 'CASH'){
+                    await successAlert('Order successfully placed', 'Thank you for choosing our service!', isDark);
+                    window.location.href = `/order/${response.order._id}`
+                }else{
+                    window.open(response.checkout_url, '_blank')
+                }
             }
             else errorAlert(response.message, '', isDark)
             

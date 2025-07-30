@@ -28,11 +28,7 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
         const token = localStorage.getItem('token');
         
         if (token) {
-          const newSocket = io(SOCKET_URL, {
-            auth: {
-              token: token,
-            },
-          });
+          const newSocket = io(SOCKET_URL, { withCredentials: true });
 
           newSocket.on("connect", () => {
             console.log("Connected to Socket");

@@ -46,7 +46,6 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
           
         });
         if(response.success){
-            localStorage.setItem('token', response.token)
             document.referrer ? navigate(-1) : navigate('/')
             
             setTimeout(() => {
