@@ -16,8 +16,6 @@ export const sendCustomerNotification = async (customer_id : string, order_id: s
 
         const socketId = userSocketMap.get(customer_id);
 
-        console.log("customer socket", socketId)
-
         if(socketId){
             socketInstance?.to(socketId).emit('customerNotification', notification);
         }
@@ -40,13 +38,11 @@ export const sendAdminsNotification = async (customer_id : string, order_id: str
             })
 
             await notification.save();
-            console.log("ID", admin._id)
             const admin_id = (admin._id as Types.ObjectId).toString();
 
             const socketId = userSocketMap.get(admin_id as string);
 
             const completedNotification = await AdminNotification.findById(notification._id).populate('from');
-            console.log("SOCKET", socketId)
             if(socketId) socketInstance?.to(socketId).emit('adminNotification', completedNotification);
         }
 

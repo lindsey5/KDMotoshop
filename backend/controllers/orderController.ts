@@ -6,6 +6,8 @@ import { createNewOrder, generateOrderId } from '../services/orderService';
 import { incrementStock, decrementStock } from '../services/orderService';
 import { sendAdminsNotification, sendCustomerNotification } from '../services/notificationService';
 import { create_activity_log } from '../services/activityLogServices';
+import Payment from '../models/Payment';
+import { refundPayment } from '../services/paymentService';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -181,6 +183,18 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
+        if(req.body.status === 'Refunded' || req.body.status === 'Cancelled' || req.body.status === 'Rejected'){
+            const payment = await Payment.findOne({ order_id: id});
+        
+            if(payment && payment.status === 'Paid'){
+                const refund = await refundPayment(payment.payment_id as string, order.total * 100)
+
+                if(!refund) throw new Error('Update Error')
+                payment.status = 'Refunded'
+                await payment.save()
+            }
+        }
+
         const updatedOrder = await Order.findByIdAndUpdate(
             id, 
             req.body, 
@@ -310,6 +324,17 @@ export const cancel_order = async (req: Request, res: Response) => {
 
         order.status = 'Cancelled'
 
+        const payment = await Payment.findOne({ order_id: order._id});
+        
+        if(payment && payment.status === 'Paid'){
+            const refund = await refundPayment(payment.payment_id as string, order.total * 100)
+
+            if(!refund) throw new Error('Cancellation Error')
+
+            payment.status = 'Refunded'
+            await payment.save()
+        }
+
         const orderItems = await OrderItem.find({ order_id: order._id});
 
         for (const item of orderItems) {
@@ -332,6 +357,7 @@ export const cancel_order = async (req: Request, res: Response) => {
             order
         });
     } catch (err: any) {
+        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }

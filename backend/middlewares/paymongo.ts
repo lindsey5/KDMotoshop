@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import crypto from 'crypto'
 import { createNewOrder, generateOrderId } from "../services/orderService";
+import Payment from "../models/Payment";
 
 export const paymongoWebhook = async (req : Request, res : Response) => {
   const payload = req.body;
@@ -10,25 +11,26 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
     const isValid = verifyWebhookSignature(payload, signature);
 
     if (isValid && payload.data.attributes.type === 'checkout_session.payment.paid') {
-        const paymentIntentId = payload.data.attributes.data.attributes.payment_intent_id
         const { order, orderItems, cart } = payload.data.attributes.data.attributes.metadata
         const parsedOrder = JSON.parse(order)
         const parsedCart = JSON.parse(cart ?? "")
         
         const payment_method = parsedOrder.payment_method === 'ONLINE PAYMENT' ? 
             payload.data.attributes.data.attributes.payment_method_used.toUpperCase() : parsedOrder.payment_method
-        console.log(payment_method)
-        const savedOrder = { ...parsedOrder, payment_method, order_id: await generateOrderId() }
-        const createdOrder = await createNewOrder({ orderItems: JSON.parse(orderItems), order: savedOrder, cart: Array.isArray(parsedCart) ? parsedCart : [] });
+        const orderData = { ...parsedOrder, payment_method, order_id: await generateOrderId() }
+        const createdOrder = await createNewOrder({ orderItems: JSON.parse(orderItems), order: orderData, cart: Array.isArray(parsedCart) ? parsedCart : [] });
+        
         if(!createdOrder){
           res.status(400)
           return;
         }
-        res.sendStatus(200)
-        return;
+        const payment_id = payload.data.attributes.data.attributes.payments[0].id;
+        const order_id = createdOrder._id;
+        const newPayment = new Payment({ payment_id, order_id})
+        await newPayment.save();
     }
     
-    res.sendStatus(400)
+    res.sendStatus(200)
 }
 
 function verifyWebhookSignature(payload : any, signature : any) {

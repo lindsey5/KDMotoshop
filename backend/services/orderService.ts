@@ -52,7 +52,7 @@ export const incrementStock = async (item : any) => {
     }
 }
 
-export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) => {
+export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) : Promise<any> => {
     try{
         const newOrder = new Order(order);
         
