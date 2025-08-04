@@ -91,3 +91,8 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message || 'Server error'})
   }
 }
+
+export const logout = (req : Request, res : Response) =>{
+    res.clearCookie('jwt', { httpOnly: true, secure: false });
+    res.redirect('/');
+}

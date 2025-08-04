@@ -43,7 +43,7 @@ const OrderItem = ({ item } : { item : OrderItem}) => {
                     )}
                 </div>
             </div>
-             <h1 className="font-bold">{item.status}</h1>
+             <h1>{item.status}</h1>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
         </div>
     )

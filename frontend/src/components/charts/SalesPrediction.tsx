@@ -11,6 +11,7 @@ const SalesPredictionChart = () => {
     const [actualSales, setActualSales] = useState<number[]>([]);
     const [dateLabels, setDateLabels] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [month, setMonth] = useState<string>('');
 
 
     useEffect(() => {
@@ -27,6 +28,7 @@ const SalesPredictionChart = () => {
             setForecastSales(forecast);
             setDateLabels(labels);
             setActualSales(actual);
+            setMonth(forecastRes.month)
             }
             setLoading(false)
         }
@@ -36,7 +38,7 @@ const SalesPredictionChart = () => {
 
     return (
         <Card className="h-[500px] xl:flex-3 flex flex-col gap-3">
-            <h1 className="font-bold text-xl">Sales Trend (This Month)</h1>
+            <h1 className="font-bold text-xl">Sales Trend {month}</h1>
             {loading ? <div className="w-full h-[300px] flex justify-center items-center">
                 <CircularProgress sx={{ color: 'red'}}/>
             </div> 

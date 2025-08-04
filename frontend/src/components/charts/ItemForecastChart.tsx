@@ -31,6 +31,7 @@ const ItemForecastChart = () => {
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(true);
+    const [month, setMonth] = useState<string>('')
 
     useEffect(() => {
         const getData = async () => {
@@ -41,6 +42,7 @@ const ItemForecastChart = () => {
                     .map((item : any)=> ({...item, predicted_qty: Math.round(item.predicted_qty) }))
                     .sort((a : any, b : any) => b.predicted_qty - a.predicted_qty)
                 )
+                setMonth(response.month)
             }
             setLoading(false);
         }
@@ -123,7 +125,7 @@ const ItemForecastChart = () => {
 
     return (
         <Card className="mt-10">
-            <h2 className='mb-4 font-bold'>Expected Demand by Product (This Month)</h2>
+            <h2 className='mb-4 font-bold'>Expected Demand by Product ({month})</h2>
             {loading ? <div className="w-full h-[300px] flex justify-center items-center">
                 <CircularProgress sx={{ color: 'red'}}/> 
             </div> :

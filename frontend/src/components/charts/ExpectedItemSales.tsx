@@ -31,6 +31,7 @@ const monthNames = [
 
 const ExpectedItemSales = () => {
     const [data, setData] = useState<Prediction[]>([]);
+    const [month, setMonth] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
     const isDark = useDarkmode();
 
@@ -107,6 +108,7 @@ const ExpectedItemSales = () => {
                     .sort((a : any, b : any) => b.sales - a.sales)
                     .slice(0, 5)
                 )
+                setMonth(response.month)
             }
             setLoading(false);
         }
@@ -116,7 +118,7 @@ const ExpectedItemSales = () => {
 
     return (
     <Card className="mt-10">
-        <h2 className='mb-4 font-bold'>Projected Sales Leaders for {monthNames[new Date().getMonth()]}</h2>
+        <h2 className='mb-4 font-bold'>Projected Sales Leaders for {month} {/*monthNames[new Date().getMonth()] */}</h2>
         {loading ? <div className="w-full h-[300px] flex justify-center items-center">
             <CircularProgress sx={{ color: 'red'}}/>
         </div> : <Bar 

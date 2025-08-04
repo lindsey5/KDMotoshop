@@ -34,14 +34,14 @@ const ChatbotButton = () => {
 
     return (
         <div className="z-99 fixed bottom-5 right-5">
-            <button className="flex gap-5 items-center px-5 py-3 text-white bg-black shadow-lg shadow-red-500/50 border border-gray-500 rounded-3xl w-full h-full cursor-pointer hover:scale-110 transition-all 0.3s ease-in" onClick={() => setIsHide(!isHide)}>
+            <button className="flex gap-5 items-center px-5 py-3 text-white bg-black border border-gray-500 rounded-3xl w-full h-full cursor-pointer hover:scale-105 transition-all 0.3s ease-in" onClick={() => setIsHide(!isHide)}>
                 <img className="w-4 h-4 sm:w-8 sm:h-8" src="/icons/chat-box.png" alt="chatbox" />
                 <p className="text-xs sm:text-base">Chat with Teemo</p>
             </button>
             {!isHide && <form className="bg-white absolute z-99 flex flex-col animate-fade-in-scale border border-gray-300 rounded-xl w-[90vw] h-[70vh] sm:w-[400px] bottom-[calc(100%+10px)] right-1 sm:bottom-[calc(100%+20px)] sm:right-3" onSubmit={submitMessage}>
                 <div className="rounded-t-xl p-5 bg-black">
                     <div className="flex gap-5 items-center mb-2">
-                        <img className="bg-black rounded-full w-12 h-12" src="/icons/1.png"/>
+                        <img className="w-12 h-12" src="/icons/chat-bot.png"/>
                         <h1 className="text-white text-2xl">Chat with Teemo</h1>
                     </div>
                     <p className="text-gray-400">Powered by Gemini AI</p>
@@ -53,7 +53,7 @@ const ChatbotButton = () => {
                             className={cn("my-3 flex", message.from === 'bot' ? 'justify-start' : 'justify-end')}
                         >
                             <div className="flex gap-2">
-                                {message.from === 'bot' && <img className="bg-black rounded-full w-8 h-8" src="/icons/1.png"/>}
+                                {message.from === 'bot' && <img className="w-8 h-8" src="/icons/chat-bot.png"/>}
                                 <div className={cn("whitespace-pre-line py-3 px-5 rounded-lg", message.from === 'bot' ? 'bg-black text-white' : 'bg-gray-100 border border-gray-300')}>
                                 {message.content}
                                 </div>
