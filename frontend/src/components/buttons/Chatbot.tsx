@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react"
 import { postData } from "../../services/api";
 import { cn } from "../../utils/utils";
 import { IconButton } from "@mui/material";
-import { url } from "../../constants/url";
 
 const ChatbotButton = () => {
     const bottomRef = useRef<HTMLDivElement | null>(null);
