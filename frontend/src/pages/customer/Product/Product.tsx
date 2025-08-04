@@ -129,7 +129,7 @@ const CustomerProduct = () => {
          <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col lg:flex-row gap-10 py-10">
-                <div className="flex gap-5 items-start flex-col lg:items-center">
+                <div className="flex gap-5 flex-col items-center">
                     <ProductThumbnail 
                         product={product} 
                         className={cn("w-[200px] h-[200px] lg:w-[350px] lg:h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
