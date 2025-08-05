@@ -50,7 +50,7 @@ const CustomerLogin = () => {
             <div className="flex-1 flex justify-center items-center">
                 <div className={cn("w-full flex flex-col items-start gap-5 lg:w-[500px] 2xl:w-[600px]", isDark && 'text-white')}>
                     <h1 className="font-bold text-4xl">Login</h1>
-                    <p className={cn(isDark ? 'text-gray-200' : 'text-gray-400')}>Welcome back! Please login to continue.</p>
+                    <p className={cn(isDark ? 'text-gray-200' : 'text-gray-400')}>Welcome! Please login to continue.</p>
                     <GoogleButton  theme={isDark ? 'filled_black' : 'filled_blue'} />
                     <div className="w-full flex items-center gap-5 text-gray-400">
                         <hr className="flex-[1]" />
@@ -62,7 +62,7 @@ const CustomerLogin = () => {
                     <a className={cn("hover:underline text-gray-600", isDark && 'text-gray-200')} href="">Forgot Password</a>
                     <RedButton sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
                     <div className="w-full flex justify-center mt-4">
-                        <a className={cn("text-gray-600 hover:underline", isDark && 'text-gray-200')} href="/signup">Create an account</a>
+                        <p className="text-lg">Don't have an account? <a className="text-red-600 hover:underline" href="/signup">Create an account</a></p>
                     </div>
                 </div>
             </div>
