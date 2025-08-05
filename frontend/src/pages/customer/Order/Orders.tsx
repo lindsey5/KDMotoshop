@@ -60,7 +60,7 @@ const CustomerOrders = () => {
     return (
         <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <Title>My Orders</Title>
+            <Title className="text-2xl md:text-4xl">My Orders</Title>
             <CustomizedSelect 
                 sx={{ height: 55, maxWidth: '300px' }}
                 menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}
@@ -83,7 +83,7 @@ const CustomerOrders = () => {
             </div>}
             {orders.map(order => (
                 <Card key={order._id} className="flex flex-col gap-5">
-                    <div className={cn("flex justify-between items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
+                    <div className={cn("flex flex-col md:flex-row justify-between md:items-center gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                         <div className="flex flex-wrap gap-3 items-center">
                              <span className={cn("font-bold px-3 py-2 bg-gray-200 rounded-full", isDark && 'bg-[#313131] text-white')}>{order.order_id}</span>
                              <span className="text-gray-400">Order Date: {formatDateWithWeekday(order.createdAt)}</span>

@@ -25,6 +25,7 @@ import Settings from "./pages/admin/Settings";
 import Admins from "./pages/admin/Admins";
 import AdminProductReviews from "./pages/admin/Product/Reviews";
 import MyActivity from "./pages/admin/MyActivity";
+import CustomerSignupPage from "./pages/auth/CustomerSignup";
 
 export default function App() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="login" element={<CustomerLogin />} />
+            <Route path="signup" element={<CustomerSignupPage />} />
             <Route index element={<Home />} />
             <Route element={<CustomerLayout />}>
               <Route path="products" element={<CustomerProducts />} />

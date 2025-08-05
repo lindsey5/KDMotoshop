@@ -13,7 +13,7 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/buttons/Button";
-import { Status } from "../../../components/text/Text";
+import { Status, Title } from "../../../components/text/Text";
 import { CustomerContext } from "../../../context/CustomerContext";
 import CustomerOrderItems from "../../../components/containers/customer/OrderItems";
 
@@ -73,7 +73,7 @@ const CustomerOrderDetails = () => {
                     <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
                         <ArrowBackIosIcon />
                     </IconButton>
-                    <h1 className="font-bold text-2xl">{order?.order_id}</h1>
+                    <Title className="text-2xl md:text-4xl">{order?.order_id}</Title>
                 </div>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>

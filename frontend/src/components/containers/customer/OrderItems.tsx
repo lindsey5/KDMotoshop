@@ -34,7 +34,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
             product_id={ratingData?.product_id ?? ''}
         />
         <div key={item._id} className={cn("flex flex-wrap gap-5 justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
-            <div className="flex gap-5">
+            <div className="flex flex-col md:flex-row gap-5">
                 <img className='w-15 h-15' src={item.image || ''} alt="" />
                 <div>
                     <h1 className="font-bold mb-4">{item.product_name}</h1>

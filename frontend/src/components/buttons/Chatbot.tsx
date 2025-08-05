@@ -43,7 +43,7 @@ const ChatbotButton = () => {
                 <div className="rounded-t-xl p-5 bg-black">
                     <div className="flex gap-5 items-center mb-2">
                         <img className="w-12 h-12" src="/icons/chat-bot.png"/>
-                        <h1 className="text-white text-2xl">Chat with Teemo</h1>
+                        <h1 className="text-white text-xl md:text-2xl">Chat with Teemo</h1>
                     </div>
                     <p className="text-gray-400">Powered by Gemini AI</p>
                 </div>
@@ -53,7 +53,7 @@ const ChatbotButton = () => {
                             ref={index === messages.length -1 ? bottomRef : undefined}  
                             className={cn("my-3 flex", message.from === 'bot' ? 'justify-start' : 'justify-end')}
                         >
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 text-sm md:text-base">
                                 {message.from === 'bot' && <img className="w-8 h-8" src="/icons/chat-bot.png"/>}
                                 <div className={cn("whitespace-pre-line py-3 px-5 rounded-lg", message.from === 'bot' ? 'bg-black text-white' : 'bg-gray-100 border border-gray-300')}>
                                 {message.content}

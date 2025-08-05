@@ -37,7 +37,7 @@ const Cart = () => {
     return (
         <div className={cn("flex flex-col gap-5 transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <Title>Cart</Title>
+            <Title className="text-2xl md:text-4xl">Cart</Title>
             <Card>
                 <div className={cn("flex items-center gap-5 pb-5 border-b border-gray-300", isDark && 'border-gray-500')}>
                     <CustomizedChip label={`${cart.length} items`} />

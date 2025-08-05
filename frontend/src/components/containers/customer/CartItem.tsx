@@ -47,7 +47,7 @@ const CartItemContainer = ({ item } : CartItemContainerProps) => {
                     }}
                 />
                 <div className="flex gap-5 flex-wrap">
-                    <img className="w-25 h-25" src={item?.image || '/photo.png'} alt="" />
+                    <img className="w-20 h-20 md:w-25 md:h-25" src={item?.image || '/photo.png'} alt="" />
                     <div className="flex flex-col gap-5 flex-1">
                         <h1 className="font-bold">{item?.product_name}</h1>
                         <p>Price: {item?.price}</p>

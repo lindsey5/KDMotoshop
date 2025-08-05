@@ -19,7 +19,7 @@ const OrderItem = ({ item } : { item : OrderItem}) => {
     }, [item])
 
     return (
-        <div key={item._id} className={cn("flex flex-wrap justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
+        <div key={item._id} className={cn("flex flex-col md:flex-row justify-between items-start pb-5 border-b-1 gap-5", isDark ? 'border-gray-700' : 'border-gray-300')}>
             <div className="lg:w-[50%] flex gap-5">
                 <img className='w-15 h-15' src={item.image || ''} alt="" />
                 <div>
