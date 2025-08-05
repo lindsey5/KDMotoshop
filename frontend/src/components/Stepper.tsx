@@ -36,6 +36,8 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
     const currentStep = allStatuses.indexOf(status);
 
     const isAltTerminal = status in terminalAlt;
+
+    console.log(typeof terminalAlt)
     const altStyles = isAltTerminal
         ? terminalAlt[status as keyof typeof terminalAlt]
         : { color: "", text: "" };

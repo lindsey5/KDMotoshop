@@ -93,6 +93,6 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
 }
 
 export const logout = (req : Request, res : Response) =>{
-    res.clearCookie('jwt', { httpOnly: true, secure: false });
+    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'none' });
     res.redirect('/');
 }
