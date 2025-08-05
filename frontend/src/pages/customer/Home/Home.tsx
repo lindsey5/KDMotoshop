@@ -18,10 +18,6 @@ const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
     const isDark = useDarkmode();
 
-    const scrollToTop = () => {
-        parallax.current.scrollTo(0);
-    };
-
     return (
         <CustomerContextProvider>
             {isDark && <SplashCursor />}
