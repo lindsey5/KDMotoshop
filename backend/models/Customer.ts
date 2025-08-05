@@ -7,7 +7,6 @@ export interface ICustomer extends Document {
     password: string;
     firstname: string;
     lastname: string;
-    phone: string;
     image: UploadedImage;
     addresses: {
       street: string;
@@ -27,7 +26,6 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
     password: { type: String, required: false },
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
-    phone: { type: String, required: false },
     image: {
       imageUrl: { type: String, required: false },
       imagePublicId: { type: String, required: false },

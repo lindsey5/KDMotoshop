@@ -172,13 +172,13 @@ export const HeaderSearchField = () => {
     const handleBlur = () => {
         setTimeout(() => {
             setAutoComplete(false);
-        }, 200);
+        }, 500);
     };
 
     const handleFocus = () => setAutoComplete(true)
 
     return (
-        <div className={cn('flex flex-1 min-w-[130px] max-w-[500px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
+        <div className={cn('flex flex-1 min-w-[130px] max-w-[600px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
             <SearchIcon className={cn(isDark && "text-gray-400")}/>
             <input
               type="text"
@@ -188,12 +188,13 @@ export const HeaderSearchField = () => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-0 z-10 p-3 border border-gray-300 rounded-md", isDark && 'bg-[#121212]')}>
+            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-5 z-10 p-3 border border-gray-300 rounded-md", isDark && 'bg-[#121212]')}>
                 {products.length > 0 ? products.map((product) => (
                     <div 
                         key={product._id}
                         className={cn("flex gap-5 cursor-pointer hover:bg-gray-100 px-3 py-2", isDark && 'hover:bg-[#313131]')}
                         onClick={() => window.location.href = `/product/${product._id}`}
+                        onMouseDown={() => window.location.href = `/product/${product._id}`}
                     >
                         <ProductThumbnail 
                             product={product}
@@ -204,7 +205,7 @@ export const HeaderSearchField = () => {
                               <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>₱{formatNumber(Number(product.price))}</p>
                         </div>
                     </div>
-                )) : <p>No results</p>}
+                )) : <p className={cn(isDark && 'text-white')}>No results</p>}
             </div>}
         </div>
     )

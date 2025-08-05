@@ -12,6 +12,7 @@ import SplashCursor from "../../../components/SplashCursor";
 import useDarkmode from "../../../hooks/useDarkmode";
 import RippleGrid from "../../../components/backgrounds/RippleGrid";
 import TextType from "../../../components/text/TextType";
+import ChatbotButton from "../../../components/buttons/Chatbot";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -24,6 +25,7 @@ const KDMotoshopHome = () => {
     return (
         <CustomerContextProvider>
             {isDark && <SplashCursor />}
+            <ChatbotButton />
             <div className="transition-colors duration-600 border-box">
                 <MobileHome />
                 <Parallax ref={parallax} pages={6} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
@@ -105,10 +107,6 @@ const KDMotoshopHome = () => {
 
                     <ParallaxLayer className="relative" sticky={{ start: 4, end: 4.2 }}>
                         <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
-                    </ParallaxLayer>
-
-                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 5 }} >
-                        <img className="cursor-pointer absolute right-20 bottom-10 w-30 h-30" src="/icons/Shopping Cart.gif" onClick={scrollToTop}/>
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={5} speed={0.3}>

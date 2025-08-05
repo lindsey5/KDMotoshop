@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import { Box, CircularProgress, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -30,7 +30,7 @@ const extractStatus = (content: string): string | undefined => {
 };
 
 export const NotificationsDrawerList = () => {
-    const { notifications, total } = useSelector((state : RootState) => state.notification)
+    const { notifications, total, loading } = useSelector((state : RootState) => state.notification)
     const [page, setPage] = useState(1);
     const isDark = useDarkmode();
     const dispatch = useDispatch<AppDispatch>();
@@ -48,7 +48,7 @@ export const NotificationsDrawerList = () => {
 
     return (
         <Box sx={{ width: 300, backgroundColor: isDark ? '#2a2a2a' : 'white', color: isDark ? 'white' : 'black'}}>
-            <Title className="pt-10 px-3 pb-3">Notifications</Title>
+            <Title className="pt-10 px-3 pb-5">Notifications</Title>
             {notifications.length < 1 && <p className="w-full text-center mt-4">No notifications yet</p>}
             <List sx={{ backgroundColor: isDark ? '#2a2a2a' : 'white' }}>
                 {notifications.map((n) => {
@@ -62,6 +62,8 @@ export const NotificationsDrawerList = () => {
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
+                            borderBottom: 1,
+                            borderColor: '#b8b8b8ff',
                             gap: 2,
                             backgroundColor: isDark ? '#2a2a2a' : 'white',
                             '&:hover': {
@@ -89,7 +91,12 @@ export const NotificationsDrawerList = () => {
                     </ListItem>
                 );
                 })}
-                {total !== notifications.length && <button className="w-full mt-4 text-center cursor-pointer hover:text-gray-300" onClick={handleNextPage}>See more</button>}
+                {loading &&  (
+                    <div className="flex justify-center p-5">
+                        <CircularProgress />
+                    </div>
+                )}
+                {!loading && total !== notifications.length && <button className="w-full mt-4 text-center cursor-pointer hover:text-gray-300" onClick={handleNextPage}>See more</button>}
             </List>
         </Box>
     );

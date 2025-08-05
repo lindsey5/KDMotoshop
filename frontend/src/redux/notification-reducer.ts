@@ -17,6 +17,7 @@ type Notification = {
 
 interface NotificationState {
   notifications: Notification[];
+  loading?: boolean;
   total: number;
   unread: number;
   page: number;
@@ -24,6 +25,7 @@ interface NotificationState {
 
 const initialState: NotificationState = {
   notifications: [],
+  loading: false,
   total: 0,
   unread: 0,
   page: 1,
@@ -135,7 +137,11 @@ const notificationSlice = createSlice({
                 isViewed: true
             }));
         })
+        .addCase(notificationsNextPage.pending, (state) => {
+            state.loading = true;
+        })
         .addCase(notificationsNextPage.fulfilled, (state, action) => {
+            state.loading = false
             state.notifications = [...state.notifications, ...action.payload.notifications]
             state.page = action.payload.page
         })
