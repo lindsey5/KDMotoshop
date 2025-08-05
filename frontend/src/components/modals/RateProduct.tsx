@@ -35,7 +35,7 @@ const RateProductModal : React.FC<RateProductModalProps> = ({ open, close, order
     
     return (
          <Modal open={open} onClose={handleClose}>
-            <Card className="w-[80%] max-w-[400px] flex flex-col p-5 bg-white absolute top-1/2 left-1/2 transform -translate-1/2 rounded-xl">
+            <Card className="w-[80%] max-w-[400px] flex flex-col absolute top-1/2 left-1/2 transform -translate-1/2 rounded-xl">
                 <h1 className="font-bold text-2xl mb-4">Overall Rating</h1>
                 <Rating
                     onChange={(_, newValue) => setRating(newValue || 0)}
