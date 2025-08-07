@@ -92,7 +92,7 @@ const CustomerOrders = () => {
                     </div>
                     {order.orderItems?.map(item => <OrderItem key={item._id} item={item}/>)}
                     <div className="flex justify-end">
-                        <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Completed' ? 'Rate your order' : 'Track Order'}</RedButton>
+                        <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Delivered' ? 'Rate your order' : 'Track Order'}</RedButton>
                     </div>
                 </Card>
             ))}

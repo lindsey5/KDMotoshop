@@ -122,10 +122,10 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
         const last365Days = new Date();
         last365Days.setFullYear(last365Days.getFullYear() - 1);
 
-        const [overallTotalOrders, pendingOrders, completedOrders, cancelledOrders] = await Promise.all([ 
+        const [overallTotalOrders, pendingOrders, deliveredOrders, cancelledOrders] = await Promise.all([ 
             Order.countDocuments({ createdAt: { $gte: last365Days } }),
             Order.countDocuments({ status: 'Pending', createdAt: { $gte: last365Days } }),
-            Order.countDocuments({ status: { $in: ['Completed', 'Rated']}, createdAt: { $gte: last365Days } }),
+            Order.countDocuments({ status: { $in: ['Delivered', 'Rated']}, createdAt: { $gte: last365Days } }),
             Order.countDocuments({ status: 'Cancelled', createdAt: { $gte: last365Days } })
         ]);
 
@@ -133,7 +133,7 @@ export const get_orders_statistics = async (req: Request, res: Response) => {
             success: true,  
             overallTotalOrders,
             pendingOrders,
-            completedOrders,
+            deliveredOrders,
             cancelledOrders
         });
     } catch (err: any) {
@@ -214,9 +214,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             { new: true }
         );
 
-        if(req.body.status !== 'Completed'){
+        if(req.body.status !== 'Delivered'){
             for (const item of req.body.orderItems) {
-                if(order.status === 'Shipped' || order.status === 'Completed') await incrementStock(item)
+                if(order.status === 'Shipped' || order.status === 'Delivered') await incrementStock(item)
                 if(req.body.status === 'Pending'){
                     await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
                 }else if(req.body.status === 'Refunded'){
@@ -227,9 +227,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             }
         }
         
-        if(req.body.status === 'Completed' || req.body.status === 'Shipped'){
+        if(req.body.status === 'Delivered' || req.body.status === 'Shipped'){
             for (const item of req.body.orderItems) {
-                if(order.status !== 'Completed' && order.status !== 'Shipped') await decrementStock(item)
+                if(order.status !== 'Delivered' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
             }
         }

@@ -6,7 +6,7 @@ interface Order extends Document {
     shipping_fee: number;
     total: number;
     subtotal: number;
-    status: "Pending" | "Accepted" | "Shipped" | "Completed" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
+    status: "Pending" | "Accepted" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
     customer: {
         customer_id?: Types.ObjectId;
         email?: string;
@@ -37,7 +37,7 @@ const OrderSchema: Schema<Order> = new Schema(
     shipping_fee: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["Pending", "Accepted", "Shipped", "Completed", "Rejected", "Cancelled", "Refunded", "Rated"],
+      enum: ["Pending", "Accepted", "Shipped", "Delivered", "Rejected", "Cancelled", "Refunded", "Rated"],
       default: "Pending",
       required: true
     },

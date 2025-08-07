@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { cn, formatNumber } from "../../../utils/utils";
-import { Avatar, Button, CircularProgress, IconButton } from "@mui/material";
+import { Avatar, Backdrop, Button, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
@@ -129,9 +129,11 @@ export default OrderDetails
 
 const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
   const isDark = useDarkmode();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const updateOrder = async (message: string, subMessage: string, status: string) => {
     if (await confirmDialog(message, subMessage, isDark)) {
+      setLoading(true)
       const response = await updateData(`/api/order/${id}`, { ...order, status });
       if (response.success) {
         window.location.reload();
@@ -139,11 +141,18 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
         await errorAlert(response.message, '', isDark);
         window.location.reload()
       }
+      setLoading(false)
     }
   };
 
   return (
     <div className="flex gap-5">
+      <Backdrop
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {order.status === 'Pending' &&
         <RedButton
           onClick={() => updateOrder('Reject Order?', 'This action is irreversible.', 'Rejected')}
@@ -185,16 +194,16 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
 
     {order.status === 'Shipped' &&
         <Button
-          onClick={() => updateOrder('Mark as completed?', 'You are confirming that the order has been successfully delivered to the customer.', 'Completed')}
+          onClick={() => updateOrder('Mark as Delivered?', 'You are confirming that the order has been successfully delivered to the customer.', 'Delivered')}
           startIcon={<CheckIcon />}
           sx={{ backgroundColor: 'green', color: 'white' }}
           variant="contained"
         >
-          Mark as completed
+          Mark as Delivered
         </Button>
       }
 
-    {order.status === 'Completed' &&
+    {order.status === 'Delivered' &&
     <RedButton
         onClick={() =>
         updateOrder(

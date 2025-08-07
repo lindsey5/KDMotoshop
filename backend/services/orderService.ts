@@ -60,12 +60,12 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
             {
                 ...item, 
                 order_id: newOrder._id,
-                status: order.status === 'Completed' ? 'Fulfilled' : 'Unfulfilled'
+                status: order.status === 'Delivered' ? 'Fulfilled' : 'Unfulfilled'
             }
         ));   
         await OrderItem.insertMany(orderItemsWithOrderID)
             .then(async (items) => {
-                if(newOrder.status === 'Completed') {
+                if(newOrder.status === 'Delivered') {
                     for (const item of items) await decrementStock(item)
                 }
             })  

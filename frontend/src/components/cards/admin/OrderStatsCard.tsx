@@ -36,7 +36,7 @@ const StatsCard = ({ title, value, subtitle, color = "green" } : StatCardProps) 
 type CardValue = {
     overallTotalOrders: number;
     pendingOrders: number;
-    completedOrders: number;
+    deliveredOrders: number;
     cancelledOrders: number;
 }
 
@@ -46,7 +46,7 @@ export const OrderStatsCards = () => {
         {
             overallTotalOrders: 0,
             pendingOrders: 0,
-            completedOrders: 0,
+            deliveredOrders: 0,
             cancelledOrders: 0
         }
     );
@@ -58,7 +58,7 @@ export const OrderStatsCards = () => {
                     setCardValues({
                     overallTotalOrders: response.overallTotalOrders,
                     pendingOrders: response.pendingOrders,
-                    completedOrders: response.completedOrders,
+                    deliveredOrders: response.deliveredOrders,
                     cancelledOrders: response.cancelledOrders
                 });
             }
@@ -74,7 +74,7 @@ export const OrderStatsCards = () => {
             <StatsCard title="Pending Orders" value={cardValues.pendingOrders.toString()} subtitle="Total Pending Orders" color="yellow"/>
             <hr className={cn("hidden xl:block h-full border-1 border-gray-200", isDark && 'border-gray-600')} />
         
-            <StatsCard title="Completed Orders" value={cardValues.completedOrders.toString()} subtitle="Completed Orders for last 365 days" color="purple"/>
+            <StatsCard title="Completed Orders" value={cardValues.deliveredOrders.toString()} subtitle="Completed Orders for last 365 days" color="purple"/>
             <hr className={cn("hidden xl:block h-full border-1 border-gray-200", isDark && 'border-gray-600')} />
         
             <StatsCard title="Cancelled Orders" value={cardValues.cancelledOrders.toString()} subtitle="Cancelled Orders for last 365 days" color="red"/>

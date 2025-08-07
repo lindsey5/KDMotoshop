@@ -47,7 +47,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
       {
         $match: {
           createdAt: { $gte: start, $lt: end },
-          status: { $in: ['Completed', 'Rated'] }
+          status: { $in: ['Delivered', 'Rated'] }
         }
       },
       {
@@ -103,7 +103,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
       {
         $match: {
           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-          status: { $in: ['Completed', 'Rated'] }
+          status: { $in: ['Delivered', 'Rated'] }
         }
       },
       {
@@ -162,7 +162,7 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
       {
         $match: {
           createdAt: { $gte: startDate },
-          status: { $in: ['Completed', 'Rated'] }
+          status: { $in: ['Delivered', 'Rated'] }
         }
       },
       {

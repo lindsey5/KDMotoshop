@@ -58,7 +58,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                 </div>
             </div>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
-            {status === 'Completed' && item.status === 'Fulfilled' && (
+            {status === 'Delivered' && item.status === 'Fulfilled' && (
                 <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
             )}
         </div>

@@ -24,7 +24,7 @@ const OrderState : Order = {
     shipping_fee: 0,
     total: 0,
     subtotal: 0,
-    status: 'Completed',
+    status: 'Delivered',
     customer: {
         firstname: '',
         lastname: '',

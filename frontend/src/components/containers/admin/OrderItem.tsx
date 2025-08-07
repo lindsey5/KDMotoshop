@@ -46,7 +46,7 @@ const OrderItem = ({ item, orderStatus } : { item : OrderItem, orderStatus?: str
             </div>
              <h1>{item.status}</h1>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
-            {orderStatus === 'Completed' && (item.status === 'Fulfilled' || item.status === 'Rated') && <RedButton>Refund Item</RedButton>}
+            {orderStatus === 'Delivered' && (item.status === 'Fulfilled' || item.status === 'Rated') && <RedButton>Refund Item</RedButton>}
         </div>
     )
 }
