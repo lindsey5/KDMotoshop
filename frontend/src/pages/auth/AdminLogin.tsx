@@ -17,7 +17,7 @@ const AdminLogin = () => {
         if(response.success){
             window.location.href = '/admin/dashboard'
         }else{
-            setError(response.message)
+            setError(response.message || response)
         }
     };
 

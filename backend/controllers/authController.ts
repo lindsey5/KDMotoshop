@@ -45,6 +45,11 @@ export const customerLogin = async (req: Request, res: Response) => {
          return;
       }
 
+      if(!user.password){
+        res.status(400).json({ success: false, message: 'This account was registered using Google. Please sign in with Google.'});
+        return;
+      }
+
       const isMatch = await verifyPassword(password, user.password);
   
       if (!isMatch) {
@@ -56,6 +61,7 @@ export const customerLogin = async (req: Request, res: Response) => {
 
       res.status(200).json({ success: true })
     } catch (err : any) {
+      console.log(err)
       res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }

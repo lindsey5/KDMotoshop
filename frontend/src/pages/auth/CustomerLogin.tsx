@@ -4,13 +4,27 @@ import { ThemeToggle } from "../../components/Toggle";
 import { RedTextField } from "../../components/Textfield";
 import useDarkmode from "../../hooks/useDarkmode";
 import * as motion from "motion/react-client"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchData } from "../../services/api";
+import { fetchData, postData } from "../../services/api";
 
 const CustomerLogin = () => {
     const isDark = useDarkmode();
     const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError('')
+        const response = await postData('/api/auth/login', { email, password });
+        if(response.success){
+            window.location.href = '/'
+        }else{
+            setError(response.message || response)
+        }
+    };
     
     useEffect(() => {
         const getUser = async () => {
@@ -47,7 +61,7 @@ const CustomerLogin = () => {
                 />
             </div>
         
-            <div className="flex-1 flex justify-center items-center">
+            <form className="flex-1 flex justify-center items-center" onSubmit={handleSubmit}>
                 <div className={cn("w-full flex flex-col items-start gap-5 lg:w-[500px] 2xl:w-[600px]", isDark && 'text-white')}>
                     <h1 className="font-bold text-4xl">Login</h1>
                     <p className={cn(isDark ? 'text-gray-200' : 'text-gray-400')}>Welcome! Please login to continue.</p>
@@ -57,15 +71,16 @@ const CustomerLogin = () => {
                         <p>OR</p>
                         <hr className="flex-1" />
                     </div>
-                    <RedTextField placeholder="Email" />
-                    <RedTextField placeholder="Password" type="password"/>
+                    {error && <p className="text-red-600">{error}</p>}
+                    <RedTextField required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <RedTextField required placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                     <a className={cn("hover:underline text-gray-600", isDark && 'text-gray-200')} href="">Forgot Password</a>
-                    <RedButton sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
+                    <RedButton type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
                     <div className="w-full flex justify-center mt-4">
                         <p className={cn("text-lg", isDark && 'text-gray-400')}>Don't have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/signup">Create an account</a></p>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }
