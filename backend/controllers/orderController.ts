@@ -8,6 +8,7 @@ import { sendAdminsNotification, sendCustomerNotification } from '../services/no
 import { create_activity_log } from '../services/activityLogServices';
 import Payment from '../models/Payment';
 import { refundPayment } from '../services/paymentService';
+import { sendOrderUpdate } from '../services/emailService';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -183,6 +184,18 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
+        if (
+            order.status === 'Cancelled' || 
+            order.status === 'Rejected' || 
+            order.status === 'Refunded' 
+        ) {
+            res.status(400).json({
+                success: false,
+                message: `This order is already ${order.status.toLowerCase()} and cannot be modified.`
+            });
+            return;
+        }
+
         if(req.body.status === 'Refunded' || req.body.status === 'Cancelled' || req.body.status === 'Rejected'){
             const payment = await Payment.findOne({ order_id: id});
         
@@ -235,6 +248,8 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                 new_value: req.body.status,
             })
         }
+
+        await sendOrderUpdate(order.customer.email as string, order.order_id, order.customer.firstname, req.body.status);
 
         res.status(200).json({ 
             success: true,  
@@ -357,6 +372,35 @@ export const cancel_order = async (req: Request, res: Response) => {
             order
         });
     } catch (err: any) {
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
+
+export const refundItem = async (req: Request, res: Response) => {
+    try{
+        const orderItem = await OrderItem.findById(req.params.id);
+
+        if(!orderItem){
+            res.status(404).json({ success: false, message: 'Item not found'});
+            return;
+        }
+
+        orderItem.status = 'Refunded';
+
+        const payment = await Payment.findOne({ order_id: orderItem.order_id});
+        
+        if(payment && payment.status === 'Paid'){
+            const refund = await refundPayment(payment.payment_id as string, orderItem.lineTotal * 100)
+
+            if(!refund) throw new Error('Cancellation Error')
+
+            payment.status = 'Partial Refunded'
+            await payment.save()
+        }
+
+
+    }catch(err : any){
         console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }

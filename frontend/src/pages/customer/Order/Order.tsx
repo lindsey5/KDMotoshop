@@ -73,7 +73,7 @@ const CustomerOrderDetails = () => {
                     <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
                         <ArrowBackIosIcon />
                     </IconButton>
-                    <Title className="text-2xl md:text-4xl">{order?.order_id}</Title>
+                    <Title className="text-2xl">{order?.order_id}</Title>
                 </div>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>

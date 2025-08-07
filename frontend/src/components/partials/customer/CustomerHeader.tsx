@@ -95,7 +95,7 @@ const CustomerHeader = () => {
                         <ShoppingCartOutlinedIcon />
                     </IconButton>
                     </RedBadge>
-                <CustomerDropdownMenu image={customer.image.imageUrl}/>
+                <CustomerDropdownMenu image={customer?.image?.imageUrl}/>
                 </>
                 }
                 <div className="hidden sm:block">

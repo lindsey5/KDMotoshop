@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import useDarkmode from "../../hooks/useDarkmode";
-import { cn, formatNumber } from "../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
+import { cn, formatNumber } from "../../../utils/utils";
 import { Rating } from "@mui/material";
-import { fetchData } from "../../services/api";
+import { fetchData } from "../../../services/api";
+import { RedButton } from "../../buttons/Button";
 
-const OrderItem = ({ item } : { item : OrderItem}) => {
+const OrderItem = ({ item, orderStatus } : { item : OrderItem, orderStatus?: string}) => {
     const isDark = useDarkmode();
     const [review, setReview] = useState<Review>();
 
@@ -45,6 +46,7 @@ const OrderItem = ({ item } : { item : OrderItem}) => {
             </div>
              <h1>{item.status}</h1>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
+            {orderStatus === 'Completed' && (item.status === 'Fulfilled' || item.status === 'Rated') && <RedButton>Refund Item</RedButton>}
         </div>
     )
 }

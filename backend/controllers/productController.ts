@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import Product from "../models/Product";
@@ -56,7 +56,6 @@ export const get_products = async (req: Request, res: Response) => {
 
     try {
       const filter = createProductFilter({ searchTerm, category, min, max, visibility})
-      
       const sortOption = determineSortOption(req.query.sort as string ?? '')
 
       const [products, total] = await Promise.all([
@@ -93,10 +92,12 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
 
     try {
       const filter = createProductFilter({ searchTerm, category, min, max, visibility})
+      const sortOption = determineSortOption(req.query.sort as string ?? '')
 
       const [products, total] = await Promise.all([
         Product.find(filter)
           .populate("added_by")
+          .sort(sortOption)
           .skip(skip)
           .limit(limit),
         Product.countDocuments(filter),
@@ -232,6 +233,17 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
       for (const oldImg of oldProduct.images) {
         const stillUsed = images.find(newImg => newImg.imagePublicId === oldImg.imagePublicId);
         if (!stillUsed) await deleteImage(oldImg.imagePublicId);
+      }
+
+      if(product.product_type !== oldProduct.product_type){
+        if(product.product_type === 'Variable') {
+          product.sku = null
+          product.price = null
+          product.stock = null
+        }else {
+          product.attributes = null
+          product.variants = null
+        } 
       }
 
       oldProduct.set({ ...product, thumbnail, images });

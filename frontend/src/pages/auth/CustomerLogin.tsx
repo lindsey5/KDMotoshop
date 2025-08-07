@@ -62,7 +62,7 @@ const CustomerLogin = () => {
                     <a className={cn("hover:underline text-gray-600", isDark && 'text-gray-200')} href="">Forgot Password</a>
                     <RedButton sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
                     <div className="w-full flex justify-center mt-4">
-                        <p className="text-lg">Don't have an account? <a className="text-red-600 hover:underline" href="/signup">Create an account</a></p>
+                        <p className={cn("text-lg", isDark && 'text-gray-400')}>Don't have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/signup">Create an account</a></p>
                     </div>
                 </div>
             </div>

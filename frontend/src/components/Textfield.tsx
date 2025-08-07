@@ -1,7 +1,7 @@
-import { InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
+import { IconButton, InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import useDarkmode from "../hooks/useDarkmode";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn, formatNumber } from "../utils/utils";
 import ProductThumbnail from "./images/ProductThumbnail";
 import { getProducts } from "../services/productService";
@@ -177,9 +177,20 @@ export const HeaderSearchField = () => {
 
     const handleFocus = () => setAutoComplete(true)
 
+    const handleSearch = (e : React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      window.location.href = `/products?search=${pagination.searchTerm}`
+
+    }
+
     return (
-        <div className={cn('flex flex-1 min-w-[130px] max-w-[600px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}>
-            <SearchIcon className={cn(isDark && "text-gray-400")}/>
+        <form 
+          className={cn('flex flex-1 min-w-[130px] max-w-[600px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}
+          onSubmit={handleSearch}
+        >
+            <IconButton type="submit">
+              <SearchIcon className={cn(isDark && "text-gray-400")}/>
+            </IconButton>
             <input
               type="text"
               placeholder="Search..."
@@ -188,7 +199,7 @@ export const HeaderSearchField = () => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-5 z-10 p-3 border border-gray-300 rounded-md", isDark && 'bg-[#121212]')}>
+            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-5 z-10 p-3 border border-gray-300 rounded-md", isDark && 'border-gray-600 bg-[#121212]')}>
                 {products.length > 0 ? products.map((product) => (
                     <div 
                         key={product._id}
@@ -207,6 +218,73 @@ export const HeaderSearchField = () => {
                     </div>
                 )) : <p className={cn(isDark && 'text-white')}>No results</p>}
             </div>}
-        </div>
+        </form>
     )
+}
+
+
+export default function Otp1({ setOtp, otp } : { setOtp : React.Dispatch<React.SetStateAction<string[]>>; otp: string[]}) {
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const isDark = useDarkmode();
+
+  const handleKeyDown = (e : React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      !/^[0-9]{1}$/.test(e.key) &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Tab" &&
+      !e.metaKey
+    ) {
+      e.preventDefault();
+    }
+    if (e.key === "Delete" || e.key === "Backspace") {
+      const index = inputRefs.current.indexOf(e.currentTarget);
+      setOtp((prevOtp) => prevOtp.map((otp, i) => i === index ? "" : otp));
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleInput = (e : React.ChangeEvent<HTMLInputElement>) => {
+    const { target } = e;
+    const index = inputRefs.current.indexOf(target);
+    if (target.value) {
+      setOtp((prevOtp) => prevOtp.map((otp, i) => i === index ? target.value : otp));
+      if (index < otp.length - 1) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    }
+  };
+
+  const handleFocus = (e : React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+
+  const handlePaste = (e : React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text");
+    if (!new RegExp(`^[0-9]{${otp.length}}$`).test(text)) {
+      return;
+    }
+    const digits = text.split("");
+    setOtp(digits);
+  };
+
+  return (
+    <div className={cn("flex gap-2", isDark && 'bg-[#2A2A2A]')}>
+      {otp.map((digit, index) => (
+            <input
+              key={index}
+              type="text"
+              maxLength={1}
+              value={digit}
+              onChange={handleInput}
+              onKeyDown={handleKeyDown}
+              onFocus={handleFocus}
+              onPaste={handlePaste}
+              ref={(el) => {inputRefs.current[index] = el}}
+              className={cn("shadow-xs flex w-[64px] items-center justify-center rounded-lg border border-stroke border-gray-400 p-2 text-center text-2xl font-medium outline-none sm:text-4xl", isDark && 'text-white border-2 border-gray-300')}
+            />
+      ))}
+    </div>
+  );
 }

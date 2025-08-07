@@ -48,7 +48,7 @@ const Settings = () => {
         e.preventDefault();
         if(await confirmDialog('Are you sure you want to save changes?', 'Your updated profile information will be saved.', isDark)){
             setLoading(true)
-            const response = await updateData('/api/admin', updatedAdmin)
+            const response = await updateData('/api/admin/profile', updatedAdmin)
             if(response.success) window.location.reload()
             else errorAlert('Error', response.message, isDark)
             setLoading(false)

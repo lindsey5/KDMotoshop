@@ -53,7 +53,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         const orderItems = await OrderItem.find({ order_id: orderItem.order_id });
 
         // If every order items is "Rated" update the status of order to "Rated"
-        if(orderItems.every(item => item.status === 'Rated')) await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
+        if(orderItems.every(item => item.status === 'Rated' || item.status === 'Refunded')) await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
 
         await sendAdminsNotification(
             req.user_id ?? '', 

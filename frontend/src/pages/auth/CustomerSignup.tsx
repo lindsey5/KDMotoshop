@@ -4,12 +4,30 @@ import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import { GoogleButton, RedButton } from "../../components/buttons/Button"
 import { RedTextField } from "../../components/Textfield"
+import { useState } from "react"
+import VerifyEmailModal from "../../components/modals/VerifyEmail"
+import { postData } from "../../services/api"
 
 const CustomerSignupPage = () => {
     const isDark = useDarkmode()
+    const [newCustomer, setNewCustomer] = useState<NewCustomer>();
+    const [code, setCode] = useState<number>();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true)
+        const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email})
+        console.log(response.code)
+        
+        response.success ? setCode(response.code) : setError(response.message)
+        setLoading(false)
+    }
 
     return (
         <div className={cn("h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
+            <VerifyEmailModal open={code !== undefined} customer={newCustomer as NewCustomer} code={code}/>
             <div className="flex justify-between items-center w-full">
                 <img className={cn("w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
                     onClick={() => window.location.href = '/'} 
@@ -17,7 +35,7 @@ const CustomerSignupPage = () => {
                 />
                <ThemeToggle />
             </div>
-            <div className="flex-1 w-full lg:grid grid-cols-[1fr_1fr] gap-10">
+            <form className="flex-1 w-full lg:grid grid-cols-[1fr_1fr] gap-10" onSubmit={handleSubmit}>
                 <div className="p-5 relative hidden lg:block">
                     <motion.img 
                         className="z-1 absolute w-1/2 h-[45%] left-10 top-20 rounded-xl" src="/helmet.png" alt="helmet"
@@ -36,14 +54,38 @@ const CustomerSignupPage = () => {
                     <div className={cn("w-full flex flex-col items-start gap-5 lg:w-[500px] 2xl:w-[600px]", isDark && 'text-white')}>
                         <h1 className="font-bold text-4xl">Sign Up</h1>
                         <p className={cn(isDark ? 'text-gray-200' : 'text-gray-400')}>Create your account to get started</p>
-                        <RedTextField placeholder="Email" type="email" required />
+                        <p className="text-red-500">{error}</p>
+                        <RedTextField 
+                            placeholder="Email" 
+                            type="email" 
+                            required 
+                            onChange={(e) => setNewCustomer(prev => ({...prev!, email: e.target.value}))}
+                        />
                         <div className="w-full flex gap-5">
-                        <RedTextField placeholder="Firstname" required />
-                        <RedTextField placeholder="Lastname"  required />
+                        <RedTextField 
+                            placeholder="Firstname" 
+                            required 
+                            onChange={(e) => setNewCustomer(prev => ({...prev!, firstname: e.target.value}))}
+                        />
+                        <RedTextField 
+                            placeholder="Lastname"  
+                            required 
+                            onChange={(e) => setNewCustomer(prev => ({...prev!, lastname: e.target.value}))}
+                        />
                         </div>
-                        <RedTextField placeholder="Password" type="password" required/>
-                        <RedTextField placeholder="Confirm password" type="password" required/>
-                        <RedButton sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Sign Up</RedButton>
+                        <RedTextField 
+                            placeholder="Password" 
+                            type="password" 
+                            required
+                            onChange={(e) => setNewCustomer(prev => ({...prev!, password: e.target.value}))}
+                        />
+                        <RedTextField 
+                            placeholder="Confirm password" 
+                            type="password" 
+                            required
+                            onChange={(e) => setNewCustomer(prev => ({...prev!, confirmPassword: e.target.value}))}
+                        />
+                        <RedButton disabled={loading} type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Sign Up</RedButton>
                         <div className="w-full flex items-center gap-5 text-gray-400">
                             <hr className="flex-[1]" />
                             <p>OR</p>
@@ -51,11 +93,11 @@ const CustomerSignupPage = () => {
                         </div>
                         <GoogleButton  theme={isDark ? 'filled_black' : 'filled_blue'} />
                         <div className="w-full flex justify-center mt-4">
-                            <p className="text-lg">Already have an account? <a className="text-red-600 hover:underline" href="/login">Login</a></p>
+                            <p className={cn("text-lg", isDark && 'text-gray-400')}>Already have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/login">Login</a></p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }

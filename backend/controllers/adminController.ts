@@ -44,19 +44,51 @@ export const get_admin= async(req: AuthenticatedRequest, res: Response) => {
 
 export const update_admin = async (req: AuthenticatedRequest, res: Response) => {
     try{
-        const id = req.body._id ||  req.user_id;
-        const updatedData = req.body;
+        const { _id: id, ...updatedData } = req.body;
 
-        if(req.body._id){
-            const isSuperAdmin = await findAdmin({ _id: req.user_id, role: 'Super Admin'})
+        const isSuperAdmin = await findAdmin({ _id: req.user_id, role: 'Super Admin'})
 
-            if(!isSuperAdmin){
-                res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
-                return;
-            }
-
-            req.body.password = await hashPassword(req.body.password);
+        if(!isSuperAdmin){
+            res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
+            return;
         }
+
+        if(updatedData?.password) {
+            updatedData.password = await hashPassword(updatedData.password);
+        }
+
+        const isEmailExist = await findAdmin({ _id: { $ne: id }, email: req.body.email });
+        if(isEmailExist) {
+            res.status(409).json({ success: false, message: "Email already used"});
+            return;
+        }
+
+        const admin = await Admin.findById(id);
+
+        if(!admin){
+            res.status(404).json({success: false, message: 'Admin not found'})
+            return;
+        }
+
+        const updatedAdmin = await Admin.findByIdAndUpdate(id, updatedData, { new: true });
+
+        await create_activity_log({
+            admin_id: req.user_id ?? '',
+            description: `updated ${admin.firstname} ${admin.lastname} details - (${admin.role})`
+        });
+
+        res.status(200).json({success: true, updatedAdmin});
+        
+    }catch(err : any){
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
+
+export const update_admin_profile = async (req: AuthenticatedRequest, res: Response) => {
+    try{
+        const id = req.body._id;
+        const updatedData = req.body;
 
         const isEmailExist = await findAdmin({ _id: { $ne: id }, email: req.body.email });
         if(isEmailExist) {
@@ -81,16 +113,10 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
 
         const updatedAdmin = await Admin.findByIdAndUpdate(id, req.body, { new: true });
 
-        if(req.body._id){
-            await create_activity_log({
-                admin_id: req.user_id ?? '',
-                description: `updated ${admin.firstname} ${admin.lastname} details - (${admin.role})`
-            });
-        }
-
         res.status(200).json({success: true, updatedAdmin});
         
     }catch(err : any){
+        console.log(err)
         res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }

@@ -30,6 +30,7 @@ const CustomerProducts = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
+    const searchTerm = searchParams.get('search');
     const [categories, setCategories] = useState<Category[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>(category || 'All');
@@ -66,7 +67,7 @@ const CustomerProducts = () => {
 
     const getAllProducts = async () => {
         setLoading(true);
-        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
+        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm ?? ''}`);
         
         if(response.success) {
             setPagination(prev => ({
@@ -126,9 +127,10 @@ const CustomerProducts = () => {
             <div className={cn("transition-colors duration-600 relative flex-1 p-3 lg:p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex flex-wrap gap-5 justify-between items-center mt-4">
-                    <Title>Products</Title>
+                    {searchTerm ? <p className={cn('my-2 text-2xl', isDark && 'text-white')}>Results for: {searchTerm}</p> : <Title>Products</Title>}
                     <div className="flex gap-5 flex-1 max-w-[600px]">
                         <CustomizedSelect 
+                            label="Category"
                             menu={[
                                 { label: 'All', value: 'All'},
                                 ...categories.map(category => ({ label: category.category_name, value: category.category_name}))
@@ -137,6 +139,7 @@ const CustomerProducts = () => {
                             onChange={(e) => setSelectedCategory(e.target.value as string)}
                         />
                         <CustomizedSelect 
+                            label="Sort by"
                             menu={options.map(option => ({ label: option.label, value: option.value }))}
                             value={selectedSort}
                             onChange={(e) => setSelectedSort(e.target.value as string)}

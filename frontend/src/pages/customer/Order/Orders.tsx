@@ -13,7 +13,7 @@ import { Statuses } from "../../../constants/status";
 import CustomizedPagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
-import OrderItem from "../../../components/containers/OrderItem";
+import OrderItem from "../../../components/containers/admin/OrderItem";
 import usePagination from "../../../hooks/usePagination";
 import { CircularProgress } from "@mui/material";
 

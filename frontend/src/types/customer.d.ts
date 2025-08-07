@@ -17,3 +17,11 @@ type Address = {
     lastname: string;
     phone: string;
 }
+
+type NewCustomer = {
+    email: string;
+    firstname: string;
+    lastname: string;
+    password: string;
+    confirmPassword: string;
+}

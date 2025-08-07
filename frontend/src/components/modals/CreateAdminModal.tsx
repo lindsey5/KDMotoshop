@@ -35,7 +35,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
             errorAlert('Error', 'Last name must be at least 2 characters long', isDark);    
         }else { 
             const { confirmPassword, ...rest } = admin;
-            const response = admin ? await updateData('/api/admin', rest) : await postData('/api/admin', rest);
+            const response = admin._id ? await updateData('/api/admin', rest) : await postData('/api/admin', rest);
             response.success ? window.location.reload() : errorAlert('Error', response.message);
         }
         setLoading(false);
@@ -55,7 +55,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
             }}
         >
             <Card>
-                <h2 className="text-2xl font-bold mb-4">{admin ? 'Edit Admin' : 'Create Admin'}</h2>
+                <h2 className="text-2xl font-bold mb-4">{admin?._id ? 'Edit Admin' : 'Create Admin'}</h2>
                 <form className="flex flex-col gap-4" onSubmit={handleSave}>
                     {/* Form fields for admin data */}
                     <RedTextField 
@@ -87,7 +87,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                         type="password"
                         value={admin?.password || ''}
                         onChange={(e) => setAdmin(prev => ({ ...prev!, password: e.target.value }))}
-                        required
+                        required={!admin?._id}
                         inputProps={{ maxLength: 30 }}
                     />
 
@@ -96,7 +96,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                         type="password"
                         value={admin?.confirmPassword || ''}
                         onChange={(e) => setAdmin(prev => ({ ...prev!, confirmPassword: e.target.value }))}
-                        required
+                        required={!admin?._id}
                         inputProps={{ maxLength: 30 }}
                     />
 
