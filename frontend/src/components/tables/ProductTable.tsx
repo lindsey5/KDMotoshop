@@ -22,19 +22,6 @@ export const ProductTableColumns = () => {
     )
 }
 
-const highLightLowStock = (product: Product, isDark: boolean): string => {
-  if (product.product_type === 'Single') {
-    return !product.stock || product.stock < 10
-      ? isDark ? 'bg-red-600' : 'bg-red-400'
-      : '';
-  } else {
-    const totalStock = product.variants.reduce((total, v) => total + (v.stock || 0), 0);
-    return totalStock < 10
-      ? isDark ? 'bg-red-600' : 'bg-red-400'
-      : '';
-  }
-};
-
 export const ProductTableRow = ({ product } : { product : Product }) => {
   const navigate = useNavigate();
   const isDark = useDarkmode();
@@ -42,7 +29,6 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
   return (
     <StyledTableRow isDark={isDark}>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)}
         isDark={isDark}
       >
         <div className="flex items-center gap-2 min-w-[200px]">
@@ -62,7 +48,6 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
       </StyledTableCell>
 
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)}
         isDark={isDark}
       >
         {product.product_type === 'Single'
@@ -72,32 +57,26 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
       </StyledTableCell>
 
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >{product.category}</StyledTableCell>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >{product.product_type}</StyledTableCell>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >{product.createdAt ? formatDate(product.createdAt) : ''}</StyledTableCell>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >{`${product.added_by?.firstname} ${product.added_by?.lastname}`}</StyledTableCell>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >{product.rating} / 5</StyledTableCell>
       <StyledTableCell 
-        className={highLightLowStock(product, isDark)} 
         align="center"
         isDark={isDark}
       >

@@ -3,9 +3,9 @@ import { adminLogin, customerLogin, logout, sendSignupEmailVerification, signinW
 import rateLimit from 'express-rate-limit';
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 10 * 60 * 1000,
   max: 10,
-  message: 'Too many login attempts, please try again later.',
+  message: 'Too many attempts, please try again later.',
 });
 
 const router = Router();

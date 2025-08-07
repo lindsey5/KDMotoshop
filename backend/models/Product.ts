@@ -5,8 +5,8 @@ interface Variant {
   _id: Types.ObjectId;
   sku: string;
   image: UploadedImage;
-  price: number | null;
-  stock: number | null;
+  price: number;
+  stock: number;
   attributes: {
     [key: string]: string;
   };

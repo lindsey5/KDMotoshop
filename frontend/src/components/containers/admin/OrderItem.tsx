@@ -37,7 +37,7 @@ const OrderItem = ({ item, orderStatus } : { item : OrderItem, orderStatus?: str
                                 value={review?.rating || 0} 
                                 readOnly 
                             />
-                            {review.review && <div className={cn("p-3 bg-gray-100 rounded-md mt-2", isDark && 'bg-gray-800')}>
+                            {review.review && <div className={cn("p-3 bg-gray-100 rounded-md mt-2", isDark && 'bg-gray-700')}>
                                 <p>{review.review}</p>
                             </div>}
                         </div>

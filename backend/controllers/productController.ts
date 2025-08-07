@@ -314,3 +314,27 @@ export const get_top_products = async (req: Request, res: Response) => {
       res.status(500).json({ success: false, message: err.message });
     }
 }
+
+export const get_low_stock_products = async (req: Request, res: Response) => {
+    try{
+      const products = await Product.find({
+        $or: [
+          { stock: { $lte: 10 }},
+          { 'variants.stock': { $lte: 10 }}
+        ],
+
+      })
+
+      const filteredProducts =products.map(product => {
+        if(product.product_type === 'Variable') product.variants = product.variants.filter(v => v.stock <= 10)
+        return product
+      })
+
+      res.status(200).json({ success: true, products: filteredProducts })
+
+
+    }catch(err : any){
+        console.error(err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+}
