@@ -15,7 +15,6 @@ import cors from 'cors';
 import express from 'express'
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import rateLimit from 'express-rate-limit';
 
 const app = express();
 
@@ -66,13 +65,6 @@ app.get('/api/cities-municipalities/:cityOrMunicipalityCode/barangays', async (r
   res.status(200).json(data);
 });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: 'Too many login attempts, please try again later.',
-});
-
-app.use('/api/auth/', authLimiter);
 app.post('/api/paymongo/webhook', paymongoWebhook)
 app.use("/api/admin", adminRoutes)
 app.use("/api/auth", authRoutes)
