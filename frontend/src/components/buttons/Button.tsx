@@ -30,32 +30,26 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
     const isDark = useDarkmode()
     const navigate = useNavigate()
 
-    const handleSuccess = async (googleResponse : any) => {
+    const handleSuccess = async (googleResponse: any) => {
       try {
         const credential = googleResponse.credential;
-        const decoded = JSON.parse(atob(credential.split('.')[1]));
 
-        const response = await postData('/api/auth/google/login', { 
-          email: decoded.email, 
-          firstname: decoded.given_name,
-          lastname: decoded.family_name,
-          image: {
-            imagePublicId: '',
-            imageUrl: decoded.picture
-          }
-          
-        });
-        if(response.success){
-            document.referrer ? navigate(-1) : navigate('/')
-            
-            setTimeout(() => {
-                window.location.reload();
-              }, 100);
-        }else{
+        if (!credential) {
+          errorAlert('Google credential missing', '', isDark);
+          return;
+        }
+
+        const response = await postData('/api/auth/google/login', { idToken: credential });
+
+        if (response.success) {
+          document.referrer ? navigate(-1) : navigate('/');
+          setTimeout(() => window.location.reload(), 100);
+        } else {
           errorAlert('Sign in error. Please try again', '', isDark);
         }
       } catch (error) {
         console.error('Login processing error:', error);
+        errorAlert('An unexpected error occurred during login', '', isDark);
       }
     };
   

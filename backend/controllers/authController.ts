@@ -4,6 +4,9 @@ import { createCustomer, findCustomer } from "../services/customerService";
 import Admin from "../models/Admin";
 import Customer from "../models/Customer";
 import { sendVerificationCode } from "../services/emailService";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 
 export const adminLogin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -25,7 +28,33 @@ export const adminLogin = async (req: Request, res: Response) => {
       const token = createToken(user._id as string);
       createCookie(res, token, 'jwt');
 
-      res.status(201).json({ success: true })
+      res.status(200).json({ success: true })
+    } catch (err : any) {
+      res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
+
+export const customerLogin = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    try {
+      const user = await Customer.findOne({ email });
+    
+      if (!user) {
+         res.status(404).json({ success: false, message: 'Email not found'})
+         return;
+      }
+
+      const isMatch = await verifyPassword(password, user.password);
+  
+      if (!isMatch) {
+        res.status(401).json({ success: false, message: 'Incorrect Password'})
+        return;
+      }
+      const token = createToken(user._id as string);
+      createCookie(res, token, 'jwt');
+
+      res.status(200).json({ success: true })
     } catch (err : any) {
       res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
@@ -72,31 +101,51 @@ export const sendSignupEmailVerification = async (req : Request, res : Response)
 }
 
 export const signinWithGoogle = async (req: Request, res: Response) => {
-  try{
-    const customer = await findCustomer({ email: req.body.email });
-    
-    if(customer){
-      const token = createToken(customer._id);
+  try {
+    const { idToken } = req.body;
 
-      createCookie(res, token, 'jwt');
-
-      res.status(201).json({ success: true, customer, token });
-      return
+    if (!idToken) {
+      res.status(400).json({ success: false, message: 'No ID token provided' });
+      return;
     }
 
-    const newCustomer = await createCustomer(req.body);
-    
-    const token = createToken(newCustomer._id as string);
+    // Verify the ID token
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
+    const payload = ticket.getPayload();
+    if (!payload) {
+      res.status(401).json({ success: false, message: 'Invalid Google token' });
+      return;
+    }
+
+    const { email, given_name, family_name, picture } = payload;
+
+    let customer = await findCustomer({ email });
+
+    if (!customer) {
+      customer = await createCustomer({
+        email,
+        firstname: given_name,
+        lastname: family_name,
+        image: {
+            imagePublicId: '',
+            imageUrl: picture as string
+        }
+      });
+    }
+
+    const token = createToken(customer._id);
     createCookie(res, token, 'jwt');
 
-    res.status(201).json({ success: true, customer: newCustomer, token });
-
-  }catch(err : any){
-    console.log(err.message)
-    res.status(500).json({ success: false, message: err.message || 'Server error'})
+    res.status(200).json({ success: true, customer, token });
+  } catch (err: any) {
+    console.log(err.message);
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
   }
-}
+};
 
 export const logout = (req : Request, res : Response) =>{
     res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'none' });

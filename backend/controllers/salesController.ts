@@ -40,7 +40,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
     const start = new Date(`${year}-01-01T00:00:00Z`);
     const end = new Date(`${year + 1}-01-01T00:00:00Z`);
 
-    const salesArray = new Array(12).fill(0);
+    const salesArray = new Array(12);
 
     const monthlySales = await Order.aggregate([
       ...refundedLookupAndCalcStages,

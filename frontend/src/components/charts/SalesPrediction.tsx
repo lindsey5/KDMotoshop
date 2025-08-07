@@ -29,7 +29,7 @@ const SalesPredictionChart = () => {
 
                 const actual = labels.map((label: string) =>
                     actualRes.dailySales.find((sales: any) => sales.date === label)?.total ?? undefined
-                );
+                )
 
                 setForecastSales(forecast);
                 setDateLabels(labels);
