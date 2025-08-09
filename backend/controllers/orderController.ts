@@ -223,6 +223,8 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                     await OrderItem.updateOne({_id: item._id}, { status: 'Refunded' });
                 }else if(req.body.status === 'Cancelled'){
                     await OrderItem.updateOne({_id: item._id}, { status: 'Cancelled' });
+                }else if(req.body.status === 'Failed'){
+                    await OrderItem.updateOne({_id: item._id}, { status: 'Failed' });
                 }
             }
         }

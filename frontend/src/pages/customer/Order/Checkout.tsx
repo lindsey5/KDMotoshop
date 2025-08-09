@@ -22,6 +22,7 @@ import AddressContainer from "../../../components/containers/customer/AddressCon
 import { RedRadio } from "../../../components/Radio";
 import e from "cors";
 import { Title } from "../../../components/text/Text";
+import { Navigate } from "react-router-dom";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -42,8 +43,8 @@ const CheckoutPage = () => {
     const savedItems = localStorage.getItem('items');
     const cartItems = localStorage.getItem('cart');
     const parsedCartItems = cartItems ? JSON.parse(cartItems) : null;
-    const parsedItems = JSON.parse(savedItems || ''); 
-    const { customer, setCustomer } = useContext(CustomerContext);
+    const parsedItems = savedItems ? JSON.parse(savedItems) : null; 
+    const { customer, setCustomer, loading : customerLoading } = useContext(CustomerContext);
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [addAddress, setAddAddress] = useState<boolean>(false);
     const [address, setAddress] = useState<Address>(addresssInitialState);
@@ -52,6 +53,8 @@ const CheckoutPage = () => {
     const isDark = useDarkmode();
     const [loading, setLoading] = useState<boolean>(false);
     const [paymentMethod, setPaymentMethod] = useState<string>('CASH');
+
+    if(!customer && !customerLoading) return <Navigate to="/" />
 
     useEffect(() => {
         if(customer){
@@ -270,7 +273,7 @@ const CheckoutPage = () => {
                     <CustomizedSelect 
                         label="Region"
                         value={selectedRegion}
-                        menu={regions.map((region) => ({ value: region.code, label: region.name }))}
+                        menu={regions.map((region : any) => ({ value: region.code, label: region.name }))}
                         onChange={(e) => handleRegionChange(e.target.value as string)}
                     />
                     {selectedRegion && <CustomizedSelect 
@@ -282,7 +285,7 @@ const CheckoutPage = () => {
                     {selectedCity && <CustomizedSelect 
                         label="Barangay"
                         value={address?.barangay}
-                        menu={barangays.map((barangay) => ({ value: barangay, label: barangay }))}
+                        menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
                         onChange={(e) => handleBarangayChange(e.target.value as string)}
                     />}
                     <RedTextField 
@@ -357,7 +360,7 @@ const CheckoutPage = () => {
 
                 <RedButton 
                     onClick={proceed}
-                    disabled={(customer?.addresses?.length ?? 0) < 1 || loading}
+                    disabled={(customer?.addresses?.length ?? 0) < 1 || loading || !savedItems}
                 >{paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>

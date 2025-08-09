@@ -6,10 +6,14 @@ import { CustomizedSelect, StatusSelect } from "../Select";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { RedButton } from "../buttons/Button";
-import { Statuses } from "../../constants/status";
 import Card from "../cards/Card";
 import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
+
+const Statuses = [
+    { value: 'Pending', label: 'Pending', color: 'orange' },
+    { value: 'Delivered', label: 'Delivered', color: 'purple' },
+]
 
 interface OrderInformationModalProps extends ModalProps {
     setOrder: React.Dispatch<React.SetStateAction<Order>>;
@@ -120,7 +124,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         <CustomizedSelect 
                             label="Region"
                             value={selectedRegion}
-                            menu={regions.map((region) => ({ value: region.code, label: region.name }))}
+                            menu={regions.map((region : any) => ({ value: region.code, label: region.name }))}
                             onChange={(e) => handleRegionChange(e.target.value as string)}
                         />
                         {selectedRegion && <CustomizedSelect 
@@ -132,7 +136,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         {selectedCity && <CustomizedSelect 
                                 label="Barangay"
                                 value={order.address.barangay}
-                                menu={barangays.map((barangay) => ({ value: barangay, label: barangay }))}
+                                menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
                                 onChange={(e) => handleBarangayChange(e.target.value as string)}
                         />}
                         {order.address.barangay && ( 

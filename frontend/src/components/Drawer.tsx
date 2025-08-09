@@ -21,6 +21,7 @@ const statusMap: Record<string, JSX.Element> = {
     'Delivered': <AssignmentTurnedInIcon fontSize="large" />,
     'Rated': <GradeIcon fontSize="large" />,
     'Cancelled': <WarningIcon fontSize="large" />,
+    'Failed': <WarningIcon fontSize="large" />,
     'Rejected': <WarningIcon fontSize="large" />,
     'Refunded': <WarningIcon fontSize="large" />,
 };

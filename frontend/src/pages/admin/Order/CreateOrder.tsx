@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { fetchData, postData } from "../../../services/api";
 import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
@@ -56,7 +56,7 @@ const CreateOrderPage = () => {
     const isDark = useDarkmode()
     const [showSide, setShowSide] = useState<boolean>(false);
 
-    useEffect(() => {
+    const calculateTotal = useCallback(() => {
         setOrder(prev => (
             { ...prev, 
                 subtotal: orderItems
@@ -68,8 +68,8 @@ const CreateOrderPage = () => {
     }, [orderItems])
 
     useEffect(() => {
-        fetchProducts();
-    }, [pagination.page, selectedCategory])
+        calculateTotal
+    }, [orderItems])
 
     useEffect(() => {
         setSelectedCategory('All')
@@ -81,7 +81,7 @@ const CreateOrderPage = () => {
         }, 300); 
         
         return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm])
+    }, [pagination.searchTerm, pagination.page, selectedCategory])
 
     const fetchProducts = async () => {
         const response = await fetchData(`/api/product/reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);

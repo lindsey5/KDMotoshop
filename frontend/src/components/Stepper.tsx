@@ -30,6 +30,7 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
         Cancelled: { color: "bg-red-600", text: "text-red-600" },
         Rejected: { color: "bg-red-600", text: "text-red-600" },
         Refunded: { color: "bg-amber-500", text: "text-amber-500" },
+        Failed: { color: 'bg-red-600', text: 'text-red-600'}
     };
 
     const allStatuses = [...linearSteps.map(step => step.status), ...Object.keys(terminalAlt)];

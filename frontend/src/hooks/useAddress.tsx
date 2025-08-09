@@ -1,67 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { normalizeCityName } from "../utils/utils";
-import { fetchData } from "../services/api";
+import useFetch from "./useFetch";
 
 function useRegions() {
-  const [regions, setRegions]= useState<{ code: string; name: string }[]>([]);
-
-  useEffect(() => {
-    const getRegionsAsync = async () => {
-      const response = await fetchData(`/api/regions` );
-      const regions = response
-        .map((region: any) => ({
+  const { data } = useFetch(`/api/regions`);
+  const regions = data?.regions ? data.regions.map((region: any) => ({
           code: region.code,
           name: region.name
         }))
-        .sort((a : any, b : any) => a.name.localeCompare(b.name));
-        
-      setRegions(regions);
-    };
-
-    getRegionsAsync();
-  }, []);
+        .sort((a : any, b : any) => a.name.localeCompare(b.name)) : []
 
   return { regions };
 }
 
 
 function useBarangays(cityCode: string) {
-  const [barangays, setBarangays] = useState<string[]>([]);
-
-  useEffect(() => {
-    const getBarangaysAsync = async () => {
-      const response = await fetchData(`/api/cities-municipalities/${cityCode}/barangays` );
-      const barangays = response
-        .map((barangay: any) => barangay.name)
-        .sort();
-        
-      setBarangays(barangays);
-    };
-
-    if(cityCode) getBarangaysAsync();
-  }, [cityCode]);
+  const { data } = useFetch(`/api/cities-municipalities/${cityCode}/barangays`);
+  const barangays = data?.barangays ? data.barangays.map((barangay: any) => barangay.name)
+        .sort() : []
 
   return { barangays };
 }
 
 function useCities(regionCode: string) {
-  const [cities, setCities] = useState<{ code: string; name: string }[]>([]);
-
-  useEffect(() => {
-    const getCitiesAsync = async () => {
-      const response = await fetchData(`/api/regions/${regionCode}/cities-municipalities`);
-      const cities = response
-        .map((city: any) => ({
+  const { data } = useFetch(`/api/regions/${regionCode}/cities-municipalities`);
+  const cities = data?.cities ? data.cities.map((city: any) => ({
           code: city.code,
           name: normalizeCityName(city.name)
         }))
-        .sort((a : any, b : any) => a.name.localeCompare(b.name));
-        
-      setCities(cities);
-    };
+        .sort((a : any, b : any) => a.name.localeCompare(b.name)) : []
 
-    if(regionCode) getCitiesAsync();
-  }, [regionCode]);
 
   return { cities };
 }

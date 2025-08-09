@@ -1,7 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { Server as HTTPServer } from 'http';
-import cookie from 'cookie';
 
 interface JwtPayload {
   id: string;

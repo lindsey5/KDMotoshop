@@ -5,6 +5,7 @@ import Admin from "../models/Admin";
 import Customer from "../models/Customer";
 import { sendVerificationCode } from "../services/emailService";
 import { OAuth2Client } from "google-auth-library";
+import { AuthenticatedRequest } from "../types/auth";
 
 const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 

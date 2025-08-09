@@ -5,16 +5,19 @@ export const statusColorMap: Record<string, { bg: string; icon: string }> = {
   Delivered: { bg: 'bg-purple-100', icon: '#a855f7' },  // purple
   Rated: { bg: 'bg-purple-100', icon: '#a855f7' },  // purple
   Rejected:  { bg: 'bg-red-100',    icon: '#ef4444' },  // red
+  Failed:  { bg: 'bg-red-100',    icon: '#ef4444' },
   Cancelled: { bg: 'bg-gray-200',   icon: '#9ca3af' },  // gray
   Refunded:  { bg: 'bg-gray-200',   icon: '#9ca3af' },  // gray
 };
 
 export const Statuses = [
+    { value: 'All', label: 'All', color: 'gray' },
     { value: 'Pending', label: 'Pending', color: 'orange' },
     { value: 'Accepted', label: 'Accepted', color: 'green' },
     { value: 'Shipped', label: 'Shipped', color: 'blue' },
     { value: 'Delivered', label: 'Delivered', color: 'purple' },
     { value: 'Rejected', label: 'Rejected', color: 'red' },
+    { value: 'Failed', label: 'Failed', color: 'red' },
     { value: 'Cancelled', label: 'Cancelled', color: 'gray' },
     { value: 'Refunded', label: 'Refunded', color: 'gray' }
 ]

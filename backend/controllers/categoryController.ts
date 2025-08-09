@@ -72,9 +72,16 @@ export const delete_category = async (req: AuthenticatedRequest, res: Response) 
 
 export const get_top_categories = async (req: Request, res: Response) => {
   try {
-    const limit = Number(req.query.limit) || 10;
     const topCategories = await OrderItem.aggregate([
-      { $match: { status: 'Fulfilled'} },
+      { $match: { status: { $in: ['Fulfilled', 'Rated']}}},
+      { $lookup: {
+        from: 'orders',
+        localField: 'order_id',
+        foreignField: '_id',
+        as: 'order',
+      }},
+      { $unwind: '$order'},
+      { $match: { 'order.status' : { $in: ['Delivered', 'Rated']}}},
       {
         $lookup: {
           from: 'products',
@@ -92,7 +99,6 @@ export const get_top_categories = async (req: Request, res: Response) => {
         }
       },
       { $sort: { totalQuantity: -1 } },
-      { $limit: limit },
       {
         $project: {
           category: '$_id',
@@ -101,11 +107,11 @@ export const get_top_categories = async (req: Request, res: Response) => {
           _id: 0
         }
       }
-    ])
+    ]);
 
-    res.status(200).json({ success: true, topCategories })
-  } catch (err: any) {
-    console.error(err)
-    res.status(500).json({ success: false, message: err.message })
+    res.status(200).json({ success: true, topCategories });
+  } catch (err) {
+    console.error('Error fetching top categories:', err);
+    res.status(500).json({ success: false, message: err instanceof Error ? err.message : 'Server error' });
   }
-}
+};

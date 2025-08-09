@@ -173,12 +173,21 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
         </Button>
       }
 
-      {(order.status === 'Accepted' || order.status === 'Shipped') &&
+      {order.status === 'Accepted'&&
         <RedButton
           onClick={() => updateOrder('Cancel Order?', 'This action is irreversible.', 'Cancelled')}
           startIcon={<CancelIcon />}
         >
           Cancel Order
+        </RedButton>
+      }
+
+      {order.status === 'Shipped'&&
+        <RedButton
+          onClick={() => updateOrder('Marked as failed?', 'This action is irreversible.', 'Failed')}
+          startIcon={<CancelIcon />}
+        >
+          Mark as Failed
         </RedButton>
       }
 

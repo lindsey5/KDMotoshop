@@ -37,7 +37,7 @@ const OrderSchema: Schema<Order> = new Schema(
     shipping_fee: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["Pending", "Accepted", "Shipped", "Delivered", "Rejected", "Cancelled", "Refunded", "Rated"],
+      enum: ["Pending", "Accepted", "Shipped", "Delivered", "Rejected", "Cancelled", "Refunded", "Failed", "Rated"],
       default: "Pending",
       required: true
     },

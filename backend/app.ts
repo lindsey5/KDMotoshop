@@ -37,7 +37,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.get('/api/regions', async (req, res) => {
   const response = await fetch('https://psgc.gitlab.io/api/regions');
   const data = await response.json();
-  res.status(200).json(data);
+  res.status(200).json({ success: true, regions: data});
 });
 
 app.get('/api/regions/:regionCode/cities-municipalities', async (req, res) => {
@@ -47,7 +47,7 @@ app.get('/api/regions/:regionCode/cities-municipalities', async (req, res) => {
   }
   const response = await fetch(`https://psgc.gitlab.io/api/regions/${req.params.regionCode}/cities-municipalities/`);
   const data = await response.json();
-  res.status(200).json(data);
+  res.status(200).json({ success: true, cities: data});
 });
 
 app.get('/api/cities-municipalities/:cityOrMunicipalityCode/barangays', async (req, res) => {
@@ -62,7 +62,7 @@ app.get('/api/cities-municipalities/:cityOrMunicipalityCode/barangays', async (r
 
   const data = await response.json();
 
-  res.status(200).json(data);
+  res.status(200).json({ success: true, barangays: data });
 });
 
 app.post('/api/paymongo/webhook', paymongoWebhook)

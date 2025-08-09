@@ -11,6 +11,7 @@ import { Status } from "../text/Text";
 export const OrderTableColumns = () => {
     return (
         <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
+            <StyledTableCell></StyledTableCell>
             <StyledTableCell>Customer Name</StyledTableCell>
             <StyledTableCell>Order ID</StyledTableCell>
             <StyledTableCell>Amount</StyledTableCell>
@@ -23,7 +24,7 @@ export const OrderTableColumns = () => {
     )
 }
 
-export const OrderTableRow = ({ order } : { order : Order}) => {
+export const OrderTableRow = ({ order, index } : { order : Order, index : number}) => {
     const navigate = useNavigate();
     const isDark = useDarkmode();
 
@@ -31,6 +32,7 @@ export const OrderTableRow = ({ order } : { order : Order}) => {
         <StyledTableRow
             isDark={isDark}
         >
+            <StyledTableCell isDark={isDark}>{index + 1}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.order_id}</StyledTableCell>
             <StyledTableCell isDark={isDark}>₱{formatNumber(order.total)}</StyledTableCell>

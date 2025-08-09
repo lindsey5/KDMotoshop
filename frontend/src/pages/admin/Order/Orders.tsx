@@ -2,7 +2,7 @@ import { RedButton } from "../../../components/buttons/Button"
 import AddIcon from '@mui/icons-material/Add';
 import CustomizedTable from "../../../components/tables/Table";
 import { SearchField } from "../../../components/Textfield";
-import { CustomizedSelect } from "../../../components/Select";
+import { CustomizedSelect, StatusSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useCallback, useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
@@ -90,13 +90,10 @@ const Orders = () => {
                 />
                 <div className="flex flex-wrap gap-5 justify-end">
                     <div className="w-full xl:w-[400px] flex gap-10">
-                        <CustomizedSelect 
-                            sx={{ height: 55 }}
-                            label="Status"
-                            menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}
-                            icon={<FilterListIcon />}
+                        <StatusSelect 
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value as string)}
+                            menu={Statuses}
                         />
                         <CustomizedSelect 
                             sx={{ height: 55 }}
@@ -115,7 +112,7 @@ const Orders = () => {
             </div>
             <CustomizedTable
                 cols={<OrderTableColumns />}
-                rows={orders.map(order => <OrderTableRow key={`${order._id}`} order={order} />)} 
+                rows={orders.map((order, index) => <OrderTableRow key={`${order._id}`} index={index} order={order} />)} 
             />
             <div className="flex justify-end mt-4">
                 <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
