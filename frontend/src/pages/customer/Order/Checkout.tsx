@@ -20,7 +20,6 @@ import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
 import PaymentSummaryCard from "../../../components/cards/customer/PaymentSummary";
 import AddressContainer from "../../../components/containers/customer/AddressContainer";
 import { RedRadio } from "../../../components/Radio";
-import e from "cors";
 import { Title } from "../../../components/text/Text";
 import { Navigate } from "react-router-dom";
 
@@ -40,190 +39,268 @@ const addresssInitialState = {
 }
 
 const CheckoutPage = () => {
-    const savedItems = localStorage.getItem('items');
-    const cartItems = localStorage.getItem('cart');
-    const parsedCartItems = cartItems ? JSON.parse(cartItems) : null;
-    const parsedItems = savedItems ? JSON.parse(savedItems) : null; 
-    const { customer, setCustomer, loading : customerLoading } = useContext(CustomerContext);
-    const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
-    const [addAddress, setAddAddress] = useState<boolean>(false);
-    const [address, setAddress] = useState<Address>(addresssInitialState);
-    const [selectedAddress, setSelectedAddress] = useState<number>(0);
-    const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
-    const isDark = useDarkmode();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [paymentMethod, setPaymentMethod] = useState<string>('CASH');
+  const savedItems = localStorage.getItem("items");
+  const cartItems = localStorage.getItem("cart");
+  const parsedCartItems = cartItems ? JSON.parse(cartItems) : null;
+  const parsedItems = savedItems ? JSON.parse(savedItems) : null;
+  const { customer, setCustomer, loading: customerLoading } =
+    useContext(CustomerContext);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [addAddress, setAddAddress] = useState<boolean>(false);
+  const [address, setAddress] = useState<Address>(addresssInitialState);
+  const [selectedAddress, setSelectedAddress] = useState<number>(0);
+  const {
+    selectedCity,
+    setSelectedCity,
+    selectedRegion,
+    setSelectedRegion,
+    regions,
+    cities,
+    barangays,
+  } = useAddress();
+  const isDark = useDarkmode();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
 
-    if(!customer && !customerLoading) return <Navigate to="/" />
-
-    useEffect(() => {
-        if(customer){
-            setAddAddress((customer.addresses?.length || 0) < 1)
-            setAddress(prev => ({...prev, firstname: customer.firstname, lastname: customer.lastname}))
-        }
-    }, [customer])
-
-    const subtotal : number = useMemo(() => {
-        return orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0
-    }, [orderItems])
-
-    const shipping_fee : number = useMemo(() => {
-        if(orderItems?.length > 0 && customer?.addresses && customer?.addresses.length > 0) {
-            return orderItems.reduce((total, item) => (item.quantity * calculateShippingFee(item.weight, (customer?.addresses?.[selectedAddress]?.region ?? ''))) + total, 0)
-        }
-        return 0
-    }, [selectedAddress, orderItems, customer?.addresses])
-
-    const total : number = useMemo(() => {
-        return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0 ) + shipping_fee
-    }, [orderItems, shipping_fee])
-    
-    const areFieldsFilled = useMemo(() => {
-        return Object.entries(address)
-            .every(([_, value]) => value !== '');
-    }, [address])
-
-    const saveAddress = async () => {
-        setLoading(true)
-        const data = {...customer!, addresses: [...customer?.addresses!, address]}
-        const response = await updateData('/api/customer', data)
-        if(response.success){
-            setCustomer(data)
-            setAddAddress(false)
-            setAddress(addresssInitialState)
-            setSelectedRegion('')
-            setSelectedCity('')
-            if((customer?.addresses?.length || 0) > 0) setSelectedAddress(0)
-            successAlert('Address successfully save', '', isDark);
-        }
-        setLoading(false)
+  useEffect(() => {
+    if (customer) {
+      setAddAddress((customer.addresses?.length || 0) < 1);
+      setAddress((prev) => ({
+        ...prev,
+        firstname: customer.firstname,
+        lastname: customer.lastname,
+      }));
     }
+  }, [customer]);
 
-    const proceed = async () => {
-        if(await confirmDialog(paymentMethod === 'CASH' ? 'Place this Order?' :'Proceed to payment?', '', isDark, "success")){
-            setLoading(true)
-            const order = {
-                order_source: 'Website',
-                shipping_fee,
-                subtotal,
-                total,
-                status: "Pending",
-                customer: {
-                    customer_id: customer?._id,
-                    email: customer?.email,
-                    firstname: address.firstname,
-                    lastname: address.lastname,
-                    phone: customer?.addresses?.[selectedAddress].phone
-                },
-                address: {
-                    street: customer?.addresses?.[selectedAddress].street,
-                    barangay: customer?.addresses?.[selectedAddress].barangay,
-                    city: customer?.addresses?.[selectedAddress].city,
-                    region: customer?.addresses?.[selectedAddress].region
-                },
-                payment_method: paymentMethod,
-            };
-            const response = await postData(paymentMethod === 'CASH' ? '/api/order/customer' : '/api/payment', {
-                order, 
-                orderItems, 
-                cart: parsedCartItems
-            });
+  const subtotal: number = useMemo(() => {
+    return (
+      orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0
+    );
+  }, [orderItems]);
 
-            if(response.success) {
-                if(paymentMethod === 'CASH'){
-                    await successAlert('Order successfully placed', 'Thank you for choosing our service!', isDark);
-                    window.location.href = `/order/${response.order._id}`
-                }else{
-                    window.open(response.checkout_url, '_blank')
-                }
+  const shipping_fee: number = useMemo(() => {
+    if (
+      orderItems?.length > 0 &&
+      customer?.addresses &&
+      customer?.addresses.length > 0
+    ) {
+      return orderItems.reduce(
+        (total, item) =>
+          item.quantity *
+            calculateShippingFee(
+              item.weight,
+              customer?.addresses?.[selectedAddress]?.region ?? ""
+            ) +
+          total,
+        0
+      );
+    }
+    return 0;
+  }, [selectedAddress, orderItems, customer?.addresses]);
+
+  const total: number = useMemo(() => {
+    return (
+      (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0) +
+      shipping_fee
+    );
+  }, [orderItems, shipping_fee]);
+
+  const areFieldsFilled = useMemo(() => {
+    return Object.entries(address).every(([_, value]) => value !== "");
+  }, [address]);
+
+  const saveAddress = async () => {
+    setLoading(true);
+    const data = { ...customer!, addresses: [...customer?.addresses!, address] };
+    const response = await updateData("/api/customer", data);
+    if (response.success) {
+      setCustomer(data);
+      setAddAddress(false);
+      setAddress(addresssInitialState);
+      setSelectedRegion("");
+      setSelectedCity("");
+      if ((customer?.addresses?.length || 0) > 0) setSelectedAddress(0);
+      successAlert("Address successfully save", "", isDark);
+    }
+    setLoading(false);
+  };
+
+  const proceed = async () => {
+    if (
+      await confirmDialog(
+        paymentMethod === "CASH" ? "Place this Order?" : "Proceed to payment?",
+        "",
+        isDark,
+        "success"
+      )
+    ) {
+      setLoading(true);
+      const order = {
+        order_source: "Website",
+        shipping_fee,
+        subtotal,
+        total,
+        status: "Pending",
+        customer: {
+          customer_id: customer?._id,
+          email: customer?.email,
+          firstname: address.firstname,
+          lastname: address.lastname,
+          phone: customer?.addresses?.[selectedAddress].phone,
+        },
+        address: {
+          street: customer?.addresses?.[selectedAddress].street,
+          barangay: customer?.addresses?.[selectedAddress].barangay,
+          city: customer?.addresses?.[selectedAddress].city,
+          region: customer?.addresses?.[selectedAddress].region,
+        },
+        payment_method: paymentMethod,
+      };
+      const response = await postData(
+        paymentMethod === "CASH" ? "/api/order/customer" : "/api/payment",
+        {
+          order,
+          orderItems,
+          cart: parsedCartItems,
+        }
+      );
+
+      if (response.success) {
+        if (paymentMethod === "CASH") {
+          await successAlert(
+            "Order successfully placed",
+            "Thank you for choosing our service!",
+            isDark
+          );
+          window.location.href = `/order/${response.order._id}`;
+        } else {
+          window.open(response.checkout_url, "_blank");
+        }
+      } else errorAlert(response.message, "", isDark);
+
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const getProducts = async () => {
+      const items = await Promise.all(
+        parsedItems
+          .map(async (item: any) => {
+            const response = await fetchData(`/api/product/${item.product_id}`);
+
+            if (response.success) {
+              const product: Product = response.product;
+              const variant = product.variants.filter(
+                (variant) => variant._id === item.variant_id
+              )[0];
+
+              if (product.product_type === "Variable" && !variant) return null;
+
+              const stock =
+                product.product_type === "Single"
+                  ? product.stock
+                  : variant.stock;
+
+              return {
+                product_id: item.product_id,
+                variant_id: item.variant_id,
+                attributes:
+                  product.product_type === "Single"
+                    ? null
+                    : variant.attributes,
+                stock: stock,
+                product_name: product.product_name,
+                quantity:
+                  item.quantity > (stock ?? 0) ? stock : item.quantity,
+                price:
+                  product.product_type === "Single"
+                    ? product.price
+                    : variant.price,
+                lineTotal:
+                  product.product_type === "Single"
+                    ? (product.price ?? 0) * item.quantity
+                    : (variant.price ?? 0) * item.quantity,
+                image:
+                  typeof product?.thumbnail === "object" &&
+                  product.thumbnail !== null &&
+                  "imageUrl" in product.thumbnail
+                    ? product.thumbnail.imageUrl
+                    : typeof product?.thumbnail === "string"
+                    ? product.thumbnail
+                    : "/photo.png",
+                status: "Unfulfilled",
+                weight: product.weight,
+              };
             }
-            else errorAlert(response.message, '', isDark)
-            
-            setLoading(false)
-        }
+
+            return null;
+          })
+          .filter((item: any) => item)
+      );
+
+      setOrderItems(items);
+    };
+
+    getProducts();
+  }, [customer]);
+
+  const handleRegionChange = (value: string) => {
+    const selectedCode = value;
+    const selectedRegion = regions.find(
+      (city: any) => city.code === selectedCode
+    );
+    setSelectedRegion(selectedCode);
+    setSelectedCity("");
+
+    if (selectedRegion)
+      setAddress((prev) => ({ ...prev!, region: selectedRegion.name }));
+  };
+
+  const handleCityChange = (value: string) => {
+    const selectedCode = value;
+    const selectedCity = cities.find(
+      (city: any) => city.code === selectedCode
+    );
+    setSelectedCity(selectedCode);
+
+    if (selectedCity)
+      setAddress((prev) => ({ ...prev!, city: selectedCity.name }));
+  };
+
+  const handleBarangayChange = (value: string) => {
+    setAddress((prev) => ({ ...prev!, barangay: value }));
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAddress(Number(event.target.value));
+  };
+
+  const handlePaymentMethod = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => setPaymentMethod(event.target.value);
+
+  const removeAddress = async (index: number) => {
+    if (await confirmDialog("Remove this address?", "", isDark)) {
+      setLoading(true);
+      const data = {
+        ...customer!,
+        addresses: customer?.addresses?.filter((_, i) => i !== index),
+      };
+      const response = await updateData("/api/customer", data);
+      if (response.success) {
+        setCustomer(data);
+        successAlert("Address successfully removed", "", isDark);
+        if (data.addresses?.length === 1) setSelectedAddress(0);
+      }
+      setLoading(false);
     }
+  };
 
-    useEffect(() => {
-        const getProducts = async () => {
-            const items = await Promise.all(parsedItems.map(async (item : any) => {
-                const response = await fetchData(`/api/product/${item.product_id}`);
-
-                if(response.success){
-                    const product : Product = response.product
-                    const variant = product.variants.filter(variant => variant._id === item.variant_id)[0]
-                    
-                    if(product.product_type === 'Variable' && !variant) return null
-
-                    const stock = product.product_type === 'Single' ? product.stock : variant.stock
-
-                    return {
-                        product_id: item.product_id,
-                        variant_id: item.variant_id,
-                        attributes: product.product_type === 'Single' ? null : variant.attributes,
-                        stock: stock,
-                        product_name: product.product_name,
-                        quantity: item.quantity > (stock ?? 0) ? stock : item.quantity,
-                        price: product.product_type === 'Single' ? product.price : variant.price,
-                        lineTotal: product.product_type === 'Single' ? (product.price ?? 0) * item.quantity : (variant.price ?? 0) * item.quantity,
-                        image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                            ? product.thumbnail.imageUrl
-                                : typeof product?.thumbnail === 'string'
-                                ? product.thumbnail
-                            : '/photo.png',
-                        status: 'Unfulfilled',
-                        weight: product.weight
-                    }
-                }
-
-                return null
-            }).filter((item : any) => item))
-
-            setOrderItems(items);
-        }
-
-        getProducts();
-    }, [])
-
-    const handleRegionChange = (value : string) => {
-        const selectedCode = value;
-        const selectedRegion = regions.find((city: any) => city.code === selectedCode);
-        setSelectedRegion(selectedCode);
-        setSelectedCity('');
-
-        if (selectedRegion) setAddress((prev) => ({...prev!, region: selectedRegion.name}));
-    };
-
-    const handleCityChange = (value : string) => {
-        const selectedCode = value;
-        const selectedCity = cities.find((city: any) => city.code === selectedCode);
-        setSelectedCity(selectedCode);
-
-        if (selectedCity) setAddress((prev) => ({ ...prev!, city: selectedCity.name,}));
-    };
-
-    const handleBarangayChange = (value: string) => {
-        setAddress((prev) => ({ ...prev!, barangay: value }));
-    };
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedAddress(Number(event.target.value));
-    };
-
-    const handlePaymentMethod = (event: React.ChangeEvent<HTMLInputElement>) => setPaymentMethod(event.target.value)
-
-    const removeAddress = async (index : number) => {
-        if(await confirmDialog('Remove this address?', '', isDark)){
-            setLoading(true)
-            const data = {...customer!, addresses: customer?.addresses?.filter((_, i) => i !== index)}
-            const response = await updateData('/api/customer', data)
-            if(response.success){
-                setCustomer(data)
-                successAlert('Address successfully removed', '', isDark)
-                if(data.addresses?.length === 1) setSelectedAddress(0);
-            }
-            setLoading(false)
-        }
-    }
+    if (!customer && !customerLoading) {
+    return <Navigate to="/login" />;
+  }
 
     return (
         <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>

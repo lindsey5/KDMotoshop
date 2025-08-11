@@ -3,6 +3,7 @@ import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
+import RequestPageIcon from '@mui/icons-material/RequestPage';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -71,6 +72,11 @@ export const AdminSidebar = () => {
           label="Orders" 
           icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/orders"
+        />
+        <SidebarLink 
+          label="Refunds" 
+          icon={<RequestPageIcon sx={{ width: 25, height: 25 }} />} 
+          path="/admin/refunds"
         />
         <SidebarLink 
           label="Customers" 

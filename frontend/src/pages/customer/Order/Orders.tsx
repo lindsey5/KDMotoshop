@@ -7,8 +7,7 @@ import Card from "../../../components/cards/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
-import { CustomizedSelect } from "../../../components/Select";
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { StatusSelect } from "../../../components/Select";
 import { Statuses } from "../../../constants/status";
 import CustomizedPagination from "../../../components/Pagination";
 import { useNavigate } from "react-router-dom";
@@ -60,14 +59,16 @@ const CustomerOrders = () => {
     return (
         <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <Title className="text-2xl md:text-4xl">My Orders</Title>
-            <CustomizedSelect 
-                sx={{ height: 55, maxWidth: '300px' }}
-                menu={[{ label: 'All', value: 'All'}, ...Statuses, { label: 'Rated', value: 'Rated'},]}
-                icon={<FilterListIcon />}
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value as string)}
-            />
+            <div className="flex flex-col md:flex-row justify-between gap-5">
+                <Title className="text-2xl md:text-4xl">My Orders</Title>
+                <div className="flex-1 md:max-w-sm">
+                    <StatusSelect 
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value as string)}
+                        menu={Statuses}
+                    />
+                </div>
+            </div>
             {!loading && orders.length === 0 && <div className="flex flex-col gap-5 items-center p-30">
                 <img className="w-[200px] h-[200px]" src={isDark ? "/white-cart.png" : "/cart.png"} />
                 <FuzzyText 
@@ -90,13 +91,14 @@ const CustomerOrders = () => {
                         </div>
                         <Status status={order.status} isDark={isDark}/>
                     </div>
-                    {order.orderItems?.map(item => <OrderItem key={item._id} item={item}/>)}
+                    {order.orderItems?.slice(0, 2)?.map(item => <OrderItem key={item._id} item={item}/>)}
+                    {(order.orderItems?.length ?? 0) > 2 && <h1 className="text-center">{(order.orderItems?.length ?? 0) - 2} more items</h1>}
                     <div className="flex justify-end">
                         <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Delivered' ? 'Rate your order' : 'Track Order'}</RedButton>
                     </div>
                 </Card>
             ))}
-        {orders.length > 0 && <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />}
+        {orders.length > 0 && <CustomizedPagination page={pagination.page} count={pagination.totalPages} onChange={handlePage} />}
         </div>
     )
 }

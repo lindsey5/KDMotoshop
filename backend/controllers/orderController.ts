@@ -69,6 +69,7 @@ export const get_orders = async (req: Request, res: Response) => {
     const startDate = req.query.startDate as string | undefined;
     const endDate = req.query.endDate as string | undefined;
     const payment_method = req.query.payment_method as string | undefined;
+    const from = req.query.from as string | undefined;
     
     try {
         let filter: any = {};
@@ -95,6 +96,8 @@ export const get_orders = async (req: Request, res: Response) => {
         if(payment_method && payment_method !== 'All'){
             filter.payment_method = payment_method
         }
+
+        if(from) filter.order_source = from
 
         const [orders, totalOrders] = await Promise.all([
             Order.find(filter)
@@ -214,9 +217,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             { new: true }
         );
 
-        if(req.body.status !== 'Delivered'){
+        /*if(req.body.status !== 'Delivered'){
             for (const item of req.body.orderItems) {
-                if(order.status === 'Shipped' || order.status === 'Delivered') await incrementStock(item)
+                if((order.status === 'Shipped' || order.status === 'Delivered') && req.body !== 'Refunded') await incrementStock(item)
                 if(req.body.status === 'Pending'){
                     await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
                 }else if(req.body.status === 'Refunded'){
@@ -227,7 +230,7 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                     await OrderItem.updateOne({_id: item._id}, { status: 'Failed' });
                 }
             }
-        }
+        }*/
         
         if(req.body.status === 'Delivered' || req.body.status === 'Shipped'){
             for (const item of req.body.orderItems) {
@@ -237,11 +240,13 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
         }
 
         if(req.body.status !== order.status) {
-            await sendCustomerNotification(
-                order.customer?.customer_id?.toString() || '', 
-                order._id as string, 
-                `${order.order_id} has been updated to ${req.body.status}`,
-            );
+            if(order.customer.customer_id) {
+                await sendCustomerNotification(
+                    order.customer?.customer_id?.toString() || '', 
+                    order._id as string, 
+                    `${order.order_id} has been updated to ${req.body.status}`,
+                );
+            }
             await create_activity_log({
                 admin_id: req.user_id ?? '',
                 description: `updated ${order.order_id}`,
@@ -251,13 +256,14 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             })
         }
 
-        await sendOrderUpdate(order.customer.email as string, order.order_id, order.customer.firstname, req.body.status);
+        if(order.customer.customer_id) await sendOrderUpdate(order.customer.email as string, order.order_id, order.customer.firstname, req.body.status);
 
         res.status(200).json({ 
             success: true,  
             order: updatedOrder
         });
     } catch (err: any) {
+        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }

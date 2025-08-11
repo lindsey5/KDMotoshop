@@ -35,6 +35,7 @@ const Orders = () => {
     const navigate = useNavigate();
     const { pagination, setPagination } = usePagination();
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
+    const [from, setFrom] = useState<string>('Website');
  
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
@@ -45,14 +46,14 @@ const Orders = () => {
         const endDate = selectedDates?.[1] ? selectedDates[1].toString() : '';
 
         const response = await fetchData(
-            `/api/order?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}`
+            `/api/order?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`
         );
 
         if (response.success) {
             setPagination(prev => ({ ...prev, totalPages: response.totalPages }));
             setOrders(response.orders);
         }
-    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, searchTerm]);
+    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, searchTerm, from]);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
@@ -67,7 +68,7 @@ const Orders = () => {
 
     useEffect(() => {
         getOrdersAsync();
-    }, [selectedDates, selectedStatus, pagination.page, paymentMethod])
+    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, from])
 
 
     return <PageContainer className="flex flex-col">
@@ -85,11 +86,17 @@ const Orders = () => {
                 <SearchField
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value as string)}
-                    placeholder="Search by Customer Name, Order ID, Order Source" 
-                    sx={{ flex: 1, height: 55 }}
+                    placeholder="Search by Customer Name, Order ID" 
+                    sx={{ flex: 1, maxWidth: '400px', height: 55 }}
                 />
-                <div className="flex flex-wrap gap-5 justify-end">
-                    <div className="w-full xl:w-[400px] flex gap-10">
+                <div className="flex-1 flex flex-wrap gap-5 justify-end">
+                    <div className="flex-1 flex gap-10">
+                        <CustomizedSelect
+                            label="From"
+                            value={from}
+                            onChange={(e) => setFrom(e.target.value as string)}
+                            menu={['Website', 'Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
+                         />
                         <StatusSelect 
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value as string)}
@@ -115,7 +122,7 @@ const Orders = () => {
                 rows={orders.map((order, index) => <OrderTableRow key={`${order._id}`} index={index} order={order} />)} 
             />
             <div className="flex justify-end mt-4">
-                <CustomizedPagination count={pagination.totalPages} onChange={handlePage} />
+                <CustomizedPagination count={pagination.totalPages} page={pagination.page} onChange={handlePage} />
             </div>
         </Card>
     </PageContainer>

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { cn, formatNumber } from "../../../utils/utils";
-import { Avatar, CircularProgress, IconButton } from "@mui/material";
+import { Avatar, Backdrop, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
@@ -23,6 +23,7 @@ const CustomerOrderDetails = () => {
     const navigate = useNavigate();
     const isDark = useDarkmode();
     const { customer }  = useContext(CustomerContext);
+    const [loading, setLoading] = useState(false);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
@@ -36,7 +37,7 @@ const CustomerOrderDetails = () => {
             if(response.success){
                 const { customer, ...rest } = response.order
                 setOrder({...rest, customer: { ...customer, customer_id: customer.customer_id._id, image: customer.customer_id?.image.imageUrl ?? ''}})
-            }else window.location.href = '/admin/dashboard'
+            }else window.location.href = '/login'
         }
 
         getOrderAsync();
@@ -55,6 +56,7 @@ const CustomerOrderDetails = () => {
             'This action cannot be undone.', 
             isDark
         )) {
+            setLoading(true)
             const response = await updateData(`/api/order/customer/${id}/cancel`, {});
 
             if (response.success) {
@@ -62,12 +64,19 @@ const CustomerOrderDetails = () => {
             } else {
                 errorAlert(response.message, '', isDark);
             }
+            setLoading(false)
         }
 
     }
 
     if(customer?._id === order.customer?.customer_id) {
         return <div className={cn("pt-20 transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
+            <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
                 <div className="flex items-center mb-6 gap-2">
                     <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>

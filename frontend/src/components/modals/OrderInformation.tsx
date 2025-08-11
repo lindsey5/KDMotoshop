@@ -93,7 +93,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         onChange={(e) => setOrder(prev => ({ ...prev, customer: { ...prev.customer, lastname: e.target.value } }))}
                     />
                 </div>
-                <FormControlLabel
+                {order.order_source !== 'Store' && <FormControlLabel
                 control={
                     <Switch
                     checked={addAddress}
@@ -118,7 +118,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                     />
                 }
                 label="Add Address"
-                />
+                />}
                 {addAddress && order.address && (
                     <div className={cn("mb-5 w-full flex flex-col gap-5 p-3 rounded-md", isDark ? 'bg-[#3d3d3d]' : 'bg-gray-100' )}>
                         <CustomizedSelect 
@@ -152,6 +152,8 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         )}
                     </div>
                 )}
+                {order.order_source !== 'Store' && 
+                <>
                 <label
                     className={`block text-sm font-medium ${
                     isDark ? 'text-white' : 'text-gray-800'
@@ -179,10 +181,11 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         }))
                     }
                 />
+                </>}
                 <p className="text-gray-500 mb-2">Order Information</p>
                 <div className="w-full grid grid-cols-2 gap-6">
                     <CustomizedSelect
-                        label="Order Source"
+                        label="From"
                         value={order.order_source}
                         onChange={(e) => setOrder(prev => ({ ...prev, order_source: e.target.value as Order['order_source'] }))}
                         menu={['Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
@@ -202,7 +205,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                 <div className="w-full flex justify-end gap-5 mt-5">
                     <Button 
                         variant="outlined" 
-                        sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : ''}}
+                        sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : 'gray'}}
                         onClick={close}
                     >Close</Button>
                     <RedButton onClick={close}>Save</RedButton>

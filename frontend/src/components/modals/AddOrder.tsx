@@ -95,20 +95,14 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
             </div>
             <div className={cn("flex-1 flex flex-col gap-10", isDark && 'text-white')}>
                 <h1 className={cn("font-bold text-2xl", isDark && 'text-white')}>{selectedProduct?.product_name}</h1>
-                {selectedProduct?.product_type === 'Variable' ? 
-                        (filteredVariants.length > 0 ? 
-                            <h1 className="font-bold text-3xl">₱{formatNumber((
-                                selectedProduct?.product_type === 'Variable' ? 
-                                    filteredVariants?.[0]?.price 
-                                    : selectedProduct?.price) ?? 0)}
-                            </h1>
-                        : <h1 className="text-red-500">Not Available</h1>)
-                    : <h1 className="font-bold text-2xl">₱{formatNumber(selectedProduct?.price ?? 0)}</h1>}
+                {filteredVariants.length > 0 ? 
+                    <h1 className="font-bold text-3xl">₱{formatNumber(filteredVariants?.[0]?.price ?? 0)}</h1>
+                : <h1 className="text-red-500">Not Available</h1>}
 
-                    {(
-                    (selectedProduct?.product_type === 'Variable' && (filteredVariants[0]?.stock ?? 0) < 1 && filteredVariants.length > 0) ||
-                    (selectedProduct?.product_type === 'Single' && (selectedProduct?.stock ?? 0) < 1)
-                    ) && <h1 className="text-red-500">Out of stock</h1>}
+                {filteredVariants.length > 0 && ((
+                    filteredVariants[0]?.stock ?? 0) > 0 
+                    ? <h1 className="text-gray-500">Stock: {filteredVariants[0]?.stock}</h1>
+                    : <h1 className="text-red-500">Out of stock</h1>)}
                 <div className="flex flex-col gap-4 mb-4">
                     <Attributes 
                         product={selectedProduct}

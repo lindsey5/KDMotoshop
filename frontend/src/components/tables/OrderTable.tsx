@@ -17,7 +17,7 @@ export const OrderTableColumns = () => {
             <StyledTableCell>Amount</StyledTableCell>
             <StyledTableCell>Payment Method</StyledTableCell>
             <StyledTableCell>Order Date</StyledTableCell>
-            <StyledTableCell>Order Source</StyledTableCell>
+            <StyledTableCell>From</StyledTableCell>
             <StyledTableCell align='center'>Status</StyledTableCell>
             <StyledTableCell align='center'>Action</StyledTableCell>
         </TableRow>
@@ -33,7 +33,7 @@ export const OrderTableRow = ({ order, index } : { order : Order, index : number
             isDark={isDark}
         >
             <StyledTableCell isDark={isDark}>{index + 1}</StyledTableCell>
-            <StyledTableCell isDark={isDark}>{order.customer.firstname} {order.customer.lastname} </StyledTableCell>
+            <StyledTableCell isDark={isDark}>{order?.customer?.firstname} {order?.customer?.lastname} </StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.order_id}</StyledTableCell>
             <StyledTableCell isDark={isDark}>₱{formatNumber(order.total)}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.payment_method}</StyledTableCell>

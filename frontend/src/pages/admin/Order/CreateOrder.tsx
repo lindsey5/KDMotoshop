@@ -68,7 +68,7 @@ const CreateOrderPage = () => {
     }, [orderItems])
 
     useEffect(() => {
-        calculateTotal
+        calculateTotal()
     }, [orderItems])
 
     useEffect(() => {
@@ -257,7 +257,7 @@ const CreateOrderPage = () => {
                         <strong>Subtotal</strong>
                         <strong>₱{formatNumber(order.subtotal)}</strong>
                     </div>
-                    <div className="flex justify-between items-center"> 
+                    {order.order_source !== 'Store' && <div className="flex justify-between items-center"> 
                         <strong>Shipping fee</strong>
                         <input 
                             className="w-[70px] border-1 outline-none px-2 py-1 rounded-sm" 
@@ -265,7 +265,7 @@ const CreateOrderPage = () => {
                             value={order.shipping_fee || ''}
                             onChange={(e) => setOrder(prev => ({...prev, shipping_fee: Number(e.target.value)}))}
                         />
-                    </div>
+                    </div>}
                 </div>
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
@@ -274,7 +274,7 @@ const CreateOrderPage = () => {
                 <RedButton
                     onClick={proceed}
                     disabled={orderItems.length === 0}
-                >Proceed</RedButton>
+                >Place Order</RedButton>
             </div>
         </div>
     </PageContainer>

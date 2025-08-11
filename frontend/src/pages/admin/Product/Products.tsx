@@ -116,6 +116,7 @@ const Products = () => {
                     <CustomizedPagination 
                         count={pagination.totalPages} 
                         onChange={handlePage} 
+                        page={pagination.page}
                     />
                 </div>
                 <CustomizedTable

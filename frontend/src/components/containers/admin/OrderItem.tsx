@@ -3,9 +3,8 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
 import { Rating } from "@mui/material";
 import { fetchData } from "../../../services/api";
-import { RedButton } from "../../buttons/Button";
 
-const OrderItem = ({ item, orderStatus } : { item : OrderItem, orderStatus?: string}) => {
+const OrderItem = ({ item } : { item : OrderItem }) => {
     const isDark = useDarkmode();
     const [review, setReview] = useState<Review>();
 
@@ -46,7 +45,6 @@ const OrderItem = ({ item, orderStatus } : { item : OrderItem, orderStatus?: str
             </div>
              <h1>{item.status}</h1>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
-            {orderStatus === 'Delivered' && (item.status === 'Fulfilled' || item.status === 'Rated') && <RedButton>Refund Item</RedButton>}
         </div>
     )
 }

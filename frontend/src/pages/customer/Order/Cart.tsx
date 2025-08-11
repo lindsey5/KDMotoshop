@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useContext, useMemo } from "react"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import Card from "../../../components/cards/Card";
 import { CustomizedChip } from "../../../components/Chip";
@@ -6,10 +6,11 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
 import CartItemContainer from "../../../components/containers/customer/CartItem";
 import { RedButton } from "../../../components/buttons/Button";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../redux/store";
+import { CustomerContext } from "../../../context/CustomerContext";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -19,6 +20,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const Cart = () => {
     const { cart, loading } = useSelector((state : RootState) => state.cart)
     const isDark = useDarkmode();
+    const { customer, loading : customerLoading } = useContext(CustomerContext);
     const navigate = useNavigate();
 
     const selectedItem = useMemo(() => {
@@ -32,6 +34,10 @@ const Cart = () => {
         localStorage.setItem('items', JSON.stringify(items))
         localStorage.setItem('cart', JSON.stringify(selectedItem.items))
         navigate('/checkout')
+    }
+
+    if(!customer && !customerLoading){
+        return <Navigate to="/login" />
     }
     
     return (

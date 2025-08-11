@@ -3,7 +3,7 @@ export const statusColorMap: Record<string, { bg: string; icon: string }> = {
   Accepted:  { bg: 'bg-green-100',  icon: '#22c55e' },  // green
   Shipped:   { bg: 'bg-blue-100',   icon: '#3b82f6' },  // blue
   Delivered: { bg: 'bg-purple-100', icon: '#a855f7' },  // purple
-  Rated: { bg: 'bg-purple-100', icon: '#a855f7' },  // purple
+  Rated: { bg: 'bg-yellow-100', icon: '#d4c712ff' },  // purple
   Rejected:  { bg: 'bg-red-100',    icon: '#ef4444' },  // red
   Failed:  { bg: 'bg-red-100',    icon: '#ef4444' },
   Cancelled: { bg: 'bg-gray-200',   icon: '#9ca3af' },  // gray
@@ -16,6 +16,7 @@ export const Statuses = [
     { value: 'Accepted', label: 'Accepted', color: 'green' },
     { value: 'Shipped', label: 'Shipped', color: 'blue' },
     { value: 'Delivered', label: 'Delivered', color: 'purple' },
+    { value: 'Rated', label: 'Rated', color: 'gold' },
     { value: 'Rejected', label: 'Rejected', color: 'red' },
     { value: 'Failed', label: 'Failed', color: 'red' },
     { value: 'Cancelled', label: 'Cancelled', color: 'gray' },

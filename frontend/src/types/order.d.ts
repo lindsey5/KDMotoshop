@@ -16,13 +16,14 @@ type Order = {
     };
     address?: {
         street: string;
-        barangay: string;
+        barangay: string;        
         city: string;
         region: string;
     };
     payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
     createdBy?: any;
     createdAt?: Date;
+    updatedAt?: Date;
     orderItems?: OrderItem[];
 }
 

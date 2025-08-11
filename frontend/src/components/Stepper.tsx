@@ -22,7 +22,7 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
         { status: 'Delivered', icon: <AssignmentTurnedInIcon fontSize="large" />}
     ];
 
-    if(order.customer.customer_id) linearSteps.push({
+    if(order?.customer?.customer_id) linearSteps.push({
         status: 'Rated', icon: <GradeIcon fontSize="large" />
     });
 

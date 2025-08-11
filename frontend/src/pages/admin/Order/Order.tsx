@@ -64,7 +64,7 @@ const OrderDetails = () => {
         <OrderStatusStepper order={order}/>
         <div className="flex flex-wrap items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
-                <OrderItemsContainer orderItems={order.orderItems} orderStatus={order.status as string} />
+                <OrderItemsContainer orderItems={order.orderItems} />
                 <Card>
                     <h1 className="font-bold text-xl">Payment Summary</h1>
                     <div className="my-6 grid grid-cols-2 gap-5 p-2">
@@ -138,8 +138,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
       if (response.success) {
         window.location.reload();
       } else {
-        await errorAlert(response.message, '', isDark);
-        window.location.reload()
+        errorAlert(response.message, '', isDark);
       }
       setLoading(false)
     }
