@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { LineTextField } from "../../components/Textfield"
 import { RedButton } from "../../components/buttons/Button";
-import { fetchData, postData } from "../../services/api";
-import { Navigate, useNavigate } from "react-router-dom";
+import { postData } from "../../services/api";
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 
