@@ -4,16 +4,18 @@ import { ThemeToggle } from "../../components/Toggle";
 import { RedTextField } from "../../components/Textfield";
 import useDarkmode from "../../hooks/useDarkmode";
 import * as motion from "motion/react-client"
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchData, postData } from "../../services/api";
+import { useState } from "react";
+import { postData } from "../../services/api";
+import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 
 const CustomerLogin = () => {
     const isDark = useDarkmode();
-    const navigate = useNavigate();
     const [error, setError] = useState('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const { user, loading } = useSelector((state : RootState) => state.user)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -26,15 +28,9 @@ const CustomerLogin = () => {
         }
     };
     
-    useEffect(() => {
-        const getUser = async () => {
-            const response = await fetchData('/api/customer');
-        
-            if (response.success) navigate("/", { replace: true });
-        };
-    
-        getUser();
-    }, []);
+    if(user && !loading){
+        return <Navigate to="/" />
+    }
 
     return (
         <div className={cn("h-screen bg-white flex lg:grid grid-cols-[1fr_1fr] gap-10 p-5", isDark && "bg-[#1e1e1e]" )}>

@@ -3,8 +3,7 @@ import { Title } from "../../components/text/Text"
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import UserAvatar from "../../components/images/UserAvatar"
-import React, { useContext, useState} from "react"
-import { AdminContext } from "../../context/AdminContext"
+import React, { useEffect, useState} from "react"
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { Backdrop, Button, CircularProgress } from "@mui/material"
 import { RedTextField } from "../../components/Textfield"
@@ -16,6 +15,8 @@ import LockOutlineIcon from '@mui/icons-material/LockOutline';
 import HistoryIcon from '@mui/icons-material/History';
 import PageContainer from "../../components/containers/admin/PageContainer"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../redux/store"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -24,10 +25,16 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const Settings = () => {
     const isDark = useDarkmode()
-    const { admin } = useContext(AdminContext);
-    const [updatedAdmin, setUpdatedAdmin] = useState<Admin | null>(admin);
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
+    const [updatedAdmin, setUpdatedAdmin] = useState<Admin | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if(user && !userLoading){
+            setUpdatedAdmin(user as Admin);
+        }
+    }, [user])
 
     const handleAdminImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -104,20 +111,20 @@ const Settings = () => {
             <div className={cn("py-10 grid grid-cols-2 gap-x-20 gap-y-5 border-t border-gray-300", isDark && "border-gray-500")}>
                 <RedTextField 
                     label="Firstname" 
-                    value={updatedAdmin?.firstname}
+                    value={updatedAdmin?.firstname ?? ''}
                     required
                     onChange={(e) => handleChange('firstname', e.target.value) }
                 />
                 <RedTextField 
                     label="Lastname" 
-                    value={updatedAdmin?.lastname}
+                    value={updatedAdmin?.lastname ?? ''}
                     required
                     onChange={(e) => handleChange('lastname', e.target.value) }
                 />
 
                 <RedTextField 
                     label="Email" 
-                    value={updatedAdmin?.email}
+                    value={updatedAdmin?.email ?? ''}
                     type="email"
                     required
                     onChange={(e) => handleChange('email', e.target.value) }

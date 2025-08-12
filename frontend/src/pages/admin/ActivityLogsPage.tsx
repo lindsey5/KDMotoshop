@@ -5,7 +5,6 @@ import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/cards/Card";
 import { RedButton } from "../../components/buttons/Button";
-import { AdminContext } from "../../context/AdminContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import CustomizedPagination from "../../components/Pagination";
@@ -15,10 +14,12 @@ import { CustomDateRangePicker } from "../../components/DatePicker";
 import UserAvatar from "../../components/images/UserAvatar";
 import PageContainer from "../../components/containers/admin/PageContainer";
 import { CircularProgress } from "@mui/material";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 
 const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
     const isDark = useDarkmode();
-    const { admin } = useContext(AdminContext);
+    const { user } = useSelector((state : RootState) => state.user)
     const navigate = useNavigate();
     const time = new Date(activityLog.createdAt).toLocaleTimeString([], {
         hour: '2-digit',
@@ -41,7 +42,7 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
                 <div>
                     <div className="flex flex-wrap items-center gap-2">
                         <p>
-                            <span className="font-bold mr-1">{admin?._id === activityLog.admin_id._id ? 'You' : `${activityLog.admin_id.firstname} ${activityLog.admin_id.lastname}`}</span>
+                            <span className="font-bold mr-1">{user?._id === activityLog.admin_id._id ? 'You' : `${activityLog.admin_id.firstname} ${activityLog.admin_id.lastname}`}</span>
                             {activityLog.description}
                         </p>
                         {activityLog.order_id?._id && activityLog.prev_value && activityLog.new_value && (
@@ -86,14 +87,14 @@ type ActivityContainerProps = {
 }
 
 const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates, setSelectedDates, pagination, setPagination, loading} :ActivityContainerProps) => {
-    const { admin } = useContext(AdminContext);
+    const { user } = useSelector((state : RootState) => state.user)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPagination(prev => ({...prev, page: value}))
     };
 
     
-    if(admin && admin.role !== 'Super Admin'){
+    if(user && user.role !== 'Super Admin'){
         return <Navigate to="/admin/dashboard"/>
     }
 

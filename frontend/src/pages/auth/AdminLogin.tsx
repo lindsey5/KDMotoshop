@@ -2,13 +2,14 @@ import { useEffect, useState } from "react"
 import { LineTextField } from "../../components/Textfield"
 import { RedButton } from "../../components/buttons/Button";
 import { fetchData, postData } from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 
 const AdminLogin = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,15 +22,10 @@ const AdminLogin = () => {
         }
     };
 
-      useEffect(() => {
-        const getUser = async () => {
-          const response = await fetchData('/api/admin');
-    
-          if (response.success) navigate("/admin/dashboard", { replace: true });
-        };
-    
-        getUser();
-      }, []);
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
+    if (user && user.role === 'Customer' && !userLoading) {
+        return <Navigate to="/" />;
+    }
 
     return (
         <main className="h-screen grid grid-cols-1 md:grid-cols-2">

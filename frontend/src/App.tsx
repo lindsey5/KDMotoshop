@@ -26,8 +26,22 @@ import Admins from "./pages/admin/Admins";
 import AdminProductReviews from "./pages/admin/Product/Reviews";
 import MyActivity from "./pages/admin/MyActivity";
 import CustomerSignupPage from "./pages/auth/CustomerSignup";
+import RequestRefundPage from "./pages/customer/Order/Refund";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "./redux/store";
+import { fetchUser } from "./redux/user-reducer";
 
 export default function App() {
+  const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(fetchUser());
+    }, [dispatch]);
+  useEffect(() => {
+
+  }, [dispatch])
+
   return (
     <DarkmodeContextProvider>
       <ToastContainer />
@@ -43,7 +57,8 @@ export default function App() {
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="cart" element={<Cart />} />
               <Route path="orders" element={<CustomerOrders />} />
-               <Route path="order/:id" element={<CustomerOrderDetails />} />
+              <Route path="order/:id" element={<CustomerOrderDetails />} />
+              <Route path="refund/:id" element={<RequestRefundPage />} />
             </Route>
             <Route path="admin">
               <Route path="login" element={<AdminLogin />} />

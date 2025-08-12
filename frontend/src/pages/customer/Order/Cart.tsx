@@ -10,7 +10,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../redux/store";
-import { CustomerContext } from "../../../context/CustomerContext";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -20,7 +19,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const Cart = () => {
     const { cart, loading } = useSelector((state : RootState) => state.cart)
     const isDark = useDarkmode();
-    const { customer, loading : customerLoading } = useContext(CustomerContext);
+    const { user : customer, loading : customerLoading } = useSelector((state : RootState) => state.user)
     const navigate = useNavigate();
 
     const selectedItem = useMemo(() => {
@@ -36,8 +35,8 @@ const Cart = () => {
         navigate('/checkout')
     }
 
-    if(!customer && !customerLoading){
-        return <Navigate to="/login" />
+    if (!customer && !customerLoading) {
+        return <Navigate to="/" />;
     }
     
     return (

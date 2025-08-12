@@ -12,12 +12,12 @@ import { SidebarLink } from './SidebarLink';
 import { ThemeToggle } from '../../Toggle';
 import { useContext, useEffect } from 'react';
 import HistoryIcon from '@mui/icons-material/History';
-import { AdminContext } from '../../../context/AdminContext';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../redux/store';
 import { addNotification, fetchNotifications, resetNotifications } from '../../../redux/notification-reducer';
 import { SocketContext } from '../../../context/socketContext';
-import { signout } from '../../../services/auth';
+import { logoutUser } from '../../../redux/user-reducer';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationLink = () => {
   const { unread } = useSelector((state : RootState) => state.notification)
@@ -34,11 +34,14 @@ const NotificationLink = () => {
 }
 
 export const AdminSidebar = () => {
-  const { admin } = useContext(AdminContext);
+  const { user } = useSelector((state : RootState) => state.user)
   const { socket } = useContext(SocketContext); 
-
   const dispatch = useDispatch<AppDispatch>();
-  dispatch(fetchNotifications('admin'));
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    dispatch(fetchNotifications('admin'));
+  }, [dispatch])
 
   useEffect(() => {
       if (!socket) return;
@@ -51,7 +54,7 @@ export const AdminSidebar = () => {
 
   const handleSignout = () => {
       dispatch(resetNotifications())   
-      signout('/admin/login')
+      dispatch(logoutUser({ navigate, path: '/admin/login'}))
   }
 
   return (
@@ -83,14 +86,14 @@ export const AdminSidebar = () => {
           icon={<PersonIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/customers"
         />
-        {admin?.role === 'Super Admin' && <SidebarLink 
+        {user?.role === 'Super Admin' && <SidebarLink 
           label="Admins" 
           icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/admins"
         />}
         <Divider sx={{ backgroundColor: '#9CA3AF' }}/>
         <NotificationLink />
-        {admin?.role === 'Super Admin' && <SidebarLink 
+        {user?.role === 'Super Admin' && <SidebarLink 
           label="Activity Logs" 
           icon={<HistoryIcon sx={{ width: 25, height: 25 }} />} 
           path="/admin/activities"

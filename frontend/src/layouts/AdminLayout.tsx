@@ -1,14 +1,36 @@
-import { Outlet } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom"
 import { AdminSidebar } from "../components/partials/admin/Sidebar"
-import { AdminContextProvider } from "../context/AdminContext"
-const AdminLayout = () => {
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import { CircularProgress } from "@mui/material";
+import useDarkmode from "../hooks/useDarkmode";
+import { cn } from "../utils/utils";
 
-    return <AdminContextProvider>
-                <main className="h-screen pl-50">
-                    <AdminSidebar />
-                    <Outlet />
-                </main>
-        </AdminContextProvider>
+const AdminLayout = () => {
+    const isDark = useDarkmode();
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
+
+    if(!user && userLoading){
+        return (
+            <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+                <CircularProgress sx={{ color: 'red'}}/>
+            </div>
+        )
+    }
+
+    if (!user && !userLoading) {
+        return <Navigate to="/admin/login" />;
+    }
+
+    if(user && user.role === 'Customer' && !userLoading) {
+        return <Navigate to="/" />;
+    }
+
+
+    return <main className="h-screen pl-50">
+            <AdminSidebar />
+            <Outlet />
+        </main>
 }
 
 export default AdminLayout

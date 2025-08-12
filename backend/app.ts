@@ -15,6 +15,7 @@ import cors from 'cors';
 import express from 'express'
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import refundRoutes from './routes/refundRoutes';
 
 const app = express();
 
@@ -78,5 +79,6 @@ app.use('/api/payment', paymentRoutes)
 app.use('/api/notification', notificationRoutes)
 app.use('/api/activity', activityLogRoutes)
 app.use('/api/review', reviewRoutes)
+app.use('/api/refund', refundRoutes)
 
 export default app

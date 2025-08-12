@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { cn, formatNumber } from "../../../utils/utils";
@@ -14,15 +14,16 @@ import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
-import { CustomerContext } from "../../../context/CustomerContext";
 import CustomerOrderItems from "../../../components/containers/customer/OrderItems";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
 
 const CustomerOrderDetails = () => {
     const { id } = useParams();
     const [order, setOrder] = useState<Order>();
     const navigate = useNavigate();
     const isDark = useDarkmode();
-    const { customer }  = useContext(CustomerContext);
+    const { user : customer, loading : customerLoading} = useSelector((state : RootState) => state.user)
     const [loading, setLoading] = useState(false);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
@@ -69,6 +70,10 @@ const CustomerOrderDetails = () => {
 
     }
 
+    if (!customer && !customerLoading) {
+        return <Navigate to="/" />;
+    }
+
     if(customer?._id === order.customer?.customer_id) {
         return <div className={cn("pt-20 transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
             <Backdrop
@@ -111,11 +116,10 @@ const CustomerOrderDetails = () => {
                             <h1 className="font-bold text-xl">₱{formatNumber(order.total)}</h1>
                         </div>
                     </Card>
-                    {(order.status === 'Pending' || order.status === 'Accepted') && (
-                        <Card className="justify-end hidden lg:flex">
-                            <RedButton onClick={cancelOrder}>Cancel Order</RedButton>
-                        </Card>
-                    )}
+                    <Card className="justify-end hidden lg:flex">
+                        {(order.status === 'Delivered' || order.status === 'Rated') && <RedButton>Request a Refund</RedButton>}
+                        {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
+                    </Card>
                 </div>
                 <div className="flex-1 lg:max-w-[400px] flex flex-col gap-5">
                     <Card className="w-full flex flex-col gap-5">
@@ -143,11 +147,12 @@ const CustomerOrderDetails = () => {
                             <p>{order.address?.region}</p>
                         </div>}
                         <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
-                        <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
+
                     </Card>
                 </div>
             </div>
         <div className="lg:hidden flex justify-end p-5">
+            {order.status === 'Delivered' && <RedButton onClick={() => navigate(`/refund/${order._id}`)}>Request a refund</RedButton>}
             {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
         </div>
         </div>

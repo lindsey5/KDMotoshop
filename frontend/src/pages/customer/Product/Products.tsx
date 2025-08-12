@@ -7,12 +7,14 @@ import { CustomizedSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/buttons/Button";
 import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../../components/containers/TopProductContainer";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
 import usePagination from "../../../hooks/usePagination";
 import { Title } from "../../../components/text/Text";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -41,6 +43,7 @@ const CustomerProducts = () => {
     const [value, setValue] = useState<number[]>([0, 10000]);
     const [loading, setLoading] = useState<boolean>(true);
     const minDistance = 1000;
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
     
     const marks = [
         { value: 0, label: '₱0' },
@@ -120,6 +123,10 @@ const CustomerProducts = () => {
                 })))
         }
         setLoading(false);
+    }
+
+    if (user && user.role === 'Admin' && !userLoading) {
+        return <Navigate to="/admin/login" />;
     }
 
     return (

@@ -10,11 +10,13 @@ import { Status, Title } from "../../../components/text/Text";
 import { StatusSelect } from "../../../components/Select";
 import { Statuses } from "../../../constants/status";
 import CustomizedPagination from "../../../components/Pagination";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
 import OrderItem from "../../../components/containers/admin/OrderItem";
 import usePagination from "../../../hooks/usePagination";
 import { CircularProgress } from "@mui/material";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -28,6 +30,7 @@ const CustomerOrders = () => {
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
     const [loading, setLoading] = useState<boolean>(true);
     const { pagination, setPagination } = usePagination();
+    const { user : customer, loading : customerLoading } = useSelector((state : RootState) => state.user)
     
     useEffect(() => {
         const getOrders = async () => {
@@ -55,6 +58,10 @@ const CustomerOrders = () => {
             <CircularProgress sx={{ color: 'red'}}/>
         </div>
     )
+
+    if (!customer && !customerLoading) {
+        return <Navigate to="/" />;
+    }
 
     return (
         <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>

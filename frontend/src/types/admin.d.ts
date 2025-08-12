@@ -7,6 +7,6 @@ type Admin = {
   lastname: string;
   phone: string;
   image: UploadedImage | string | ArrayBuffer | null | undefined,
-  role: string;
+  role: 'Admin' | 'Super Admin';
   createdAt?: Date;
 }

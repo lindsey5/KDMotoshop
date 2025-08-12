@@ -4,14 +4,15 @@ import { Title } from "../../components/text/Text";
 import Card from "../../components/cards/Card";
 import { SearchField } from "../../components/Textfield";
 import usePagination from "../../hooks/usePagination";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
 import CustomizedTable from "../../components/tables/Table";
 import { AdminsTableColumns, AdminsTableRow } from "../../components/tables/AdminsTable";
 import { RedButton } from "../../components/buttons/Button";
 import CreateAdminModal from "../../components/modals/CreateAdminModal";
-import { AdminContext } from "../../context/AdminContext";
 import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -22,7 +23,7 @@ const Admins = () => {
     const { pagination, setPagination } = usePagination();
     const [adminData, setAdminData] = useState<Admin | undefined>();
     const [showAdmin, setShowAdmin] = useState<boolean>(false);
-    const { admin } = useContext(AdminContext)
+    const { user } = useSelector((state : RootState) => state.user)
     const [admins, setAdmins] = useState<Admin[]>([]);
 
     useEffect(() => {
@@ -47,7 +48,7 @@ const Admins = () => {
         setShowAdmin(true)
     }
 
-    if(admin && admin.role !== 'Super Admin'){
+    if(user && user.role !== 'Super Admin'){
         return <Navigate to="/admin/dashboard"/>
     }
 

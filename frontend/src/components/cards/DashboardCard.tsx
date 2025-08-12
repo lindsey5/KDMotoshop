@@ -12,6 +12,7 @@ const DashboardCard = ({ label, value} : { label: string, value: string}) => {
                 plotType="bar"
                 data={[1, 4, 6, 3, 4]}
                 color="red"
+                width={100}
                 sx={{ maxWidth: '100px'}}
                 height={80}
             />

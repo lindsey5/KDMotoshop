@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { AdminContext } from "../../context/AdminContext";
 import { Navigate } from "react-router-dom";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import usePagination from "../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
 
 interface ActivityLog{
     _id: string;
@@ -32,7 +33,11 @@ const ActivityLogs = () => {
     const [activityLogs, setActivityLogs] = useState<GroupedActivityLogs>({})
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
     const { pagination, setPagination } = usePagination();
-    const { admin } = useContext(AdminContext);
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
+
+    if (user && user.role === 'Admin' && !userLoading) {
+        return <Navigate to="/admin/login" />;
+    }
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -59,7 +64,7 @@ const ActivityLogs = () => {
         get_activity_logs()
     }, [pagination.page, selectedDates])
     
-    if(admin && admin.role !== 'Super Admin'){
+    if(user && user.role !== 'Super Admin'){
         return <Navigate to="/admin/dashboard"/>
     }
 

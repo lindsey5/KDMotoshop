@@ -1,28 +1,50 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
+import { AuthenticatedRequest } from '../types/auth';
 
-const maxAge = 1 * 24 * 60 * 60; 
+export const getBearerToken = (req: AuthenticatedRequest): string | null => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return null;
+  }
+  return authHeader.split(" ")[1];
+};
 
 // Create JWT token for a given user ID
-export const createToken = (id: string): string => {
+export const createAccessToken = (id: string): string => {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in environment variables');
   }
 
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 24 * 60 * 60 // 1 day in seconds
+    expiresIn: "7d"
   });
 };
 
-export const createCookie = (res : Response, token : string, cookieName : string) => {
-  res.cookie(cookieName, token, {
-      httpOnly: true,
-      maxAge: maxAge * 1000,
-      sameSite: 'none',    
-      secure: true           
+export const createRefreshToken = (id: string): string => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  }
+
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "15m"
   });
-}
+};
+
+export const setTokenCookie = (
+  res: Response,
+  name: string,
+  token: string,
+  maxAgeMs: number
+) => {
+  res.cookie(name, token, {
+    httpOnly: true,
+    maxAge: maxAgeMs,
+    sameSite: "none",
+    secure: true
+  });
+};
 
 // Verify password matches hashed password
 export const verifyPassword = async (

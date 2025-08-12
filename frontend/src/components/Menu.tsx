@@ -4,7 +4,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useDarkmode from "../hooks/useDarkmode";
 import { cn } from "../utils/utils";
-import { signout } from "../services/auth";
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { grey } from "@mui/material/colors";
@@ -16,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { resetNotifications, updateAllNotifications } from "../redux/notification-reducer";
 import { clearCart } from "../redux/cart-reducer";
+import { logoutUser } from "../redux/user-reducer";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const [open, setOpen] = useState<boolean>(false);
@@ -49,7 +49,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const handleSignout = () => {
       dispatch(clearCart())
       dispatch(resetNotifications())   
-      signout('/')
+      dispatch(logoutUser({ navigate, path: '/' }))
     }
 
     return (

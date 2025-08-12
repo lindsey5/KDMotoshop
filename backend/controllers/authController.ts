@@ -1,39 +1,46 @@
 import { Request, Response } from "express";
-import { verifyPassword, createToken, createCookie } from "../utils/authUtils";
+import { verifyPassword, createAccessToken, createRefreshToken, setTokenCookie } from "../utils/authUtils";
 import { createCustomer, findCustomer } from "../services/customerService";
 import Admin from "../models/Admin";
 import Customer from "../models/Customer";
 import { sendVerificationCode } from "../services/emailService";
 import { OAuth2Client } from "google-auth-library";
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { AuthenticatedRequest } from "../types/auth";
 
 const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 
 export const adminLogin = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    try {
-      const user = await Admin.findOne({ email });
-    
-      if (!user) {
-         res.status(404).json({ success: false, message: 'Email not found'})
-         return;
-      }
+  try {
+    const user = await Admin.findOne({ email });
 
-      const isMatch = await verifyPassword(password, user.password);
-  
-      if (!isMatch) {
-        res.status(401).json({ success: false, message: 'Incorrect Password'})
-        return;
-      }
-      const token = createToken(user._id as string);
-      createCookie(res, token, 'jwt');
-
-      res.status(200).json({ success: true })
-    } catch (err : any) {
-      res.status(500).json({ success: false, message: err.message || 'Server error' });
+    if (!user) {
+      res.status(404).json({ success: false, message: "Email not found" });
+      return;
     }
-}
+
+    const isMatch = await verifyPassword(password, user.password);
+    if (!isMatch) {
+      res.status(401).json({ success: false, message: "Incorrect Password" });
+      return;
+    }
+
+    // Tokens
+    const accessToken = createAccessToken(user._id as string);
+    const refreshToken = createRefreshToken(user._id as string);
+
+    setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
+    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+
+    res.status(200).json({ success: true, accessToken });
+  } catch (err: any) {
+    res
+      .status(500)
+      .json({ success: false, message: err.message || "Server error" });
+  }
+};
 
 export const customerLogin = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -57,10 +64,13 @@ export const customerLogin = async (req: Request, res: Response) => {
         res.status(401).json({ success: false, message: 'Incorrect Password'})
         return;
       }
-      const token = createToken(user._id as string);
-      createCookie(res, token, 'jwt');
+      const accessToken = createAccessToken(user._id as string);
+      const refreshToken = createRefreshToken(user._id as string);
 
-      res.status(200).json({ success: true })
+      setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
+      setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+
+      res.status(200).json({ success: true, accessToken })
     } catch (err : any) {
       console.log(err)
       res.status(500).json({ success: false, message: err.message || 'Server error' });
@@ -78,11 +88,13 @@ export const signupCustomer = async (req : Request, res: Response) => {
 
     const newCustomer = await createCustomer(req.body);
 
-    const token = createToken(newCustomer._id as string);
+    const accessToken = createAccessToken(newCustomer._id as string);
+    const refreshToken = createRefreshToken(newCustomer._id as string);
 
-    createCookie(res, token, 'jwt');
+    setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
+    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
 
-    res.status(201).json({ success: true });
+    res.status(201).json({ success: true, accessToken });
 
   }catch(err : any){
     res.status(500).json({ success: false, message: err.message || 'Server error'})
@@ -100,7 +112,7 @@ export const sendSignupEmailVerification = async (req : Request, res : Response)
     }
     const code = await sendVerificationCode(email)
 
-    res.status(200).json({ success: true, code })
+    res.status(200).json({ success: true, code,  })
 
   }catch(err : any){
     res.status(500).json({ success: false, message: err.message || 'Server error'})
@@ -144,10 +156,13 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
       });
     }
 
-    const token = createToken(customer._id);
-    createCookie(res, token, 'jwt');
+    const accessToken = createAccessToken(customer._id as string);
+    const refreshToken = createRefreshToken(customer._id as string);
 
-    res.status(200).json({ success: true, customer, token });
+    setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
+    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+
+    res.status(200).json({ success: true, accessToken });
   } catch (err: any) {
     console.log(err.message);
     res.status(500).json({ success: false, message: err.message || 'Server error' });
@@ -155,6 +170,50 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
 };
 
 export const logout = (req : Request, res : Response) =>{
-    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'none' });
+    res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'none' });
+    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'none' });
     res.redirect('/');
+}
+
+export const refreshToken = (req : Request, res : Response) => {
+  try{
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      res.sendStatus(401);
+      return;
+    }
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as JwtPayload;
+
+    const newAccessToken = createAccessToken(decoded.id);
+    setTokenCookie(res, "accessToken", newAccessToken, 15 * 60 * 1000); 
+
+    res.json({ success: true });
+  }catch(err : any){
+    console.log(err)
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
+  }
+}
+
+export const getUser = async (req : AuthenticatedRequest, res : Response) => {
+  try{
+    const id = req.user_id;
+
+    const customer = await Customer.findById(id);
+    const admin = await Admin.findById(id);
+
+    if(!customer && !admin) {
+       res.status(404).json({ success: false, message: 'User not found' });
+       return;
+    }
+
+    if(customer){
+      res.status(200).json({ success : true, user: { ...customer.toObject(), role: 'Customer'}})
+    }else if(admin) {
+      res.status(200).json({ success : true, user: admin})
+    }
+
+  }catch(err : any){
+    console.log(err.message);
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
+  }
 }

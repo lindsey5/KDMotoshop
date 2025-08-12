@@ -5,7 +5,6 @@ import * as motion from "motion/react-client"
 import { Parallax, ParallaxLayer, type IParallax } from '@react-spring/parallax'
 import { useRef, } from "react";
 import { cn } from "../../../utils/utils";
-import { CustomerContextProvider } from "../../../context/CustomerContext";
 import MobileHome from "./MobileView";
 import CustomerHeader from "../../../components/partials/customer/CustomerHeader";
 import SplashCursor from "../../../components/SplashCursor";
@@ -13,16 +12,23 @@ import useDarkmode from "../../../hooks/useDarkmode";
 import RippleGrid from "../../../components/backgrounds/RippleGrid";
 import TextType from "../../../components/text/TextType";
 import ChatbotButton from "../../../components/buttons/Chatbot";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../../redux/store";
+import { Navigate } from "react-router-dom";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
     const isDark = useDarkmode();
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
+
+    if (user && user.role !== 'Customer' && !userLoading) {
+        return <Navigate to="/admin/login" />;
+    }
 
     return (
-        <CustomerContextProvider>
-            {isDark && <SplashCursor />}
-            <ChatbotButton />
             <div className="transition-colors duration-600 border-box">
+                {isDark && <SplashCursor />}
+                <ChatbotButton />
                 <MobileHome />
                 <Parallax ref={parallax} pages={6} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
                     <ParallaxLayer className="relative z-100" offset={0}>
@@ -122,7 +128,6 @@ const KDMotoshopHome = () => {
                     </ParallaxLayer>
                 </Parallax>
             </div>
-        </CustomerContextProvider>
     );
 };
 

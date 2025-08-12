@@ -1,5 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { fetchData, postData } from "../../../services/api";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
@@ -9,7 +9,6 @@ import { RedButton } from "../../../components/buttons/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
-import { CustomerContext } from "../../../context/CustomerContext";
 import { successAlert } from "../../../utils/swal";
 import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
 import ProductThumbnail from "../../../components/images/ProductThumbnail";
@@ -27,9 +26,9 @@ const CustomerProduct = () => {
     const isDark = useDarkmode();
     const { cart } = useSelector((state : RootState) => state.cart)
     const dispatch = useDispatch<AppDispatch>();
-    const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
     const [totalReviews, setTotalReviews] = useState<number>(0);
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
     
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
@@ -76,9 +75,9 @@ const CustomerProduct = () => {
     )
 
     const addToCart = async () => {
-        if(customer){
+        if(user && user.role === 'Customer'){
             const newItem : Cart = {
-                customer_id: customer._id,
+                customer_id: user._id,
                 product_id: product._id ?? '',
                 variant_id: product.product_type === 'Single' ? null : filteredVariants[0]._id ?? null,
                 quantity: quantity,
@@ -110,7 +109,7 @@ const CustomerProduct = () => {
     }
 
     const proceedToCheckout = () => {
-        if(customer){
+        if(user){
             const items = [{
                 product_id: product._id,
                 variant_id: product.product_type === 'Single' ? '' : filteredVariants[0]._id ?? '',
@@ -123,6 +122,10 @@ const CustomerProduct = () => {
         }else{
             navigate('/login')
         }
+    }
+    
+    if (user && user.role === 'Admin' && !userLoading) {
+        return <Navigate to="/admin/login" />;
     }
 
     return (

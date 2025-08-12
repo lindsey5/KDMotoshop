@@ -7,6 +7,9 @@ import { RedTextField } from "../../components/Textfield"
 import { useState } from "react"
 import VerifyEmailModal from "../../components/modals/VerifyEmail"
 import { postData } from "../../services/api"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../redux/store"
+import { Navigate } from "react-router-dom"
 
 const CustomerSignupPage = () => {
     const isDark = useDarkmode()
@@ -14,15 +17,19 @@ const CustomerSignupPage = () => {
     const [code, setCode] = useState<number>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
 
     const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
         const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email})
-        console.log(response.code)
         
         response.success ? setCode(response.code) : setError(response.message)
         setLoading(false)
+    }
+
+    if(user && !userLoading){
+        return <Navigate to="/" />
     }
 
     return (

@@ -2,7 +2,6 @@ import { Button, IconButton, Link } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../buttons/Button";
-import { CustomerContext } from "../../../context/CustomerContext";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { CustomerDropdownMenu } from "../../Menu";
 import { ThemeToggle } from "../../Toggle";
@@ -50,10 +49,10 @@ const NavLink = ({ label, path } : { path: string, label: string}) => {
 }
 
 const CustomerHeader = () => {
-    const { customer } = useContext(CustomerContext);
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const cart = useSelector((state : RootState) => state.cart.cart)
+    const { user, loading } = useSelector((state : RootState) => state.user)
     const { socket } = useContext(SocketContext);
 
     useEffect(() => {
@@ -82,8 +81,8 @@ const CustomerHeader = () => {
                     <NavLink path="/" label="Home"/>
                     <NavLink  path="/products" label="Products"/>
                 </div>
-                {!customer ?  <RedButton onClick={() => navigate('/login')}>Login</RedButton> :
-                <>
+                {!user && <RedButton onClick={() => navigate('/login')}>Login</RedButton>}
+                {user && user.role === 'Customer' && !loading && <>
                 <RedBadge content={cart.length}>
                     <IconButton  
                         onClick={() => navigate('/cart')}
@@ -95,7 +94,7 @@ const CustomerHeader = () => {
                         <ShoppingCartOutlinedIcon />
                     </IconButton>
                     </RedBadge>
-                <CustomerDropdownMenu image={customer?.image?.imageUrl}/>
+                <CustomerDropdownMenu image={user?.image?.imageUrl}/>
                 </>
                 }
                 <div className="hidden sm:block">

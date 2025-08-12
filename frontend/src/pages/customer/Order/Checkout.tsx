@@ -1,9 +1,8 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchData, postData, updateData } from "../../../services/api";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import Card from "../../../components/cards/Card";
-import { CustomerContext } from "../../../context/CustomerContext";
 import LocationPinIcon from '@mui/icons-material/LocationPin';
 import AddIcon from '@mui/icons-material/Add';
 import { useAddress } from "../../../hooks/useAddress";
@@ -22,6 +21,9 @@ import AddressContainer from "../../../components/containers/customer/AddressCon
 import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
 import { Navigate } from "react-router-dom";
+import type { RootState } from "../../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../../redux/user-reducer";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -43,8 +45,8 @@ const CheckoutPage = () => {
   const cartItems = localStorage.getItem("cart");
   const parsedCartItems = cartItems ? JSON.parse(cartItems) : null;
   const parsedItems = savedItems ? JSON.parse(savedItems) : null;
-  const { customer, setCustomer, loading: customerLoading } =
-    useContext(CustomerContext);
+  const dispatch = useDispatch();
+  const { user : customer, loading : customerLoading } = useSelector((state : RootState) => state.user)
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [addAddress, setAddAddress] = useState<boolean>(false);
   const [address, setAddress] = useState<Address>(addresssInitialState);
@@ -63,7 +65,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
 
   useEffect(() => {
-    if (customer) {
+    if (customer && customer.role === 'Customer') {
       setAddAddress((customer.addresses?.length || 0) < 1);
       setAddress((prev) => ({
         ...prev,
@@ -81,7 +83,7 @@ const CheckoutPage = () => {
 
   const shipping_fee: number = useMemo(() => {
     if (
-      orderItems?.length > 0 &&
+      customer?.role === 'Customer' && orderItems?.length > 0 &&
       customer?.addresses &&
       customer?.addresses.length > 0
     ) {
@@ -97,7 +99,7 @@ const CheckoutPage = () => {
       );
     }
     return 0;
-  }, [selectedAddress, orderItems, customer?.addresses]);
+  }, [selectedAddress, orderItems, customer]);
 
   const total: number = useMemo(() => {
     return (
@@ -112,16 +114,18 @@ const CheckoutPage = () => {
 
   const saveAddress = async () => {
     setLoading(true);
-    const data = { ...customer!, addresses: [...customer?.addresses!, address] };
-    const response = await updateData("/api/customer", data);
-    if (response.success) {
-      setCustomer(data);
-      setAddAddress(false);
-      setAddress(addresssInitialState);
-      setSelectedRegion("");
-      setSelectedCity("");
-      if ((customer?.addresses?.length || 0) > 0) setSelectedAddress(0);
-      successAlert("Address successfully save", "", isDark);
+    if(customer?.role === 'Customer'){
+      const data = { ...customer!, addresses: [...customer?.addresses!, address] };
+      const response = await updateData("/api/customer", data);
+      if (response.success) {
+        dispatch(setUser(data));
+        setAddAddress(false);
+        setAddress(addresssInitialState);
+        setSelectedRegion("");
+        setSelectedCity("");
+        if ((customer?.addresses?.length || 0) > 0) setSelectedAddress(0);
+        successAlert("Address successfully save", "", isDark);
+      }
     }
     setLoading(false);
   };
@@ -133,7 +137,7 @@ const CheckoutPage = () => {
         "",
         isDark,
         "success"
-      )
+      ) && customer?.role === 'Customer'
     ) {
       setLoading(true);
       const order = {
@@ -282,7 +286,7 @@ const CheckoutPage = () => {
   ) => setPaymentMethod(event.target.value);
 
   const removeAddress = async (index: number) => {
-    if (await confirmDialog("Remove this address?", "", isDark)) {
+    if (await confirmDialog("Remove this address?", "", isDark) && customer?.role === 'Customer') {
       setLoading(true);
       const data = {
         ...customer!,
@@ -290,7 +294,7 @@ const CheckoutPage = () => {
       };
       const response = await updateData("/api/customer", data);
       if (response.success) {
-        setCustomer(data);
+        dispatch(setUser(data))
         successAlert("Address successfully removed", "", isDark);
         if (data.addresses?.length === 1) setSelectedAddress(0);
       }
@@ -298,8 +302,8 @@ const CheckoutPage = () => {
     }
   };
 
-    if (!customer && !customerLoading) {
-    return <Navigate to="/login" />;
+  if (!customer && !customerLoading) {
+    return <Navigate to="/" />;
   }
 
     return (
@@ -324,7 +328,7 @@ const CheckoutPage = () => {
                     name="radio-buttons-group"
                     onChange={handleChange} 
                 >
-                {customer?.addresses?.map((address, index) => (
+                {customer?.role === 'Customer' && customer?.addresses?.map((address, index) => (
                     <AddressContainer 
                         key={index}
                         address={address} 
@@ -392,7 +396,7 @@ const CheckoutPage = () => {
                         />
                     </div>
                     <div className="flex justify-end items-center gap-5">
-                        {(customer?.addresses?.length ?? 0) > 0 && <Button 
+                        {(customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) > 0) && <Button 
                             variant="outlined" 
                             sx={{ border: 1, borderColor: isDark ? 'white' : 'gray', color: isDark ? 'white' : 'gray'}}
                             onClick={() => setAddAddress(false)}
@@ -437,7 +441,7 @@ const CheckoutPage = () => {
 
                 <RedButton 
                     onClick={proceed}
-                    disabled={(customer?.addresses?.length ?? 0) < 1 || loading || !savedItems}
+                    disabled={(customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) < 1) || loading || !savedItems}
                 >{paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}</RedButton>
             </Card>
         </div>
