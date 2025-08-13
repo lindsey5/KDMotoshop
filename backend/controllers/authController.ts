@@ -205,7 +205,7 @@ export const getUser = async (req : AuthenticatedRequest, res : Response) => {
        res.status(404).json({ success: false, message: 'User not found' });
        return;
     }
-
+    
     if(customer){
       res.status(200).json({ success : true, user: { ...customer.toObject(), role: 'Customer'}})
     }else if(admin) {

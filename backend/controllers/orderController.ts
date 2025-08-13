@@ -385,31 +385,20 @@ export const cancel_order = async (req: Request, res: Response) => {
     }
 }
 
-export const refundItem = async (req: Request, res: Response) => {
+export const getOrderItem = async (req: Request, res: Response) => {
     try{
-        const orderItem = await OrderItem.findById(req.params.id);
+        const { id } = req.params;
+
+        const orderItem = await OrderItem.findById(id).populate('product_id');
 
         if(!orderItem){
-            res.status(404).json({ success: false, message: 'Item not found'});
+            res.status(404).json({ success: false, message: 'Order Item not found'});
             return;
         }
 
-        orderItem.status = 'Refunded';
-
-        const payment = await Payment.findOne({ order_id: orderItem.order_id});
-        
-        if(payment && payment.status === 'Paid'){
-            const refund = await refundPayment(payment.payment_id as string, orderItem.lineTotal * 100)
-
-            if(!refund) throw new Error('Cancellation Error')
-
-            payment.status = 'Partial Refunded'
-            await payment.save()
-        }
-
+        res.status(200).json({ success: true, orderItem});
 
     }catch(err : any){
-        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }

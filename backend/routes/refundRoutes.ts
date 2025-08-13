@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { getItemToRefund } from "../controllers/refundController";
+import { customerRequireAuth } from "../middlewares/authMiddleware";
+import { createRefundRequest } from "../controllers/refundController";
 
 const router = Router();
 
-router.get('/:id/items-to-refund', getItemToRefund);
+router.post('/', customerRequireAuth, createRefundRequest);
 
 const refundRoutes = router;
 

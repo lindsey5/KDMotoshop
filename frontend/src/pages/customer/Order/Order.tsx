@@ -117,7 +117,6 @@ const CustomerOrderDetails = () => {
                         </div>
                     </Card>
                     <Card className="justify-end hidden lg:flex">
-                        {(order.status === 'Delivered' || order.status === 'Rated') && <RedButton>Request a Refund</RedButton>}
                         {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
                     </Card>
                 </div>
@@ -152,7 +151,6 @@ const CustomerOrderDetails = () => {
                 </div>
             </div>
         <div className="lg:hidden flex justify-end p-5">
-            {order.status === 'Delivered' && <RedButton onClick={() => navigate(`/refund/${order._id}`)}>Request a refund</RedButton>}
             {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
         </div>
         </div>

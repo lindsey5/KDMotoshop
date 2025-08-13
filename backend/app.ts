@@ -32,8 +32,8 @@ app.use(cors({
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(express.static('public'));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 app.get('/api/regions', async (req, res) => {
   const response = await fetch('https://psgc.gitlab.io/api/regions');

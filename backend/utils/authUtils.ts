@@ -18,7 +18,7 @@ export const createAccessToken = (id: string): string => {
   }
 
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "7d"
+    expiresIn: "30m"
   });
 };
 
@@ -28,7 +28,7 @@ export const createRefreshToken = (id: string): string => {
   }
 
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "15m"
+    expiresIn: "7d"
   });
 };
 

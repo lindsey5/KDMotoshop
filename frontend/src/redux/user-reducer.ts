@@ -33,12 +33,11 @@ export const fetchUser = createAsyncThunk(
 
       if (!response.success) return rejectWithValue('Failed to refresh token');
     }
-
+    
     return response.user;
   }
 );
 
-// New thunk for logout side effects
 export const logoutUser = createAsyncThunk(
   'user/logoutUser',
   async ({ navigate, path }: { navigate: (path: string) => void; path : string }) => {
@@ -48,6 +47,7 @@ export const logoutUser = createAsyncThunk(
       navigate(path);
   }
 );
+
 const userSlice = createSlice({
   name: 'user',
   initialState,

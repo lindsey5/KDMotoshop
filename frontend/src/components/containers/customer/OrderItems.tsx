@@ -5,7 +5,7 @@ import { RedButton } from "../../buttons/Button";
 import Card from "../../cards/Card";
 import RateProductModal from "../../modals/RateProduct";
 import { fetchData } from "../../../services/api";
-import { Rating } from "@mui/material";
+import { Button, Rating } from "@mui/material";
 
 const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
     const isDark = useDarkmode();
@@ -58,9 +58,12 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                 </div>
             </div>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
-            {status === 'Delivered' && item.status === 'Fulfilled' && (
-                <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
-            )}
+            <div className="flex justify-between md:flex-col gap-5">
+                {status === 'Delivered' && item.status === 'Fulfilled' && (
+                    <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
+                )}
+                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button onClick={() => window.location.href = `/refund/${item._id}`}>Refund / Return</Button>}
+            </div>
         </div>
         </>
     )

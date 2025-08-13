@@ -8,6 +8,14 @@ interface OrderItem extends Document {
     product_name: string;
     quantity: number;
     status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated';
+    refund_status?:  
+    'Pending'
+    | 'Under Review'
+    | 'Approved'
+    | 'Rejected'
+    | 'Processing'
+    | 'Completed'
+    | 'Cancelled';
     price: number;
     lineTotal: number;
 }
@@ -22,6 +30,11 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     lineTotal: { type: Number, required: true },
+    refund_status: {
+      type: String,
+      enum: ['Pending', 'Under Review', 'Approved', 'Rejected', 'Processing', 'Completed', 'Cancelled'],
+      required: false
+    },
     status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Rated'], default: 'Unfulfilled' },
   },
   { timestamps: true }

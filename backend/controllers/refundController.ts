@@ -1,39 +1,37 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
+import RefundRequest from "../models/Refund";
+import { uploadVideo } from "../services/cloudinary";
 import OrderItem from "../models/OrderItem";
-import Refund from "../models/Refund";
 
-export const getItemToRefund = async (req : AuthenticatedRequest, res : Response) => {
+export const createRefundRequest = async (req :AuthenticatedRequest, res : Response) => {
     try{
-        const { id } = req.params;
+        const { video, ...rest } = req.body;
 
-        const orderItems = await OrderItem.find({ order_id: id }).populate('product_id', ['thumbnail', 'product_name']);
-        const refunds = await Refund.find({ order_id: id });
+        const orderItem = await OrderItem.findById(req.body.order_item_id);
 
-        const itemsCanBeRefunded = orderItems.map(item => {
-            const refundDoc = refunds.find(refund =>
-                refund.items.some(refundItem =>
-                refundItem.order_item_id === item._id
-                )
-            );
+        if(!orderItem){
+            res.status(404).json({ success: false, message: 'Order item id not found'});
+            return;
+        }
 
-            if (!refundDoc) return item.toObject();
+        const refund = await RefundRequest.findOne({ order_item_id: req.body.order_item_id, status: { $nin: ['Rejected', 'Cancelled']}});
 
-            const refundedItem = refundDoc.items.find(refundItem =>
-                refundItem.order_item_id === item._id
-            );
-
-            const refundedQuantity = refundedItem ? refundedItem.quantity : 0;
-
-            return {
-                ...item.toObject(),
-                quantity: item.quantity - refundedQuantity
-            };
-        });
+        if(refund){
+            res.status(409).json({ success: false, message: 'A refund request for this item has already been submitted.' })
+            return;
+        }
         
-        res.status(200).json({success: true, itemsCanBeRefunded})
+        const uploadedVideo = await uploadVideo(video as string)
+        const request = new RefundRequest({ ...rest, video: uploadedVideo, customer_id: req.user_id })
+        await request.save();
+
+        orderItem.refund_status = 'Pending';
+        await orderItem.save();
+        
+        res.status(201).json({ success: true, request });
 
     }catch(err : any){
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ success: false, message: err.message || 'Server error'})
     }
 }
