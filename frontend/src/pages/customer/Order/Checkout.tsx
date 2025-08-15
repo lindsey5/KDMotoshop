@@ -82,8 +82,10 @@ const CheckoutPage = () => {
   }, [orderItems]);
 
   const shipping_fee: number = useMemo(() => {
+    const totalQuantity = orderItems.reduce((total, item) => total + item.quantity, 0)
     if (
       customer?.role === 'Customer' && orderItems?.length > 0 &&
+      totalQuantity < 3 &&
       customer?.addresses &&
       customer?.addresses.length > 0
     ) {
@@ -162,7 +164,7 @@ const CheckoutPage = () => {
         payment_method: paymentMethod,
       };
       const response = await postData(
-        paymentMethod === "CASH" ? "/api/order/customer" : "/api/payment",
+        paymentMethod === "CASH" ? "/api/orders/customer" : "/api/payment",
         {
           order,
           orderItems,
@@ -192,7 +194,7 @@ const CheckoutPage = () => {
       const items = await Promise.all(
         parsedItems
           .map(async (item: any) => {
-            const response = await fetchData(`/api/product/${item.product_id}`);
+            const response = await fetchData(`/api/products/${item.product_id}`);
 
             if (response.success) {
               const product: Product = response.product;
@@ -292,7 +294,7 @@ const CheckoutPage = () => {
         ...customer!,
         addresses: customer?.addresses?.filter((_, i) => i !== index),
       };
-      const response = await updateData("/api/customer", data);
+      const response = await updateData("/api/customers", data);
       if (response.success) {
         dispatch(setUser(data))
         successAlert("Address successfully removed", "", isDark);

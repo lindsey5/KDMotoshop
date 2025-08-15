@@ -12,7 +12,7 @@ const CreateCategoryModal = ({ open, close } : ModalProps) => {
     const isDark = useDarkmode();
 
     const CreateCategpry = async  () => {
-        const response = await postData('/api/category', { category_name: category });
+        const response = await postData('/api/categories', { category_name: category });
         if(response.success){
             window.location.reload();
         }else{

@@ -35,7 +35,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
             errorAlert('Error', 'Last name must be at least 2 characters long', isDark);    
         }else { 
             const { confirmPassword, ...rest } = admin;
-            const response = admin._id ? await updateData('/api/admin', rest) : await postData('/api/admin', rest);
+            const response = admin._id ? await updateData('/api/admins', rest) : await postData('/api/admins', rest);
             response.success ? window.location.reload() : errorAlert('Error', response.message);
         }
         setLoading(false);

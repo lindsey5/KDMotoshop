@@ -45,7 +45,7 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
                             <span className="font-bold mr-1">{user?._id === activityLog.admin_id._id ? 'You' : `${activityLog.admin_id.firstname} ${activityLog.admin_id.lastname}`}</span>
                             {activityLog.description}
                         </p>
-                        {activityLog.order_id?._id && activityLog.prev_value && activityLog.new_value && (
+                        {activityLog.prev_value && activityLog.new_value && (
                         <div className={cn("flex items-center gap-3 bg-gray-200 px-3 py-1 rounded-full", isDark && 'bg-gray-600')}>
                             {activityLog.prev_value}
                             <ArrowRightAltIcon />

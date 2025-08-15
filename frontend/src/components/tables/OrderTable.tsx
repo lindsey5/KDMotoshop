@@ -7,6 +7,7 @@ import { RedButton } from '../buttons/Button';
 import { useNavigate } from 'react-router-dom';
 import useDarkmode from '../../hooks/useDarkmode';
 import { Status } from "../text/Text";
+import PlatformChip from "../Chip";
 
 export const OrderTableColumns = () => {
     return (
@@ -17,7 +18,7 @@ export const OrderTableColumns = () => {
             <StyledTableCell>Amount</StyledTableCell>
             <StyledTableCell>Payment Method</StyledTableCell>
             <StyledTableCell>Order Date</StyledTableCell>
-            <StyledTableCell>From</StyledTableCell>
+            <StyledTableCell>Order Channel</StyledTableCell>
             <StyledTableCell align='center'>Status</StyledTableCell>
             <StyledTableCell align='center'>Action</StyledTableCell>
         </TableRow>
@@ -38,7 +39,7 @@ export const OrderTableRow = ({ order, index } : { order : Order, index : number
             <StyledTableCell isDark={isDark}>₱{formatNumber(order.total)}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.payment_method}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{formatDate(order.createdAt)}</StyledTableCell>
-            <StyledTableCell isDark={isDark}>{order.order_source}</StyledTableCell>
+            <StyledTableCell isDark={isDark}><PlatformChip platform={order.order_source} /></StyledTableCell>
             <StyledTableCell isDark={isDark} align='center'>
                 <div className="flex justify-center">
                     <Status status={order.status} isDark={isDark}/>

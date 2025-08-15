@@ -12,13 +12,13 @@ const isVariantNotValid = (variant: Variant): boolean => {
 };
 
 const createProduct = async (product : Product) => {
-    const response = await postData('/api/product', product);
+    const response = await postData('/api/products', product);
     if(response.success) window.location.href = '/admin/products'
     else errorAlert(response.message, '');
 }
 
 const updateProduct = async (id: string, product : Product) => {
-    const response = await updateData(`/api/product/${id}`, product);
+    const response = await updateData(`/api/products/${id}`, product);
     if(response.success) window.location.reload();
     else errorAlert(response.message, '');
 }
@@ -116,7 +116,7 @@ export const saveProduct = async (
 };
 
 export const getProducts = async (query? : string) => {
-  const response = await fetchData(`/api/product/reserved?${query}`);
+  const response = await fetchData(`/api/products/reserved?${query}`);
 
   if(response.success) {
     return response

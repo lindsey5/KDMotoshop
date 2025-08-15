@@ -5,7 +5,6 @@ import Admin from "../models/Admin";
 import Customer from "../models/Customer";
 import { sendVerificationCode } from "../services/emailService";
 import { OAuth2Client } from "google-auth-library";
-import jwt, { JwtPayload } from 'jsonwebtoken'
 import { AuthenticatedRequest } from "../types/auth";
 
 const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
@@ -32,7 +31,7 @@ export const adminLogin = async (req: Request, res: Response) => {
     const refreshToken = createRefreshToken(user._id as string);
 
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
-    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+    setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
 
     res.status(200).json({ success: true, accessToken });
   } catch (err: any) {
@@ -68,7 +67,7 @@ export const customerLogin = async (req: Request, res: Response) => {
       const refreshToken = createRefreshToken(user._id as string);
 
       setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
-      setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+      setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
 
       res.status(200).json({ success: true, accessToken })
     } catch (err : any) {
@@ -92,7 +91,7 @@ export const signupCustomer = async (req : Request, res: Response) => {
     const refreshToken = createRefreshToken(newCustomer._id as string);
 
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
-    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+    setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
 
     res.status(201).json({ success: true, accessToken });
 
@@ -160,7 +159,7 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
     const refreshToken = createRefreshToken(customer._id as string);
 
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
-    setTokenCookie(res, "accessToken", accessToken, 15 * 60 * 1000); 
+    setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
 
     res.status(200).json({ success: true, accessToken });
   } catch (err: any) {
@@ -173,25 +172,6 @@ export const logout = (req : Request, res : Response) =>{
     res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'none' });
     res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'none' });
     res.redirect('/');
-}
-
-export const refreshToken = (req : Request, res : Response) => {
-  try{
-    const { refreshToken } = req.cookies;
-    if (!refreshToken) {
-      res.sendStatus(401);
-      return;
-    }
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as JwtPayload;
-
-    const newAccessToken = createAccessToken(decoded.id);
-    setTokenCookie(res, "accessToken", newAccessToken, 15 * 60 * 1000); 
-
-    res.json({ success: true });
-  }catch(err : any){
-    console.log(err)
-    res.status(500).json({ success: false, message: err.message || 'Server error' });
-  }
 }
 
 export const getUser = async (req : AuthenticatedRequest, res : Response) => {

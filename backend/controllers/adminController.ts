@@ -74,7 +74,7 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
 
         await create_activity_log({
             admin_id: req.user_id ?? '',
-            description: `updated ${admin.firstname} ${admin.lastname} details - (${admin.role})`
+            description: `updated ${admin.firstname} ${admin.lastname} details`
         });
 
         res.status(200).json({success: true, updatedAdmin});

@@ -1,15 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../types/auth';
-
-export const getBearerToken = (req: AuthenticatedRequest): string | null => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return null;
-  }
-  return authHeader.split(" ")[1];
-};
 
 // Create JWT token for a given user ID
 export const createAccessToken = (id: string): string => {
@@ -41,7 +32,7 @@ export const setTokenCookie = (
   res.cookie(name, token, {
     httpOnly: true,
     maxAge: maxAgeMs,
-    sameSite: "none",
+    sameSite: "lax",
     secure: true
   });
 };

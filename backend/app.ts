@@ -67,18 +67,18 @@ app.get('/api/cities-municipalities/:cityOrMunicipalityCode/barangays', async (r
 });
 
 app.post('/api/paymongo/webhook', paymongoWebhook)
-app.use("/api/admin", adminRoutes)
+app.use("/api/admins", adminRoutes)
 app.use("/api/auth", authRoutes)
-app.use("/api/category", categoryRoutes)
-app.use("/api/product", productRoutes)
-app.use("/api/order", orderRoutes)
+app.use("/api/categories", categoryRoutes)
+app.use("/api/products", productRoutes)
+app.use("/api/orders", orderRoutes)
 app.use('/api/sales', salesRoutes)
-app.use('/api/customer', customerRoutes)
+app.use('/api/customers', customerRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/payment', paymentRoutes)
-app.use('/api/notification', notificationRoutes)
-app.use('/api/activity', activityLogRoutes)
-app.use('/api/review', reviewRoutes)
-app.use('/api/refund', refundRoutes)
+app.use('/api/notifications', notificationRoutes)
+app.use('/api/activities', activityLogRoutes)
+app.use('/api/reviews', reviewRoutes)
+app.use('/api/refunds', refundRoutes)
 
 export default app

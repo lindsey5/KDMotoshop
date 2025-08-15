@@ -8,7 +8,7 @@ const TopProductsChart = () => {
 
     useEffect(() => {
         const getTopProductsAsync = async () => {
-            const response = await fetchData('/api/product/top');
+            const response = await fetchData('/api/products/top');
             if(response.success){
                 setTopProducts(response.topProducts)
             }

@@ -19,7 +19,7 @@ import PageContainer from "../../../components/containers/admin/PageContainer";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import PaidIcon from '@mui/icons-material/Paid';
+import PlatformChip from "../../../components/Chip";
 
 const OrderDetails = () => {
     const { id } = useParams();
@@ -35,7 +35,7 @@ const OrderDetails = () => {
 
     useEffect(() => {
         const getOrderAsync = async () => {
-            const response = await fetchData(`/api/order/${id}`)
+            const response = await fetchData(`/api/orders/${id}`)
             if(response.success){
                 const { customer, ...rest } = response.order
                 setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
@@ -108,7 +108,10 @@ const OrderDetails = () => {
                         <p>{order.address?.region}</p>
                     </div>}
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
-                    <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Source: {order.order_source}</p>
+                    <div className="flex gap-3">
+                      <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Channel:</p>
+                      <PlatformChip platform={order.order_source} />
+                    </div>
                 </Card>
                 {order.createdBy && <Card className="w-full">
                     <h1 className="font-bold mb-4">Created by:</h1>
@@ -210,21 +213,6 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
           Mark as Delivered
         </Button>
       }
-
-    {order.status === 'Delivered' &&
-    <RedButton
-        onClick={() =>
-        updateOrder(
-            'Refund Order?',
-            'You are about to issue a full refund for this order.',
-            'Refunded'
-        )
-        }
-        startIcon={<PaidIcon />}
-    >
-        Refund Order
-    </RedButton>
-    }
 
     </div>
   );

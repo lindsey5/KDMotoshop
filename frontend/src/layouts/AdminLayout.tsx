@@ -27,7 +27,7 @@ const AdminLayout = () => {
     }
 
 
-    return <main className="h-screen pl-50">
+    return <main className="h-screen md:pl-50">
             <AdminSidebar />
             <Outlet />
         </main>

@@ -39,7 +39,7 @@ const RequestRefundPage = () => {
 
     useEffect(() => {
         const getOrderItem = async () => {
-            const response = await fetchData(`/api/order/item/${id}`)
+            const response = await fetchData(`/api/orders/item/${id}`)
             if(response.success){
                 setRefundItem(response.orderItem)
             }
@@ -51,7 +51,7 @@ const RequestRefundPage = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
-        const response = await postData('/api/refund', {
+        const response = await postData('/api/refunds', {
             order_item_id: refundItem?._id,
             quantity,
             price: refundItem?.price,

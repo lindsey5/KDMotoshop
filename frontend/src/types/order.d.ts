@@ -1,7 +1,7 @@
 type Order = {
     _id?: string;
     order_id?: string;
-    order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada';
+    order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
     shipping_fee: number;
     total: number;
     subtotal: number;
@@ -29,6 +29,7 @@ type Order = {
 
 type OrderItem = {
     _id?: string;
+    order_id?: string;
     product_id: string;
     variant_id?: string;
     attributes?: { [key: string]: string }
@@ -41,4 +42,5 @@ type OrderItem = {
     status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated' | 'Cancelled',
     refund_status?: 'Pending' | 'Under Review' | 'Approved' | 'Rejected' | 'Processing' | 'Completed' | 'Cancelled';
     weight: number;
+    createdAt?: Date;
 }

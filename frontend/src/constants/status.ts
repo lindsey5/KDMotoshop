@@ -20,5 +20,4 @@ export const Statuses = [
     { value: 'Rejected', label: 'Rejected', color: 'red' },
     { value: 'Failed', label: 'Failed', color: 'red' },
     { value: 'Cancelled', label: 'Cancelled', color: 'gray' },
-    { value: 'Refunded', label: 'Refunded', color: 'gray' }
 ]

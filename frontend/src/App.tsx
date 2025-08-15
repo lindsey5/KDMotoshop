@@ -31,6 +31,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "./redux/store";
 import { fetchUser } from "./redux/user-reducer";
+import RefundsPage from "./pages/admin/Refunds";
 
 export default function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -73,6 +74,7 @@ export default function App() {
                 <Route path="settings" element={<Settings />} />
                 <Route path="admins" element={<Admins />} />
                 <Route path="reviews/:id" element={<AdminProductReviews />} />
+                <Route path="refunds" element={<RefundsPage />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

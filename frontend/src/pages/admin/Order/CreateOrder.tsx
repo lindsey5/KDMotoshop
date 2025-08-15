@@ -84,7 +84,7 @@ const CreateOrderPage = () => {
     }, [pagination.searchTerm, pagination.page, selectedCategory])
 
     const fetchProducts = async () => {
-        const response = await fetchData(`/api/product/reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
+        const response = await fetchData(`/api/products/reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
 
         if(response.success) {
             setPagination(prev => ({
@@ -144,7 +144,7 @@ const CreateOrderPage = () => {
         }else{
             if(await confirmDialog('Save order?', '', isDark, "success",)){
                 setLoading(true)
-                const response = await postData('/api/order', { order, orderItems});
+                const response = await postData('/api/orders', { order, orderItems});
                 if(response.success){
                     successAlert('Order Created', 'Order successfully created', isDark);
                     setOrderItems([]);

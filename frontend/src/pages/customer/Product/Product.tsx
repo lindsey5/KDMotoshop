@@ -39,8 +39,8 @@ const CustomerProduct = () => {
     useEffect(() => {
         const fetchDataAsync = async () => {
             const [productResponse, reviewsResponse] = await Promise.all([
-                fetchData(`/api/product/${id}/reserved`),   
-                fetchData(`/api/review/product/${id}`)
+                fetchData(`/api/products/${id}/reserved`),   
+                fetchData(`/api/reviews/product/${id}`)
             ]);
 
             productResponse.success ?  setProduct(productResponse.product) : navigate('/products');

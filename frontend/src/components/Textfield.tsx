@@ -185,7 +185,7 @@ export const HeaderSearchField = () => {
 
     return (
         <form 
-          className={cn('flex flex-1 min-w-[130px] max-w-[600px] items-center gap-5 px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}
+          className={cn('flex flex-1 min-w-[130px] max-w-[600px] items-center gap-2 md:gap-5 px-2 md:px-5 rounded-4xl border-2 border-gray-700 bg-white transition-colors duration-400', isDark && 'bg-[#313131]')}
           onSubmit={handleSearch}
         >
             <IconButton type="submit">
@@ -194,7 +194,7 @@ export const HeaderSearchField = () => {
             <input
               type="text"
               placeholder="Search..."
-              className={cn("flex-1 py-2 pr-12 outline-none text-sm md:text-base", isDark && "text-white placeholder-gray-300")}
+              className={cn("flex-1 py-2 pr-2 md:pr-12 outline-none text-sm md:text-base", isDark && "text-white placeholder-gray-300")}
               onChange={(e) => setPagination(prev => ({ ...prev, searchTerm: e.target.value as string}))}
               onFocus={handleFocus}
               onBlur={handleBlur}

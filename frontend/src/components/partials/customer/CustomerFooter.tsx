@@ -5,7 +5,7 @@ import { ThemeToggle } from "../../Toggle";
 
 const CustomIcon = ({ src, alt, path }: { src: string; alt: string, path: string }) => (
   <a href={path} target="_blank">
-    <img className="w-15 h-15 cursor-pointer hover:opacity-75" src={src} alt={alt} />
+    <img className="w-10 h-10 md:w-15 md:h-15 cursor-pointer hover:opacity-75" src={src} alt={alt} />
   </a>
 );
 
@@ -14,7 +14,7 @@ const CustomerFooter = () => {
 
     useEffect(() => {
         const getCategories = async () => {
-            const response = await fetchData('/api/category')
+            const response = await fetchData('/api/categories')
             if(response.success){
                 setCategories(response.categories)
             }
@@ -26,19 +26,19 @@ const CustomerFooter = () => {
         <footer className="w-full px-20 pt-20 pb-10 text-white bg-black">
             <div className="flex flex-col md:flex-row gap-20">
                 <div className="flex-1 flex flex-col gap-3 items-start">
-                    <img className="w-50 h-25 cursor-pointer" src="/kd-logo.png" alt="" />
-                    <p className="text-lg">KDmotoshop@gmail.com</p>
-                    <p className="text-lg">Blk. 2 Lot 19 Phase 1 Pinagsama, Taguig, Philippines.</p>
+                    <img className="w-35 h-20 md:w-50 md:h-25 cursor-pointer" src="/kd-logo.png" alt="" />
+                    <p className="text-md md:text-lg">KDmotoshop@gmail.com</p>
+                    <p className="text-md md:text-lg">Blk. 2 Lot 19 Phase 1 Pinagsama, Taguig, Philippines.</p>
                 </div>
 
-                <div className="flex-1 flex flex-col gap-3 items-start">
-                    <h1 className="w-full font-bold text-2xl mb-2 border-b-1 border-gray-300 pb-5">Products</h1>
+                <div className="text-sm md:text-md flex-1 flex flex-col gap-3 items-start">
+                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-5">Products</h1>
                     {categories.map(category => (
                         <Link key={category._id} href="/" underline="hover" sx={{ color: "white"}}>{category.category_name}</Link>
                     ))}
                 </div>
-                <div className="flex-1 flex flex-col gap-3 items-start">
-                    <h1 className="w-full font-bold text-2xl mb-2 border-b-1 border-gray-300 pb-5">Other Info</h1>
+                <div className="text-sm md:text-md flex-1 flex flex-col gap-3 items-start">
+                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-5">Other Info</h1>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Home</Link>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Contact</Link>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Privacy Policy</Link>

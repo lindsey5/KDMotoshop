@@ -1,8 +1,26 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { AuthenticatedRequest } from '../types/auth';
 import { findAdmin } from '../services/adminService';
 import Customer from '../models/Customer';
+import { createAccessToken, setTokenCookie } from '../utils/authUtils';
+
+const refreshToken = (req : Request, res : Response) => {
+  try{
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+      return null;
+    }
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string) as JwtPayload;
+
+    const newAccessToken = createAccessToken(decoded.id);
+    setTokenCookie(res, "accessToken", newAccessToken, 30 * 60 * 1000); 
+
+    return newAccessToken;
+  }catch(err : any){
+    return null
+  }
+}
 
 export const adminRequireAuth = async (
   req: AuthenticatedRequest,
@@ -11,7 +29,7 @@ export const adminRequireAuth = async (
 ) => {
 
   try {
-    const token = req.cookies?.accessToken;
+    let token = req.cookies?.accessToken || refreshToken(req, res);
 
     if (!token) {
       res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });
@@ -38,7 +56,7 @@ export const customerRequireAuth = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies?.accessToken;
+  const token = req.cookies?.accessToken || refreshToken(req, res);
 
   if (!token) {
     res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });
@@ -69,7 +87,7 @@ export const tokenRequire = async (
 ) => {
 
   try {
-    const token = req.cookies?.accessToken;
+    const token = req.cookies?.accessToken || refreshToken(req, res);
 
     if (!token) {
       res.status(401).json({ success: false, message: 'Access Denied: No Token Provided' });

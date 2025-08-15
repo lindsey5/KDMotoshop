@@ -1,0 +1,32 @@
+interface RefundOrderItem extends Omit<OrderItem, 'product_id'>{
+    product_id: {
+        product_name: string;
+        thumbnail: UploadedImage;
+    }
+    order_id: { order_id: string }
+}
+
+interface RefundRequest {
+    _id?: string;
+    customer_id: {
+        firstname: string;
+        lastname: string;
+        image: UploadedImage;
+    };
+    order_item_id: RefundOrderItem;
+    quantity: number;
+    status:
+    | 'Pending'
+    | 'Under Review'
+    | 'Approved'
+    | 'Rejected'
+    | 'Processing'
+    | 'Completed'
+    | 'Cancelled';
+    price: Number;
+    reason: string;
+    video: { videoPublicId: string; videoUrl: string}
+    description: string;
+    totalAmount: number;
+    createdAt?: Date;
+}

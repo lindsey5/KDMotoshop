@@ -41,7 +41,7 @@ const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
 
     useEffect(() => {
         const getPopularProducts = async () => {
-        const response = await fetchData("/api/product/top");
+        const response = await fetchData("/api/products/top");
         if (response.success) {
             setProducts(response.topProducts);
         }
@@ -52,7 +52,7 @@ const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
     return (
         <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-20 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]',isDark && isParallax && 'bg-gray-900/20 backdrop-blur-md rounded-xl shadow-lg')}>
         <div className="w-full">
-            <Title>Most Selling Products</Title>
+            <Title className="text-2xl md:text-4xl">Most Selling Products</Title>
         </div>
 
         <motion.div 

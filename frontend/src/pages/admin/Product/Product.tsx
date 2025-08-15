@@ -44,7 +44,7 @@ const CategorySelect : React.FC<CategorySelectProps> = ({ value, handleChange })
     const [categories, setCategories] = useState<Menu[]>([]);
 
     const getCategories = async () => {
-        const response = await fetchData('/api/category');
+        const response = await fetchData('/api/categories');
         if(response.success) setCategories(response.categories.map((category : Category) => ({ value: category.category_name, label: category.category_name  })));
     }
 
@@ -80,7 +80,7 @@ const ProductPage = () => {
 
 
     const getProduct = async (id : string) => {
-        const response = await fetchData(`/api/product/${id}`);
+        const response = await fetchData(`/api/products/${id}`);
         if(response.success) setProduct(response.product)
         else navigate('/admin/products')
     }
@@ -198,6 +198,12 @@ const ProductPage = () => {
         </div>
         <div className="grid xl:grid-cols-[2fr_370px] gap-x-10 gap-y-10 mt-6">
             <div className="w-full">
+                <div className="block lg:hidden mb-8">
+                    <AddProductThumbnail 
+                        product={product}
+                        handleThumbnail={handleThumbnail}
+                    />
+                </div>
                 <Card className="flex flex-col gap-5">
                     <h1 className="text-lg font-bold">Basic Information</h1>
                     <div className="grid grid-cols-2 gap-10">
@@ -323,13 +329,22 @@ const ProductPage = () => {
                         </div>
                     </div>}
                 </Card>}
+                <Card className="xl:flex hidden justify-end gap-5 mt-8">
+                    <Button 
+                        variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
+                        onClick={() => navigate(-1)}
+                    >Cancel</Button>
+                    <RedButton onClick={() => saveProduct(product, setLoading)}>Save Product</RedButton>
+                </Card>
             </div>
             
-            <div className="grid grid-cols-2 xl:flex xl:flex-col gap-6">
-                <AddProductThumbnail 
-                    product={product}
-                    handleThumbnail={handleThumbnail}
-                />
+            <div className="flex flex-col lg:grid md:grid-cols-2 xl:flex xl:flex-col gap-6">
+                <div className="hidden lg:block">
+                    <AddProductThumbnail 
+                        product={product}
+                        handleThumbnail={handleThumbnail}
+                    />
+                </div>
                 <ProductImages 
                     images={product.images}
                     setSelectedImage={setSelectedImage}
@@ -349,7 +364,7 @@ const ProductPage = () => {
                     </RadioGroup>
                 </Card>
             </div>
-            <Card className="flex justify-end gap-5">
+            <Card className="xl:hidden flex justify-end gap-5">
                 <Button 
                     variant="outlined" sx={{ color: "gray", borderColor: 'gray'}}
                     onClick={() => navigate(-1)}

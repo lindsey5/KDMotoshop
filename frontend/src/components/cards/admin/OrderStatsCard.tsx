@@ -53,7 +53,7 @@ export const OrderStatsCards = () => {
 
     useEffect(() => {
         const fetchCardValues = async () => {
-            const response = await fetchData('/api/order/statistics');
+            const response = await fetchData('/api/orders/statistics');
                 if (response.success) {
                     setCardValues({
                     overallTotalOrders: response.overallTotalOrders,

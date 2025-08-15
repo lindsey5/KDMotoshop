@@ -22,7 +22,7 @@ const RateProductModal : React.FC<RateProductModalProps> = ({ open, close, order
 
     const submitReview = async () => {
         setLoading(true)
-        const response = await postData('/api/review', { orderItemId, product_id, review, rating })
+        const response = await postData('/api/reviews', { orderItemId, product_id, review, rating })
         if(response.success){
             window.location.reload();
         }

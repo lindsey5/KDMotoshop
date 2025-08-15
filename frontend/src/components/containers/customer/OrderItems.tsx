@@ -6,6 +6,7 @@ import Card from "../../cards/Card";
 import RateProductModal from "../../modals/RateProduct";
 import { fetchData } from "../../../services/api";
 import { Button, Rating } from "@mui/material";
+import { OrderItemStatusChip, RefundStatusChip } from "../../Chip";
 
 const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
     const isDark = useDarkmode();
@@ -18,7 +19,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
 
     useEffect(() => {
         const fetchReview = async () => {
-            const response = await fetchData(`/api/review/item/${item._id}`);
+            const response = await fetchData(`/api/reviews/item/${item._id}`);
             if(response.success) setReview(response.review);
         }
 
@@ -34,15 +35,21 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
             product_id={ratingData?.product_id ?? ''}
         />
         <div key={item._id} className={cn("flex flex-wrap gap-5 justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
-            <div className="w-1/2 flex flex-col md:flex-row gap-5">
-                <img className='w-15 h-15' src={item.image || ''} alt="" />
+            <div className="md:text-base text-sm w-1/2 flex flex-col md:flex-row gap-5">
+                <div className="flex gap-5">
+                    <img className='w-15 h-15' src={item.image || ''} alt="" />
+                    <h1 className="md:hidden block font-bold mb-4">{item.product_name}</h1>
+                </div>
                 <div>
-                    <h1 className="font-bold mb-4">{item.product_name}</h1>
+                    <h1 className="md:block hidden font-bold mb-4">{item.product_name}</h1>
                     {item.attributes && Object.entries(item.attributes).map(([key, value]) => (
                         <p key={value} className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{key}: {value}</p>
                     ))}
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
-                    <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{item.status}</p>
+                    <div className="flex gap-3 my-5">
+                        <OrderItemStatusChip status={item.status} />
+                        {item.refund_status && <RefundStatusChip status={item.refund_status} />}
+                    </div>
                     {review && (
                         <div>
                             <Rating 
@@ -62,7 +69,8 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
                 )}
-                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button onClick={() => window.location.href = `/refund/${item._id}`}>Refund / Return</Button>}
+                {item.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}}>View Refund Status</Button>}
+                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => window.location.href = `/refund/${item._id}`}>Refund / Return</Button>}
             </div>
         </div>
         </>

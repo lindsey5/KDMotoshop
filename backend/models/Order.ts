@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface Order extends Document {
     order_id: string;
-    order_source: string;
+    order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
     shipping_fee: number;
     total: number;
     subtotal: number;
@@ -31,8 +31,8 @@ const OrderSchema: Schema<Order> = new Schema(
     subtotal: { type: Number, required: true },
     order_source: {
       type: String,
-      enum: ['Store', 'Website', 'Facebook', 'Shopee', 'Lazada'],
-      default: 'website'
+      enum: ['Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'],
+      default: 'Website'
     },
     shipping_fee: { type: Number, required: true },
     status: {

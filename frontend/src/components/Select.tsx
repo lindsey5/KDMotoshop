@@ -40,10 +40,10 @@ export const CustomizedSelect = ({ sx, label, menu, icon, ...props} : Customized
               borderColor: isDark ? '#919191' : '',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: isDark ? '#919191' : 'red'
+              borderColor: 'red'
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: isDark ? '#919191' : 'red',
+              borderColor: 'red',
               borderWidth: '2px'
             },
             ...(icon && { paddingLeft: 3}),
@@ -84,10 +84,13 @@ export const StatusSelect : React.FC<StatusSelectProps> = ({ sx, menu, value, on
             backgroundColor: isDark ? '#313131' : 'white',
             color: isDark ? 'white' : '#313131',
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: isDark ? '#919191' : 'red',
+              borderColor: 'red',
+            },
+            '.MuiOutlinedInput-notchedOutline':{
+              borderColor: isDark ? '#919191' : '',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: isDark ? '#919191' : 'red',
+              borderColor: 'red',
               borderWidth: '2px'
             },
             ...sx

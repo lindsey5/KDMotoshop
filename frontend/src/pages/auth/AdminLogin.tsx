@@ -27,6 +27,11 @@ const AdminLogin = () => {
         return <Navigate to="/" />;
     }
 
+    if(user && (user.role === 'Admin' || user.role === 'Super Admin') && !userLoading){
+        console.log('haah')
+        return <Navigate to="/admin/dashboard" />;
+    }
+
     return (
         <main className="h-screen grid grid-cols-1 md:grid-cols-2">
             <div className="hidden md:flex h-full flex flex-col items-center justify-center gap-6 shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900">

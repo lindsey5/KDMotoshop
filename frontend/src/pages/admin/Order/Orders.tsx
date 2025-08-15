@@ -46,7 +46,7 @@ const Orders = () => {
         const endDate = selectedDates?.[1] ? selectedDates[1].toString() : '';
 
         const response = await fetchData(
-            `/api/order?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`
+            `/api/orders?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`
         );
 
         if (response.success) {
@@ -92,7 +92,7 @@ const Orders = () => {
                 <div className="flex-1 flex flex-wrap gap-5 justify-end">
                     <div className="flex-1 flex gap-10">
                         <CustomizedSelect
-                            label="From"
+                            label="Order Channel"
                             value={from}
                             onChange={(e) => setFrom(e.target.value as string)}
                             menu={['Website', 'Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}

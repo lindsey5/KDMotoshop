@@ -24,15 +24,7 @@ export const fetchUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     let response = await fetchData(`/api/auth/user`);
 
-    if (!response.success) {
-      const refreshRes = await postData('/api/auth/refresh', {});
-
-      if (!refreshRes.success) return rejectWithValue('Failed to refresh token');
-
-      response = await fetchData(`/api/auth/user`);
-
-      if (!response.success) return rejectWithValue('Failed to refresh token');
-    }
+    if (!response.success) return rejectWithValue('Failed to refresh token');
     
     return response.user;
   }

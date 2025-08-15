@@ -34,7 +34,7 @@ const CustomerOrderDetails = () => {
 
     useEffect(() => {
         const getOrderAsync = async () => {
-            const response = await fetchData(`/api/order/${id}`)
+            const response = await fetchData(`/api/orders/${id}`)
             if(response.success){
                 const { customer, ...rest } = response.order
                 setOrder({...rest, customer: { ...customer, customer_id: customer.customer_id._id, image: customer.customer_id?.image.imageUrl ?? ''}})
@@ -58,7 +58,7 @@ const CustomerOrderDetails = () => {
             isDark
         )) {
             setLoading(true)
-            const response = await updateData(`/api/order/customer/${id}/cancel`, {});
+            const response = await updateData(`/api/orders/customer/${id}/cancel`, {});
 
             if (response.success) {
                 window.location.reload();
@@ -95,7 +95,7 @@ const CustomerOrderDetails = () => {
             <div className="lg:block hidden">
                 <OrderStatusStepper order={order}/>
             </div>
-            <div className="flex items-start flex-wrap p-5 gap-5">
+            <div className="flex flex-col lg:flex-row lg:items-start p-5 gap-5">
                 <div className="flex flex-col gap-5 flex-2">
                     <div className="flex lg:hidden ">
                         <div className={cn("font-bold px-3 py-1 rounded-full", isDark && 'bg-[#313131] text-white')}>
@@ -104,16 +104,16 @@ const CustomerOrderDetails = () => {
                     </div>
                     <CustomerOrderItems order={order}/>
                     <Card>
-                        <h1 className="font-bold text-xl">Payment Summary</h1>
-                        <div className="my-6 grid grid-cols-2 gap-5 p-2">
-                            <p>Subtotal</p>
+                        <h1 className="font-bold text-lg md:text-xl">Payment Summary</h1>
+                        <div className="text-sm md:text-base my-6 grid grid-cols-2 gap-5 p-2">
+                            <p >Subtotal</p>
                             <p className="text-right">₱{formatNumber(order.subtotal)}</p>
                             <p>Shipping Fee</p>
                             <p className="text-right">₱{formatNumber(order.shipping_fee)}</p>
                         </div>
-                        <div className="flex justify-between">
-                            <h1 className="font-bold text-xl">Total</h1>
-                            <h1 className="font-bold text-xl">₱{formatNumber(order.total)}</h1>
+                        <div className="flex justify-between font-bold text-lg md:text-xl">
+                            <h1>Total</h1>
+                            <h1>₱{formatNumber(order.total)}</h1>
                         </div>
                     </Card>
                     <Card className="justify-end hidden lg:flex">
@@ -122,12 +122,12 @@ const CustomerOrderDetails = () => {
                 </div>
                 <div className="flex-1 lg:max-w-[400px] flex flex-col gap-5">
                     <Card className="w-full flex flex-col gap-5">
-                        <h1 className="font-bold text-xl">Information:</h1>
+                        <h1 className="font-bold text-lg md:text-xl">Information:</h1>
                         <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                             <Avatar src={order.customer.image} />
                             <h1>{order.customer.firstname} {order.customer.lastname}</h1>
                         </div>
-                        <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
+                        <div className={cn("text-sm md:text-base flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                             <h1 className="font-bold">Contact Info</h1>
                             <div className="flex gap-3">
                                 <EmailOutlinedIcon />
@@ -138,7 +138,7 @@ const CustomerOrderDetails = () => {
                                 <p>{order.customer.phone || 'N/A'}</p>
                             </div>
                         </div>
-                        {order.address && <div className="flex flex-col gap-2 pb-5 border-b-1 border-gray-300">
+                        {order.address && <div className="text-sm md:text-base flex flex-col gap-2 pb-5 border-b-1 border-gray-300">
                             <h1 className="font-bold">Address</h1>
                             <p>{order.address?.street}</p>
                             <p>{order.address?.barangay}</p>

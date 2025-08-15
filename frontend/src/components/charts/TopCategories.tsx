@@ -11,7 +11,7 @@ const TopCategoriesChart = () => {
 
     useEffect(() => {
         const getTopCategories = async () => {
-            const response = await fetchData('/api/category/top');
+            const response = await fetchData('/api/categories/top');
             if(response.success){
                 setData({
                     data: response.topCategories.map((category : any) => ({

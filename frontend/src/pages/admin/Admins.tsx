@@ -28,7 +28,7 @@ const Admins = () => {
 
     useEffect(() => {
         const delayDebounce = setTimeout(async () => {
-            const response = await fetchData(`/api/admin/all?&search=${pagination.searchTerm}`);
+            const response = await fetchData(`/api/admins/all?&search=${pagination.searchTerm}`);
             if(response.success) {
                 setAdmins(response.admins);
                 setPagination(prev => ({...prev, totalPages: response.totalPages }));

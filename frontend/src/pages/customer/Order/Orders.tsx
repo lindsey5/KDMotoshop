@@ -38,7 +38,7 @@ const CustomerOrders = () => {
             const today = new Date();
             const sixtyDaysAgo = new Date();
             sixtyDaysAgo.setDate(today.getDate() - 60);
-            const response = await fetchData(`/api/order/customer?page=${pagination.page}&limit=10&status=${selectedStatus}&startDate=${sixtyDaysAgo}&endDate=${new Date()}`);
+            const response = await fetchData(`/api/orders/customer?page=${pagination.page}&limit=10&status=${selectedStatus}&startDate=${sixtyDaysAgo}&endDate=${new Date()}`);
             if(response.success) {
                 setOrders(response.orders)
                 setPagination(prev => ({...prev, totalPages: response.totalPages }));
@@ -91,8 +91,8 @@ const CustomerOrders = () => {
             </div>}
             {orders.map(order => (
                 <Card key={order._id} className="flex flex-col gap-5">
-                    <div className={cn("flex flex-col md:flex-row justify-between md:items-center gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
-                        <div className="flex flex-wrap gap-3 items-center">
+                    <div className={cn("flex items-start justify-between items-center gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
+                        <div className="md:text-base text-sm flex flex-col items-start md:flex-row gap-3 md:items-center">
                              <span className={cn("font-bold px-3 py-2 bg-gray-200 rounded-full", isDark && 'bg-gray-700 text-white')}>{order.order_id}</span>
                              <span className="text-gray-400">Order Date: {formatDateWithWeekday(order.createdAt)}</span>
                         </div>

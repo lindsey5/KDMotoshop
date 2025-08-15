@@ -14,7 +14,7 @@ const CategoryFilterCard = ({ selectedCategory, setSelectedCategory } : Category
     const isDark = useDarkmode();
     
     const fetchCategories = async () => {
-        const response = await fetchData('/api/category');
+        const response = await fetchData('/api/categories');
         if(response.success) setCategories(response.categories)
     }
 

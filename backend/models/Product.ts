@@ -12,7 +12,7 @@ interface Variant {
   };
 }
 
-interface IProduct extends Document {
+export interface IProduct extends Document {
   product_name: string;
   description: string;
   category: string;

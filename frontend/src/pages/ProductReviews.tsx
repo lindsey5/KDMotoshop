@@ -31,7 +31,7 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
     useEffect(() => {
         const getReviews = async () => {
             setLoading(true)
-            const response = await fetchData(`/api/review/product/${product_id}?page=${pagination.page}&limit=10&rating=${selectedRating || ''}`);
+            const response = await fetchData(`/api/reviews/product/${product_id}?page=${pagination.page}&limit=10&rating=${selectedRating || ''}`);
             if (response.success) {
                 setReviews(response.reviews);
                 setTotalReviews(response.overallTotal);

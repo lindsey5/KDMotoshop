@@ -37,7 +37,7 @@ const MyActivity = () => {
             setLoading(true);
             const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
             const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
-            const response = await fetchData(`/api/activity/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
+            const response = await fetchData(`/api/activities/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
             if(response.success){
                 const groupedLogs = response.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
                     const dateKey = formatDateWithWeekday(item.createdAt);

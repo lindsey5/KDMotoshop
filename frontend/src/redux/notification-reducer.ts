@@ -34,7 +34,7 @@ const initialState: NotificationState = {
 export const fetchNotifications = createAsyncThunk<NotificationState, 'customer' | 'admin'>(
   'notification/fetchNotifications',
   async (user : 'customer' | 'admin') => {
-    const response = await fetchData(`/api/notification/${user}?limit=30&page=1`);
+    const response = await fetchData(`/api/notifications/${user}?limit=30&page=1`);
     if(!response.success){
         throw new Error('Failed to fetch notifications');
     }
@@ -50,7 +50,7 @@ export const fetchNotifications = createAsyncThunk<NotificationState, 'customer'
 export const updateAllNotifications = createAsyncThunk(
     'notification/updateNotifications',
     async (user : 'customer' | 'admin', { rejectWithValue }) => {
-        const response = await updateData(`/api/notification/${user}`, {});
+        const response = await updateData(`/api/notifications/${user}`, {});
         if(response.success){
             return rejectWithValue('Failed to update notifications');
         }
@@ -70,7 +70,7 @@ export const updateNotification = createAsyncThunk<
 >(
   'notification/updateNotification',
   async ({ user, id }) => {
-    const response = await updateData(`/api/notification/${id}/${user}`, {});
+    const response = await updateData(`/api/notifications/${id}/${user}`, {});
       if (!response.success) {
         throw new Error('Failed to fetch next page');
       }

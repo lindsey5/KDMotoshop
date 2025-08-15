@@ -1,36 +1,6 @@
 import { Request, Response } from "express";
 import Order from "../models/Order";
 
-const refundedLookupAndCalcStages = [
-  {
-    $lookup: {
-      from: 'orderitems',
-      localField: '_id',
-      foreignField: 'order_id',
-      as: 'items'
-    }
-  },
-  {
-    $addFields: {
-      refundedTotal: {
-        $sum: {
-          $map: {
-            input: '$items',
-            as: 'item',
-            in: {
-              $cond: [
-                { $eq: ['$$item.status', 'Refunded'] },
-                '$$item.lineTotal',
-                0
-              ]
-            }
-          }
-        }
-      }
-    }
-  }
-];
-
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
     await Order.updateMany({ status: 'Refunded' }, { $set: { status: 'Cancelled' } });
@@ -43,7 +13,6 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
     const salesArray = new Array(12);
 
     const monthlySales = await Order.aggregate([
-      ...refundedLookupAndCalcStages,
       {
         $match: {
           createdAt: { $gte: start, $lt: end },
@@ -53,7 +22,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
       {
         $project: {
           month: { $month: '$createdAt' },
-          netTotal: { $subtract: ['$total', '$refundedTotal'] }
+          netTotal: '$total'
         }
       },
       {
@@ -99,7 +68,6 @@ export const get_daily_sales = async (req: Request, res: Response) => {
     const endOfMonth = new Date(Date.UTC(yearNum, monthNum, 0, 23, 59, 59, 999));
 
     const dailySales = await Order.aggregate([
-      ...refundedLookupAndCalcStages,
       {
         $match: {
           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
@@ -115,7 +83,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
               timezone: "Asia/Manila"
             }
           },
-          netTotal: { $subtract: ['$total', '$refundedTotal'] }
+          netTotal: '$total'
         }
       },
       {
@@ -158,7 +126,6 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
     const startOfYear = new Date(now.getFullYear(), 0, 1);
 
     const makeSalesAgg = (startDate: Date) => ([
-      ...refundedLookupAndCalcStages,
       {
         $match: {
           createdAt: { $gte: startDate },
@@ -168,7 +135,7 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
       {
         $group: {
           _id: null,
-          total: { $sum: { $subtract: ["$total", "$refundedTotal"] } }
+          total: { $sum: "$total" }
         }
       }
     ]);

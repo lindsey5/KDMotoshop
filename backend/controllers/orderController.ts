@@ -3,7 +3,7 @@ import Order from '../models/Order';
 import OrderItem from '../models/OrderItem';
 import { AuthenticatedRequest } from '../types/auth';
 import { createNewOrder, generateOrderId } from '../services/orderService';
-import { incrementStock, decrementStock } from '../services/orderService';
+import { decrementStock } from '../services/orderService';
 import { sendAdminsNotification, sendCustomerNotification } from '../services/notificationService';
 import { create_activity_log } from '../services/activityLogServices';
 import Payment from '../models/Payment';
@@ -199,7 +199,7 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
-        if(req.body.status === 'Refunded' || req.body.status === 'Cancelled' || req.body.status === 'Rejected'){
+        if(req.body.status === 'Cancelled' || req.body.status === 'Rejected'){
             const payment = await Payment.findOne({ order_id: id});
         
             if(payment && payment.status === 'Paid'){

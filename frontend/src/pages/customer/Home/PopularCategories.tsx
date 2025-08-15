@@ -38,7 +38,7 @@ const PopularCategoriesSection = () => {
 
     useEffect(() => {
         const getCategories = async () => {
-        const response = await fetchData("/api/category/top");
+        const response = await fetchData("/api/categories/top");
         if (response.success) {
             setCategories(response.topCategories);
         }
@@ -65,7 +65,7 @@ const PopularCategoriesSection = () => {
             isDark && 'bg-black'
         )}
         >
-        <Title className="w-full text-center mb-20">Popular Categories</Title>
+        <Title className="w-full text-center mb-20 text-3xl md:text-4xl">Popular Categories</Title>
         <div className="relative flex justify-center items-center overflow-hidden min-h-[400px]">
             <IconButton
                 size="large"
@@ -116,7 +116,7 @@ const PopularCategoriesSection = () => {
                         className="flex flex-col gap-5 items-center"
                     >
                         <img
-                        className="w-[300px] h-[300px] rounded-full border-2 border-gray-400"
+                        className="w-[250px] h-[250px] md:w-[300px] md:h-[300px] rounded-full border-2 border-gray-400"
                         src={category.image}
                         alt={category.category}
                         />

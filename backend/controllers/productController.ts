@@ -1,7 +1,7 @@
 import e, { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import { deleteImage, uploadImage } from "../services/cloudinary";
-import Product from "../models/Product";
+import Product, { IProduct } from "../models/Product";
 import { UploadedImage } from "../types/types";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
@@ -198,75 +198,124 @@ export const get_product_by_id_with_reserved = async (req: Request, res: Respons
     }
 };
 
-export const update_product = async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const { id } = req.params;
-      const product = req.body;
-
-      const oldProduct = await Product.findById(id);
-      if (!oldProduct) {
-        res.status(404).json({ success: false, message: 'Product not found.' });
-        return;
-      }
-
-      const isExist = await Product.findOne({ _id: { $ne: id },  product_name: product.product_name });
-
-      if (isExist) {
-        res.status(400).json({ success: false, message: 'Product name already exists.'});
-        return;
-      }
-
-      let thumbnail : UploadedImage | null = oldProduct.thumbnail;
-      if (typeof product.thumbnail === 'string') {
-        await deleteImage(thumbnail?.imagePublicId);
-        thumbnail = await uploadImage(product.thumbnail);
-      }
-
-      const images = await Promise.all(
-        product.images.map(async (img : UploadedImage | string) => {
-          if (typeof img === 'object') return img;
-
-          return await uploadImage(img);
-        })
-      );
-
-      for (const oldImg of oldProduct.images) {
-        const stillUsed = images.find(newImg => newImg.imagePublicId === oldImg.imagePublicId);
-        if (!stillUsed) await deleteImage(oldImg.imagePublicId);
-      }
-
-      if(product.product_type !== oldProduct.product_type){
-        if(product.product_type === 'Variable') {
-          product.sku = null
-          product.price = null
-          product.stock = null
-        }else {
-          product.attributes = null
-          product.variants = null
-        } 
-      }
-
-      oldProduct.set({ ...product, thumbnail, images });
-
-      await oldProduct.save();  
-
-      await create_activity_log({ 
-        admin_id: req.user_id ?? '',
-        description: `updated ${product?.product_name}`,
-        product_id: oldProduct._id as string,
-        prev_value: JSON.stringify(oldProduct),
-        new_value: JSON.stringify(product)
-      })
-
-      res.status(200).json({
-        success: true,
-        product,
-      });
-    } catch (err: any) {
-      console.error(err);
-      res.status(500).json({ success: false, message: err.message });
-    }
+// Utility to calculate total stock
+const calculateTotalStock = (product: any) => {
+  if (product.product_type === 'Variable') {
+    return product.variants.reduce((total: number, variant: any) => total + variant.stock, 0);
+  }
+  return product.stock ?? 0;
 };
+
+export const update_product = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const product = req.body;
+
+    const oldProduct = await Product.findById(id);
+    if (!oldProduct) {
+      res.status(404).json({ success: false, message: 'Product not found.' });
+      return;
+    }
+
+    const isExist = await Product.findOne({
+      _id: { $ne: id },
+      product_name: product.product_name
+    });
+    if (isExist) {
+      res.status(400).json({ success: false, message: 'Product name already exists.' });
+      return;
+    }
+
+    // Handle thumbnail upload
+    let thumbnail: UploadedImage | null = oldProduct.thumbnail;
+    if (typeof product.thumbnail === 'string') {
+      await deleteImage(thumbnail?.imagePublicId);
+      thumbnail = await uploadImage(product.thumbnail);
+    }
+
+    // Handle images upload
+    const images = await Promise.all(
+      product.images.map(async (img: UploadedImage | string) => {
+        if (typeof img === 'object') return img;
+        return await uploadImage(img);
+      })
+    );
+
+    // Delete unused old images
+    for (const oldImg of oldProduct.images) {
+      const stillUsed = images.find(newImg => newImg.imagePublicId === oldImg.imagePublicId);
+      if (!stillUsed) await deleteImage(oldImg.imagePublicId);
+    }
+
+    // Adjust fields based on product_type
+    if (product.product_type !== oldProduct.product_type) {
+      if (product.product_type === 'Variable') {
+        product.sku = null;
+        product.price = null;
+        product.stock = null;
+      } else {
+        product.attributes = null;
+        product.variants = null;
+      }
+    }
+
+    // Store previous values for comparison
+    const oldValues = oldProduct.toObject();
+
+    // Update product
+    oldProduct.set({ ...product, thumbnail, images });
+    await oldProduct.save();
+
+    // Fields to check for changes
+    const fieldsToTrack: (keyof IProduct)[] = [
+      'product_name',
+      'description',
+      'category',
+      'sku',
+      'price',
+      'stock',
+      'product_type',
+      'visibility',
+      'weight'
+    ];
+
+    // Check changes in each field
+    for (const field of fieldsToTrack) {
+      const prevValue = oldValues[field];
+      const newValue = oldProduct[field];
+      if (String(prevValue) !== String(newValue)) {
+        await create_activity_log({
+          admin_id: req.user_id ?? '',
+          description: `updated ${field} for ${oldValues.product_name}`,
+          product_id: oldProduct._id as string,
+          prev_value: String(prevValue ?? ''),
+          new_value: String(newValue ?? '')
+        });
+      }
+    }
+
+    const prevStock = calculateTotalStock(oldValues);
+    const currentStock = calculateTotalStock(oldProduct);
+    if (prevStock !== currentStock) {
+      await create_activity_log({
+        admin_id: req.user_id ?? '',
+        description: `updated stock for ${oldValues.product_name}`,
+        product_id: oldProduct._id as string,
+        prev_value: String(prevStock),
+        new_value: String(currentStock)
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      product: oldProduct
+    });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 
 export const get_top_products = async (req: Request, res: Response) => {
     try{

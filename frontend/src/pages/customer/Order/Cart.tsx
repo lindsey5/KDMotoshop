@@ -58,7 +58,7 @@ const Cart = () => {
                 </div>}
                 {cart.map((item) => <CartItemContainer key={item._id} item={item} />)}
                 <div className="flex flex-col justify-center lg:flex-row lg:justify-end mt-8 gap-5">
-                    <h2 className='font-bold text-lg'>Total: ₱{formatNumber(selectedItem.total)}</h2>
+                    <h2 className='font-bold text-md md:text-lg'>Total: ₱{formatNumber(selectedItem.total)}</h2>
                     <RedButton onClick={proceedToCheckout} disabled={selectedItem.items.length === 0}>Checkout ({selectedItem.items.length} items)</RedButton>
                 </div>
             </Card>

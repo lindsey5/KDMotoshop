@@ -19,7 +19,7 @@ const AdminProductReviews = () => {
     
     useEffect(() => {
         const getProductAsync = async () => {
-            const response = await fetchData(`/api/product/${id}`);
+            const response = await fetchData(`/api/products/${id}`);
             if(response.success) {
                 setProduct(response.product)
             }

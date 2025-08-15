@@ -7,6 +7,8 @@ interface OrderItem extends Document {
     attributes?: { [key: string]: string }
     product_name: string;
     quantity: number;
+    price: number;
+    lineTotal: number;
     status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated';
     refund_status?:  
     'Pending'
@@ -16,8 +18,6 @@ interface OrderItem extends Document {
     | 'Processing'
     | 'Completed'
     | 'Cancelled';
-    price: number;
-    lineTotal: number;
 }
 
 const OrderItemSchema: Schema<OrderItem> = new Schema(
@@ -35,7 +35,7 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
       enum: ['Pending', 'Under Review', 'Approved', 'Rejected', 'Processing', 'Completed', 'Cancelled'],
       required: false
     },
-    status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Rated'], default: 'Unfulfilled' },
+    status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Rated', 'Cancelled'], default: 'Unfulfilled' },
   },
   { timestamps: true }
 );

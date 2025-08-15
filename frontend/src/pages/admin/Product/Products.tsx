@@ -1,7 +1,7 @@
-import { Button } from "@mui/material"
+import { Button, CircularProgress } from "@mui/material"
 import CustomizedTable from "../../../components/tables/Table"
 import { SearchField } from "../../../components/Textfield"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import CreateCategoryModal from "../../../components/modals/CreateCategory"
 import { fetchData } from "../../../services/api"
 import { CustomizedChip } from "../../../components/Chip"
@@ -28,57 +28,91 @@ const Products = () => {
     const navigate = useNavigate();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
     const { pagination, setPagination } = usePagination();
-    const [categories, setCategories] = useState<Category[]>();
+    const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [products, setProducts] = useState<Product[]>();
+    const [products, setProducts] = useState<Product[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
-            setSelectedCategory('All');
-
             const fetchDataTogether = async () => {
-                const [categoryRes, productRes] = await Promise.all([
-                    fetchData('/api/category'),
-                    fetchData(`/api/product?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=All`)
-                ]);
+                setIsLoading(true);
+                try {
+                    const [categoryRes, productRes] = await Promise.all([
+                        fetchData('/api/categories'),
+                        fetchData(`/api/products?page=${pagination.page}&limit=50&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`)
+                    ]);
 
-                if (categoryRes.success) setCategories(categoryRes.categories);
+                    if (categoryRes.success) setCategories(categoryRes.categories || []);
 
-                if (productRes.success) {
-                    setPagination(prev => ({...prev,totalPages: productRes.totalPages,}));
-                    setProducts(productRes.products);
+                    if (productRes.success) {
+                        setPagination(prev => ({
+                            ...prev,
+                            totalPages: productRes.totalPages || 1,
+                        }));
+                        setProducts(productRes.products || []);
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    setCategories([]);
+                    setProducts([]);
+                } finally {
+                    setIsLoading(false);
                 }
             };
-
             fetchDataTogether();
         }, 300);
 
         return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm, pagination.page]);
-
+    }, [pagination.searchTerm, pagination.page, selectedCategory]);
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}))
-    };
-
-    const deleteCategory = async (id : string) => {
-        const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!', isDark)
-
-        if (confirmed) {
-            const response = await deleteData(`/api/category/${id}`)   
-            if(response.success) window.location.reload(); 
-        }
+        setPagination(prev => ({ ...prev, page: value }));
     }
 
-    return( 
+    const deleteCategory = useCallback(async (id: string) => {
+        const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!', isDark);
+
+        if (confirmed) {
+            try {
+                const response = await deleteData(`/api/categories/${id}`);
+                if (response.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Error deleting category:', error);
+            }
+        }
+    }, [isDark, categories, selectedCategory]);
+
+    const handleCategoryClick = (category : string) => {
+        if (category === selectedCategory) return;
+        
+        setSelectedCategory(category);
+        setPagination(prev => ({ ...prev, page: 1 }));
+        setIsLoading(true);
+    }
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPagination(prev => ({ 
+            ...prev, 
+            searchTerm: e.target.value,
+            page: 1
+        }));
+    };
+
+    return (
         <PageContainer className="w-full flex flex-col">
-            <CreateCategoryModal close={() => setOpenCategory(false)} open={openCategory}/>
+            <CreateCategoryModal 
+                close={() => setOpenCategory(false)} 
+                open={openCategory}
+            />
             <div className="flex items-start mb-6 justify-between gap-5 flex-wrap">
                 <div>
                     <Title className="mb-4">Products</Title>
-                    <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+                    <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 </div>
-                <div className="flex gap-10">
+                <div className="flex gap-4">
                     <Button 
                         sx={{ 
                             color: isDark ? 'white' : 'red', 
@@ -86,46 +120,61 @@ const Products = () => {
                         }} 
                         variant="outlined"
                         onClick={() => setOpenCategory(true)}
-                    >Add Category</Button>
-                    <RedButton onClick={() => navigate('/admin/product')}>Add Product</RedButton>
+                    >
+                        Add Category
+                    </Button>
+                    <RedButton onClick={() => navigate('/admin/product')}>
+                        Add Product
+                    </RedButton>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            
+            <div className="flex flex-wrap gap-2 mb-4">
                 <CustomizedChip 
-                    onClick={() => setSelectedCategory('All')} 
+                    onClick={() => handleCategoryClick('All')} 
                     label="All"
                     isSelected={selectedCategory === 'All'}
-                 />
-                {categories && categories.map(category => 
+                />
+                {categories.map(category => 
                     <CustomizedChip 
-                        key={category.category_name}
-                        onClick={() => setSelectedCategory(category.category_name)}
+                        key={category._id}
+                        onClick={() => handleCategoryClick(category.category_name)}
                         isSelected={selectedCategory === category.category_name}
                         label={category.category_name} 
                         onDelete={() => deleteCategory(category._id)} 
                     />
                 )}
             </div>
+            
             <Card className="h-screen flex flex-col mt-5">
                 <div className="w-full mb-6 flex items-center justify-between gap-5">
-                   <SearchField 
+                    <SearchField 
                         sx={{ width: '100%', maxWidth: '350px' }}
-                        onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
+                        onChange={handleSearchChange}
                         placeholder="Search by Product name, SKU, Category..."
+                        value={pagination.searchTerm || ''}
                     />
                     <CustomizedPagination 
                         count={pagination.totalPages} 
                         onChange={handlePage} 
                         page={pagination.page}
+                        disabled={isLoading}
                     />
                 </div>
                 <CustomizedTable
                     cols={<ProductTableColumns />}
-                    rows={products?.map(product => <ProductTableRow key={product._id} product={product}/>)}
+                    rows={products.map(product => 
+                        <ProductTableRow key={product._id} product={product} />
+                    )}
                 />
+                {isLoading && (
+                    <div className="flex justify-center items-center p-4">
+                        <CircularProgress />
+                    </div>
+                )}
             </Card>
         </PageContainer>
-    )
-}
+    );
+};
 
 export default Products
