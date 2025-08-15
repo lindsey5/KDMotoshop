@@ -46,7 +46,7 @@ const CartItemContainer = ({ item } : CartItemContainerProps) => {
                         color: isDark ? 'white' : ''
                     }}
                 />
-                <div className="text-sm md:text-md flex gap-5 flex-wrap">
+                <div className="text-sm md:text-base flex gap-5 flex-wrap">
                     <img className="w-20 h-20 md:w-25 md:h-25" src={item?.image || '/photo.png'} alt="" />
                     <div className="flex flex-col gap-5 flex-1">
                         <h1 className="font-bold">{item?.product_name}</h1>
@@ -64,7 +64,7 @@ const CartItemContainer = ({ item } : CartItemContainerProps) => {
             </div>
             <div className="flex flex-1 items-end justify-between md:flex-col gap-2">
                 <strong className="text-md md:text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
-                <Button sx={{ color: 'red'}} onClick={async () => dispatch(await deleteCartItem({id: item._id ?? '', isDark}))}>Remove</Button>
+                <Button sx={{ color: 'red'}} onClick={() => dispatch(deleteCartItem({id: item._id ?? '', isDark}))}>Remove</Button>
             </div>
         </div>
     )

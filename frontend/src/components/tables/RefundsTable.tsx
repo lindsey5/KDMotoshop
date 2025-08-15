@@ -11,8 +11,8 @@ import RefundRequestModal from "../modals/RefundRequest";
 export const RefundsTableColumns = () => {
     return (
         <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
-            <StyledTableCell>Order ID</StyledTableCell>
             <StyledTableCell>Customer Name</StyledTableCell>
+            <StyledTableCell>Order ID</StyledTableCell>
             <StyledTableCell>Product Name</StyledTableCell>
             <StyledTableCell>Quantity</StyledTableCell>
             <StyledTableCell>Status</StyledTableCell>
@@ -33,13 +33,13 @@ export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
         <StyledTableRow
             isDark={isDark}
         >
-            <StyledTableCell isDark={isDark}>{request.order_item_id.order_id.order_id}</StyledTableCell>
             <StyledTableCell isDark={isDark}>
                 <div className="flex items-center gap-2">
                     <UserAvatar image={request.customer_id.image.imageUrl}/>
                     {request.customer_id.firstname} {request.customer_id.lastname}
                 </div>
             </StyledTableCell>
+            <StyledTableCell isDark={isDark}>{request.order_item_id.order_id.order_id}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.order_item_id.product_id.product_name}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.quantity}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.status}</StyledTableCell>

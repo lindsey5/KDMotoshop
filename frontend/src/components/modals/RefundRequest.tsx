@@ -69,6 +69,7 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                         className="w-full rounded"
                     />
                 )}
+                
                 {/* Payment Refunded */}
                 <h3 className="font-semibold">Payment to refund</h3>
                 <div className={cn("space-y-1 rounded-md bg-gray-100 p-4", isDark && 'bg-gray-700')}>

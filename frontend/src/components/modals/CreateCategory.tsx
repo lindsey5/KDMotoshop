@@ -34,7 +34,7 @@ const CreateCategoryModal = ({ open, close } : ModalProps) => {
                 <div className="flex gap-4">
                     <Button 
                         variant="outlined" 
-                        sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : ''}}
+                        sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : 'black'}}
                         onClick={close}
                     >Close</Button>
                     <RedButton onClick={CreateCategpry}>Create</RedButton>
