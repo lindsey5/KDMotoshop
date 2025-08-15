@@ -2,13 +2,14 @@ interface RefundOrderItem extends Omit<OrderItem, 'product_id'>{
     product_id: {
         product_name: string;
         thumbnail: UploadedImage;
-    }
-    order_id: { order_id: string }
+    },
+    order_id: Order
 }
 
 interface RefundRequest {
     _id?: string;
     customer_id: {
+        email: string;
         firstname: string;
         lastname: string;
         image: UploadedImage;

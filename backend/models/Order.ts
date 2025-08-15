@@ -12,7 +12,7 @@ interface Order extends Document {
         email?: string;
         firstname: string;
         lastname: string;
-        phone?: string;
+        phone: string;
     };
     address?: {
         street: string;
@@ -47,7 +47,7 @@ const OrderSchema: Schema<Order> = new Schema(
         email: { type: String, required: false },
         firstname: { type: String, required: true },
         lastname: { type: String, required: true },
-        phone: { type: String, required: false }
+        phone: { type: String, required: true }
       },
       required: true
     },

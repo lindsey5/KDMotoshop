@@ -41,6 +41,7 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
 export const create_customer_order = async (req: Request, res: Response) => {
     try {
         const { order, orderItems, cart } = req.body;
+        console.log(order)
         if (!order || !orderItems) {
             res.status(400).json({ success: false, message: 'Order and order items are required' });
             return;

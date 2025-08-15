@@ -102,6 +102,7 @@ const OrderDetails = () => {
                     </div>
                     {order.address && <div className="flex flex-col gap-2 pb-5 border-b-1 border-gray-300">
                         <h1 className="font-bold">Address</h1>
+                         <p>{order.customer.firstname} {order.customer.lastname}</p>
                         <p>{order.address?.street}</p>
                         <p>{order.address?.barangay}</p>
                         <p>{order.address?.city}</p>

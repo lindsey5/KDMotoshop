@@ -118,7 +118,7 @@ const CheckoutPage = () => {
     setLoading(true);
     if(customer?.role === 'Customer'){
       const data = { ...customer!, addresses: [...customer?.addresses!, address] };
-      const response = await updateData("/api/customer", data);
+      const response = await updateData("/api/customers", data);
       if (response.success) {
         dispatch(setUser(data));
         setAddAddress(false);
@@ -151,8 +151,8 @@ const CheckoutPage = () => {
         customer: {
           customer_id: customer?._id,
           email: customer?.email,
-          firstname: address.firstname,
-          lastname: address.lastname,
+          firstname: customer?.addresses?.[selectedAddress].firstname,
+          lastname: customer?.addresses?.[selectedAddress].lastname,
           phone: customer?.addresses?.[selectedAddress].phone,
         },
         address: {

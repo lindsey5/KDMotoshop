@@ -64,13 +64,12 @@ export const getRefundRequests = async (req : Request, res : Response) => {
         RefundRequest.find()
             .skip(skip)
             .limit(limit)
-            .populate('customer_id', ['image', 'firstname', 'lastname'])
+            .populate('customer_id', ['image', 'firstname', 'lastname', 'email'])
             .populate({
                 path: 'order_item_id',
                 populate: [
                 {
                     path: 'order_id',
-                    select: 'order_id',
                 },
                 {
                     path: 'product_id',
@@ -85,7 +84,6 @@ export const getRefundRequests = async (req : Request, res : Response) => {
                 populate: [
                 {
                     path: 'order_id',
-                    select: 'order_id',
                 },
                 {
                     path: 'product_id',

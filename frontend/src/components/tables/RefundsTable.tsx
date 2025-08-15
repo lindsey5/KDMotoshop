@@ -1,12 +1,12 @@
-import { IconButton, Modal, TableRow, Tooltip } from "@mui/material";
+import { IconButton, TableRow, Tooltip } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from './Table';
 import { formatDate } from '../../utils/dateUtils';
 import useDarkmode from '../../hooks/useDarkmode';
 import UserAvatar from "../images/UserAvatar";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatNumber } from "../../utils/utils";
-import Card from "../cards/Card";
 import { useState } from "react";
+import RefundRequestModal from "../modals/RefundRequest";
 
 export const RefundsTableColumns = () => {
     return (
@@ -23,34 +23,13 @@ export const RefundsTableColumns = () => {
     )
 }
 
-const RefundRequestModal = ({ open, close } : { open: boolean, close : () => void}) => {
-    return (
-        <Modal 
-            open={open}
-            onClose={close}
-            aria-labelledby="create-admin-modal-title"
-            aria-describedby="create-admin-modal-description"
-            sx={{
-                zIndex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-            <Card>
-
-            </Card>
-        </Modal>
-    )
-}
-
 export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
     const isDark = useDarkmode();
     const [open ,setOpen] = useState<boolean>(false);
 
     return (
         <>
-        <RefundRequestModal open={open} close={() => setOpen(false)}/>
+        <RefundRequestModal open={open} close={() => setOpen(false)} refundRequest={request}/>
         <StyledTableRow
             isDark={isDark}
         >
