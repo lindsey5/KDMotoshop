@@ -1,5 +1,5 @@
-import { Button, FormControlLabel, Modal, Switch } from "@mui/material";
-import React, { memo, useState } from "react";
+import { Button, Modal } from "@mui/material";
+import React, { memo, type ChangeEvent } from "react";
 import { RedTextField } from "../Textfield";
 import { useAddress } from "../../hooks/useAddress";
 import { CustomizedSelect, StatusSelect } from "../Select";
@@ -21,31 +21,8 @@ interface OrderInformationModalProps extends ModalProps {
 }
 
 const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformationModalProps) => {
-    const [addAddress, setAddAddress] = useState<boolean>(false);
     const { selectedCity, setSelectedCity, selectedRegion, setSelectedRegion, regions, cities, barangays } = useAddress();
     const isDark = useDarkmode();
-    
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAddAddress(event.target.checked);
-        if(event.target.checked) {
-            setOrder(prev => ({
-                ...prev,
-                address: {
-                    street: '',
-                    barangay: '',
-                    city: '',
-                    region: '',
-                }
-            }));
-        }else{
-            setSelectedCity('');
-            setSelectedRegion('');
-            setOrder(prev => {
-                const { address, ...rest } = prev;
-                return rest;
-            })
-        }
-    };
 
     const handleRegionChange = (value : string) => {
         const selectedCode = value;
@@ -68,6 +45,27 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
             ...prev,
             address: { ...prev.address!, barangay: value }
         }));
+    };
+
+    const handleOrderChannel = (e: ChangeEvent<HTMLInputElement> | (Event & { target: { value: unknown; name: string } }) ) => {
+        
+        setOrder(prev => {
+            if(e.target.value === 'Store'){
+                const { address, ...rest } = prev;
+                setSelectedRegion('');
+                setSelectedCity('');
+                return ({
+                    ...rest,
+                    order_source: e.target.value as Order['order_source']
+                })
+            }
+
+            return ({
+                ...prev,
+                order_source: e.target.value as Order['order_source']
+            })
+            
+        });
     };
 
     return(
@@ -93,33 +91,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         onChange={(e) => setOrder(prev => ({ ...prev, customer: { ...prev.customer, lastname: e.target.value } }))}
                     />
                 </div>
-                {order.order_source !== 'Store' && <FormControlLabel
-                control={
-                    <Switch
-                    checked={addAddress}
-                    onChange={handleChange}
-                    sx={{
-                        '& .MuiSwitch-switchBase.Mui-checked': {
-                        color: 'red',
-                        '&:hover': {
-                        backgroundColor: 'rgba(255, 0, 0, 0.08)', // optional hover effect
-                    },
-                        },
-                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                        backgroundColor: 'red',
-                        },
-                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-thumb': {
-                        backgroundColor: isDark ? 'red' : '',
-                        },
-                        '& .MuiSwitch-track': {
-                        backgroundColor: isDark ? ' #e5e7eb' : ' #374151' , // track base color
-                        },
-                    }}
-                    />
-                }
-                label="Add Address"
-                />}
-                {addAddress && order.address && (
+                {order.order_source !== 'Store' && (
                     <div className={cn("mb-5 w-full flex flex-col gap-5 p-3 rounded-md", isDark ? 'bg-[#3d3d3d]' : 'bg-gray-100' )}>
                         <CustomizedSelect 
                             label="Region"
@@ -135,15 +107,15 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         />}
                         {selectedCity && <CustomizedSelect 
                                 label="Barangay"
-                                value={order.address.barangay}
+                                value={order?.address?.barangay ?? ''}
                                 menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
                                 onChange={(e) => handleBarangayChange(e.target.value as string)}
                         />}
-                        {order.address.barangay && ( 
+                        {order?.address?.barangay && ( 
                             <RedTextField 
                                 label="Street, Building, House No." 
                                 fullWidth 
-                                value={order.address.street || ''}
+                                value={order?.address?.street || ''}
                                 onChange={(e) => setOrder((prev) => ({
                                     ...prev,
                                     address: { ...prev.address!, street: e.target.value}
@@ -185,9 +157,9 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                 <p className="text-gray-500 mb-2">Order Information</p>
                 <div className="w-full grid grid-cols-2 gap-6">
                     <CustomizedSelect
-                        label="From"
+                        label="Order Channel"
                         value={order.order_source}
-                        onChange={(e) => setOrder(prev => ({ ...prev, order_source: e.target.value as Order['order_source'] }))}
+                        onChange={handleOrderChannel}
                         menu={['Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
                     />
                     <StatusSelect 

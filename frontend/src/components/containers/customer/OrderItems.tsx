@@ -7,11 +7,13 @@ import RateProductModal from "../../modals/RateProduct";
 import { fetchData } from "../../../services/api";
 import { Button, Rating } from "@mui/material";
 import { OrderItemStatusChip, RefundStatusChip } from "../../Chip";
+import RequestRefundModal from "../../modals/CreateRefund";
 
 const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
     const isDark = useDarkmode();
     const [ratingData, setRatingData] = useState<{orderItemId: string; product_id: string} | undefined>(undefined);
     const [review, setReview] = useState<Review>();
+    const [showRequest, setShowRequest]= useState<boolean>(false);
 
     const handleClose = () => {
         setRatingData(undefined)
@@ -34,6 +36,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
             orderItemId={ratingData?.orderItemId ?? ''}
             product_id={ratingData?.product_id ?? ''}
         />
+        <RequestRefundModal id={item._id as string} open={showRequest} close={() => setShowRequest(false)}/>
         <div key={item._id} className={cn("flex flex-wrap gap-5 justify-between items-start pb-5 border-b-1", isDark ? 'border-gray-700' : 'border-gray-300')}>
             <div className="md:text-base text-sm w-1/2 flex flex-col md:flex-row gap-5">
                 <div className="flex gap-5">
@@ -70,7 +73,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
                 )}
                 {item.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}}>View Refund Status</Button>}
-                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => window.location.href = `/refund/${item._id}`}>Refund / Return</Button>}
+                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
             </div>
         </div>
         </>

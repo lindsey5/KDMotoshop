@@ -32,6 +32,7 @@ export const createRefundRequest = async (req :AuthenticatedRequest, res : Respo
         res.status(201).json({ success: true, request });
 
     }catch(err : any){
+        console.log(err)
         res.status(500).json({ success: false, message: err.message || 'Server error'})
     }
 }

@@ -139,10 +139,10 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
-        if(!order.customer.firstname || !order.customer.lastname || (order.address && Object.values(order.address).some(value => !value))){
+        if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
             setShowCustomerModal(true);
         }else{
-            if(await confirmDialog('Save order?', '', isDark, "success",)){
+            if(await confirmDialog('Place order?', '', isDark, "success",)){
                 setLoading(true)
                 const response = await postData('/api/orders', { order, orderItems});
                 if(response.success){
@@ -157,10 +157,6 @@ const CreateOrderPage = () => {
         }
 
     }
-
-    useEffect(() => {
-        setOrder(prev => ({...prev, total: prev.subtotal + prev.shipping_fee}))
-    }, [order.shipping_fee])
 
     return <PageContainer className="flex h-full p-0">
         <Backdrop
@@ -252,7 +248,7 @@ const CreateOrderPage = () => {
             {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
             </div>
             <div className={cn("flex flex-col gap-5 p-5 border-t-1 border-gray-300", isDark && 'border-gray-600')}>
-                <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-400", isDark && 'border-gray-600')}>
+                {/*<div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-400", isDark && 'border-gray-600')}>
                     <div className="flex justify-between">
                         <strong>Subtotal</strong>
                         <strong>₱{formatNumber(order.subtotal)}</strong>
@@ -266,7 +262,7 @@ const CreateOrderPage = () => {
                             onChange={(e) => setOrder(prev => ({...prev, shipping_fee: Number(e.target.value)}))}
                         />
                     </div>}
-                </div>
+                </div>*/}
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
                     <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>

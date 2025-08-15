@@ -19,10 +19,7 @@ import refundRoutes from './routes/refundRoutes';
 
 const app = express();
 
-const origins = ['http://localhost:5173', 'http://192.168.1.3:5000']
-
-if(process.env.VIEW_PREDICT_URL)
-  origins.push(process.env.VITE_PREDICT_URL ?? '')
+const origins = process.env.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://192.168.1.3:5000']
 
 // middleware & static files
 app.use(cors({

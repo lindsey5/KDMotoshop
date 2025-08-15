@@ -1,0 +1,178 @@
+import { memo, useEffect, useRef, useState } from "react";
+import VideocamIcon from '@mui/icons-material/Videocam';
+import { Backdrop, Button, CircularProgress, Modal } from "@mui/material";
+import useDarkmode from "../../hooks/useDarkmode";
+import { fetchData, postData } from "../../services/api";
+import { errorAlert, successAlert } from "../../utils/swal";
+import Card from "../cards/Card";
+import ProductThumbnail from "../images/ProductThumbnail";
+import { RedTextField } from "../Textfield";
+import { CustomizedSelect } from "../Select";
+import { Title } from "../text/Text";
+import { RedButton } from "../buttons/Button";
+import Counter from "../Counter";
+
+interface RefundItem extends Omit<OrderItem, 'product_id'> {
+    product_id: Product;
+}
+
+const reasons = [
+    "Item arrived damaged",
+    "Wrong item received",
+    "Item is defective",
+    "Product not as described",
+    "Missing parts or accessories",
+    "Other"
+];
+
+const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boolean, close : () => void}) => {
+    const isDark = useDarkmode();
+    const [refundItem, setRefundItem] = useState<RefundItem>();
+    const [quantity, setQuantity] = useState<number>(1);
+    const [reason, setReason] = useState<string>();
+    const [videoFile, setVideoFile] = useState<string>();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [description, setDescription] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        const getOrderItem = async () => {
+            const response = await fetchData(`/api/orders/item/${id}`)
+            if(response.success){
+                setRefundItem(response.orderItem)
+            }
+        }
+
+        getOrderItem()
+    }, [])
+
+    const handleSubmit = async () => {
+        setLoading(true)
+        const response = await postData('/api/refunds', {
+            order_item_id: refundItem?._id,
+            quantity,
+            price: refundItem?.price,
+            video: videoFile,
+            description,
+            reason,
+            totalAmount: (refundItem?.price ?? 0) * (quantity ?? 0)
+        })
+
+        if (response.success) {
+            setLoading(false);
+            await successAlert(
+                'Refund Request Submitted',
+                'Your refund request is now pending. We will review it shortly.',
+                isDark
+            );
+            window.location.href = '/';
+        }else{
+            setLoading(false);
+            errorAlert(response.message, '', isDark)
+        }
+    }
+
+    const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if(!file) return;
+
+        if (file.size > 50 * 1024 * 1024) {
+            await errorAlert("Video must be under 50 MB.", '', isDark);
+            return;
+        }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setVideoFile(reader.result as string)
+            };
+        reader.readAsDataURL(file);
+    };
+
+    const triggerFileSelect = () => {
+        fileInputRef.current?.click();
+    };
+
+    return (
+        <Modal open={open} onClose={close} className="z-99 p-5 flex justify-center items-start overflow-y-auto">
+                <Card className="w-[90%] md:max-w-[600px] md:w-[70%] lg:w-1/2 flex flex-col gap-5">
+                    <Backdrop
+                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        open={loading}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                    <Title className="text-xl md:text-2xl">Request a refund</Title>
+                    <div className="flex gap-5">
+                        <ProductThumbnail className="w-20 h-20 md:w-30 md:h-30 rounded-lg" product={refundItem?.product_id}/>
+                        <div className="flex flex-col gap-5">
+                            <h1 className="text-md md:text-xl font-bold">{refundItem?.product_id.product_name}</h1>
+                            <div className="flex gap-5 flex-wrap">
+                                {refundItem?.attributes && Object.entries(refundItem.attributes).map(([key, value]) => <p className="text-sm md:text-base">{`${key}: ${value}`}</p>)}
+                            </div>
+                        </div>
+                    </div>
+                    <Counter 
+                        limit={refundItem?.quantity ?? 0}
+                        setValue={setQuantity}
+                        value={quantity}
+                        showLabel
+                    />
+                    <CustomizedSelect 
+                        label="Why are you refunding this?"
+                        menu={reasons.map(reason => ({ value: reason, label: reason }))}
+                        onChange={(e) => setReason(e.target.value as string)}
+                    />
+                    <RedTextField 
+                        multiline
+                        rows={5}
+                        label="Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        inputProps={{ maxLength: 200 }}
+                        placeholder="Please describe the issue with your product..."
+                        required
+                    />
+                    <div className="flex flex-col items-center gap-3">
+                        <input
+                            type="file"
+                            accept="video/*"
+                            ref={fileInputRef}
+                            onChange={handleVideoUpload}
+                            style={{ display: "none" }}
+                        />
+    
+                        <Button 
+                            sx={{ color: isDark ? 'white' : 'red', borderColor: isDark ? 'white' : ''}} 
+                            variant={isDark ? "outlined" : "text"}
+                            startIcon={<VideocamIcon />} 
+                            onClick={triggerFileSelect}
+                        >
+                            Upload Video
+                        </Button>
+
+                        {videoFile && (
+                            <video
+                                src={videoFile}
+                                controls
+                                className="w-full max-h-[500px] rounded-lg border"
+                            />
+                        )}
+                    </div>
+                    <p>Note: NO VIDEO, NO REFUND</p>
+                    <div className="grid grid-cols-2 gap-5">
+                        <Button 
+                            variant="outlined" 
+                            disabled={loading}
+                            sx={{ border: 1, borderColor: 'gray', color: isDark ? 'white' : 'black'}}
+                            onClick={close}
+                        >Close</Button>
+                        <RedButton 
+                            onClick={handleSubmit}
+                            disabled={!reason || !quantity || !videoFile || !description || loading}
+                        >Submit Request</RedButton>
+                    </div>
+                </Card>
+        </Modal>
+    )
+})
+
+export default RequestRefundModal

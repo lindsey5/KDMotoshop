@@ -3,7 +3,6 @@ import SportsMotorsportsIcon from '@mui/icons-material/SportsMotorsports';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import BadgeIcon from '@mui/icons-material/Badge';
-import RequestPageIcon from '@mui/icons-material/RequestPage';
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,6 +19,8 @@ import { logoutUser } from '../../../redux/user-reducer';
 import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
+
 
 const NotificationLink = () => {
   const { unread } = useSelector((state : RootState) => state.notification)
@@ -83,7 +84,7 @@ export const AdminSidebar = () => {
           <SidebarLink label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} path="/admin/dashboard" />
           <SidebarLink label="Products" icon={<SportsMotorsportsIcon sx={{ width: 25, height: 25 }} />} path="/admin/products" />
           <SidebarLink label="Orders" icon={<ShoppingCartIcon sx={{ width: 25, height: 25 }} />} path="/admin/orders" />
-          <SidebarLink label="Refunds" icon={<RequestPageIcon sx={{ width: 25, height: 25 }} />} path="/admin/refunds" />
+          <SidebarLink label="Refunds" icon={<ReplayRoundedIcon sx={{ width: 25, height: 25 }} />} path="/admin/refunds" />
           <SidebarLink label="Customers" icon={<PersonIcon sx={{ width: 25, height: 25 }} />} path="/admin/customers" />
           {user?.role === 'Super Admin' && (
             <SidebarLink label="Admins" icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} path="/admin/admins" />

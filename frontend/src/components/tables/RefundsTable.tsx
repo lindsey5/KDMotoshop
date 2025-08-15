@@ -68,7 +68,7 @@ export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
             <StyledTableCell isDark={isDark}>{formatDate(request.createdAt)}</StyledTableCell>
             <StyledTableCell isDark={isDark} align='center'>
                 <Tooltip title="View" followCursor>
-                <IconButton onClick={() => setOpen(true)}>
+                <IconButton onClick={() => setOpen(true)} sx={{ color: isDark ? 'white' : 'black'}}>
                     <VisibilityIcon />
                 </IconButton>
                 </Tooltip>
