@@ -16,7 +16,7 @@ import { notificationsNextPage, updateAllNotifications } from "../redux/notifica
 
 const statusMap: Record<string, JSX.Element> = {
     'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,
-    'Accepted': <CheckCircleIcon fontSize="large" />,
+    'Confirmed': <CheckCircleIcon fontSize="large" />,
     'Shipped': <LocalShippingIcon fontSize="large" />,
     'Delivered': <AssignmentTurnedInIcon fontSize="large" />,
     'Rated': <GradeIcon fontSize="large" />,

@@ -17,7 +17,7 @@ const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
     const status = order.status;
     const linearSteps = [
         { status: 'Pending', icon: <PendingActionsOutlinedIcon fontSize="large" />},
-        { status: 'Accepted', icon: <CheckCircleIcon fontSize="large" />},
+        { status: 'Confirmed', icon: <CheckCircleIcon fontSize="large" />},
         { status: 'Shipped', icon: <LocalShippingIcon fontSize="large" />},
         { status: 'Delivered', icon: <AssignmentTurnedInIcon fontSize="large" />}
     ];

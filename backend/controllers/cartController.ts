@@ -55,8 +55,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const carts = await Cart.find({ customer_id: req.user_id }).populate('product_id');
 
-        // Get all accepted order IDs
-        const orders = await Order.find({ status: 'Accepted' }, '_id');
+        const orders = await Order.find({ status: 'Confirmed' }, '_id');
         const orderIds = orders.map(order => order._id);
 
         // Get all orderItems for those orders (all products)

@@ -5,7 +5,7 @@ type Order = {
     shipping_fee: number;
     total: number;
     subtotal: number;
-    status: "Pending" | "Accepted" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Failed" |"Rated";
+    status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Failed" |"Rated";
     customer: {
         customer_id?: string | UploadedImage;
         image?: string; 

@@ -103,7 +103,7 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
         Product.countDocuments(filter),
       ]);
   
-      const orders = await Order.find({ status: "Accepted"}, "_id");
+      const orders = await Order.find({ status: "Confirmed"}, "_id");
       const orderIds = orders.map(order => order._id);
 
       const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
@@ -167,7 +167,7 @@ export const get_product_by_id_with_reserved = async (req: Request, res: Respons
         return;
       }
 
-      const orders = await Order.find({status: "Accepted"}, "_id" );
+      const orders = await Order.find({status: "Confirmed"}, "_id" );
 
       const orderIds = orders.map(order => order._id);
 

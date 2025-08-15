@@ -167,7 +167,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
 
       {order.status === 'Pending' &&
         <Button
-          onClick={() => updateOrder('Accept Order?', 'Make sure you’ve reviewed the details.', 'Accepted')}
+          onClick={() => updateOrder('Confirm Order?', 'Make sure you’ve reviewed the details.', 'Confirmed')}
           startIcon={<CheckIcon />}
           sx={{ backgroundColor: 'green', color: 'white' }}
           variant="contained"
@@ -176,7 +176,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
         </Button>
       }
 
-      {order.status === 'Accepted'&&
+      {order.status === 'Confirmed' &&
         <RedButton
           onClick={() => updateOrder('Cancel Order?', 'This action is irreversible.', 'Cancelled')}
           startIcon={<CancelIcon />}
@@ -194,7 +194,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
         </RedButton>
       }
 
-      {order.status === 'Accepted' &&
+      {order.status === 'Confirmed' &&
         <Button
           onClick={() => updateOrder('Ship Order?', 'Make sure you’ve reviewed the details.', 'Shipped')}
           startIcon={<LocalShippingIcon />}

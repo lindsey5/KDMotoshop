@@ -117,7 +117,7 @@ const CustomerOrderDetails = () => {
                         </div>
                     </Card>
                     <Card className="justify-end hidden lg:flex">
-                        {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
+                        {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
                     </Card>
                 </div>
                 <div className="flex-1 lg:max-w-[400px] flex flex-col gap-5">
@@ -152,7 +152,7 @@ const CustomerOrderDetails = () => {
                 </div>
             </div>
         <div className="lg:hidden flex justify-end p-5">
-            {(order.status === 'Pending' || order.status === 'Accepted') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
+            {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
         </div>
         </div>
     }

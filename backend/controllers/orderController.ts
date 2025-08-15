@@ -341,7 +341,7 @@ export const cancel_order = async (req: Request, res: Response) => {
             return;
         }
 
-        if(order.status !== 'Pending' && order.status !== 'Accepted'){
+        if(order.status !== 'Pending' && order.status !== 'Confirmed'){
             res.status(400).json({ success: false, message: 'Order cannot be cancel'});
             return;
         }
