@@ -35,7 +35,7 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
         >
         <Card className="w-[90%] max-w-5xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
             <div className="flex gap-5 items-center mb-4">
-                <h2 className="text-xl font-semibold">Return Details</h2>
+                <h2 className="text-xl font-semibold">Refund Details</h2>
                 <RefundStatusChip status={refundRequest.status}/>
             </div>
 
@@ -70,12 +70,17 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                     />
                 )}
                 {/* Payment Refunded */}
-                <h3 className="font-semibold">Payment Refunded</h3>
-                <div className={cn("space-y-1 grid grid-cols-2 gap-5 rounded-md bg-gray-100 p-4", isDark && 'bg-gray-700')}>
-                    <p>{refundRequest.order_item_id.product_id.product_name}</p>
+                <h3 className="font-semibold">Payment to refund</h3>
+                <div className={cn("space-y-1 rounded-md bg-gray-100 p-4", isDark && 'bg-gray-700')}>
+                    <div className="flex justify-between gap-10">
+                        <p>{refundRequest.order_item_id.product_id.product_name}</p>
                     <p className="text-end">₱{formatNumber(refundRequest.order_item_id.price)} x {refundRequest.quantity}</p>
-                    <div />
-                    <p className="font-bold text-end">Total: ₱{formatNumber(refundRequest.totalAmount)}</p>
+                    </div>
+                    <hr className="border-gray-300 mt-10 mb-4"/>
+                    <div className="flex justify-between gap-10">
+                        <p className="font-bold">Total:</p>
+                        <p className="font-bold text-end">₱{formatNumber(refundRequest.totalAmount)}</p>
+                    </div>
                 </div>
             </div>
 
@@ -101,10 +106,18 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                         className="w-10 h-10 rounded-full"
                         />
                         <div>
-                        <p>{refundRequest.customer_id.firstname} {refundRequest.customer_id.lastname}</p>
-                        <p className={cn("text-sm", isDark ? 'text-blue-400' : 'text-blue-600')}>{refundRequest.customer_id.email}</p>
-                        <p className={cn("text-sm", isDark ? 'text-blue-400' : 'text-blue-600')}>{refundRequest.order_item_id.order_id.customer.phone}</p>
+                            <p>{refundRequest.customer_id.firstname} {refundRequest.customer_id.lastname}</p>
+                            <p className={cn("text-sm", isDark ? 'text-blue-400' : 'text-blue-600')}>{refundRequest.customer_id.email}</p>
                         </div>
+                    </div>
+                    <div className="text-sm mt-4">
+                        <h2 className="font-semibold">Address</h2>
+                        <p>{refundRequest.order_item_id.order_id.customer.firstname} {refundRequest.order_item_id.order_id.customer.lastname}</p>
+                        <p>{refundRequest.order_item_id.order_id.customer.phone}</p>
+                        <p>{refundRequest.order_item_id.order_id.address?.street}</p>
+                        <p>{refundRequest.order_item_id.order_id.address?.barangay}</p>
+                        <p>{refundRequest.order_item_id.order_id.address?.city}</p>
+                        <p>{refundRequest.order_item_id.order_id.address?.region}</p>
                     </div>
                 </div>
                 <hr className="border-gray-300"/>

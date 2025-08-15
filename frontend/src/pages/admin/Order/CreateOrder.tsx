@@ -139,7 +139,7 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
-        if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
+        if(!order.customer.phone || !order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
             setShowCustomerModal(true);
         }else{
             if(await confirmDialog('Place order?', '', isDark, "success",)){

@@ -131,7 +131,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                     isDark ? 'text-white' : 'text-gray-800'
                     }`}
                 >
-                    Phone (Optional)
+                    Phone
                 </label>
 
                 <PhoneInput

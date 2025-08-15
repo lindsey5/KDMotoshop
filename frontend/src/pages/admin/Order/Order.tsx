@@ -138,7 +138,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
   const updateOrder = async (message: string, subMessage: string, status: string) => {
     if (await confirmDialog(message, subMessage, isDark)) {
       setLoading(true)
-      const response = await updateData(`/api/order/${id}`, { ...order, status });
+      const response = await updateData(`/api/orders/${id}`, { ...order, status });
       if (response.success) {
         window.location.reload();
       } else {
