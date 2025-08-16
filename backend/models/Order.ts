@@ -47,7 +47,7 @@ const OrderSchema: Schema<Order> = new Schema(
         email: { type: String, required: false },
         firstname: { type: String, required: true },
         lastname: { type: String, required: true },
-        phone: { type: String, required: true }
+        phone: { type: String, required: false }
       },
       required: true
     },

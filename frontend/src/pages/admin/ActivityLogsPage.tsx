@@ -100,7 +100,7 @@ const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates
 
     return (
         <PageContainer className="min-h-full">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
                 <div>
                     <Title className="mb-4">{title}</Title>
                     <BreadCrumbs breadcrumbs={breadcrumbs}/>

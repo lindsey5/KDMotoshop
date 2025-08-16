@@ -33,13 +33,13 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
             justifyContent: "center",
         }}
         >
-        <Card className="w-[90%] max-w-5xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
+        <Card className="w-[90%] max-w-6xl p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">
             <div className="flex gap-5 items-center mb-4">
                 <h2 className="text-xl font-semibold">Refund Details</h2>
                 <RefundStatusChip status={refundRequest.status}/>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row gap-20">
             {/* Left Column */}
             <div className="flex-1 space-y-4">
 
@@ -123,7 +123,7 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                 </div>
                 <hr className="border-gray-300"/>
                 <p className="mt-2 border-l-6 pl-2 border-red-500">{refundRequest.reason}</p>
-                <div className={cn("space-y-2 p-4 rounded-md", isDark ? 'bg-gray-700' : 'bg-gray-200')}>
+                <div className={cn("space-y-2 p-4 rounded-md", isDark ? 'bg-gray-700' : 'bg-gray-100')}>
                     <h3 className="font-semibold">Refund Description</h3>
                     <ExpandableText text={refundRequest.description} limit={80}/>
                 </div>

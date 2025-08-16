@@ -18,6 +18,7 @@ import { Title } from "../../../components/text/Text";
 import MenuIcon from '@mui/icons-material/Menu';
 import PageContainer from "../../../components/containers/admin/PageContainer";
 import CloseIcon from '@mui/icons-material/Close';
+import ReceiptModal from "../../../components/modals/ReceiptModal";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -55,6 +56,7 @@ const CreateOrderPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const isDark = useDarkmode()
     const [showSide, setShowSide] = useState<boolean>(false);
+    const [showReceipt, setShowReceipt] = useState(false);
 
     const calculateTotal = useCallback(() => {
         setOrder(prev => (
@@ -139,23 +141,40 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
-        if(!order.customer.phone || !order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
+        if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
             setShowCustomerModal(true);
         }else{
             if(await confirmDialog('Place order?', '', isDark, "success",)){
                 setLoading(true)
                 const response = await postData('/api/orders', { order, orderItems});
                 if(response.success){
-                    successAlert('Order Created', 'Order successfully created', isDark);
-                    setOrderItems([]);
-                    setOrder(OrderState);
-                    setPagination({ ...pagination, page: 1, searchTerm: '' });
-                    setSelectedCategory('All');
+                    if(order.order_source === 'Store'){
+                        setLoading(false)
+                        setShowReceipt(true);
+                        setOrder(response.order);
+                    }else {
+                        successAlert('Order Created', 'Order successfully created', isDark);
+                        setOrderItems([]);
+                        setOrder(OrderState);
+                        setPagination({ ...pagination, page: 1, searchTerm: '' });
+                        setSelectedCategory('All');
+                    }
                 }
                 setLoading(false)
             }
         }
 
+    }
+
+    const closeReceipt = async () => {
+        setLoading(true)
+        await fetchProducts();
+        setLoading(false)
+        setShowReceipt(false)
+        setOrderItems([]);
+        setOrder(OrderState);
+        setPagination({ ...pagination, page: 1, searchTerm: '' });
+        setSelectedCategory('All');
     }
 
     return <PageContainer className="flex h-full p-0">
@@ -165,6 +184,12 @@ const CreateOrderPage = () => {
         >
             <CircularProgress color="inherit" />
         </Backdrop>
+        <ReceiptModal 
+            open={showReceipt} 
+            onClose={closeReceipt} 
+            order={order} 
+            orderItems={orderItems} 
+        />
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
             setOrderItems={setOrderItems}
@@ -245,7 +270,7 @@ const CreateOrderPage = () => {
                 </div>
             </div>
             <div className="flex-grow min-h-0 overflow-y-auto">
-            {orderItems.map((orderItem, index) => <OrderContainer orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
+            {orderItems.map((orderItem, index) => <OrderContainer key={index} orderItem={orderItem} index={index} setOrderItems={setOrderItems}/>)}
             </div>
             <div className={cn("flex flex-col gap-5 p-5 border-t-1 border-gray-300", isDark && 'border-gray-600')}>
                 {/*<div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-400", isDark && 'border-gray-600')}>

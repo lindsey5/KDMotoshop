@@ -82,14 +82,14 @@ const Orders = () => {
         <OrderStatsCards />
         
         <Card className="h-screen flex flex-col mt-6">
-            <div className="flex flex-wrap justify-between mb-6 gap-10">
+            <div className="flex flex-col md:flex-row md:flex-wrap justify-between mb-6 gap-10">
                 <SearchField
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value as string)}
                     placeholder="Search by Customer Name, Order ID" 
                     sx={{ flex: 1, maxWidth: '400px', height: 55 }}
                 />
-                <div className="flex-1 flex flex-wrap gap-5 justify-end">
+                <div className="flex-1 flex md:flex-row flex-col gap-5">
                     <div className="flex-1 flex gap-10">
                         <CustomizedSelect
                             label="Order Channel"

@@ -98,8 +98,8 @@ const CustomerOrders = () => {
                         </div>
                         <Status status={order.status} isDark={isDark}/>
                     </div>
-                    {order.orderItems?.slice(0, 2)?.map(item => <OrderItem key={item._id} item={item}/>)}
-                    {(order.orderItems?.length ?? 0) > 2 && <h1 className="text-center">{(order.orderItems?.length ?? 0) - 2} more items</h1>}
+                    {order.orderItems?.slice(0, 1)?.map(item => <OrderItem key={item._id} item={item}/>)}
+                    {(order.orderItems?.length ?? 0) > 1 && <h1 className="text-center">{(order.orderItems?.length ?? 0) - 1} more items</h1>}
                     <div className="flex justify-end">
                         <RedButton onClick={() => navigate(`/order/${order._id}`)}>{order.status === 'Delivered' ? 'Rate your order' : 'Track Order'}</RedButton>
                     </div>
