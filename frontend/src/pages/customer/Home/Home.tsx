@@ -115,7 +115,7 @@ const KDMotoshopHome = () => {
                         <img className="w-full h-screen" src="/moon.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={5} speed={-0.3}>
+                    <ParallaxLayer offset={5} speed={-0.2}>
                         <img className="w-full h-screen" src="/mountain.png" />
                     </ParallaxLayer>
                 
