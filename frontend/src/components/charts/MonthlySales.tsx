@@ -1,23 +1,11 @@
-import { useEffect, useState } from "react";
 import Card from "../cards/Card"
 import AreaChart from "./AreaChart"
-import { fetchData } from "../../services/api";
+import useFetch from "../../hooks/useFetch";
 
 const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
 const MonthlySales = () => {
-    const [data, setData] = useState<number[]>([]);
-
-    useEffect(() => {
-        const getMonthlySales = async () => {
-            const response = await fetchData('/api/sales/monthly');
-            if(response.success){
-                setData(response.monthlySales)
-            }
-        }
-
-        getMonthlySales();
-    }, [])
+    const { data } = useFetch('/api/sales/monthly')
 
     return (
         <Card className="h-[400px] flex flex-col flex-3 mt-10">
@@ -27,7 +15,7 @@ const MonthlySales = () => {
                 datasets={[
                     {
                         label: 'Monthly Sales',
-                        data,
+                        data: data?.monthlySales ?? [],
                         borderColor: 'red',
                         backgroundColor: 'rgba(255, 0, 0, 0.2)',
                     },

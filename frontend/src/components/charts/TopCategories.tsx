@@ -1,35 +1,30 @@
 import { PieChart } from "@mui/x-charts"
-import { useEffect, useState } from "react";
-import { fetchData } from "../../services/api";
+import { useMemo, } from "react";
 import Card from "../cards/Card";
 import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
+import useFetch from "../../hooks/useFetch";
 
 const TopCategoriesChart = () => {
     const isDark = useDarkmode();
-    const [data, setData] = useState<ChartData>({ data: [] });
+    const { data } = useFetch('/api/categories/top');
 
-    useEffect(() => {
-        const getTopCategories = async () => {
-            const response = await fetchData('/api/categories/top');
-            if(response.success){
-                setData({
-                    data: response.topCategories.map((category : any) => ({
-                        value: category.totalQuantity,
-                        label: category.category 
-                    }))
-                });
-            }
+    const chartData =  useMemo(() => {
+        if(!data) return { data: [] }
+        
+        return {
+            data: data.topCategories.map((category : any) => ({
+                value: category.totalQuantity,
+                label: category.category 
+            }))
         }
-
-        getTopCategories()
-    }, [])
+    }, [data])
 
     return (
         <Card className="flex-1">
             <h1 className={cn("font-bold text-xl mb-4", isDark && 'text-white')}>Top Categories</h1>
             <PieChart 
-                series={[ data ]}
+                series={[ chartData ]}
                 height={300}
                 slotProps={{
                     legend: {

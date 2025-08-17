@@ -37,28 +37,21 @@ const Products = () => {
         const delayDebounce = setTimeout(() => {
             const fetchDataTogether = async () => {
                 setIsLoading(true);
-                try {
-                    const [categoryRes, productRes] = await Promise.all([
-                        fetchData('/api/categories'),
-                        fetchData(`/api/products?page=${pagination.page}&limit=50&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`)
-                    ]);
+                const [categoryRes, productRes] = await Promise.all([
+                    fetchData('/api/categories'),
+                    fetchData(`/api/products?page=${pagination.page}&limit=50&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`)
+                ]);
 
-                    if (categoryRes.success) setCategories(categoryRes.categories || []);
+                if (categoryRes.success) setCategories(categoryRes.categories || []);
 
-                    if (productRes.success) {
-                        setPagination(prev => ({
-                            ...prev,
-                            totalPages: productRes.totalPages || 1,
-                        }));
-                        setProducts(productRes.products || []);
-                    }
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                    setCategories([]);
-                    setProducts([]);
-                } finally {
-                    setIsLoading(false);
+                if (productRes.success) {
+                    setPagination(prev => ({
+                        ...prev,
+                        totalPages: productRes.totalPages || 1,
+                    }));
+                    setProducts(productRes.products || []);
                 }
+                setIsLoading(false);
             };
             fetchDataTogether();
         }, 300);

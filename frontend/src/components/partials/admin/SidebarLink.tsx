@@ -18,12 +18,12 @@ export const SidebarLink = ({ label, icon, path, badgeContent }: SidebarLinkProp
       <Link
         to={path}
         className={cn(
-          'cursor-pointer gap-3 flex items-center w-full text-white font-medium px-2 py-2 rounded transition',
+          'cursor-pointer gap-3 flex items-center w-full text-white font-bold px-2 py-2 rounded transition',
           pathname === path ? 'bg-red-600' : 'hover:bg-gray-700'
         )}
       >
         {icon}
-        <span className="flex-1 text-left">{label}</span>
+        <span className="flex-1 text-left text-sm">{label}</span>
       </Link>
     </Badge>
   );

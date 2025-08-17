@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import Card from "../cards/Card";
-import { fetchData } from "../../services/api";
 import { url } from "../../constants/url";
 import { CircularProgress } from "@mui/material";
 import {
@@ -15,6 +14,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import useDarkmode from "../../hooks/useDarkmode";
+import useFetch from "../../hooks/useFetch";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, Tooltip, Legend);
 
@@ -25,13 +25,26 @@ interface Prediction {
 
 
 const ExpectedItemSales = () => {
-    const [data, setData] = useState<Prediction[]>([]);
-    const [month, setMonth] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(true);
     const isDark = useDarkmode();
+    const { data, loading } = useFetch(`${url}api/predict/items`)
 
-    const labels = data.map((d) => d.item);
-    const values = data.map((d) => d.sales);
+    const { forecast, month } = useMemo<{forecast: Prediction[], month: string}>(() => {
+        if(!data){
+            return { forecast: [], month: ''}
+        }
+
+        const forecast = data?.forecast
+            .map((item : any)=> ({...item, sales: Number(item.sales.toFixed(2)) }))
+            .sort((a : any, b : any) => b.sales - a.sales)
+            .slice(0, 5)
+        const month = data?.month
+
+        return { month, forecast }
+        
+    }, [data])
+
+    const labels = forecast.map((d) => d.item);
+    const values = forecast.map((d) => d.sales);
 
     const chartData = {
         labels,
@@ -92,24 +105,6 @@ const ExpectedItemSales = () => {
             },
         },
     };
-
-    useEffect(() => {
-        const getData = async () => {
-            setLoading(true);
-            const response = await fetchData(`${url}api/predict/items`);
-            if(response.success){
-                setData(response.forecast
-                    .map((item : any)=> ({...item, sales: Number(item.sales.toFixed(2)) }))
-                    .sort((a : any, b : any) => b.sales - a.sales)
-                    .slice(0, 5)
-                )
-                setMonth(response.month)
-            }
-            setLoading(false);
-        }
-
-        getData();
-    }, []);
 
     return (
     <Card className="mt-10">

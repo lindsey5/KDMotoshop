@@ -1,20 +1,16 @@
-import { useEffect, useState } from "react"
-import { fetchData } from "../../services/api";
+import { useMemo } from "react"
 import Card from "../cards/Card";
 import TopProductsContainer from "../containers/TopProductContainer";
+import useFetch from "../../hooks/useFetch";
 
 const TopProductsChart = () => {
-    const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
+    const { data } = useFetch('/api/products/top');
 
-    useEffect(() => {
-        const getTopProductsAsync = async () => {
-            const response = await fetchData('/api/products/top');
-            if(response.success){
-                setTopProducts(response.topProducts)
-            }
-        }
-        getTopProductsAsync();
-    }, [])
+    const topProducts = useMemo<TopProduct[]>(() => {
+        if(!data) return []
+
+        return data?.topProducts
+    }, [data])
 
     return (
         <Card className="flex-1 2xl:w-[350px] h-[400px] flex flex-col gap-5 mt-10">

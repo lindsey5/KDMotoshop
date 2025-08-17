@@ -1,3 +1,5 @@
+import useDarkmode from "../../hooks/useDarkmode";
+import { cn } from "../../utils/utils";
 import Card from "./Card";
 import { type LucideIcon } from "lucide-react";
 
@@ -8,12 +10,13 @@ interface DashboardCardProps {
 }
 
 const DashboardCard = ({ label, value, icon: Icon }: DashboardCardProps) => {
+  const isDark = useDarkmode();
   return (
     <Card className="p-5 rounded-2xl shadow-md hover:shadow-lg transition-all duration-200">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-500">{label}</p>
-          <h1 className="mt-2 text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight">
+          <p className={cn("text-sm font-medium text-gray-500", isDark && 'text-gray-300')}>{label}</p>
+          <h1 className={cn("mt-2 text-xl md:text-2xl font-extrabold text-gray-800 tracking-tight", isDark && 'text-white')}>
             {value}
           </h1>
         </div>

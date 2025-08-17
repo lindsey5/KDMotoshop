@@ -1,49 +1,40 @@
 import Card from "../cards/Card";
-import { useEffect, useState } from "react";
-import { fetchData } from "../../services/api";
+import {useMemo } from "react";
 import AreaChart from "./AreaChart";
 import { url } from "../../constants/url";
 import { CircularProgress } from "@mui/material";
 import { formatNumber } from "../../utils/utils";
+import useFetch from "../../hooks/useFetch";
 
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const SalesPredictionChart = () => {
     const today = new Date();
-    const [forecastSales, setForecastSales] = useState<number[]>([]);
-    const [actualSales, setActualSales] = useState<number[]>([]);
-    const [dateLabels, setDateLabels] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const month = today.getMonth() + 1
     const year = today.getFullYear()
+    const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`)
+    const { data : actualSalesRes, loading : actualLoading } = useFetch(`/api/sales/daily?month=${month}&year=${year}`)
 
-    const getSales = async () => {
-        setLoading(true);
-        try {
-            const forecastRes = await fetchData(`${url}api/predict?month=${month}&year=${year}`);
-            const actualRes = await fetchData(`/api/sales/daily?month=${month}&year=${year}`);
+    const dateLabels = useMemo<string[]>(() => {
+        return forecastRes?.forecast_dates
+    }, [forecastRes])
 
-            if (forecastRes.success && actualRes.success) {
-                const forecast = forecastRes.forecast.map((sales: number) => Number(sales.toFixed(0)));
-                const labels = forecastRes.forecast_dates;
-
-                const actual = labels.map((label: string) =>
-                    actualRes.dailySales.find((sales: any) => sales.date === label)?.total ?? undefined
-                )
-
-                setForecastSales(forecast);
-                setDateLabels(labels);
-                setActualSales(actual);
-            }
-        } catch (err) {
-            console.error("Error fetching data:", err);
+    const forecastSales = useMemo<number[]>(() => {
+        if(!forecastRes && !forecastRes?.forecast) {
+            return []
         }
-        setLoading(false);
-    };
+        return forecastRes?.forecast.map((sales: number) => Number(sales.toFixed(0)));
+    }, [forecastRes])
 
-    useEffect(() => {
-        getSales();
-    }, [month, year]);
+    const actualSales = useMemo(() => {
+        if(!dateLabels || !actualSalesRes){
+            return []
+        }
+
+        return dateLabels.map((label: string) =>
+            actualSalesRes?.dailySales.find((sales: any) => sales.date === label)?.total ?? undefined
+        )
+    }, [actualSalesRes, dateLabels])
 
     return (
         <Card className="h-[500px] xl:flex-3 flex flex-col gap-3">
@@ -51,7 +42,7 @@ const SalesPredictionChart = () => {
                 <h1 className="font-bold text-xl">Sales Trend: {monthNames[month - 1]} {year}</h1>
             </div>
 
-            {loading ? (
+            {(forecastLoading || actualLoading) ? (
                 <div className="w-full h-[300px] flex justify-center items-center">
                     <CircularProgress sx={{ color: 'red' }} />
                 </div>

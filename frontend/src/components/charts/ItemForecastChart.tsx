@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,12 +10,12 @@ import {
   type ScriptableContext,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { fetchData } from '../../services/api';
 import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
 import CustomizedPagination from '../Pagination';
 import { url } from '../../constants/url';
 import { CircularProgress } from '@mui/material';
+import useFetch from '../../hooks/useFetch';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, Tooltip, Legend);
 
@@ -27,33 +27,26 @@ interface Prediction {
 const ITEMS_PER_PAGE = 10;
 
 const ItemForecastChart = () => {
-    const [data, setData] = useState<Prediction[]>([]);
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [month, setMonth] = useState<string>('')
+    const { data, loading } = useFetch(`${url}api/predict/items`)
 
-    useEffect(() => {
-        const getData = async () => {
-            setLoading(true);
-            const response = await fetchData(`${url}api/predict/items`);
-            if(response.success){
-                setData(response.forecast
-                    .map((item : any)=> ({...item, predicted_qty: Math.round(item.predicted_qty) }))
-                    .sort((a : any, b : any) => b.predicted_qty - a.predicted_qty)
-                )
-                setMonth(response.month)
-            }
-            setLoading(false);
+    const { forecast, month } = useMemo<{forecast: Prediction[], month: string}>(() => {
+        if(!data){
+            return { forecast: [], month: ''}
         }
 
-        getData();
-    }, []);
+        const forecast = data?.forecast
+            .map((item : any)=> ({...item, predicted_qty: Math.round(item.predicted_qty) }))
+            .sort((a : any, b : any) => b.predicted_qty - a.predicted_qty)
+        const month = data.month
+        return { forecast, month }
+    }, [data])
 
     const paginatedData = useMemo(() => {
         const start = (page - 1) * ITEMS_PER_PAGE;
-        return data.slice(start, start + ITEMS_PER_PAGE);
-    }, [page, data]);
+        return forecast.slice(start, start + ITEMS_PER_PAGE);
+    }, [page, forecast]);
 
     const labels = paginatedData.map((d) => d.item);
     const values = paginatedData.map((d) => d.predicted_qty);
