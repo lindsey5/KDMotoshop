@@ -113,7 +113,10 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
 export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
-    const now = new Date();
+    const nowDate = new Date();
+    const utc = nowDate.getTime() + nowDate.getTimezoneOffset() * 60000; // convert local to UTC
+    const asiaTimeOffset = 8 * 60 * 60 * 1000; // UTC+8 in ms
+    const now = new Date(utc + asiaTimeOffset);
 
     // Start of today in local time
     const startOfToday = new Date(now);
