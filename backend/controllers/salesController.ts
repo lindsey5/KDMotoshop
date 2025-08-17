@@ -115,37 +115,45 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
     const now = new Date();
 
+    // Start of today in local time
     const startOfToday = new Date(now);
     startOfToday.setHours(0, 0, 0, 0);
 
+    // Start of the week (Monday)
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay());
+    const day = startOfWeek.getDay(); // 0 = Sunday, 1 = Monday
+    const diff = day === 0 ? 6 : day - 1; // Monday = start
+    startOfWeek.setDate(now.getDate() - diff);
     startOfWeek.setHours(0, 0, 0, 0);
 
+    // Start of the month
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Start of the year
     const startOfYear = new Date(now.getFullYear(), 0, 1);
 
-    const makeSalesAgg = (startDate: Date) => ([
+    const makeSalesAgg = (startDate: Date) => [
       {
         $match: {
           createdAt: { $gte: startDate },
-          status: { $in: ['Delivered', 'Rated'] }
-        }
+          status: { $in: ["Delivered", "Rated"] },
+        },
       },
       {
         $group: {
           _id: null,
-          total: { $sum: "$total" }
-        }
-      }
-    ]);
+          total: { $sum: "$total" },
+        },
+      },
+    ];
 
-    const [salesToday, salesThisWeek, salesThisMonth, salesThisYear] = await Promise.all([
-      Order.aggregate(makeSalesAgg(startOfToday)),
-      Order.aggregate(makeSalesAgg(startOfWeek)),
-      Order.aggregate(makeSalesAgg(startOfMonth)),
-      Order.aggregate(makeSalesAgg(startOfYear)),
-    ]);
+    const [salesToday, salesThisWeek, salesThisMonth, salesThisYear] =
+      await Promise.all([
+        Order.aggregate(makeSalesAgg(startOfToday)),
+        Order.aggregate(makeSalesAgg(startOfWeek)),
+        Order.aggregate(makeSalesAgg(startOfMonth)),
+        Order.aggregate(makeSalesAgg(startOfYear)),
+      ]);
 
     res.status(200).json({
       success: true,
@@ -153,8 +161,8 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
         today: salesToday[0]?.total || 0,
         thisWeek: salesThisWeek[0]?.total || 0,
         thisMonth: salesThisMonth[0]?.total || 0,
-        thisYear: salesThisYear[0]?.total || 0
-      }
+        thisYear: salesThisYear[0]?.total || 0,
+      },
     });
   } catch (err: any) {
     console.log("get_sales_statistics error:", err);
