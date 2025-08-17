@@ -119,7 +119,7 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
     const now = new Date(utc + asiaTimeOffset);
 
     // Start of today in local time
-    const startOfToday = new Date(now);
+    const startOfToday = now;
     startOfToday.setHours(0, 0, 0, 0);
 
     // Start of the week (Monday)
