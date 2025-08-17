@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react"
 import DashboardCard from "../DashboardCard"
-import { fetchData } from "../../../services/api";
 import { formatNumber } from "../../../utils/utils";
 import { Calendar } from "lucide-react";
 import useFetch from "../../../hooks/useFetch";
