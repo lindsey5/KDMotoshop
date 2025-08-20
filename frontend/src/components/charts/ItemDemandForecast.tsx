@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Card from '../cards/Card';
 import useDarkmode from '../../hooks/useDarkmode';
 import CustomizedPagination from '../Pagination';
@@ -25,7 +25,7 @@ interface Prediction {
 
 const ITEMS_PER_PAGE = 10;
 
-const ItemForecastChart = () => {
+const ItemDemandForecast = () => {
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
 
@@ -139,4 +139,4 @@ const ItemForecastChart = () => {
     );
 };
 
-export default ItemForecastChart;
+export default ItemDemandForecast;

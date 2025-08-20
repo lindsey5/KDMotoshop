@@ -6,8 +6,8 @@ import TopCategoriesChart from "../../components/charts/TopCategories";
 import SalesPredictionChart from "../../components/charts/SalesPrediction";
 import { cn } from "../../utils/utils";
 import useDarkmode from "../../hooks/useDarkmode";
-import ItemForecastChart from "../../components/charts/ItemForecastChart";
 import PageContainer from "../../components/containers/admin/PageContainer";
+import ItemDemandForecast from "../../components/charts/ItemDemandForecast";
 import ExpectedItemSales from "../../components/charts/ExpectedItemSales";
 
 const AdminDashboard = () => {
@@ -25,7 +25,7 @@ const AdminDashboard = () => {
             <TopCategoriesChart />
             <SalesPredictionChart />
         </div>
-        <ItemForecastChart />
+        <ItemDemandForecast />
         <ExpectedItemSales />
     </PageContainer>
 }
