@@ -41,7 +41,7 @@ export const sendAdminsNotification = async (customer_id : string, order_id: str
             const admin_id = (admin._id as Types.ObjectId).toString();
 
             const socketId = userSocketMap.get(admin_id as string);
-
+            console.log(socketId)
             const completedNotification = await AdminNotification.findById(notification._id).populate('from');
             if(socketId) socketInstance?.to(socketId).emit('adminNotification', completedNotification);
         }

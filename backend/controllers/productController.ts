@@ -320,8 +320,33 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
 export const get_top_products = async (req: Request, res: Response) => {
     try{
       const limit = Number(req.query.limit) || 5;
+      const filterType = req.query.filter || 'all'
+      const now = new Date();
+      let startDate, endDate;
+
+      switch(filterType) { // 'thisMonth', 'lastMonth', 'all'
+        case 'thisMonth':
+          startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+          break;
+        case 'lastMonth':
+          startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+          endDate = new Date(now.getFullYear(), now.getMonth(), 1);
+          break;
+        case 'all':
+          startDate = null;
+          endDate = null;
+          break;
+      }
+
+      const matchStage: any = { status: 'Fulfilled' }; // 'any' bypasses TS checks
+
+      if (startDate && endDate) {
+        matchStage.createdAt = { $gte: startDate, $lt: endDate };
+      }
+
       const topProductsAggregation = await OrderItem.aggregate([
-        { $match: { status: 'Fulfilled' } },
+        { $match: matchStage },
         { 
           $group: { 
             _id: '$product_id',

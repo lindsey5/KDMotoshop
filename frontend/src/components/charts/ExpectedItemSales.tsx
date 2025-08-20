@@ -51,7 +51,7 @@ const ExpectedItemSales = () => {
         datasets: [
             {
                 type: 'bar' as const,
-                label: 'Quantities Sold',
+                label: 'Expected Sales',
                 data: values,
                 backgroundColor: (ctx: ScriptableContext<'bar'>) => {
                     const chart = ctx.chart;

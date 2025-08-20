@@ -81,7 +81,7 @@ const AreaChart = ({ title, labels, datasets }: AreaChartProps) => {
               color: isDark ? '#969696' : 'black',
             },
             grid: {
-              color: isDark ? '#444' : '#ccc',
+              display: false, 
             }
           }
         },

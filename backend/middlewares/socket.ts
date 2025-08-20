@@ -39,8 +39,7 @@ export const initializeSocket = (server: HTTPServer): void => {
       cookies[name] = decodeURIComponent(rest.join('='));
     });
 
-    // Get the 'jwt' token from the cookies
-    const token = cookies.jwt;
+    const token = cookies.accessToken;
 
     socket.on('disconnect', () => {
       for (const [id, sId] of userSocketMap) {

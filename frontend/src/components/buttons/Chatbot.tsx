@@ -55,7 +55,7 @@ const ChatbotButton = () => {
                         >
                             <div className="flex gap-2 text-sm md:text-base">
                                 {message.from === 'bot' && <img className="w-8 h-8" src="/icons/chat-bot.png"/>}
-                                <div className={cn("whitespace-pre-line py-3 px-5 rounded-lg", message.from === 'bot' ? 'bg-black text-white' : 'bg-gray-100 border border-gray-300')}>
+                                <div className={cn("whitespace-pre-line py-3 px-5 rounded-3xl", message.from === 'bot' ? 'bg-black text-white' : 'bg-gray-100 border border-gray-300')}>
                                 {message.content}
                                 </div>
                             </div>
@@ -63,17 +63,22 @@ const ChatbotButton = () => {
                     ))}
                     {loading && <img className="mt-8 w-35 h-25 tranform -translate-6" src="/icons/typing.gif" alt="Typing..." />}
                 </div>
-                <div className="flex gap-3 px-2 py-5 border-t border-gray-300 rounded-b-xl">
-                    <input 
-                        placeholder="Type Text"
-                        className="text-sm md:text-md flex-1 rounded-lg bg-gray-200 outline-none px-3 py-1"
-                        type="text"
-                        onChange={(e) => setMessage(e.target.value)} 
-                        value={message}
-                    />
-                    <IconButton type="submit" disabled={loading}>
-                        <img className="w-6 h-6" src="/icons/send.png" alt="" />
-                    </IconButton>
+                <div className="p-3">
+                    <div className="border border-gray-300 flex items-center w-full max-w-md mx-auto bg-white rounded-full shadow-md p-2">
+                        <input
+                            type="text"
+                            className="flex-1 px-4 py-2 rounded-full outline-none text-gray-700"
+                            placeholder="Type a message..."
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                        <button
+                            type="submit"
+                            className="cursor-pointer ml-2 bg-black text-white px-4 py-2 rounded-full hover:opacity-75 transition"
+                        >
+                            Send
+                        </button>
+                    </div>
                 </div>
             </form>}
         </div>

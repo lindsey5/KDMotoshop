@@ -132,7 +132,8 @@ const ItemForecastChart = () => {
                     options={options}
                 />
                 <CustomizedPagination 
-                    count={Math.ceil(data.length / ITEMS_PER_PAGE)} 
+
+                    count={Math.ceil(forecast.length / ITEMS_PER_PAGE)} 
                     onChange={handlePage} 
                 />
                 </>}
