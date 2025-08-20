@@ -50,8 +50,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                     ))}
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
                     <div className="flex gap-3 my-5">
-                        <OrderItemStatusChip status={item.status} />
-                        {item.refund_status && <RefundStatusChip status={item.refund_status} />}
+                        {item.refund_status ? <RefundStatusChip status={item.refund_status} /> :  <OrderItemStatusChip status={item.status} />}
                     </div>
                     {review && (
                         <div>
