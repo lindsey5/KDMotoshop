@@ -25,7 +25,7 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
   {
     order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
     product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-    sku: { type: String, required: false },
+    sku: { type: String, required: true },
     product_type: { type: String, enum: ['Single', 'Variable'], required: true },
     attributes: { type: Object, required: false },
     product_name: { type: String, required: true },

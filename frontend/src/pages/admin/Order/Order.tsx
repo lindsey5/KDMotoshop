@@ -172,7 +172,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
           sx={{ backgroundColor: 'green', color: 'white' }}
           variant="contained"
         >
-          Accept Order
+          Confirm Order
         </Button>
       }
 

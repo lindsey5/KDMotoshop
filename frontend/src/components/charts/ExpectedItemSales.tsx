@@ -36,7 +36,7 @@ const ExpectedItemSales = () => {
         const forecast = data?.forecast
             .map((item : any)=> ({...item, sales: Number(item.sales.toFixed(2)) }))
             .sort((a : any, b : any) => b.sales - a.sales)
-            .slice(0, 5)
+            .slice(0, 10)
         const month = data?.month
 
         return { month, forecast }
@@ -109,12 +109,14 @@ const ExpectedItemSales = () => {
     return (
     <Card className="mt-10">
         <h2 className='mb-4 font-bold'>Projected Sales Leaders for {month} {/*monthNames[new Date().getMonth()] */}</h2>
-        {loading ? <div className="w-full h-[300px] flex justify-center items-center">
+        {loading ? <div className="w-full flex justify-center items-center">
             <CircularProgress sx={{ color: 'red'}}/>
-        </div> : <Bar 
-            data={chartData}
-            options={options}
-        />}
+        </div> : <div>
+            <Bar   
+                data={chartData}
+                options={options}
+            />
+        </div>}
     </Card>
     )
 }

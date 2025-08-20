@@ -113,8 +113,9 @@ const CustomerProduct = () => {
         if(user){
             const items = [{
                 product_id: product._id,
-                variant_id: product.product_type === 'Single' ? '' : filteredVariants[0]._id ?? '',
-                quantity: quantity
+                sku: product.product_type === 'Single' ? product.sku : filteredVariants[0].sku ?? '',
+                quantity: quantity,
+                product_type: product.product_type,
             }]
             
             localStorage.setItem('items', JSON.stringify(items))

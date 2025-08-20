@@ -54,6 +54,8 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
 
 export const get_product_quantity_sold = async (req: Request, res: Response) => {
   try {
+    const items = req.query.items as string;
+    const skus = items ? items.split(',').filter(item => item.trim() !== '') : [];
     const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
 
@@ -74,6 +76,7 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
       {
         $match: {
           createdAt: { $gte: startDate, $lt: endDate },
+          sku: skus.length < 1 ? '' : { $in: skus },
           status: { $in: ['Fulfilled', 'Rated'] }
         }
       },
@@ -81,29 +84,30 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
         $group: {
           _id: '$product._id',
           productName: { $first: '$product.product_name' },
-          variants: { $first: '$product.variants' },
-          variant_id: { $first: '$variant_id' },
+          sku: { $first: '$sku' },
           totalQuantitySold: { $sum: '$quantity' },
-          totalRevenue: { $sum: '$lineTotal' }
         }
       },
       {
         $project: {
           _id: 0,
           productId: '$_id',
-          variant_id: 1,
-          variants: 1,
           productName: 1,
           sku: 1,
           totalQuantitySold: 1,
-          totalRevenue: 1
         }
       }
     ]);
+    const productSalesMap = skus.map(sku => {
+      const product = productSales.find(item => item.sku === sku);
+      return {
+        sku,
+        totalQuantitySold: product ? product.totalQuantitySold : 0,
+        totalRevenue: product ? product.totalRevenue : 0
+      };
+    })
 
-    const product_sales = 
-
-    res.status(200).json({ success: true, productSales });
+    res.status(200).json({ success: true, productSales: productSalesMap });
 
   } catch (err: any) {
     console.error(err);

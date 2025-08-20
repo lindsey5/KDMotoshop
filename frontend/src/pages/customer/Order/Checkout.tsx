@@ -206,6 +206,7 @@ const CheckoutPage = () => {
                 product_id: item.product_id,
                 product_type: product.product_type,
                 variant_id: item.variant_id,
+                sku: item.sku,
                 attributes:
                   product.product_type === "Variable" && variant
                   ? variant.attributes

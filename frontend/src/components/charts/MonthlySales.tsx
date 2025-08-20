@@ -9,19 +9,19 @@ const MonthlySales = () => {
 
     return (
         <Card className="h-[400px] flex flex-col flex-3 mt-10">
-            <div className="flex-1"><AreaChart
-                title=""
-                labels={labels}
-                datasets={[
-                    {
-                        label: 'Monthly Sales',
-                        data: data?.monthlySales ?? [],
-                        borderColor: 'red',
-                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
-                    },
-                ]}
+            <div className="flex-1">
+                <AreaChart
+                    title=""
+                    labels={labels}
+                    datasets={[
+                        {
+                            label: 'Monthly Sales',
+                            data: data?.monthlySales ?? [],
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                        },
+                    ]}
                 />
-
             </div>
         </Card>
     )
