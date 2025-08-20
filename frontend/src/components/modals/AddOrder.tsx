@@ -40,7 +40,7 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
     const handleAddOrder = () => {
         setOrderItems(prev => {
             const existingIndex = prev.findIndex(
-                o => o.product_id === selectedProduct?._id && o.variant_id === filteredVariants[0]._id
+                o => o.product_id === selectedProduct?._id && o.sku === filteredVariants[0].sku
             );
 
             if (existingIndex !== -1)  return prev.map((o, i) =>
@@ -56,7 +56,8 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
                 {
                     status: "Unfulfilled",
                     product_id: selectedProduct?._id || '',
-                    variant_id: filteredVariants[0]._id,
+                    sku: filteredVariants[0].sku,
+                    product_type: selectedProduct?.product_type || 'Single',
                     attributes: filteredVariants[0].attributes,
                     product_name: selectedProduct?.product_name || '',
                     quantity,

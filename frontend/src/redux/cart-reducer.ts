@@ -21,7 +21,7 @@ export const fetchCart = createAsyncThunk<CartItem[]>(
   async () => {
     const response = await fetchData('/api/cart');
     if (!response.success) throw new Error('Failed to fetch cart');
-
+    console.log(response.carts);
     return response.carts.map((item: any) => {
       if (item.quantity > item.stock){
         item.quantity = item.stock;

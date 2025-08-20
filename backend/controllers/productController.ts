@@ -110,7 +110,7 @@ export const get_products_with_reserved = async (req: Request, res: Response) =>
 
       const stockMap = new Map<string, number>();
       orderItems.forEach(item => {
-        const key = item.product_id + (item.variant_id || "");
+        const key = item.product_id + item.sku;
         stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
       });
 
@@ -175,7 +175,7 @@ export const get_product_by_id_with_reserved = async (req: Request, res: Respons
 
       const stockMap = new Map<string, number>();
       orderItems.forEach(item => {
-        const key = item.product_id + (item.variant_id || "");
+        const key = item.product_id + item.sku;
         stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
       });
 

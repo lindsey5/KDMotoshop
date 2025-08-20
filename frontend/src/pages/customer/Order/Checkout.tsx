@@ -90,14 +90,7 @@ const CheckoutPage = () => {
       customer?.addresses.length > 0
     ) {
       return orderItems.reduce(
-        (total, item) =>
-          item.quantity *
-            calculateShippingFee(
-              item.weight,
-              customer?.addresses?.[selectedAddress]?.region ?? ""
-            ) +
-          total,
-        0
+        (total, item) => item.quantity * calculateShippingFee(item.weight, customer?.addresses?.[selectedAddress]?.region ?? "") + total,0
       );
     }
     return 0;
@@ -133,6 +126,7 @@ const CheckoutPage = () => {
   };
 
   const proceed = async () => {
+    console.log(orderItems)
     if (
       await confirmDialog(
         paymentMethod === "CASH" ? "Place this Order?" : "Proceed to payment?",
@@ -195,39 +189,39 @@ const CheckoutPage = () => {
         parsedItems
           .map(async (item: any) => {
             const response = await fetchData(`/api/products/${item.product_id}`);
-
             if (response.success) {
               const product: Product = response.product;
-              const variant = product.variants.filter(
-                (variant) => variant._id === item.variant_id
-              )[0];
-
+              const variant = product.variants?.find(
+                (variant: any) => variant.sku === item.sku
+              );
+              
               if (product.product_type === "Variable" && !variant) return null;
 
               const stock =
-                product.product_type === "Single"
-                  ? product.stock
-                  : variant.stock;
+                product.product_type === "Variable" && variant
+                  ? variant.stock
+                  : product.stock;
 
               return {
                 product_id: item.product_id,
+                product_type: product.product_type,
                 variant_id: item.variant_id,
                 attributes:
-                  product.product_type === "Single"
-                    ? null
-                    : variant.attributes,
+                  product.product_type === "Variable" && variant
+                  ? variant.attributes
+                  : product.attributes,
                 stock: stock,
                 product_name: product.product_name,
                 quantity:
                   item.quantity > (stock ?? 0) ? stock : item.quantity,
                 price:
-                  product.product_type === "Single"
-                    ? product.price
-                    : variant.price,
+                  product.product_type === "Variable" && variant
+                  ? variant.price
+                  : product.price,
                 lineTotal:
-                  product.product_type === "Single"
-                    ? (product.price ?? 0) * item.quantity
-                    : (variant.price ?? 0) * item.quantity,
+                product.product_type === "Variable" && variant
+                  ? (variant.price ?? 0) * item.quantity
+                  : (product.price ?? 0) * item.quantity,
                 image:
                   typeof product?.thumbnail === "object" &&
                   product.thumbnail !== null &&

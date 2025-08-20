@@ -3,7 +3,8 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 interface OrderItem extends Document {
     order_id: Types.ObjectId; 
     product_id: Types.ObjectId;
-    variant_id?: string;
+    sku: string;
+    product_type: 'Single' | 'Variable';
     attributes?: { [key: string]: string }
     product_name: string;
     quantity: number;
@@ -24,7 +25,8 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
   {
     order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
     product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-    variant_id: { type: String, required: false },
+    sku: { type: String, required: false },
+    product_type: { type: String, enum: ['Single', 'Variable'], required: true },
     attributes: { type: Object, required: false },
     product_name: { type: String, required: true },
     quantity: { type: Number, required: true },

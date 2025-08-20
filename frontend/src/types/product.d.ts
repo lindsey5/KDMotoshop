@@ -22,7 +22,7 @@ type Product = {
     sku?: string | null;
     price?: number | null; 
     stock?: number | null;
-    product_type: "Single" | "Variable" | string;
+    product_type: "Single" | "Variable";
     visibility: string;
     added_by?: Admin; 
     images: (UploadedImage | string | ArrayBuffer)[], 

@@ -20,9 +20,9 @@ export const generateOrderId = async () : Promise<string> => {
 };
 
 export const decrementStock = async (item : any) => {
-    if (item.variant_id) {
+    if (item.product_type === 'Variable') {
         await Product.updateOne(
-            {  _id: item.product_id,  "variants._id": item.variant_id },
+            {  _id: item.product_id,  "variants.sku": item.sku },
             { $inc: { "variants.$.stock": -item.quantity } }
         );
     } else {
@@ -33,29 +33,10 @@ export const decrementStock = async (item : any) => {
     }
 }
 
-export const incrementStock = async (item : any) => {
-    try{
-        if (item.variant_id) {
-            await Product.updateOne(
-                {  _id: item.product_id,  "variants._id": item.variant_id },
-                { $inc: { "variants.$.stock": item.quantity } }
-            );
-
-        } else {
-            await Product.updateOne(
-                { _id: item.product_id },
-                { $inc: { stock: item.quantity } }
-            );
-        }
-    }catch(err : any){
-        console.log(err)
-    }
-}
-
 export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) : Promise<any> => {
     try{
         const newOrder = new Order(order);
-        
+
         const orderItemsWithOrderID = orderItems.map((item: any) => (
             {
                 ...item, 
@@ -63,6 +44,7 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
                 status: order.status === 'Delivered' ? 'Fulfilled' : 'Unfulfilled'
             }
         ));   
+
         await OrderItem.insertMany(orderItemsWithOrderID)
             .then(async (items) => {
                 if(newOrder.status === 'Delivered') {

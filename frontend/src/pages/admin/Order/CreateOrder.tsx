@@ -110,6 +110,8 @@ const CreateOrderPage = () => {
 
                         return [...prev, {
                             product_id: product._id || '',
+                            sku: product.sku ?? '',
+                            product_type: product.product_type as "Single" | "Variable",
                             product_name: product.product_name,
                             stock: product.stock || 0,
                             image: product && typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
@@ -141,6 +143,7 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
+        console.log(orderItems)
         if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
             setShowCustomerModal(true);
         }else{

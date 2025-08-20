@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Order from "../models/Order";
+import OrderItem from "../models/OrderItem";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
@@ -47,6 +48,65 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
     res.status(200).json({ success: true, monthlySales: salesArray });
 
   } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const get_product_quantity_sold = async (req: Request, res: Response) => {
+  try {
+    const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
+    const year = parseInt(req.query.year as string) || new Date().getFullYear();
+
+    // Handle month overflow for December
+    const startDate = new Date(Date.UTC(year, month - 1, 1));
+    const endDate = new Date(Date.UTC(year, month, 1));
+
+    const productSales = await OrderItem.aggregate([
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'product_id',
+          foreignField: '_id',
+          as: 'product'
+        }
+      },
+      { $unwind: '$product' },
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lt: endDate },
+          status: { $in: ['Fulfilled', 'Rated'] }
+        }
+      },
+      {
+        $group: {
+          _id: '$product._id',
+          productName: { $first: '$product.product_name' },
+          variants: { $first: '$product.variants' },
+          variant_id: { $first: '$variant_id' },
+          totalQuantitySold: { $sum: '$quantity' },
+          totalRevenue: { $sum: '$lineTotal' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          productId: '$_id',
+          variant_id: 1,
+          variants: 1,
+          productName: 1,
+          sku: 1,
+          totalQuantitySold: 1,
+          totalRevenue: 1
+        }
+      }
+    ]);
+
+    const product_sales = 
+
+    res.status(200).json({ success: true, productSales });
+
+  } catch (err: any) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 };

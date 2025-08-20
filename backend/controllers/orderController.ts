@@ -34,6 +34,7 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
 
         res.status(201).json({ success: true, order: savedOrder });
     } catch (err: any) {
+        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }
@@ -41,7 +42,6 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
 export const create_customer_order = async (req: Request, res: Response) => {
     try {
         const { order, orderItems, cart } = req.body;
-        console.log(order)
         if (!order || !orderItems) {
             res.status(400).json({ success: false, message: 'Order and order items are required' });
             return;
@@ -57,6 +57,7 @@ export const create_customer_order = async (req: Request, res: Response) => {
 
         res.status(201).json({ success: true, order: savedOrder });
     } catch (err: any) {
+        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }

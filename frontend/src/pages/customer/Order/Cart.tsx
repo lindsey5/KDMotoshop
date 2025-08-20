@@ -29,7 +29,7 @@ const Cart = () => {
     }, [cart])
 
     const proceedToCheckout = () => {
-        const items = selectedItem.items.map(item => ({ product_id: item.product_id, variant_id: item.variant_id, quantity: item.quantity}))
+        const items = selectedItem.items.map(item => ({ product_id: item.product_id, sku: item.sku, quantity: item.quantity, product_type: item.product_type }))
         localStorage.setItem('items', JSON.stringify(items))
         localStorage.setItem('cart', JSON.stringify(selectedItem.items))
         navigate('/checkout')

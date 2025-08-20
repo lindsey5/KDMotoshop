@@ -2,7 +2,8 @@ type Cart = {
     _id?: string;
     customer_id: string;
     product_id: string;
-    variant_id: string | null;
+    sku: string;
+    product_type: 'Single' | 'Variable';
     quantity: number;
 }
 
@@ -12,5 +13,6 @@ type CartItem = Cart & {
     product_name: string;
     price: number;
     image: string;
+    product_type: 'Single' | 'Variable';
     isSelected: boolean;
 }

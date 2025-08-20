@@ -6,14 +6,13 @@ import OrderItem from "../models/OrderItem";
 
 export const create_new_item = async (req : AuthenticatedRequest, res : Response) => {
     try{
-        const { product_id, customer_id, variant_id, quantity } = req.body;
+        const { product_id, customer_id, sku, quantity } = req.body;
 
         const query : any = {
             product_id: product_id,
-            customer_id: customer_id
+            customer_id: customer_id,
+            sku: sku,
         }
-
-        if(variant_id) query.variant_id = variant_id
 
         const existedCart = await Cart.findOne(query)
           
@@ -27,6 +26,7 @@ export const create_new_item = async (req : AuthenticatedRequest, res : Response
         await newCart.save();
         res.status(201).json({ success: true, cart: newCart});
     }catch(err : any){
+        console.log('Error in create_new_item:', err);
         res.status(500).json({ success: false, message: err.message})
     }
 }
@@ -64,7 +64,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
         // Build stock map
         const stockMap = new Map<string, number>();
         orderItems.forEach(item => {
-            const key = item.product_id.toString() + (item.variant_id?.toString() || '');
+            const key = item.product_id.toString() + item.sku;
             stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
         });
 
@@ -72,7 +72,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
         const completedCart = carts.map((item) => {
             const product: any = item.product_id;
 
-            const variant = product.variants?.find((v: any) => v._id.toString() === item.variant_id?.toString());
+            const variant = product.variants?.find((v: any) => v.sku === item.sku);
 
             // Adjust stock
             if (product.product_type === 'Single') {
@@ -91,7 +91,8 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
                 _id: item._id,
                 customer_id: item.customer_id,
                 product_id: product._id,
-                variant_id: item.variant_id,
+                product_type: item.product_type,
+                sku: item.sku,
                 quantity: item.quantity,
                 attributes: variant?.attributes || [],
                 stock: product.product_type === 'Single' ? product.stock : variant?.stock || 0,

@@ -79,7 +79,8 @@ const CustomerProduct = () => {
             const newItem : Cart = {
                 customer_id: user._id,
                 product_id: product._id ?? '',
-                variant_id: product.product_type === 'Single' ? null : filteredVariants[0]._id ?? null,
+                product_type: product.product_type,
+                sku: product.product_type === 'Single' ? (product.sku ?? '') : (filteredVariants[0]?.sku ?? ''),
                 quantity: quantity,
             } 
             const response = await postData('/api/cart', newItem);

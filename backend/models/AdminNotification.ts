@@ -11,8 +11,8 @@ const AdminNotificationSchema: Schema<IAdminNotification> = new Schema(
   {
     to: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },
     from: { type: Schema.Types.ObjectId, ref: 'Customer', required: false },
-    product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true},
-    order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
+    product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: false },
+    order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: false },
     content: { type: String, required: true },
     isViewed: { type: Boolean, default: false, required: true}
   },
