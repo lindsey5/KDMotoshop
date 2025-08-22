@@ -12,7 +12,9 @@ type Notification = {
     _id: string;
     to: string;
     from?: string | Customer;
-    order_id:  string;
+    order_id?:  string;
+    product_id?: string;
+    review_id?: string;
     isViewed: boolean;
     content: string;
     createdAt: Date;
@@ -53,9 +55,12 @@ export const NotificationTableRow = ({ notification } : { notification : Notific
     const dispatch = useDispatch<AppDispatch>();
 
     const customer = typeof notification.from === 'object' ? notification.from : undefined
-
     const navigateToOrder = () => {
-        navigate(`/admin/orders/${notification.order_id}`)
+        if(notification.review_id && notification.product_id){
+            navigate(`/admin/reviews/${notification.product_id}?id=${notification.review_id}`)
+        }else if(notification.order_id){
+            navigate(`/admin/orders/${notification.order_id}`)
+        }
         if(!notification.isViewed)  dispatch(updateNotification({ id: notification._id, user: "admin"}));
     }
 

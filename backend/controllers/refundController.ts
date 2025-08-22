@@ -59,12 +59,12 @@ export const getRefundRequests = async (req : Request, res : Response) => {
             ]
         }
 
-        if(status){
+        if(status && status !== 'All'){
             filter.status = status;
         }
 
         const [refundRequests, total] = await Promise.all([
-        RefundRequest.find()
+        RefundRequest.find(filter)
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })

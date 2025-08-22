@@ -39,7 +39,7 @@ const CustomerProduct = () => {
     useEffect(() => {
         const fetchDataAsync = async () => {
             const [productResponse, reviewsResponse] = await Promise.all([
-                fetchData(`/api/products/${id}/reserved`),   
+                fetchData(`/api/products/${id}`),   
                 fetchData(`/api/reviews/product/${id}`)
             ]);
 

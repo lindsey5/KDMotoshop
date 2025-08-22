@@ -33,7 +33,16 @@ export const decrementStock = async (item : any) => {
                 const current_stock = variant.stock;
                 const newStock = variant.stock - item.quantity;
                 variant.stock = newStock;
-                
+                if(newStock < 5) {
+                    await sendLowStockAlert(
+                        product._id as string,
+                        product.product_name,
+                        product.thumbnail.imageUrl,
+                        variant.sku,
+                        variant.stock,
+                        current_stock
+                    );
+                }
             }
         }
 
@@ -52,7 +61,16 @@ export const decrementStock = async (item : any) => {
         const newStock = product.stock - item.quantity;
         product.stock = newStock;
         await product.save();
-        
+        if(newStock < 5) {
+            await sendLowStockAlert(
+                product._id as string,
+                product.product_name,
+                product.thumbnail.imageUrl,
+                product.sku,
+                product.stock,
+                current_stock
+            );
+        }
     }
 }
 
@@ -101,53 +119,4 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
         console.log(err)
         return null
     }
-}
-
-export const getAvgDailyDemandPerProduct = async () => {
-  const result = await OrderItem.aggregate([
-    {
-      $match: {
-        status: { $in: ["Fulfilled", "Rated"] } // only count completed sales
-      }
-    },
-    {
-      // group per product per day
-      $group: {
-        _id: {
-          product: "$product_id",
-          day: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
-        },
-        totalQty: { $sum: "$quantity" }
-      }
-    },
-    {
-      // average per product across days
-      $group: {
-        _id: "$_id.product",
-        avgDailyDemand: { $avg: "$totalQty" }
-      }
-    },
-    {
-      $lookup: {
-        from: "products", // make sure collection name is correct
-        localField: "_id",
-        foreignField: "_id",
-        as: "product"
-      }
-    },
-    {
-      $unwind: { path: "$product", preserveNullAndEmptyArrays: true }
-    },
-    {
-      $project: {
-        _id: 0,
-        product_id: "$_id",
-        product_name: "$product.product_name",
-        sku: "$product.sku",
-        avgDailyDemand: 1
-      }
-    }
-  ]);
-
-  return result;
 }

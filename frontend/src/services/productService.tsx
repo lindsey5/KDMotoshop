@@ -116,7 +116,7 @@ export const saveProduct = async (
 };
 
 export const getProducts = async (query? : string) => {
-  const response = await fetchData(`/api/products/reserved?${query}`);
+  const response = await fetchData(`/api/products?${query}`);
 
   if(response.success) {
     return response

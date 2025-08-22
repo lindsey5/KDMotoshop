@@ -79,67 +79,6 @@ export const get_products = async (req: Request, res: Response) => {
     }
 };
 
-export const get_products_with_reserved = async (req: Request, res: Response) => {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
-    const searchTerm = req.query.searchTerm as string | undefined;
-    const category = req.query.category as string | undefined;
-    const min = req.query.min as number | undefined;
-    const max = req.query.max as number | undefined;
-    const visibility = req.query.visibility as string | undefined;
-
-    try {
-      const filter = createProductFilter({ searchTerm, category, min, max, visibility})
-      const sortOption = determineSortOption(req.query.sort as string ?? '')
-
-      const [products, total] = await Promise.all([
-        Product.find(filter)
-          .populate("added_by")
-          .sort(sortOption)
-          .skip(skip)
-          .limit(limit),
-        Product.countDocuments(filter),
-      ]);
-  
-      const orders = await Order.find({ status: "Confirmed"}, "_id");
-      const orderIds = orders.map(order => order._id);
-
-      const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
-
-      const stockMap = new Map<string, number>();
-      orderItems.forEach(item => {
-        const key = item.product_id + item.sku;
-        stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
-      });
-
-      products.forEach(product => {
-        const key = (product._id as Types.ObjectId).toString();
-        const orderedQty = stockMap.get(key) || 0;
-        product.stock = Math.max((product.stock || 0) - orderedQty, 0);
-        
-        if(product.variants.length > 0){
-          product.variants?.forEach(variant => {
-            const varKey = product._id + variant._id.toString();
-            const varOrderedQty = stockMap.get(varKey) || 0;
-            variant.stock = Math.max((variant.stock || 0) - varOrderedQty, 0);
-          });
-        }
-      });
-
-      res.status(200).json({
-        success: true,
-        products,
-        page,  
-        totalPages: Math.ceil(total / limit),
-        totalProducts: total,
-      });
-    } catch (err: any) {
-      console.error(err);
-      res.status(500).json({ success: false, message: err.message });
-    }
-};
-
 export const get_product_by_id = async (req: Request, res: Response) => {
     try {
       const product = await Product.findById(req.params.id);
@@ -153,46 +92,6 @@ export const get_product_by_id = async (req: Request, res: Response) => {
 
     } catch (err: any) {
       console.log(err);
-      res.status(500).json({ success: false, message: err.message });
-    }
-};
-
-export const get_product_by_id_with_reserved = async (req: Request, res: Response) => {
-    try {
-      const product = await Product.findById(req.params.id);
-
-      if(!product){
-        res.status(404).json({ success: false, message: 'Product not found'})
-        return;
-      }
-
-      const orders = await Order.find({status: "Confirmed"}, "_id" );
-
-      const orderIds = orders.map(order => order._id);
-
-      const orderItems = await OrderItem.find({ order_id: { $in: orderIds }, product_id: product._id });
-
-      const stockMap = new Map<string, number>();
-      orderItems.forEach(item => {
-        const key = item.product_id + item.sku;
-        stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
-      });
-
-      const key = (product._id as Types.ObjectId).toString();
-        const orderedQty = stockMap.get(key) || 0;
-        product.stock = Math.max((product.stock || 0) - orderedQty, 0);
-        
-        if(product.variants.length > 0){
-          product.variants?.forEach(variant => {
-            const varKey = product._id + variant._id.toString();
-            const varOrderedQty = stockMap.get(varKey) || 0;
-            variant.stock = Math.max((variant.stock || 0) - varOrderedQty, 0);
-          });
-      }
-
-      res.status(200).json({ success: true, product })
-
-    } catch (err: any) {
       res.status(500).json({ success: false, message: err.message });
     }
 };
@@ -388,132 +287,54 @@ export const get_top_products = async (req: Request, res: Response) => {
     }
 }
 
-export const get_products_stock_status = async (req: Request, res: Response) => {
-  try {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const daysPassed = Math.max(1, Math.ceil((now.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24)) );
+export const get_low_stock_products = async (req: Request, res: Response) => {
+    try{
+      const threshold = parseInt(req.query.threshold as string) || 5;
 
-    // 1. Aggregate daily sales per SKU
-    const dailySales = await OrderItem.aggregate([
-      {
-        $match: {
-          status: { $in: ["Fulfilled", "Rated"] },
-          createdAt: { $gte: startOfMonth, $lte: now },
-        },
-      },
-      {
-        $addFields: {
-          day: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
-        }
-      },
-      {
-        $group: {
-          _id: { sku: "$sku", product_id: "$product_id", day: "$day" },
-          qty: { $sum: "$quantity" },
-        },
-      },
-      {
-        $group: {
-          _id: { sku: "$_id.sku", product_id: "$_id.product_id" },
-          daily: { $push: "$qty" },
-          totalQty: { $sum: "$qty" },
-        },
-      },
-      {
-        $lookup: {
-          from: "products",
-          localField: "_id.product_id",
-          foreignField: "_id",
-          as: "product",
-        },
-      },
-      { $unwind: "$product" },
-      {
-        $addFields: {
-          stock: {
-            $cond: [
-              { $eq: ["$product.product_type", "Variable"] },
-              {
-                $let: {
-                  vars: {
-                    matchedVariant: {
-                      $arrayElemAt: [
-                        {
-                          $filter: {
-                            input: "$product.variants",
-                            as: "v",
-                            cond: { $eq: ["$$v.sku", "$_id.sku"] },
-                          },
-                        },
-                        0,
-                      ],
-                    },
-                  },
-                  in: "$$matchedVariant.stock",
-                },
-              },
-              "$product.stock",
-            ],
-          },
-        },
-      },
-      {
-        $project: {
-          sku: "$_id.sku",
-          product_name: "$product.product_name",
-          current_stock: "$stock",
-          daily: 1,
-          totalQty: 1,
-        },
-      },
-    ]);
+      const products = await Product.find({
+        $or: [
+          { variants: { $elemMatch: { stock: { $lte: threshold } } } },
+          { stock: { $lte: threshold } },
+        ],
+        status: { $ne: 'Deleted' }
+      })
 
-    // 2. Compute stock status for each product
-    const leadTimeDays = 7; // default (can be per supplier)
-    const serviceLevelZ = 1.65; // 95% confidence
+      const allLowStockProducts : any = []
 
-    const results = dailySales.map((p) => {
-      const dailyArr = p.daily.length ? p.daily : [0];
+      products.forEach(product => {
+        if (product.product_type === 'Variable') {
+          product.variants.forEach(variant => {
+            if (variant.stock <= threshold) {
+              const status = variant.stock === 0 ? 'Out of Stock' : (variant.stock <= threshold ? 'Low Stock' : 'In Stock');
+              allLowStockProducts.push({
+                _id: product._id,
+                product_name: product.product_name,
+                thumbnail: product.thumbnail,
+                product_type: product.product_type,
+                sku: variant.sku,
+                status,
+                stock: variant.stock
+              });
+            }
+          });
+        } else {
+          const status = product.stock === 0 ? 'Out of Stock' : (product.stock <= threshold ? 'Low Stock' : 'In Stock');
+          allLowStockProducts.push({
+            _id: product._id,
+            product_name: product.product_name,
+            thumbnail: product.thumbnail,
+            product_type: product.product_type,
+            sku: product.sku,
+            status,
+            stock: product.stock
+          });
+         }
+      });
 
-      // Average daily sales
-      const avgDailySales = p.totalQty / daysPassed;
+      res.status(200).json({ success: true, products: allLowStockProducts });
 
-      // Standard deviation of daily sales
-      const mean = avgDailySales;
-      const variance =
-        dailyArr.reduce((sum: number, val: number) => sum + Math.pow(val - mean, 2), 0) /
-        dailyArr.length;
-
-      const stdDev = Math.sqrt(variance);
-
-      // Dynamic safety stock
-      const safetyStock = Math.ceil(
-        serviceLevelZ * stdDev * Math.sqrt(leadTimeDays)
-      );
-
-      // Reorder point
-      const reorderPoint = Math.ceil(avgDailySales * leadTimeDays + safetyStock);
-
-      // Status
-      let status = "In Stock";
-      if (!p.current_stock || p.current_stock <= 0) status = "Out of Stock";
-      else if (p.current_stock <= reorderPoint) status = "Low Stock";
-
-      return {
-        sku: p.sku,
-        name: p.product_name,
-        current_stock: p.current_stock ?? 0,
-        avg_daily_sales: avgDailySales.toFixed(2),
-        safety_stock: safetyStock,
-        reorder_point: reorderPoint,
-        status,
-      };
-    });
-
-    res.json({ success: true, products: results });
-  } catch (err: any) {
-    console.error(err);
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
+    }catch(err : any){
+      console.error(err);
+      res.status(500).json({ success: false, message: err.message });
+    }
+}

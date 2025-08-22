@@ -20,15 +20,28 @@ import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import WarningIcon from '@mui/icons-material/Warning';
 
 const NotificationLink = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { unread } = useSelector((state : RootState) => state.notification)
-  
+  const { socket } = useContext(SocketContext);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('adminNotification', (notification) => {
+      dispatch(addNotification(notification));
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    dispatch(fetchNotifications('admin'));
+  }, [dispatch]);
+
+
   return (
     <SidebarLink 
       label="Notifications" 
@@ -41,22 +54,10 @@ const NotificationLink = () => {
 
 export const AdminSidebar = () => {
     const { user } = useSelector((state: RootState) => state.user);
-    const { socket } = useContext(SocketContext);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [storeOpen, setStoreOpen] = useState(false);
-
-    useEffect(() => {
-      dispatch(fetchNotifications('admin'));
-    }, [dispatch]);
-
-    useEffect(() => {
-      if (!socket) return;
-      socket.on('adminNotification', (notification) => {
-        dispatch(addNotification(notification));
-      });
-    }, [socket]);
 
     const handleSignout = () => {
       dispatch(resetNotifications());
@@ -102,10 +103,9 @@ export const AdminSidebar = () => {
                 <div className="ml-4 flex flex-col gap-2 mt-2">
                   <SidebarLink label="Products" icon={<SportsMotorsportsIcon sx={{ width: 22, height: 22 }} />} path="/admin/products" />
                   <SidebarLink label="Orders" icon={<ShoppingCartIcon sx={{ width: 22, height: 22 }} />} path="/admin/orders" />
-                  <SidebarLink label="Reviews" icon={<ThumbUpIcon sx={{ width: 22, height: 22 }} />} path="/admin/reviews" />
                   <SidebarLink label="Refunds" icon={<ReplayRoundedIcon sx={{ width: 22, height: 22 }} />} path="/admin/refunds" />
                   <SidebarLink label="Customers" icon={<PersonIcon sx={{ width: 22, height: 22 }} />} path="/admin/customers" />
-                  <SidebarLink label="Low Stock Alert" icon={<WarningIcon sx={{ width: 22, height: 22 }} />} path="/admin/low-stock-alerts" />
+                   <SidebarLink label="Low Stocks" icon={<WarningIcon sx={{ width: 22, height: 22 }} />} path="/admin/products/low-stocks" />
                 </div>
               </Collapse>
             </div>
@@ -139,4 +139,4 @@ export const AdminSidebar = () => {
         </aside>
       </>
     );
-  };
+};

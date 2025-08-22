@@ -8,7 +8,6 @@ import { cn } from "../../utils/utils";
 import useDarkmode from "../../hooks/useDarkmode";
 import PageContainer from "../../components/containers/admin/PageContainer";
 import ItemDemandForecast from "../../components/charts/ItemDemandForecast";
-import ExpectedItemSales from "../../components/charts/ExpectedItemSales";
 
 const AdminDashboard = () => {
     const isDark = useDarkmode();
@@ -26,7 +25,6 @@ const AdminDashboard = () => {
             <SalesPredictionChart />
         </div>
         <ItemDemandForecast />
-        <ExpectedItemSales />
     </PageContainer>
 }
 

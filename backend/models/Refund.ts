@@ -11,7 +11,6 @@ export interface IRefundRequest extends Document {
   | 'Rejected'
   | 'Processing'
   | 'Completed'
-  | 'Cancelled';
   price: Number;
   reason: string;
   video: { videoPublicId: string; videoUrl: string}

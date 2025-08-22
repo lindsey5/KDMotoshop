@@ -27,9 +27,10 @@ export const sendCustomerNotification = async (customer_id : string, order_id: s
 
 type AdminNotificationData = {
     from: string;
-    order_id: string;
+    order_id?: string;
     product_id?: string;
     content: string;
+    review_id?: string;
 }
 
 export const sendAdminsNotification = async (notificationData : AdminNotificationData) => {
@@ -51,5 +52,4 @@ export const sendAdminsNotification = async (notificationData : AdminNotificatio
     }catch(err : any){
         throw new Error(err.message)
     }
-
 }

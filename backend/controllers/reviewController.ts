@@ -6,6 +6,7 @@ import Product from "../models/Product";
 import OrderItem from "../models/OrderItem";
 import Customer from "../models/Customer";
 import { sendAdminsNotification } from "../services/notificationService";
+import { Types } from "mongoose";
 
 export const create_review = async (req: AuthenticatedRequest, res: Response) => {
     try{
@@ -58,7 +59,8 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         await sendAdminsNotification(
             {
                 from: customer._id as string,
-                order_id: orderItem.order_id.toString(),
+                product_id: product_id,
+                review_id: review._id.toString(),
                 content: `New review for ${product.product_name} by ${customer.firstname} ${customer.lastname}`
             }
         )
@@ -92,9 +94,11 @@ export const get_product_reviews = async (req: Request, res: Response) => {
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
         const rating = parseInt(req.query.rating as string) || 0;
+        const id = req.query.id as string || '';
 
         const query: any = { product_id: req.params.id };
         if (rating > 0) query.rating = rating ;
+        if(id) query._id = id;
 
         const [reviews, totalReviews, overallTotal] = await Promise.all([
             Review.find(query)

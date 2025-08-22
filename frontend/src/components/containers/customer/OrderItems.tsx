@@ -6,7 +6,7 @@ import Card from "../../cards/Card";
 import RateProductModal from "../../modals/RateProduct";
 import { fetchData } from "../../../services/api";
 import { Button, Rating } from "@mui/material";
-import { OrderItemStatusChip, RefundStatusChip } from "../../Chip";
+import { OrderItemStatusChip } from "../../Chip";
 import RequestRefundModal from "../../modals/CreateRefund";
 import CustomerRefundRequestModal from "../../modals/CustomerRefundRequest";
 
@@ -54,7 +54,6 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
                     <div className="flex gap-3 my-5">
                         <OrderItemStatusChip status={item.status} />
-                        {item?.refund?.status && <RefundStatusChip status={item.refund.status} />}
                     </div>
                     {review && (
                         <div>

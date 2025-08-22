@@ -1,17 +1,20 @@
-import Alert from "../models/Alert";
+import { Types } from "mongoose";
+import { socketInstance, userSocketMap } from "../middlewares/socket";
+import Admin from "../models/Admin";
 
-export const sendLowStockAlert = async (productId: string, sku: string, currentStock: number, threshold: number) => {
+export const sendLowStockAlert = async (product_id : string, product_name: string, product_image : string, sku: string, currentStock: number, prevStock: number) => {
   try {
-    const alert = new Alert({
-      product_id: productId,
-      sku,
-      content: `Low stock alert for SKU ${sku}. Current stock is ${currentStock}.`,
-      threshold,
-      current_stock: currentStock,
-      is_resolved: false
-    });
+    const alert = { _id: product_id, product_name, product_image, sku, currentStock, prevStock };
+    const admins = await Admin.find();
+
+    for(const admin of admins){
+      const admin_id = (admin._id as Types.ObjectId).toString();
+
+      const socketId = userSocketMap.get(admin_id as string);
+
+      if(socketId) socketInstance?.to(socketId).emit('lowStockNotification', alert);
+    }
     
-    await alert.save();
     console.log(`Low stock alert created for SKU ${sku}`);
   } catch (error) {
     console.error('Error creating low stock alert:', error);

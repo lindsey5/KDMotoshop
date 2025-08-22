@@ -10,9 +10,12 @@ import { CustomizedChip } from "../components/Chip";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
+import { useLocation } from "react-router-dom";
 
 const ProductReviews = ({ product_id } : { product_id : string }) => {  
     const isDark = useDarkmode();
+    const params = new URLSearchParams(useLocation().search);
+    const review_id = params.get("id");
     const [reviews, setReviews] = useState<Review[]>([]);
     const [totalReviews, setTotalReviews] = useState<number>(0);
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -31,7 +34,7 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
     useEffect(() => {
         const getReviews = async () => {
             setLoading(true)
-            const response = await fetchData(`/api/reviews/product/${product_id}?page=${pagination.page}&limit=10&rating=${selectedRating || ''}`);
+            const response = await fetchData(`/api/reviews/product/${product_id}?page=${pagination.page}&limit=10&rating=${selectedRating || ''}&id=${review_id ?? ''}`);
             if (response.success) {
                 setReviews(response.reviews);
                 setTotalReviews(response.overallTotal);
@@ -83,7 +86,7 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
                 </div> : reviews.length > 0 ? 
             reviews.map((review) => (
                 <Card className={cn("flex flex-col gap-3", isDark && 'bg-[#121212]')}>
-                    <strong>{user?.role === 'Admin' ? `${review.customer_id.firstname} ${review.customer_id.lastname}` : maskMiddle(`${review.customer_id.firstname} ${review.customer_id.lastname}`)}</strong>
+                    <strong>{user?.role === 'Admin' || user?.role === 'Super Admin' ? `${review.customer_id.firstname} ${review.customer_id.lastname}` : maskMiddle(`${review.customer_id.firstname} ${review.customer_id.lastname}`)}</strong>
                      <Rating 
                         name="read-only"
                         value={review.rating}

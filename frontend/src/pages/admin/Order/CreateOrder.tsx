@@ -86,7 +86,7 @@ const CreateOrderPage = () => {
     }, [pagination.searchTerm, pagination.page, selectedCategory])
 
     const fetchProducts = async () => {
-        const response = await fetchData(`/api/products/reserved?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
+        const response = await fetchData(`/api/products?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
 
         if(response.success) {
             setPagination(prev => ({

@@ -21,6 +21,7 @@ const AdminProductReviews = () => {
         const getProductAsync = async () => {
             const response = await fetchData(`/api/products/${id}`);
             if(response.success) {
+                console.log(response)
                 setProduct(response.product)
             }
         }

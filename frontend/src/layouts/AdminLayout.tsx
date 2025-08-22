@@ -5,6 +5,7 @@ import type { RootState } from "../redux/store";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../hooks/useDarkmode";
 import { cn } from "../utils/utils";
+import LowStockNotification from "../components/LowStockNotification";
 
 const AdminLayout = () => {
     const isDark = useDarkmode();
@@ -28,6 +29,7 @@ const AdminLayout = () => {
 
 
     return <main className="h-screen md:pl-50">
+            <LowStockNotification />
             <AdminSidebar />
             <Outlet />
         </main>
