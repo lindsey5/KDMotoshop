@@ -97,7 +97,6 @@ const Products = () => {
     };
     
     const exportProducts = () => {
-        console.log(products)
         const dataToExport : any[] = []
         
         products.forEach(product => {
