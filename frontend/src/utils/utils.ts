@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import * as XLSX from 'xlsx';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,4 +35,15 @@ export function maskMiddle(str : string) : string{
   const lastChar = str[str.length - 1];
   const middleMask = '*'.repeat(str.length - 2);
   return firstChar + middleMask + lastChar;
+}
+
+export const exportData = ({ dataToExport, filename, sheetname } : { dataToExport : any[], filename: string, sheetname: string}) => {
+  // Convert to worksheet
+  const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+  // Create workbook
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetname);
+
+  XLSX.writeFile(workbook, filename);
 }

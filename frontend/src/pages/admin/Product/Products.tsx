@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom"
 import { Title } from "../../../components/text/Text"
 import PageContainer from "../../../components/containers/admin/PageContainer"
 import usePagination from "../../../hooks/usePagination"
+import { exportData } from "../../../utils/utils"
+import { formatDate } from "../../../utils/dateUtils"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -93,6 +95,38 @@ const Products = () => {
             page: 1
         }));
     };
+    
+    const exportProducts = () => {
+        console.log(products)
+        const dataToExport : any[] = []
+        
+        products.forEach(product => {
+            if(product.product_type === 'Single'){
+                dataToExport.push({
+                    product_name: product.product_name,
+                    sku: product.sku,
+                    stock: product.stock,
+                    category: product.category,
+                    weight: product.weight,
+                    rating: product.rating,
+                    price: product.price
+                })
+            }else{
+                product.variants.forEach(variant => {
+                    dataToExport.push({
+                        product_name: product.product_name,
+                        sku: variant.sku,
+                        stock: variant.stock,
+                        category: product.category,
+                        weight: product.weight,
+                        rating: product.rating,
+                        price: variant.price
+                    })
+                })
+            }
+        })
+        exportData({ dataToExport, filename: `KDMotoshop - Inventory (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
+    }
 
     return (
         <PageContainer className="w-full flex flex-col">
@@ -147,12 +181,7 @@ const Products = () => {
                         placeholder="Search by Product name, SKU, Category..."
                         value={pagination.searchTerm || ''}
                     />
-                    <CustomizedPagination 
-                        count={pagination.totalPages} 
-                        onChange={handlePage} 
-                        page={pagination.page}
-                        disabled={isLoading}
-                    />
+                    <Button variant="contained" onClick={exportProducts}>Export</Button>
                 </div>
                 <CustomizedTable
                     cols={<ProductTableColumns />}
@@ -165,6 +194,14 @@ const Products = () => {
                         <CircularProgress />
                     </div>
                 )}
+                <div className="flex justify-end mt-4">
+                    <CustomizedPagination 
+                        count={pagination.totalPages} 
+                        onChange={handlePage} 
+                        page={pagination.page}
+                        disabled={isLoading}
+                    />
+                </div>
             </Card>
         </PageContainer>
     );

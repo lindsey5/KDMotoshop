@@ -105,7 +105,7 @@ export const get_orders = async (req: Request, res: Response) => {
             Order.find(filter)
                 .skip(skip)
                 .limit(limit)
-                .populate({ path: 'customer.customer_id' })
+                .populate([{ path: 'customer.customer_id' }, { path: 'orderItems'}])
                 .sort({ createdAt: -1 }),
             Order.countDocuments(filter),
         ]);
@@ -118,6 +118,7 @@ export const get_orders = async (req: Request, res: Response) => {
             totalOrders,
         });
     } catch (err: any) {
+        console.log(err)
         res.status(500).json({ success: false, message: err.message });
     }
 }

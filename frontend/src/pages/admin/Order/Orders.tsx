@@ -19,6 +19,8 @@ import CustomizedPagination from "../../../components/Pagination";
 import { Title } from "../../../components/text/Text";
 import PageContainer from "../../../components/containers/admin/PageContainer";
 import usePagination from "../../../hooks/usePagination";
+import { Button } from "@mui/material";
+import { exportData } from "../../../utils/utils";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -68,6 +70,28 @@ const Orders = () => {
         getOrdersAsync();
     }, [selectedDates, selectedStatus, pagination.page, paymentMethod, from])
 
+    const exportOrders = () => {
+        const dataToExport : any[] = []
+        orders.forEach(order => {
+            order.orderItems?.forEach(item => {
+                dataToExport.push({
+                    order_id: order.order_id,
+                    order_date: order.createdAt,
+                    status: order.status,
+                    customer: `${order.customer.firstname} ${order.customer.lastname}`,
+                    order_channel: order.order_source,
+                    sku: item.sku,
+                    product_name: item.product_name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    amount: item.lineTotal,
+                })
+            })
+        })
+
+        exportData({ dataToExport, filename: 'KD Motoshop - Orders.xlsx', sheetname: 'Orders'})
+    }
+
 
     return <PageContainer className="flex flex-col">
         <div className="flex justify-between items-center mb-6">
@@ -75,7 +99,10 @@ const Orders = () => {
                 <Title className="mb-4">Orders</Title>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
-            <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
+            <div className="flex items-center gap-5">
+                <Button variant="contained" onClick={exportOrders}>Export</Button>
+                <RedButton startIcon={<AddIcon />} onClick={() => navigate('/admin/orders/create')}>Add Order</RedButton>
+            </div>
         </div>
         <OrderStatsCards />
         
