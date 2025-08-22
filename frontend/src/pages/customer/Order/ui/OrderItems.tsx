@@ -3,12 +3,12 @@ import useDarkmode from "../../../../hooks/useDarkmode"
 import { cn, formatNumber } from "../../../../utils/utils"
 import { RedButton } from "../../../../components/buttons/Button";
 import Card from "../../../../components/Card";
-import RateProductModal from "../../../../components/modals/RateProduct";
+import RateProductModal from "../../../ui/RateProduct";
 import { fetchData } from "../../../../services/api";
 import { Button, Rating } from "@mui/material";
 import { OrderItemStatusChip } from "../../../../components/Chip";
-import RequestRefundModal from "../../../../components/modals/CreateRefund";
-import CustomerRefundRequestModal from "../../../../components/modals/CustomerRefundRequest";
+import RequestRefundModal from "../../ui/CreateRefund";
+import CustomerRefundRequestModal from "../../ui/CustomerRefundRequest";
 
 const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
     const isDark = useDarkmode();

@@ -1,12 +1,12 @@
 import { Modal } from "@mui/material";
 import { memo, useMemo, useState } from "react";
-import { RedButton } from "../buttons/Button";
-import { successAlert } from "../../utils/swal";
-import { cn, formatNumber } from "../../utils/utils";
-import Counter from "../Counter";
-import Attributes from "../Attributes";
-import Card from "../Card";
-import useDarkmode from "../../hooks/useDarkmode";
+import { RedButton } from "../../../../components/buttons/Button";
+import { successAlert } from "../../../../utils/swal";
+import { cn, formatNumber } from "../../../../utils/utils";
+import Counter from "../../../../components/Counter";
+import Attributes from "../../../../components/Attributes";
+import Card from "../../../../components/Card";
+import useDarkmode from "../../../../hooks/useDarkmode";
 
 type AddOrderModalProps = {
     selectedProduct: Product | undefined;

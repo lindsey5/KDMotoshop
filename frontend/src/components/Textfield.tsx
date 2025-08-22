@@ -250,7 +250,7 @@ export const HeaderSearchField = () => {
 }
 
 
-export default function Otp1({ setOtp, otp } : { setOtp : React.Dispatch<React.SetStateAction<string[]>>; otp: string[]}) {
+export function Otp({ setOtp, otp } : { setOtp : React.Dispatch<React.SetStateAction<string[]>>; otp: string[]}) {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const isDark = useDarkmode();
 

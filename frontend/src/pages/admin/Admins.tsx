@@ -9,7 +9,7 @@ import { fetchData } from "../../services/api";
 import CustomizedTable from "../../components/Table";
 import { AdminsTableColumns, AdminsTableRow } from "./ui/AdminsTable";
 import { RedButton } from "../../components/buttons/Button";
-import CreateAdminModal from "../../components/modals/CreateAdminModal";
+import CreateAdminModal from "./ui/CreateAdminModal";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";

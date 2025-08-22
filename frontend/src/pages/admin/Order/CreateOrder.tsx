@@ -4,11 +4,11 @@ import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/buttons/Button";
 import AddIcon from '@mui/icons-material/Add';
-import AddOrderModal from "../../../components/modals/AddOrder";
+import AddOrderModal from "./ui/AddOrderModal";
 import { confirmDialog, successAlert } from "../../../utils/swal";
 import OrderContainer from "./ui/OrderContainer";
 import { cn, formatNumber } from "../../../utils/utils";
-import OrderInformationModal from "../../../components/modals/OrderInformation";
+import OrderInformationModal from "./ui/OrderInformationModal";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CategoryFilter from "../ui/CategoryFilter";
 import AddOrderProductContainer from "./ui/AddOrderProductContainer";
@@ -18,7 +18,7 @@ import { Title } from "../../../components/text/Text";
 import MenuIcon from '@mui/icons-material/Menu';
 import PageContainer from "../ui/PageContainer";
 import CloseIcon from '@mui/icons-material/Close';
-import ReceiptModal from "../../../components/modals/ReceiptModal";
+import ReceiptModal from "./ui/ReceiptModal";
 
 const OrderState : Order = {
     order_source: 'Store',

@@ -1,9 +1,9 @@
 import { X, Download } from 'lucide-react';
-import { formatToLongDateFormat } from '../../utils/dateUtils';
-import { formatNumber } from '../../utils/utils';
+import { formatToLongDateFormat } from '../../../../utils/dateUtils';
+import { formatNumber } from '../../../../utils/utils';
 import { Modal } from '@mui/material';
 import { useRef } from 'react';
-import { receiptHTML } from '../../constants';
+import { receiptHTML } from '../../../../constants';
 
 interface ReceiptModalProps {
   open: boolean;

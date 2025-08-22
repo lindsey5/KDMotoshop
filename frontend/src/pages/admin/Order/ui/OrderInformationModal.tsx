@@ -1,14 +1,14 @@
 import { Button, Modal } from "@mui/material";
 import React, { memo, type ChangeEvent } from "react";
-import { RedTextField } from "../Textfield";
-import { useAddress } from "../../hooks/useAddress";
-import { CustomizedSelect, StatusSelect } from "../Select";
+import { RedTextField } from "../../../../components/Textfield";
+import { useAddress } from "../../../../hooks/useAddress";
+import { CustomizedSelect, StatusSelect } from "../../../../components/Select";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
-import { RedButton } from "../buttons/Button";
-import Card from "../Card";
-import useDarkmode from "../../hooks/useDarkmode";
-import { cn } from "../../utils/utils";
+import { RedButton } from "../../../../components/buttons/Button";
+import Card from "../../../../components/Card";
+import useDarkmode from "../../../../hooks/useDarkmode";
+import { cn } from "../../../../utils/utils";
 
 const Statuses = [
     { value: 'Pending', label: 'Pending', color: 'orange' },

@@ -1,11 +1,11 @@
 import { Button, Modal } from "@mui/material"
-import { LineTextField } from "../Textfield";
-import { RedButton } from "../buttons/Button";
+import { LineTextField } from "../../../../components/Textfield";
+import { RedButton } from "../../../../components/buttons/Button";
 import { useState } from "react";
-import { postData } from "../../services/api";
-import { errorAlert } from "../../utils/swal";
-import Card from "../Card";
-import useDarkmode from "../../hooks/useDarkmode";
+import { postData } from "../../../../services/api";
+import { errorAlert } from "../../../../utils/swal";
+import Card from "../../../../components/Card";
+import useDarkmode from "../../../../hooks/useDarkmode";
 
 const CreateCategoryModal = ({ open, close } : ModalProps) => {
     const [category, setCategory] = useState<string>('');

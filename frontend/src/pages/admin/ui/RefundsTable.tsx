@@ -6,7 +6,7 @@ import UserAvatar from "../../ui/UserAvatar";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatNumber } from "../../../utils/utils";
 import { useState } from "react";
-import RefundRequestModal from "../../../components/modals/RefundRequest";
+import RefundRequestModal from "./RefundRequest";
 import { RefundStatusChip } from "../../../components/Chip";
 
 export const RefundsTableColumns = () => {

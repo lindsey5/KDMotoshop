@@ -1,11 +1,11 @@
 import { Modal, Rating } from "@mui/material"
 import type React from "react";
-import { RedTextField } from "../Textfield";
-import Card from "../Card";
+import { RedTextField } from "../../components/Textfield";
+import Card from "../../components/Card";
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import GradeIcon from '@mui/icons-material/Grade';
 import useDarkmode from "../../hooks/useDarkmode";
-import { RedButton } from "../buttons/Button";
+import { RedButton } from "../../components/buttons/Button";
 import { postData } from "../../services/api";
 import { memo, useState } from "react";
 

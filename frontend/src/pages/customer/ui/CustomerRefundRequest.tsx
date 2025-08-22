@@ -1,12 +1,12 @@
 import { Modal } from "@mui/material";
-import useDarkmode from "../../hooks/useDarkmode";
-import { RefundStatusChip } from "../Chip";
-import { ExpandableText } from "../text/Text";
-import Card from "../Card";
-import { formatNumber } from "../../utils/utils";
-import { cn } from "../../utils/utils";
-import { formatToLongDateFormat } from "../../utils/dateUtils";
-import { RedButton } from "../buttons/Button";
+import useDarkmode from "../../../hooks/useDarkmode";
+import { RefundStatusChip } from "../../../components/Chip";
+import { ExpandableText } from "../../../components/text/Text";
+import Card from "../../../components/Card";
+import { formatNumber } from "../../../utils/utils";
+import { cn } from "../../../utils/utils";
+import { formatToLongDateFormat } from "../../../utils/dateUtils";
+import { RedButton } from "../../../components/buttons/Button";
 
 interface RefundRequestModalProps {
   open: boolean;
