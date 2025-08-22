@@ -43,6 +43,7 @@ const ChatbotButton = () => {
                     <div className="flex gap-5 items-center mb-2">
                         <img className="w-8 h-8 md:w-12 md:h-12" src="/icons/chat-bot.png"/>
                         <h1 className="text-white text-lg md:text-2xl">Chat with Echo</h1>
+                        <p className="text-4xl animate-wave">👋</p>
                     </div>
                     <p className="text-gray-400 text-sm md:text-md">Powered by Gemini AI</p>
                 </div>

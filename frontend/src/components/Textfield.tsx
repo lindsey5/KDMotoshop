@@ -114,7 +114,7 @@ export const PasswordField = ({sx, ...props} : TextFieldProps) => {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton onClick={handleTogglePassword} edge="end">
-                  {showPassword ? <VisibilityOff sx={{ color: isDark ? 'white' : 'black'}}/> : <Visibility sx={{ color: isDark ? 'white' : 'black'}}/>}
+                  {showPassword ? <VisibilityOff sx={{ color: isDark ? '#919191' : 'black'}}/> : <Visibility sx={{ color: isDark ? '#919191' : 'black'}}/>}
                 </IconButton>
               </InputAdornment>
             ),
