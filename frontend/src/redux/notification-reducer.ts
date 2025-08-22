@@ -84,7 +84,7 @@ export const notificationsNextPage = createAsyncThunk<
 >(
   'notification/next',
   async ({ page, user }) => {
-    const response = await fetchData(`/api/notification/${user}?limit=30&page=${page}`);
+    const response = await fetchData(`/api/notifications/${user}?limit=30&page=${page}`);
     if (!response.success) throw new Error('Failed to fetch next page');
 
     return {

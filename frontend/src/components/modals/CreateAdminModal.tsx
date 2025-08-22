@@ -1,6 +1,6 @@
 import { Modal } from "@mui/material";
 import { memo, useEffect, useState } from "react";
-import Card from "../cards/Card";
+import Card from "../Card";
 import { RedTextField } from "../Textfield";
 import { RedButton } from "../buttons/Button";
 import PhoneInput from "react-phone-input-2";

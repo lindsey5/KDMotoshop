@@ -10,9 +10,9 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { successAlert } from "../../../utils/swal";
-import MultiImageSlideshow from "../../../components/images/MultiImageSlideShow";
-import ProductThumbnail from "../../../components/images/ProductThumbnail";
-import ProductReviews from "../../ProductReviews";
+import MultiImageSlideshow from "./ui/MultiImageSlideShow";
+import ProductThumbnail from "../../ui/ProductThumbnail";
+import ProductReviews from "../../ui/ProductReviews";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../redux/store";
@@ -153,7 +153,7 @@ const CustomerProduct = () => {
                         />
                 </div>
                 <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] border-gray-500 text-white')}>
-                    <h1 className="font-bold text-3xl">{product?.product_name}</h1>
+                    <h1 className="font-bold text-2xl md:text-3xl">{product?.product_name}</h1>
                     {product.rating !== 0 ? <div>
                         <div className="flex gap-3 items-center">
                             <Rating 

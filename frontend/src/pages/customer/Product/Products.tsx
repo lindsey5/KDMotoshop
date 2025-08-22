@@ -1,12 +1,12 @@
 import {  useEffect, useState } from "react"
 import { fetchData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CustomerProductContainer from "../../../components/containers/customer/CustomerProductContainer";
+import CustomerProductContainer from "./ui/CustomerProductContainer";
 import { CircularProgress, Slider } from "@mui/material";
 import { CustomizedSelect } from "../../../components/Select";
 import { RedButton } from "../../../components/buttons/Button";
 import { getProducts } from "../../../services/productService";
-import TopProductsContainer from "../../../components/containers/TopProductContainer";
+import TopProductsContainer from "../../ui/TopProductContainer";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";

@@ -1,13 +1,13 @@
-import PageContainer from "../../components/containers/admin/PageContainer";
+import PageContainer from "./ui/PageContainer";
 import BreadCrumbs from "../../components/BreadCrumbs";
 import { Title } from "../../components/text/Text";
-import Card from "../../components/cards/Card";
+import Card from "../../components/Card";
 import { SearchField } from "../../components/Textfield";
 import usePagination from "../../hooks/usePagination";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../services/api";
-import CustomizedTable from "../../components/tables/Table";
-import { AdminsTableColumns, AdminsTableRow } from "../../components/tables/AdminsTable";
+import CustomizedTable from "../../components/Table";
+import { AdminsTableColumns, AdminsTableRow } from "./ui/AdminsTable";
 import { RedButton } from "../../components/buttons/Button";
 import CreateAdminModal from "../../components/modals/CreateAdminModal";
 import { Navigate } from "react-router-dom";

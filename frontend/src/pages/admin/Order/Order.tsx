@@ -7,15 +7,15 @@ import { Avatar, Backdrop, Button, CircularProgress, IconButton } from "@mui/mat
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import OrderItemsContainer from "../../../components/containers/admin/OrderItems";
+import OrderItemsContainer from "./ui/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/buttons/Button";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
-import Card from "../../../components/cards/Card";
+import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { Title } from "../../../components/text/Text";
-import PageContainer from "../../../components/containers/admin/PageContainer";
+import PageContainer from "../ui/PageContainer";
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';

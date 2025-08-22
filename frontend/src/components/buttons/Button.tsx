@@ -5,26 +5,42 @@ import { postData } from "../../services/api";
 import { errorAlert } from "../../utils/swal";
 import { useNavigate } from "react-router-dom";
 
-export const RedButton = ({sx, ...props} : ButtonProps) => {
-    const isDark = useDarkmode();
+export const RedButton = ({ sx, ...props }: ButtonProps) => {
+  const isDark = useDarkmode();
 
-    return <Button 
-    variant="contained" 
-    sx={{ 
-        backgroundColor: 'red', 
+  return (
+    <Button
+      variant="contained"
+      sx={{
+        backgroundColor: "red",
         ":hover": {
-            backgroundColor: '#c03838'
+          backgroundColor: "#c03838",
         },
-        '&.Mui-disabled': {
-          border: 1,
-          color: isDark ? "gray" : '', 
-          borderColor: isDark ? 'gray' : ''
+        "&.Mui-disabled": {
+          backgroundColor: isDark ? "#2a2a2a" : "#e0e0e0",
+          color: isDark ? "gray" : "white",
         },
-        ...sx 
-    }} 
-    {...props} 
+
+        // 🔥 Responsive styles
+        fontSize: {
+          xs: "0.75rem", // small phones
+          sm: "0.875rem", // tablets
+        },
+        padding: {
+          xs: "6px 12px",
+          sm: "8px 16px",
+        },
+        borderRadius: {
+          xs: "6px",
+          sm: "8px",
+        },
+
+        ...sx,
+      }}
+      {...props}
     />
-}
+  );
+};
 
 export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black' | 'filled_blue' | 'outline'}) => {
     const isDark = useDarkmode()

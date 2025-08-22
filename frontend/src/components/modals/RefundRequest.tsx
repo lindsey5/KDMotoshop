@@ -2,7 +2,7 @@ import { Backdrop, CircularProgress, Modal } from "@mui/material";
 import useDarkmode from "../../hooks/useDarkmode";
 import { RefundStatusChip } from "../Chip";
 import { ExpandableText } from "../text/Text";
-import Card from "../cards/Card";
+import Card from "../Card";
 import { formatNumber } from "../../utils/utils";
 import { cn } from "../../utils/utils";
 import { formatToLongDateFormat } from "../../utils/dateUtils";

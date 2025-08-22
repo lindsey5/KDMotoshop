@@ -6,7 +6,7 @@ import { Parallax, ParallaxLayer, type IParallax } from '@react-spring/parallax'
 import { useRef, } from "react";
 import { cn } from "../../../utils/utils";
 import MobileHome from "./MobileView";
-import CustomerHeader from "../../../components/partials/customer/CustomerHeader";
+import CustomerHeader from "../ui/CustomerHeader";
 import SplashCursor from "../../../components/SplashCursor";
 import useDarkmode from "../../../hooks/useDarkmode";
 import RippleGrid from "../../../components/backgrounds/RippleGrid";

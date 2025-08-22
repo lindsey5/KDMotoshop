@@ -1,7 +1,7 @@
 import { Modal, Rating } from "@mui/material"
 import type React from "react";
 import { RedTextField } from "../Textfield";
-import Card from "../cards/Card";
+import Card from "../Card";
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import GradeIcon from '@mui/icons-material/Grade';
 import useDarkmode from "../../hooks/useDarkmode";

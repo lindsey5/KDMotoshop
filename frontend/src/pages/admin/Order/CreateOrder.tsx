@@ -6,17 +6,17 @@ import { RedButton } from "../../../components/buttons/Button";
 import AddIcon from '@mui/icons-material/Add';
 import AddOrderModal from "../../../components/modals/AddOrder";
 import { confirmDialog, successAlert } from "../../../utils/swal";
-import OrderContainer from "../../../components/containers/admin/OrderContainer";
+import OrderContainer from "./ui/OrderContainer";
 import { cn, formatNumber } from "../../../utils/utils";
 import OrderInformationModal from "../../../components/modals/OrderInformation";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import CategoryFilter from "../../../components/cards/admin/CategoryFilter";
-import ProductContainer from "../../../components/containers/admin/OrderProductContainer";
+import CategoryFilter from "../ui/CategoryFilter";
+import AddOrderProductContainer from "./ui/AddOrderProductContainer";
 import CircularProgress from '@mui/material/CircularProgress';
 import useDarkmode from "../../../hooks/useDarkmode";
 import { Title } from "../../../components/text/Text";
 import MenuIcon from '@mui/icons-material/Menu';
-import PageContainer from "../../../components/containers/admin/PageContainer";
+import PageContainer from "../ui/PageContainer";
 import CloseIcon from '@mui/icons-material/Close';
 import ReceiptModal from "../../../components/modals/ReceiptModal";
 
@@ -241,7 +241,7 @@ const CreateOrderPage = () => {
             <div className="flex flex-col flex-grow min-h-0 mt-4 overflow-y-auto">
                 <div className="2xl:grid-cols-4 lg:grid-cols-3 grid grid-cols-2 flex flex-wrap gap-5 p-3">
                     {products.map(product => (
-                        <ProductContainer 
+                        <AddOrderProductContainer
                             product={product}
                             key={product._id}
                             addOrder={addOrder}

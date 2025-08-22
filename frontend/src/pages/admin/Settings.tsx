@@ -2,7 +2,7 @@ import BreadCrumbs from "../../components/BreadCrumbs"
 import { Title } from "../../components/text/Text"
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
-import UserAvatar from "../../components/images/UserAvatar"
+import UserAvatar from "../ui/UserAvatar"
 import React, { useEffect, useState} from "react"
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { Backdrop, Button, CircularProgress } from "@mui/material"
@@ -13,7 +13,7 @@ import { RedButton } from "../../components/buttons/Button"
 import { updateData } from "../../services/api"
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
 import HistoryIcon from '@mui/icons-material/History';
-import PageContainer from "../../components/containers/admin/PageContainer"
+import PageContainer from "./ui/PageContainer"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../redux/store"

@@ -6,18 +6,18 @@ import { Backdrop, Button, CircularProgress, IconButton, RadioGroup } from "@mui
 import { RedButton } from "../../../components/buttons/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { confirmDialog, errorAlert } from "../../../utils/swal";
-import VariantContainer from "../../../components/containers/admin/VariantContainer";
+import VariantContainer from "../Order/ui/VariantContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../../services/productService";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import AddProductThumbnail from "../../../components/cards/admin/AddProductThumbnail";
-import ProductImages from "../../../components/cards/admin/ProductImages";
+import AddProductThumbnail from "./ui/AddProductThumbnail";
+import ProductImages from "../ui/ProductImages";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
-import Card from "../../../components/cards/Card";
-import PageContainer from "../../../components/containers/admin/PageContainer";
+import Card from "../../../components/Card";
+import PageContainer from "../ui/PageContainer";
 
 const productInitialState = {
     product_name: '',

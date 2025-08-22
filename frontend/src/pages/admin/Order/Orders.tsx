@@ -1,6 +1,6 @@
 import { RedButton } from "../../../components/buttons/Button"
 import AddIcon from '@mui/icons-material/Add';
-import CustomizedTable from "../../../components/tables/Table";
+import CustomizedTable from "../../../components/Table";
 import { SearchField } from "../../../components/Textfield";
 import { CustomizedSelect, StatusSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -9,15 +9,15 @@ import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import { OrderTableColumns, OrderTableRow } from "../../../components/tables/OrderTable";
+import { OrderTableColumns, OrderTableRow } from "./ui/OrderTable";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
-import { OrderStatsCards } from "../../../components/cards/admin/OrderStatsCard";
-import Card from "../../../components/cards/Card";
+import { OrderStatsCards } from "./ui/OrderStatsCard";
+import Card from "../../../components/Card";
 import CustomizedPagination from "../../../components/Pagination";
 import { Title } from "../../../components/text/Text";
-import PageContainer from "../../../components/containers/admin/PageContainer";
+import PageContainer from "../ui/PageContainer";
 import usePagination from "../../../hooks/usePagination";
 import { Button } from "@mui/material";
 import { exportData } from "../../../utils/utils";

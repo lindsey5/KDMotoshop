@@ -1,8 +1,8 @@
 import BreadCrumbs from "../../../components/BreadCrumbs"
-import Card from "../../../components/cards/Card"
-import PageContainer from "../../../components/containers/admin/PageContainer"
-import { LowStockTableColumns, LowStockTableRow } from "../../../components/tables/LowStocksTable"
-import CustomizedTable from "../../../components/tables/Table"
+import Card from "../../../components/Card"
+import PageContainer from "../ui/PageContainer"
+import { LowStockTableColumns, LowStockTableRow } from "./ui/LowStocksTable"
+import CustomizedTable from "../../../components/Table"
 import { Title } from "../../../components/text/Text"
 import useFetch from "../../../hooks/useFetch"
 

@@ -1,6 +1,6 @@
 import ChatbotButton from "../../../components/buttons/Chatbot";
-import CustomerFooter from "../../../components/partials/customer/CustomerFooter";
-import CustomerHeader from "../../../components/partials/customer/CustomerHeader";
+import CustomerFooter from "../ui/CustomerFooter";
+import CustomerHeader from "../ui/CustomerHeader";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import AboutSection from "./About";

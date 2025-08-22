@@ -3,7 +3,7 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn } from "../../../utils/utils"
 import { fetchData } from "../../../services/api";
-import Card from "../../../components/cards/Card";
+import Card from "../../../components/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
@@ -12,7 +12,7 @@ import { Statuses } from "../../../constants/status";
 import CustomizedPagination from "../../../components/Pagination";
 import { Navigate, useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
-import OrderItem from "../../../components/containers/admin/OrderItem";
+import OrderItem from "../../admin/Order/ui/OrderItem";
 import usePagination from "../../../hooks/usePagination";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";

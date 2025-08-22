@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchData } from "../../../services/api";
-import PageContainer from "../../../components/containers/admin/PageContainer";
-import ProductThumbnail from "../../../components/images/ProductThumbnail";
+import PageContainer from "../ui/PageContainer";
+import ProductThumbnail from "../../ui/ProductThumbnail";
 import { IconButton, Rating } from "@mui/material";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 import useDarkmode from "../../../hooks/useDarkmode";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { Title } from "../../../components/text/Text";
-import ProductReviews from "../../ProductReviews";
+import ProductReviews from "../../ui/ProductReviews";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const AdminProductReviews = () => {

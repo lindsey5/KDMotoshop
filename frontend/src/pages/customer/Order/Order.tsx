@@ -8,13 +8,13 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Card from "../../../components/cards/Card";
+import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
 import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
-import CustomerOrderItems from "../../../components/containers/customer/OrderItems";
+import CustomerOrderItems from "./ui/OrderItems";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../redux/store";
 

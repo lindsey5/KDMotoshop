@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { AdminSidebar } from "../components/partials/admin/Sidebar"
+import { AdminSidebar } from "../pages/admin/ui/Sidebar"
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../hooks/useDarkmode";
 import { cn } from "../utils/utils";
-import LowStockNotification from "../components/LowStockNotification";
+import LowStockNotification from "../pages/admin/Product/ui/LowStockNotification";
 
 const AdminLayout = () => {
     const isDark = useDarkmode();

@@ -3,7 +3,7 @@ import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import { Title } from "../../components/text/Text";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import Card from "../../components/cards/Card";
+import Card from "../../components/Card";
 import { RedButton } from "../../components/buttons/Button";
 import { Navigate, useNavigate } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
@@ -11,8 +11,8 @@ import CustomizedPagination from "../../components/Pagination";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import { CustomDateRangePicker } from "../../components/DatePicker";
-import UserAvatar from "../../components/images/UserAvatar";
-import PageContainer from "../../components/containers/admin/PageContainer";
+import UserAvatar from "../ui/UserAvatar";
+import PageContainer from "./ui/PageContainer";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";

@@ -1,5 +1,5 @@
 import { Modal} from "@mui/material"
-import Card from "../cards/Card"
+import Card from "../Card"
 import Otp from "../Textfield"
 import { useState } from "react"
 import EmailIcon from '@mui/icons-material/Email';

@@ -4,7 +4,7 @@ import { RedButton } from "../buttons/Button";
 import { useState } from "react";
 import { postData } from "../../services/api";
 import { errorAlert } from "../../utils/swal";
-import Card from "../cards/Card";
+import Card from "../Card";
 import useDarkmode from "../../hooks/useDarkmode";
 
 const CreateCategoryModal = ({ open, close } : ModalProps) => {

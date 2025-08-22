@@ -1,10 +1,10 @@
 import BreadCrumbs from "../../components/BreadCrumbs";
-import Card from "../../components/cards/Card";
-import CustomizedTable from "../../components/tables/Table";
-import { NotificationsTableColumns, NotificationTableRow } from "../../components/tables/NotificationTable";
+import Card from "../../components/Card";
+import CustomizedTable from "../../components/Table";
+import { NotificationTableRow, NotificationsTableColumns } from "./ui/NotificationTable";
 import { Title } from "../../components/text/Text";
 import CustomizedPagination from "../../components/Pagination";
-import PageContainer from "../../components/containers/admin/PageContainer";
+import PageContainer from "./ui/PageContainer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { notificationsPage } from "../../redux/notification-reducer";

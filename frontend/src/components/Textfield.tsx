@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import useDarkmode from "../hooks/useDarkmode";
 import React, { useEffect, useRef, useState } from "react";
 import { cn, formatNumber } from "../utils/utils";
-import ProductThumbnail from "./images/ProductThumbnail";
+import ProductThumbnail from "../pages/ui/ProductThumbnail";
 import { getProducts } from "../services/productService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 

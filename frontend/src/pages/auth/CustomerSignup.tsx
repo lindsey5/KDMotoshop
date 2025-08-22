@@ -36,7 +36,7 @@ const CustomerSignupPage = () => {
         <div className={cn("h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
             <VerifyEmailModal open={code !== undefined} customer={newCustomer as NewCustomer} code={code}/>
             <div className="flex justify-between items-center w-full">
-                <img className={cn("w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
+                <img className={cn("hidden sm:block w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
                     onClick={() => window.location.href = '/'} 
                     src="/kd-logo.png" alt="" 
                 />

@@ -1,10 +1,10 @@
 import { useMemo } from "react"
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import Card from "../../../components/cards/Card";
+import Card from "../../../components/Card";
 import { CustomizedChip } from "../../../components/Chip";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn, formatNumber } from "../../../utils/utils";
-import CartItemContainer from "../../../components/containers/customer/CartItem";
+import CartItemContainer from "./ui/CartItem";
 import { RedButton } from "../../../components/buttons/Button";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";

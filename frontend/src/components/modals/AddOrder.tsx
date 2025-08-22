@@ -5,7 +5,7 @@ import { successAlert } from "../../utils/swal";
 import { cn, formatNumber } from "../../utils/utils";
 import Counter from "../Counter";
 import Attributes from "../Attributes";
-import Card from "../cards/Card";
+import Card from "../Card";
 import useDarkmode from "../../hooks/useDarkmode";
 
 type AddOrderModalProps = {
