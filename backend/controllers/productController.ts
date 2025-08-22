@@ -255,7 +255,6 @@ export const get_top_products = async (req: Request, res: Response) => {
         { $limit: limit }
       ]);
 
-      // Get the top 10 product IDs
       const topProductIds = topProductsAggregation.map(item => item._id);
 
       // Fetch matching products
