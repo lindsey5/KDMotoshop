@@ -143,7 +143,6 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
-        console.log(orderItems)
         if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
             setShowCustomerModal(true);
         }else{

@@ -8,12 +8,14 @@ import { fetchData } from "../../../services/api";
 import { Button, Rating } from "@mui/material";
 import { OrderItemStatusChip, RefundStatusChip } from "../../Chip";
 import RequestRefundModal from "../../modals/CreateRefund";
+import CustomerRefundRequestModal from "../../modals/CustomerRefundRequest";
 
 const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
     const isDark = useDarkmode();
     const [ratingData, setRatingData] = useState<{orderItemId: string; product_id: string} | undefined>(undefined);
     const [review, setReview] = useState<Review>();
     const [showRequest, setShowRequest]= useState<boolean>(false);
+    const [refund, setRefund] = useState<RefundRequest>();
 
     const handleClose = () => {
         setRatingData(undefined)
@@ -30,7 +32,8 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
 
     return (
         <>
-        <RateProductModal 
+        {refund && <CustomerRefundRequestModal open={refund !== undefined} close={() => setRefund(undefined)} refundRequest={refund as RefundRequest}/>}
+        <RateProductModal
             open={ratingData !== undefined} 
             close={handleClose}
             orderItemId={ratingData?.orderItemId ?? ''}
@@ -50,7 +53,8 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                     ))}
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
                     <div className="flex gap-3 my-5">
-                        {item.refund_status ? <RefundStatusChip status={item.refund_status} /> :  <OrderItemStatusChip status={item.status} />}
+                        <OrderItemStatusChip status={item.status} />
+                        {item?.refund?.status && <RefundStatusChip status={item.refund.status} />}
                     </div>
                     {review && (
                         <div>
@@ -71,8 +75,8 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
                 )}
-                {item.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}}>View Refund Status</Button>}
-                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund_status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
+                {item?.refund?.status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setRefund(item?.refund)}>View Refund Status</Button>}
+                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund?.status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
             </div>
         </div>
         </>

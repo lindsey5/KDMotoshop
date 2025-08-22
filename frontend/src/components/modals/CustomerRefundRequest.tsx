@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import useDarkmode from "../../hooks/useDarkmode";
 import { RefundStatusChip } from "../Chip";
 import { ExpandableText } from "../text/Text";
@@ -6,9 +6,7 @@ import Card from "../cards/Card";
 import { formatNumber } from "../../utils/utils";
 import { cn } from "../../utils/utils";
 import { formatToLongDateFormat } from "../../utils/dateUtils";
-import { updateData } from "../../services/api";
-import { confirmDialog } from "../../utils/swal";
-import { useState } from "react";
+import { RedButton } from "../buttons/Button";
 
 interface RefundRequestModalProps {
   open: boolean;
@@ -16,12 +14,13 @@ interface RefundRequestModalProps {
   refundRequest: RefundRequest;
 }
 
-const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
+const CustomerRefundRequestModal: React.FC<RefundRequestModalProps> = ({
   open,
   close,
   refundRequest,
 }) => {
     const isDark = useDarkmode();
+    console.log(refundRequest)
 
     return (
         <Modal
@@ -97,23 +96,10 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                         <p>Refund Status:</p>
                         <RefundStatusChip status={refundRequest.status}/>
                     </div>
-                    <a className={cn("underline", isDark ? 'text-blue-400' : 'text-blue-500' )} href={`/admin/orders/${refundRequest.order_item_id.order_id._id}`}>View Order</a>
                 </div>
                 <hr className="border-gray-300"/>
                 <div className="space-y-2 mb-8">
-                    <h3 className="md:text-lg font-bold">Customer Details</h3>
-                    <div className="flex items-center gap-2">
-                        <img
-                        src={refundRequest.customer_id.image.imageUrl}
-                        alt={`${refundRequest.customer_id.firstname} ${refundRequest.customer_id.lastname}`}
-                        className="w-10 h-10 rounded-full"
-                        />
-                        <div>
-                            <p>{refundRequest.customer_id.firstname} {refundRequest.customer_id.lastname}</p>
-                            <p className={cn("text-sm", isDark ? 'text-blue-400' : 'text-blue-600')}>{refundRequest.customer_id.email}</p>
-                        </div>
-                    </div>
-                    <div className="text-sm mt-4">
+                    <div className="text-sm md:text-base mt-4">
                         <h2 className="font-semibold">Address</h2>
                         <p>{refundRequest.order_item_id.order_id.customer.firstname} {refundRequest.order_item_id.order_id.customer.lastname}</p>
                         <p>{refundRequest.order_item_id.order_id.customer.phone}</p>
@@ -132,120 +118,13 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
             </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="mt-6 flex justify-between gap-2">
                 <p>Refund Date: {formatToLongDateFormat(refundRequest.createdAt)}</p>
-                <div className="flex gap-5 items-center">
-                    <RefundRequestButtons status={refundRequest.status} id={refundRequest._id as string} />
-                </div>
+                <RedButton onClick={close}>Close</RedButton>
             </div>
         </Card>
         </Modal>
     );
 };
 
-export default RefundRequestModal
-
-const RefundRequestButtons = ({ status, id } : { status : RefundRequest['status'], id : string}) => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const isDark = useDarkmode();
-
-    const handleUpdate = async (status: string) => {
-        if(await confirmDialog(`Are you sure you want to mark this as ${status}?`, 'This action cannot be undone.', isDark)) {
-            setLoading(true)
-            const response = await updateData(`/api/refunds/${id}`, { status });
-            if(response.success){
-                window.location.reload(); 
-            }
-            setLoading(false);
-        }
-    }
-
-    if(loading){
-        return (
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
-        );
-
-    }
-
-    // utility for light vs dark classes
-    const getBtnClass = (style: string) => 
-        `${style} px-4 py-2 rounded-lg font-medium transition-colors duration-200 disabled:opacity-60`;
-
-    if(status === 'Pending') {
-        return (
-            <div className="flex gap-2">
-                <button 
-                    onClick={() => handleUpdate('Rejected')}
-                    className={getBtnClass("bg-red-600 text-white hover:bg-red-700")}
-                >
-                    Reject
-                </button>
-                <button 
-                    onClick={() => handleUpdate('Under Review')}
-                    className={getBtnClass("bg-blue-600 text-white hover:bg-blue-700")}
-                >
-                    Under Review
-                </button>
-            </div>
-        );
-    }
-
-    if(status === 'Under Review') {
-        return (
-            <button 
-                onClick={() => handleUpdate('Approved')}
-                className={getBtnClass("bg-blue-600 text-white hover:bg-blue-700")}
-            >
-                Approve
-            </button>
-        );
-    }
-
-    if(status === 'Approved') {
-        return (
-            <button 
-                onClick={() => handleUpdate('Processing')}
-                className={getBtnClass("bg-green-600 text-white hover:bg-green-700")}
-            >
-                In Process
-            </button>
-        );
-    }
-
-    if(status === 'Processing') {
-        return (
-            <button 
-                onClick={() => handleUpdate('Completed')}
-                className={getBtnClass("bg-green-600 text-white hover:bg-green-700")}
-            >
-                Complete
-            </button>
-        );
-    }
-
-    if(status === 'Completed') {
-        return (
-            <button 
-                disabled
-                className={getBtnClass("border border-green-600 text-green-600")}
-            >
-                Completed
-            </button>
-        );
-    }
-
-    return (
-        <button 
-            disabled
-            className={getBtnClass("border border-gray-400 text-gray-600")}
-        >
-            {status}
-        </button>
-    );
-};
+export default CustomerRefundRequestModal

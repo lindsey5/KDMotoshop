@@ -7,6 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatNumber } from "../../utils/utils";
 import { useState } from "react";
 import RefundRequestModal from "../modals/RefundRequest";
+import { RefundStatusChip } from "../Chip";
 
 export const RefundsTableColumns = () => {
     return (
@@ -42,7 +43,7 @@ export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
             <StyledTableCell isDark={isDark}>{request.order_item_id.order_id.order_id}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.order_item_id.product_id.product_name}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.quantity}</StyledTableCell>
-            <StyledTableCell isDark={isDark}>{request.status}</StyledTableCell>
+            <StyledTableCell isDark={isDark}><RefundStatusChip status={request.status}/></StyledTableCell>
             <StyledTableCell isDark={isDark}>₱{formatNumber(request.totalAmount)}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{formatDate(request.createdAt)}</StyledTableCell>
             <StyledTableCell isDark={isDark} align='center'>

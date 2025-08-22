@@ -84,3 +84,68 @@ export const sendOrderUpdate = async (email: string, order_id : string, firstnam
     throw new Error('Failed to send order update email.');
   }
 };
+
+interface RefundUpdateProps {
+  email: string;
+  order_id: string;
+  firstname: string;
+  status: string;
+  product_name: string;
+  quantity: number;
+  product_image: string;
+}
+
+export const sendRefundUpdate = async ({
+  email,
+  order_id,
+  firstname,
+  status,
+  product_name,
+  quantity,
+  product_image,
+}: RefundUpdateProps) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `KD Motoshop <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `KD MotoShop Refund Update - Order #${order_id}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>Hi ${firstname},</h2>
+          <p>Your refund request for the following item has been updated:</p>
+          <div style="border:1px solid #ddd; padding:10px; margin:15px 0;">
+            <img src="${product_image}" alt="${product_name}" width="100" style="margin-bottom:10px;" />
+            <p><strong>Product:</strong> ${product_name}</p>
+            <p><strong>Quantity:</strong> ${quantity}</p>
+            <p><strong>Status:</strong> <span style="color:${status === "Rejected" ? "red" : status === "Approved" ? "green" : "blue"};">${status}</span></p>
+          </div>
+          <p>Order ID: <strong>${order_id}</strong></p>
+          <p style="font-size: 16px; color: #333;">
+            If you have any questions or concerns, feel free to reach out to our support team.
+          </p>
+          <p style="font-size: 16px; color: #333;">Thank you for choosing KD Motoshop!</p>
+          <hr style="margin: 30px 0;">
+          <p style="text-align: center; color: #aaa; font-size: 12px;">
+              © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
+          </p>
+        </div>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Refund update email sent:", info.messageId);
+
+    return true;
+  } catch (err: any) {
+    console.error("Error sending email:", err.message);
+    throw new Error("Failed to send refund update email.");
+  }
+};

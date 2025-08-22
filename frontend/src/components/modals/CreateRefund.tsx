@@ -60,6 +60,7 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
 
         if (response.success) {
             setLoading(false);
+            close();
             await successAlert(
                 'Refund Request Submitted',
                 'Your refund request is now pending. We will review it shortly.',
@@ -76,8 +77,8 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
         const file = e.target.files?.[0];
         if(!file) return;
 
-        if (file.size > 50 * 1024 * 1024) {
-            await errorAlert("Video must be under 50 MB.", '', isDark);
+        if (file.size > 30 * 1024 * 1024) {
+            window.alert("File size exceeds 30MB limit. Please upload a smaller video.");
             return;
         }
             const reader = new FileReader();
@@ -92,7 +93,7 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
     };
 
     return (
-        <Modal open={open} onClose={close} className="z-99 p-5 flex justify-center items-start overflow-y-auto">
+        <Modal open={open} onClose={close} className="p-5 flex justify-center items-start overflow-y-auto">
                 <Card className="w-[90%] md:max-w-[600px] md:w-[70%] lg:w-1/2 flex flex-col gap-5">
                     <Backdrop
                         sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}

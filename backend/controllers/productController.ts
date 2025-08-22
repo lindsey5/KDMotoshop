@@ -77,8 +77,7 @@ export const get_products = async (req: Request, res: Response) => {
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message });
     }
-  };
-
+};
 
 export const get_products_with_reserved = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
@@ -389,26 +388,132 @@ export const get_top_products = async (req: Request, res: Response) => {
     }
 }
 
-export const get_low_stock_products = async (req: Request, res: Response) => {
-    try{
-      const products = await Product.find({
-        $or: [
-          { stock: { $lte: 10 }},
-          { 'variants.stock': { $lte: 10 }}
-        ],
+export const get_products_stock_status = async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const daysPassed = Math.max(1, Math.ceil((now.getTime() - startOfMonth.getTime()) / (1000 * 60 * 60 * 24)) );
 
-      })
+    // 1. Aggregate daily sales per SKU
+    const dailySales = await OrderItem.aggregate([
+      {
+        $match: {
+          status: { $in: ["Fulfilled", "Rated"] },
+          createdAt: { $gte: startOfMonth, $lte: now },
+        },
+      },
+      {
+        $addFields: {
+          day: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
+        }
+      },
+      {
+        $group: {
+          _id: { sku: "$sku", product_id: "$product_id", day: "$day" },
+          qty: { $sum: "$quantity" },
+        },
+      },
+      {
+        $group: {
+          _id: { sku: "$_id.sku", product_id: "$_id.product_id" },
+          daily: { $push: "$qty" },
+          totalQty: { $sum: "$qty" },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id.product_id",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      { $unwind: "$product" },
+      {
+        $addFields: {
+          stock: {
+            $cond: [
+              { $eq: ["$product.product_type", "Variable"] },
+              {
+                $let: {
+                  vars: {
+                    matchedVariant: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$product.variants",
+                            as: "v",
+                            cond: { $eq: ["$$v.sku", "$_id.sku"] },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                  },
+                  in: "$$matchedVariant.stock",
+                },
+              },
+              "$product.stock",
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          sku: "$_id.sku",
+          product_name: "$product.product_name",
+          current_stock: "$stock",
+          daily: 1,
+          totalQty: 1,
+        },
+      },
+    ]);
 
-      const filteredProducts =products.map(product => {
-        if(product.product_type === 'Variable') product.variants = product.variants.filter(v => v.stock <= 10)
-        return product
-      })
+    // 2. Compute stock status for each product
+    const leadTimeDays = 7; // default (can be per supplier)
+    const serviceLevelZ = 1.65; // 95% confidence
 
-      res.status(200).json({ success: true, products: filteredProducts })
+    const results = dailySales.map((p) => {
+      const dailyArr = p.daily.length ? p.daily : [0];
 
+      // Average daily sales
+      const avgDailySales = p.totalQty / daysPassed;
 
-    }catch(err : any){
-        console.error(err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-}
+      // Standard deviation of daily sales
+      const mean = avgDailySales;
+      const variance =
+        dailyArr.reduce((sum: number, val: number) => sum + Math.pow(val - mean, 2), 0) /
+        dailyArr.length;
+
+      const stdDev = Math.sqrt(variance);
+
+      // Dynamic safety stock
+      const safetyStock = Math.ceil(
+        serviceLevelZ * stdDev * Math.sqrt(leadTimeDays)
+      );
+
+      // Reorder point
+      const reorderPoint = Math.ceil(avgDailySales * leadTimeDays + safetyStock);
+
+      // Status
+      let status = "In Stock";
+      if (!p.current_stock || p.current_stock <= 0) status = "Out of Stock";
+      else if (p.current_stock <= reorderPoint) status = "Low Stock";
+
+      return {
+        sku: p.sku,
+        name: p.product_name,
+        current_stock: p.current_stock ?? 0,
+        avg_daily_sales: avgDailySales.toFixed(2),
+        safety_stock: safetyStock,
+        reorder_point: reorderPoint,
+        status,
+      };
+    });
+
+    res.json({ success: true, products: results });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

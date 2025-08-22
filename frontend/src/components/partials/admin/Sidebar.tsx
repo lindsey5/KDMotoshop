@@ -24,6 +24,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const NotificationLink = () => {
   const { unread } = useSelector((state : RootState) => state.notification)
@@ -104,6 +105,7 @@ export const AdminSidebar = () => {
                   <SidebarLink label="Reviews" icon={<ThumbUpIcon sx={{ width: 22, height: 22 }} />} path="/admin/reviews" />
                   <SidebarLink label="Refunds" icon={<ReplayRoundedIcon sx={{ width: 22, height: 22 }} />} path="/admin/refunds" />
                   <SidebarLink label="Customers" icon={<PersonIcon sx={{ width: 22, height: 22 }} />} path="/admin/customers" />
+                  <SidebarLink label="Low Stock Alert" icon={<WarningIcon sx={{ width: 22, height: 22 }} />} path="/admin/low-stock-alerts" />
                 </div>
               </Collapse>
             </div>

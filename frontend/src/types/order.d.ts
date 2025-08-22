@@ -41,7 +41,7 @@ type OrderItem = {
     lineTotal: number;
     image:  string | null,
     status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated' | 'Cancelled',
-    refund_status?: 'Pending' | 'Under Review' | 'Approved' | 'Rejected' | 'Processing' | 'Completed' | 'Cancelled';
+    refund?: RefundRequest;
     weight: number;
     createdAt?: Date;
 }

@@ -22,6 +22,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const options = [
+    { label: 'A-Z', value: 'a-z' },
     { label: 'Rating high to low', value: 'ratingDesc' },
     { label: 'Rating low to high', value: 'ratingAsc' },
     { label: 'Newest', value: 'newest' },
@@ -70,7 +71,7 @@ const CustomerProducts = () => {
 
     const getAllProducts = async () => {
         setLoading(true);
-        const response = await getProducts(`page=${pagination.page}&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm ?? ''}`);
+        const response = await getProducts(`page=${pagination.page}&limit=${20}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm ?? ''}`);
         
         if(response.success) {
             setPagination(prev => ({
@@ -105,7 +106,7 @@ const CustomerProducts = () => {
 
     const filterProducts = async () => {
         setLoading(true);
-        const response = await getProducts(`page=1&limit=${30}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
+        const response = await getProducts(`page=1&limit=${20}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
         
         if(response.success) {
             setPagination(prev => ({

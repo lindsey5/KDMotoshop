@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { create_product, get_low_stock_products, get_product_by_id, get_product_by_id_with_reserved, get_products, get_products_with_reserved, get_top_products, update_product } from "../controllers/productController";
+import { create_product, get_products_stock_status, get_product_by_id, get_product_by_id_with_reserved, get_products, get_products_with_reserved, get_top_products, update_product } from "../controllers/productController";
 import { adminRequireAuth } from "../middlewares/authMiddleware";
 
 const router = Router();
@@ -8,7 +8,7 @@ router.post('/', adminRequireAuth, create_product);
 router.get('/', get_products);
 router.get('/reserved', get_products_with_reserved);
 router.get('/top', get_top_products);
-router.get('/low', adminRequireAuth, get_low_stock_products)
+router.get('/stock-status', adminRequireAuth, get_products_stock_status);
 router.get('/:id/reserved', get_product_by_id_with_reserved);
 router.get('/:id', get_product_by_id);
 router.put('/:id', adminRequireAuth, update_product);

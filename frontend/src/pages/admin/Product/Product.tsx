@@ -23,7 +23,7 @@ const productInitialState = {
     product_name: '',
     description: '',
     category: '',
-    product_type: 'Single',
+    product_type: 'Single' as 'Single' | 'Variable',
     sku: undefined,
     price: undefined,
     stock: undefined,
@@ -89,7 +89,7 @@ const ProductPage = () => {
         if(id) getProduct(id as string);
     }, [])
 
-    const handleProductType = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, product_type: event.target.value});
+    const handleProductType = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, product_type: event.target.value as 'Single' | 'Variable'});
     const handleVisibility = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, visibility: event.target.value});
 
     const handleThumbnail = (e: React.ChangeEvent<HTMLInputElement>) => {

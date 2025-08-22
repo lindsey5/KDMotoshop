@@ -25,23 +25,25 @@ export const sendCustomerNotification = async (customer_id : string, order_id: s
     }
 }
 
-export const sendAdminsNotification = async (customer_id : string, order_id: string, content : string) => {
+type AdminNotificationData = {
+    from: string;
+    order_id: string;
+    product_id?: string;
+    content: string;
+}
+
+export const sendAdminsNotification = async (notificationData : AdminNotificationData) => {
     try{
         const admins = await Admin.find();
 
         for(const admin of admins){
-            const notification = new AdminNotification({
-                from: customer_id,
-                to: admin._id,
-                order_id,
-                content,
-            })
+            const notification = new AdminNotification({...notificationData, to: admin._id});
 
             await notification.save();
             const admin_id = (admin._id as Types.ObjectId).toString();
 
             const socketId = userSocketMap.get(admin_id as string);
-            console.log(socketId)
+
             const completedNotification = await AdminNotification.findById(notification._id).populate('from');
             if(socketId) socketInstance?.to(socketId).emit('adminNotification', completedNotification);
         }

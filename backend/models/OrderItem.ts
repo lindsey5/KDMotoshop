@@ -32,15 +32,20 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     lineTotal: { type: Number, required: true },
-    refund_status: {
-      type: String,
-      enum: ['Pending', 'Under Review', 'Approved', 'Rejected', 'Processing', 'Completed', 'Cancelled'],
-      required: false
-    },
     status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Rated', 'Cancelled'], default: 'Unfulfilled' },
   },
   { timestamps: true }
 );
+
+OrderItemSchema.virtual("refund", {
+  ref: "RefundRequest",
+  localField: "_id",
+  foreignField: "order_item_id",
+  justOne: true,   
+});
+
+OrderItemSchema.set("toObject", { virtuals: true });
+OrderItemSchema.set("toJSON", { virtuals: true });
 
 const OrderItem = mongoose.model<OrderItem>('OrderItem', OrderItemSchema);
 export default OrderItem;

@@ -56,9 +56,11 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         if(orderItems.every(item => item.status === 'Rated' || item.status === 'Refunded')) await Order.findByIdAndUpdate(orderItem.order_id, { status: 'Rated'}, { new: true })
 
         await sendAdminsNotification(
-            req.user_id ?? '', 
-            orderItem.order_id.toString(), 
-            `${customer?.firstname} ${customer?.lastname} has submitted a review for ${orderItem.product_name}`
+            {
+                from: customer._id as string,
+                order_id: orderItem.order_id.toString(),
+                content: `New review for ${product.product_name} by ${customer.firstname} ${customer.lastname}`
+            }
         )
 
         res.status(201).json({ success: true, review })

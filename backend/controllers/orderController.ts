@@ -158,7 +158,21 @@ export const get_order_by_id = async (req: Request, res: Response) => {
         }
 
         const orderItems = await OrderItem.find({ order_id: order._id })
-            .populate('product_id');
+        .populate([
+            { path: "product_id" },
+            {
+            path: "refund",
+            populate: [
+                {
+                path: "order_item_id",
+                populate: [
+                    { path: "order_id" },
+                    { path: "product_id", select: "product_name thumbnail" }
+                ]
+                }
+            ]
+            }
+        ]);
 
         const formattedItems = orderItems.map(item => {
             const { product_id, ...rest } = item.toObject();
@@ -370,11 +384,11 @@ export const cancel_order = async (req: Request, res: Response) => {
 
         const customer = order.customer
         if(customer.customer_id){
-            await sendAdminsNotification(
-                customer.customer_id?.toString(), 
-                order._id as string, 
-                `${order.customer.firstname} ${order.customer.lastname} has cancelled the order.`
-            )
+            await sendAdminsNotification({
+                from: customer.customer_id?.toString(), 
+                order_id: order._id as string, 
+                content: `Order ${order.order_id} has been cancelled`
+            })
         }
 
         res.status(200).json({ 

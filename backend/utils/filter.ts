@@ -40,8 +40,8 @@ export const createProductFilter = ({ searchTerm, min, max, category, visibility
 
 export const determineSortOption = (sort : string) : { [key: string]: SortOrder }  => {
     let sortOption: { [key: string]: SortOrder };
-
-    if (sort === "ratingDesc") sortOption = { rating: -1 };
+    if(sort === "a-z") sortOption = { product_name: 1 };
+    else if (sort === "ratingDesc") sortOption = { rating: -1 };
     else if (sort === "ratingAsc") sortOption = { rating: 1 };
     else if (sort === "oldest") sortOption = { createdAt: 1 };
     else sortOption = { createdAt: -1}

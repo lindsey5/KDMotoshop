@@ -45,9 +45,7 @@ const Orders = () => {
         const startDate = selectedDates?.[0] ? selectedDates[0].toString() : '';
         const endDate = selectedDates?.[1] ? selectedDates[1].toString() : '';
 
-        const response = await fetchData(
-            `/api/orders?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`
-        );
+        const response = await fetchData(`/api/orders?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`);
 
         if (response.success) {
             setPagination(prev => ({ ...prev, totalPages: response.totalPages }));

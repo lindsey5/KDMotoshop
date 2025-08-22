@@ -16,6 +16,7 @@ import express from 'express'
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import refundRoutes from './routes/refundRoutes';
+import alertRoutes from './routes/alertRoutes';
 
 const app = express();
 
@@ -77,5 +78,6 @@ app.use('/api/notifications', notificationRoutes)
 app.use('/api/activities', activityLogRoutes)
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/refunds', refundRoutes)
+app.use('/api/alerts', alertRoutes);
 
 export default app

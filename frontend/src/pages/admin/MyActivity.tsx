@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { fetchData } from "../../services/api";
+import { useMemo, useState } from "react";
 import { formatDateWithWeekday } from "../../utils/dateUtils";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
 import usePagination from "../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
+import useFetch from "../../hooks/useFetch";
 
 interface ActivityLog{
     _id: string;
@@ -27,34 +27,31 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const MyActivity = () => {
-    const [activityLogs, setActivityLogs] = useState<GroupedActivityLogs>({})
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
+
+    const { startDate, endDate } = useMemo(()=> {
+        const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
+        const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
+
+        return { startDate, endDate }
+    }, [selectedDates])
+
     const { pagination, setPagination } = usePagination();
-    const [loading, setLoading] = useState<boolean>(true);
+    const { data, loading } = useFetch(`/api/activities/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`);
 
-    useEffect(() => {
-        const get_activity_logs = async () => {
-            setLoading(true);
-            const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
-            const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
-            const response = await fetchData(`/api/activities/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
-            if(response.success){
-                const groupedLogs = response.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
-                    const dateKey = formatDateWithWeekday(item.createdAt);
-                    if (!acc[dateKey]) {
-                        acc[dateKey] = [];
-                    }
-                    acc[dateKey].push(item);
-                    return acc;
-                }, {})
-                setPagination(prev => ({ ...prev, totalPages: response.totalPages}))
-                setActivityLogs(groupedLogs)
+    const activityLogs = useMemo<GroupedActivityLogs>(() => {
+        if(!data) return {}
+        const groupedLogs = data.activityLogs.reduce((acc : GroupedActivityLogs, item : ActivityLog) => {
+            const dateKey = formatDateWithWeekday(item.createdAt);
+            if (!acc[dateKey]) {
+                acc[dateKey] = [];
             }
-            setLoading(false);
-        }
-
-        get_activity_logs()
-    }, [pagination.page, selectedDates])
+            acc[dateKey].push(item);
+            return acc;
+        }, {})
+        setPagination(prev => ({ ...prev, totalPages: data.totalPages}))
+        return groupedLogs
+    }, [data])
 
     return (
         <ActivityLogsPage 

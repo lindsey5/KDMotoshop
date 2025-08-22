@@ -7,6 +7,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
+  timeout: 300000, // 5 minutes (default is 60 seconds)
 });
 
 export const uploadImage = async (image: string): Promise<UploadedImage | null> => {
@@ -38,9 +39,10 @@ export const deleteImage = async (publicId: string) => {
 
 export const uploadVideo = async (video: string): Promise<{ videoPublicId: string; videoUrl: string } | null> => {
   try {
-    const result = await cloudinary.uploader.upload(video, {
+const result = await cloudinary.uploader.upload(video, {
       folder: 'kd-motoshop/videos',
       resource_type: 'video',
+      timeout: 300000,
     });
 
     return {
