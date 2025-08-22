@@ -3,7 +3,7 @@ import { ThemeToggle } from "../../components/Toggle"
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import { GoogleButton, RedButton } from "../../components/buttons/Button"
-import { RedTextField } from "../../components/Textfield"
+import { PasswordField, RedTextField } from "../../components/Textfield"
 import { useState } from "react"
 import VerifyEmailModal from "../../components/modals/VerifyEmail"
 import { postData } from "../../services/api"
@@ -80,15 +80,13 @@ const CustomerSignupPage = () => {
                             onChange={(e) => setNewCustomer(prev => ({...prev!, lastname: e.target.value}))}
                         />
                         </div>
-                        <RedTextField 
+                        <PasswordField 
                             placeholder="Password" 
-                            type="password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, password: e.target.value}))}
                         />
-                        <RedTextField 
+                        <PasswordField 
                             placeholder="Confirm password" 
-                            type="password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, confirmPassword: e.target.value}))}
                         />

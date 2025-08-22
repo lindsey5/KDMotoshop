@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { cn, formatNumber } from "../utils/utils";
 import ProductThumbnail from "./images/ProductThumbnail";
 import { getProducts } from "../services/productService";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
@@ -94,6 +95,32 @@ export const RedTextField = ({ sx, ...props } : TextFieldProps) => {
 
     />
   )
+}
+
+export const PasswordField = ({sx, ...props} : TextFieldProps) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const isDark = useDarkmode()
+
+    const handleTogglePassword = () => {
+      setShowPassword((prev) => !prev);
+    };
+
+    return (
+        <RedTextField 
+          type={showPassword ? "text" : "password"} 
+          sx={sx} 
+          {...props} 
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleTogglePassword} edge="end">
+                  {showPassword ? <VisibilityOff sx={{ color: isDark ? 'white' : 'black'}}/> : <Visibility sx={{ color: isDark ? 'white' : 'black'}}/>}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+    )
 }
 
 export const SearchField = ({ sx, placeholder, onChange } : TextFieldProps) => {

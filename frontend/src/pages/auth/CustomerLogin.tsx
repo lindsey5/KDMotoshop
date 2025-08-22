@@ -1,7 +1,7 @@
 import { GoogleButton, RedButton } from "../../components/buttons/Button";
 import { cn } from "../../utils/utils";
 import { ThemeToggle } from "../../components/Toggle";
-import { RedTextField } from "../../components/Textfield";
+import { PasswordField, RedTextField } from "../../components/Textfield";
 import useDarkmode from "../../hooks/useDarkmode";
 import * as motion from "motion/react-client"
 import { useState } from "react";
@@ -69,7 +69,7 @@ const CustomerLogin = () => {
                     </div>
                     {error && <p className="text-red-600">{error}</p>}
                     <RedTextField required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                    <RedTextField required placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <PasswordField required placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <a className={cn("hover:underline text-gray-600", isDark && 'text-gray-200')} href="">Forgot Password</a>
                     <RedButton type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
                     <div className="w-full flex justify-center mt-4">
