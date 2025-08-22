@@ -46,7 +46,7 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
             </div>
             <div className="flex gap-3 my-5">
                 <OrderItemStatusChip status={item.status} />
-                {item.refund_status && <RefundStatusChip status={item.refund_status} />}
+                {item.refund?.status && <RefundStatusChip status={item.refund?.status} />}
             </div>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
         </div>

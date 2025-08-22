@@ -132,8 +132,6 @@ function getRefundStatusConfig(status: RefundRequest['status']) {
       return { color: "primary" as const, icon: <AutorenewRoundedIcon fontSize="small" /> };
     case "Completed":
       return { color: "success" as const, icon: <DoneAllRoundedIcon fontSize="small" /> };
-    case "Cancelled":
-      return { color: "error" as const, icon: <CancelRoundedIcon fontSize="small" /> };
     default:
       return { color: "default" as const, icon: undefined };
   }

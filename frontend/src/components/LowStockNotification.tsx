@@ -72,7 +72,7 @@ const LowStockNotification = () => {
                 className="text-gray-400 hover:text-gray-600"
                 onClick={() => dismiss(a.sku)}
                 >
-                <X size={16} />
+                <X size={18} />
                 </button>
             </div>
             </Card>
