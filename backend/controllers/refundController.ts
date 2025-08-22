@@ -161,7 +161,7 @@ export const updateRefundRequest = async (req : Request, res : Response) => {
         const payment = await Payment.findOne({ order_id: populatedRefund.order_item_id.order_id._id });
 
         if(payment && status === 'Completed'){
-            await refundPayment(payment._id.toString(), populatedRefund.totalAmount * 100);
+            await refundPayment(payment.payment_id, populatedRefund.totalAmount * 100);
         }
 
         res.status(200).json({ success: true, message: 'Refund request updated successfully', refundRequest });

@@ -21,8 +21,6 @@ export const createPaymentCheckout = async (req : Request, res: Response) => {
             quantity: 1,
         })
 
-        console.log(orderItems, cart, order)
-
         const options = {
             method: 'POST',
             headers: {
