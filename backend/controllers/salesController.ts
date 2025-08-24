@@ -4,8 +4,6 @@ import OrderItem from "../models/OrderItem";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
-    await Order.updateMany({ status: 'Refunded' }, { $set: { status: 'Cancelled' } });
-
     const yearParam = req.query.year as string;
     const year = parseInt(yearParam, 10) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00Z`);
