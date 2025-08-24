@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
-import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
-import RefundRequest from "../models/Refund";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
-    await RefundRequest.updateMany({ status: 'Completed' }, { $set: { status: 'Refunded' } });
 
     const yearParam = req.query.year as string;
     const year = parseInt(yearParam, 10) || new Date().getFullYear();
@@ -14,17 +11,27 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
 
     const salesArray = new Array(12);
 
-    const monthlySales = await Order.aggregate([
+    const monthlySales = await OrderItem.aggregate([
+      {
+        $lookup: {
+          from: 'orders',
+          localField: 'order_id',
+          foreignField: '_id',
+          as: 'order'
+        }
+      },
+      { $unwind: '$order' },
       {
         $match: {
           createdAt: { $gte: start, $lt: end },
-          status: { $in: ['Delivered', 'Rated'] }
+          status: { $in: ['Fulfilled', 'Rated'] },
+          'order.status': { $in: ['Delivered', 'Rated'] }
         }
       },
       {
         $project: {
           month: { $month: '$createdAt' },
-          netTotal: '$total'
+          netTotal: '$lineTotal'
         }
       },
       {
@@ -134,9 +141,19 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
     const dailySales = await OrderItem.aggregate([
       {
+        $lookup: {
+          from: 'orders',
+          localField: 'order_id',
+          foreignField: '_id',
+          as: 'order'
+        }
+      },
+      { $unwind: '$order' },
+      {
         $match: {
           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-          status: { $in: ['Fulfilled', 'Rated'] }
+          status: { $in: ['Fulfilled', 'Rated'] },
+          'order.status' : { $in: ['Rated', 'Delivered']}
         }
       },
       {
@@ -148,13 +165,13 @@ export const get_daily_sales = async (req: Request, res: Response) => {
               timezone: "Asia/Manila"
             }
           },
-          netTotal: '$lineTotal'
+          lineTotal: 1,
         }
       },
       {
         $group: {
           _id: '$date',
-          total: { $sum: '$netTotal' }
+          total: { $sum: '$lineTotal' }
         }
       },
       {
@@ -198,9 +215,19 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
 
     const makeSalesAgg = (startDate: Date) => [
       {
+        $lookup: {
+          from: 'orders',
+          localField: 'order_id',
+          foreignField: '_id',
+          as: 'order'
+        }
+      },
+      { $unwind: '$order' },
+      {
         $match: {
           createdAt: { $gte: startDate },
           status: { $in: ["Fulfilled", "Rated"] },
+          'order.status' : { $in: ['Rated', 'Delivered']}
         },
       },
       {
