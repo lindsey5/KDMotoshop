@@ -22,7 +22,7 @@ const MobileHome = () => {
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
                         <motion.h2 
-                            className={cn("text-4xl md:text-5xl lg:text-6xl font-black text-center text-white")}
+                            className={cn("text-5xl lg:text-6xl font-black text-center text-white")}
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.4 }}
@@ -33,7 +33,7 @@ const MobileHome = () => {
                         </motion.h2>
                                                                         
                         <motion.p 
-                            className="text-center text-md md:text-xl  text-white"
+                            className="text-center text-xl  text-white"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.6 }}
@@ -41,7 +41,7 @@ const MobileHome = () => {
                         Your shop for legit and affordable helmets, racks, intercoms, and riding gear—trusted by riders, built for every journey.
                         </motion.p>
                         <motion.button 
-                            className="relative border border-white cursor-pointer relative group mt-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-10 py-2 md:px-12 md:py-3 rounded-full font-bold overflow-hidden shadow-2xl shadow-red-600 hover:scale-105 border border-red-500/50"
+                            className="relative border border-white cursor-pointer relative group mt-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-12 py-3 rounded-full font-bold overflow-hidden shadow-2xl shadow-red-600 hover:scale-105 border border-red-500/50"
                             onClick={() => window.location.href = '/products'}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

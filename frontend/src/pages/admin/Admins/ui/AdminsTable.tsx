@@ -1,8 +1,8 @@
 import { IconButton, TableRow } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../../../components/Table';
-import { formatDate } from '../../../utils/dateUtils';
-import useDarkmode from '../../../hooks/useDarkmode';
-import UserAvatar from "../../ui/UserAvatar";
+import { StyledTableCell, StyledTableRow } from '../../../../components/Table';
+import { formatDate } from '../../../../utils/dateUtils';
+import useDarkmode from '../../../../hooks/useDarkmode';
+import UserAvatar from "../../../ui/UserAvatar";
 import EditIcon from '@mui/icons-material/Edit';
 
 export const AdminsTableColumns = () => {

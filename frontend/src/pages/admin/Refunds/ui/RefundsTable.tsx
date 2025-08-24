@@ -1,13 +1,13 @@
 import { IconButton, TableRow, Tooltip } from "@mui/material";
-import { StyledTableCell, StyledTableRow } from '../../../components/Table';
-import { formatDate } from '../../../utils/dateUtils';
-import useDarkmode from '../../../hooks/useDarkmode';
-import UserAvatar from "../../ui/UserAvatar";
+import { StyledTableCell, StyledTableRow } from '../../../../components/Table';
+import { formatDate } from '../../../../utils/dateUtils';
+import useDarkmode from '../../../../hooks/useDarkmode';
+import UserAvatar from "../../../ui/UserAvatar";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatNumber } from "../../../utils/utils";
+import { formatNumber } from "../../../../utils/utils";
 import { useState } from "react";
-import RefundRequestModal from "./RefundRequest";
-import { RefundStatusChip } from "../../../components/Chip";
+import RefundRequestModal from "./RefundRequestModal";
+import { RefundStatusChip } from "../../../../components/Chip";
 
 export const RefundsTableColumns = () => {
     return (

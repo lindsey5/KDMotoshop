@@ -1,13 +1,10 @@
 import { useMemo, useState } from "react";
-import { formatDateWithWeekday } from "../../utils/dateUtils";
-import { Navigate } from "react-router-dom";
+import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
-import usePagination from "../../hooks/usePagination";
+import usePagination from "../../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
-import useFetch from "../../hooks/useFetch";
+import useFetch from "../../../hooks/useFetch";
 
 interface ActivityLog{
     _id: string;
@@ -26,25 +23,21 @@ type GroupedActivityLogs = {
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Activity Logs', href: '/admin/activities' },
+    { label: 'My Activity', href: '/admin/myactivity' },
 ]
 
-const ActivityLogs = () => {
+const MyActivity = () => {
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
-    const { pagination, setPagination } = usePagination();
-    const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
 
-    const { startDate, endDate } = useMemo(() => { 
+    const { startDate, endDate } = useMemo(()=> {
         const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
         const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
 
         return { startDate, endDate }
     }, [selectedDates])
 
-    const { data, loading } = useFetch(`/api/activities?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
-    if (user && user.role === 'Admin' && !userLoading) {
-        return <Navigate to="/admin/login" />;
-    }
+    const { pagination, setPagination } = usePagination();
+    const { data, loading } = useFetch(`/api/activities/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`);
 
     const activityLogs = useMemo<GroupedActivityLogs>(() => {
         if(!data) return {}
@@ -59,14 +52,10 @@ const ActivityLogs = () => {
         setPagination(prev => ({ ...prev, totalPages: data.totalPages}))
         return groupedLogs
     }, [data])
-    
-    if(user && user.role !== 'Super Admin'){
-        return <Navigate to="/admin/dashboard"/>
-    }
 
     return (
         <ActivityLogsPage 
-            title="Activity Logs"
+            title="My Activity"
             activityLogs={activityLogs}
             selectedDates={selectedDates}
             setSelectedDates={setSelectedDates}
@@ -78,4 +67,4 @@ const ActivityLogs = () => {
     )
 }
 
-export default ActivityLogs
+export default MyActivity

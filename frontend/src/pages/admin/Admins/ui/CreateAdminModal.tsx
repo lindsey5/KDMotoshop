@@ -1,12 +1,12 @@
 import { Modal } from "@mui/material";
 import { memo, useEffect, useState } from "react";
-import Card from "../../../components/Card";
-import { RedTextField } from "../../../components/Textfield";
-import { RedButton } from "../../../components/buttons/Button";
+import Card from "../../../../components/Card";
+import { RedTextField } from "../../../../components/Textfield";
+import { RedButton } from "../../../../components/buttons/Button";
 import PhoneInput from "react-phone-input-2";
-import useDarkmode from "../../../hooks/useDarkmode";
-import { postData, updateData } from "../../../services/api";
-import { errorAlert } from "../../../utils/swal";
+import useDarkmode from "../../../../hooks/useDarkmode";
+import { postData, updateData } from "../../../../services/api";
+import { errorAlert } from "../../../../utils/swal";
 
 interface CreateAdminModalProps extends ModalProps {
     adminData: Admin | undefined;

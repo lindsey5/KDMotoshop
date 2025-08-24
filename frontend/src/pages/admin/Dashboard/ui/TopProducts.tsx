@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Card from "../../../../components/Card";
 import TopProductsContainer from "../../../ui/TopProductContainer";
 import useFetch from "../../../../hooks/useFetch";
@@ -11,13 +11,6 @@ const TopProductsChart = () => {
         setFilter(e.target.value);
     };
 
-
-    const topProducts = useMemo<TopProduct[]>(() => {
-        if(!data) return []
-
-        return data?.topProducts
-    }, [data])
-
     return (
         <Card className="flex-1 2xl:w-[350px] h-[400px] flex flex-col gap-5 mt-10">
             <div className="flex justify-between items-center">
@@ -29,7 +22,7 @@ const TopProductsChart = () => {
                 </select>
             </div>
             <div className="flex flex-col gap-5 flex-grow overflow-y-auto py-2">
-                {topProducts.map(product => (
+                {data?.topProducts.map((product : TopProduct) => (
                     <TopProductsContainer key={product._id} product={product}/>
                 ))}
             </div>

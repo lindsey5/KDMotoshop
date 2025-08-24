@@ -41,7 +41,7 @@ const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
 
     useEffect(() => {
         const getPopularProducts = async () => {
-        const response = await fetchData("/api/products/top");
+        const response = await fetchData("/api/products/top?limit=5");
         if (response.success) {
             setProducts(response.topProducts);
         }

@@ -84,8 +84,8 @@ const CustomerHeader = () => {
                 {!user && <RedButton onClick={() => navigate('/login')}>Login</RedButton>}
                 {user && user.role === 'Customer' && !loading && <>
                 <RedBadge content={cart.length}>
+                    <Link href="/cart">
                     <IconButton  
-                        onClick={() => navigate('/cart')}
                         sx={{ 
                             color: 'white', 
                             ":hover": { color: 'red' } 
@@ -93,7 +93,8 @@ const CustomerHeader = () => {
                     >
                         <ShoppingCartOutlinedIcon />
                     </IconButton>
-                    </RedBadge>
+                    </Link>
+                </RedBadge>
                 <CustomerDropdownMenu image={user?.image?.imageUrl}/>
                 </>
                 }

@@ -3,9 +3,7 @@ import { AuthenticatedRequest } from "../types/auth";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import Product, { IProduct } from "../models/Product";
 import { UploadedImage } from "../types/types";
-import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
-import { Types } from "mongoose";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
@@ -179,8 +177,12 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
 
     // Check changes in each field
     for (const field of fieldsToTrack) {
-      const prevValue = oldValues[field];
-      const newValue = oldProduct[field];
+      let prevValue = oldValues[field];
+      let newValue = oldProduct[field];
+      if(field === 'stock'){
+        prevValue = calculateTotalStock(oldValues);
+        newValue = calculateTotalStock(oldProduct);
+      } 
       if (String(prevValue) !== String(newValue)) {
         await create_activity_log({
           admin_id: req.user_id ?? '',
@@ -190,18 +192,6 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
           new_value: String(newValue ?? '')
         });
       }
-    }
-
-    const prevStock = calculateTotalStock(oldValues);
-    const currentStock = calculateTotalStock(oldProduct);
-    if (prevStock !== currentStock) {
-      await create_activity_log({
-        admin_id: req.user_id ?? '',
-        description: `updated stock for ${oldValues.product_name}`,
-        product_id: oldProduct._id as string,
-        prev_value: String(prevStock),
-        new_value: String(currentStock)
-      });
     }
 
     res.status(200).json({
@@ -217,7 +207,7 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
 
 export const get_top_products = async (req: Request, res: Response) => {
     try{
-      const limit = Number(req.query.limit) || 5;
+      const limit = Number(req.query.limit) || undefined;
       const filterType = req.query.filter || 'all'
       const now = new Date();
       let startDate, endDate;
@@ -252,7 +242,7 @@ export const get_top_products = async (req: Request, res: Response) => {
           }
         },
         { $sort: { totalQuantity: -1 } },
-        { $limit: limit }
+         ...(limit ? [{ $limit: limit }] : [])
       ]);
 
       const topProductIds = topProductsAggregation.map(item => item._id);

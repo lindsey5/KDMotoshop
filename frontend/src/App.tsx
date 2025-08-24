@@ -20,17 +20,17 @@ import CustomerOrders from "./pages/customer/Order/Orders";
 import CustomerOrderDetails from "./pages/customer/Order/Order";
 import { ToastContainer } from 'react-toastify';
 import AdminNotifications from "./pages/admin/Notifications";
-import ActivityLogs from "./pages/admin/ActivityLogs";
+import ActivityLogs from "./pages/admin/Activities/ActivityLogs";
 import Settings from "./pages/admin/Settings";
-import Admins from "./pages/admin/Admins";
+import Admins from "./pages/admin/Admins/Admins";
 import AdminProductReviews from "./pages/admin/Product/Reviews";
-import MyActivity from "./pages/admin/MyActivity";
+import MyActivity from "./pages/admin/Activities/MyActivity";
 import CustomerSignupPage from "./pages/auth/CustomerSignup";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "./redux/store";
 import { fetchUser } from "./redux/user-reducer";
-import RefundsPage from "./pages/admin/Refunds";
+import RefundsPage from "./pages/admin/Refunds/Refunds";
 import LowStockProducts from "./pages/admin/Product/LowStock";
 
 export default function App() {
