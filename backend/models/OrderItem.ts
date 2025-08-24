@@ -11,14 +11,6 @@ interface OrderItem extends Document {
     price: number;
     lineTotal: number;
     status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated';
-    refund_status?:  
-    'Pending'
-    | 'Under Review'
-    | 'Approved'
-    | 'Rejected'
-    | 'Processing'
-    | 'Completed'
-    | 'Cancelled';
 }
 
 const OrderItemSchema: Schema<OrderItem> = new Schema(

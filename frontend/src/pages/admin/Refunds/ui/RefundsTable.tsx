@@ -30,7 +30,7 @@ export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id')
     const [open ,setOpen] = useState<boolean>(request._id === id);
-    console.log(request)
+
     return (
         <>
         <RefundRequestModal open={open} close={() => setOpen(false)} refundRequest={request}/>

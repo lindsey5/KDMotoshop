@@ -31,7 +31,7 @@ export interface IProduct extends Document {
   getCurrentStock(sku?: string): number;
   getSafetyStock(sku?: string): Promise<number>;
   getReorderLevel(sku?: string): Promise<{ reorderLevel: number, safetyStock: number }>;
-  getSuggestedRestock(sku?: string): Promise<{ suggested: number, reorderLevel: number, currentStock: number, safetyStock: number}>;
+  getReorderQuantity(sku?: string): Promise<{ reorderQuantity: number, reorderLevel: number, currentStock: number, safetyStock: number}>;
   getStockStatus(sku?: string): Promise<string>;
 }
 
@@ -79,8 +79,6 @@ const ProductSchema: Schema<IProduct> = new Schema(
   { timestamps: true }
 );
 
-// ---------------- METHODS ---------------- //
-
 // Get current stock
 ProductSchema.methods.getCurrentStock = function (sku?: string): number {
   if (this.product_type === 'Variable' && sku) {
@@ -90,7 +88,12 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
   return this.stock ?? 0;
 };
 
-// Safety Stock calculation
+// Safety Stock formula:
+// Safety Stock = Z * σdemand * √Lead Time
+// where:
+// Z = service level factor (e.g., 1.65 for 95% service level)
+// σdemand = standard deviation of daily demand
+// Lead Time = time (in days) it takes to receive inventory after placing an order
 ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
     let dailySales;
     if (this.product_type === 'Variable' && sku) {
@@ -105,7 +108,7 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
     const variance = salesArray.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / salesArray.length;
     const stdDev = Math.sqrt(variance);
     const Z = 1.65; // 95% service level
-    const leadTime = 7;
+    const leadTime = 3;
     return Math.round(Z * stdDev * Math.sqrt(leadTime));
 };
 
@@ -122,17 +125,17 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<{
 
   const salesArray = dailySales.length ? dailySales.map(d => d.totalQuantity) : [0];
   const avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
-  const leadTime = 7;
+  const leadTime = 3;
 
   return { reorderLevel: Math.round(avgDailyDemand * leadTime + safetyStock), safetyStock };
 };
 
-// Suggested Restock
-ProductSchema.methods.getSuggestedRestock = async function (sku?: string) : Promise<{ suggested: number, reorderLevel: number, currentStock: number, safetyStock: number}>{
+// reorderQuantity Restock
+ProductSchema.methods.getReorderQuantity = async function (sku?: string) : Promise<{ reorderQuantity: number, reorderLevel: number, currentStock: number, safetyStock: number}>{
   const { reorderLevel, safetyStock } = await this.getReorderLevel(sku);
   const currentStock = this.getCurrentStock(sku);
-  const suggested = reorderLevel - currentStock;
-  return { suggested: suggested > 0 ? suggested : 0, reorderLevel,  currentStock, safetyStock };
+  const reorderQuantity = reorderLevel + safetyStock - currentStock;
+  return { reorderQuantity: reorderQuantity > 0 ? reorderQuantity : 0, reorderLevel,  currentStock, safetyStock };
 };
 
 // Stock Status

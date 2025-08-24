@@ -36,7 +36,7 @@ type LowStockProduct = {
     product_type: string;
     sku: string;
     status: "Low Stock" | "In Stock" | "Out of Stock";
-    suggested: number;
+    reorderQuantity: number;
     safetyStock: number;
     reorderLevel: number;
     stock: number;
@@ -52,7 +52,7 @@ export const LowStockTableColumns = () => {
             <StyledTableCell align="center">Product Type</StyledTableCell>
             <StyledTableCell align="center">Safety Stock</StyledTableCell>
             <StyledTableCell align="center">Reorder Level</StyledTableCell>
-            <StyledTableCell align="center">Suggested</StyledTableCell>
+            <StyledTableCell align="center">Reorder Quantity</StyledTableCell>
             <StyledTableCell align="center">Status</StyledTableCell>
             <StyledTableCell align="center">Action</StyledTableCell>
         </TableRow>
@@ -86,7 +86,7 @@ export const LowStockTableRow = ({ product } : { product : LowStockProduct }) =>
       <StyledTableCell isDark={isDark} align="center">{product.product_type}</StyledTableCell>
       <StyledTableCell isDark={isDark} align="center">{product.safetyStock}</StyledTableCell>
       <StyledTableCell isDark={isDark} align="center">{product.reorderLevel}</StyledTableCell>
-      <StyledTableCell isDark={isDark} align="center">{product.suggested}</StyledTableCell>
+      <StyledTableCell isDark={isDark} align="center">{product.reorderQuantity}</StyledTableCell>
       
       <StyledTableCell isDark={isDark} align="center"><StockChip status={product.status}/></StyledTableCell>
       <StyledTableCell isDark={isDark} align="center">

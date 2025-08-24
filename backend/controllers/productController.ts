@@ -288,7 +288,7 @@ export const get_low_stock_products = async (req: Request, res: Response) => {
           const sku = variant.sku;
           const status = await product.getStockStatus(sku);
           if (status === 'Low Stock' || status === 'Out of Stock') {
-            const suggested = await product.getSuggestedRestock(sku);
+            const reorder = await product.getReorderQuantity(sku);
 
             allLowStockProducts.push({
               _id: product._id,
@@ -297,7 +297,7 @@ export const get_low_stock_products = async (req: Request, res: Response) => {
               product_type: product.product_type,
               sku,
               status,
-              ...suggested,
+              ...reorder,
               stock: variant.stock,
             });
           }
@@ -306,7 +306,7 @@ export const get_low_stock_products = async (req: Request, res: Response) => {
         // Simple product
         const status = await product.getStockStatus();
         if (status === 'Low Stock' || status === 'Out of Stock') {
-          const suggested = await product.getSuggestedRestock();
+          const reorder = await product.getReorderQuantity();
 
           allLowStockProducts.push({
             _id: product._id,
@@ -315,7 +315,7 @@ export const get_low_stock_products = async (req: Request, res: Response) => {
             product_type: product.product_type,
             sku: product.sku,
             status,
-            ...suggested,
+            ...reorder,
             stock: product.stock,
           });
         }

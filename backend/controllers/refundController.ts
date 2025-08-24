@@ -7,6 +7,7 @@ import { sendRefundUpdate } from "../services/emailService";
 import Payment from "../models/Payment";
 import { refundPayment } from "../services/paymentService";
 import { sendAdminsNotification, sendCustomerNotification } from "../services/notificationService";
+import Order from "../models/Order";
 
 export const createRefundRequest = async (req :AuthenticatedRequest, res : Response) => {
     try{
@@ -29,9 +30,6 @@ export const createRefundRequest = async (req :AuthenticatedRequest, res : Respo
         const uploadedVideo = await uploadVideo(video)
         const request = new RefundRequest({ ...rest, video: uploadedVideo, customer_id: req.user_id })
         await request.save();
-
-        orderItem.refund_status = 'Pending';
-        await orderItem.save();
 
         await sendAdminsNotification({
             from: req.user_id as string,
@@ -133,9 +131,6 @@ export const updateRefundRequest = async (req : Request, res : Response) => {
             return;
         }
 
-        order_item.refund_status = status;
-        await order_item.save();
-
         refundRequest.status = status;
 
         await refundRequest.save();
@@ -153,6 +148,16 @@ export const updateRefundRequest = async (req : Request, res : Response) => {
                 }
             ]
         })
+        
+        const orderItems : any = await OrderItem.find({ order_id: order_item.order_id}).populate('refund')
+
+        if(orderItems.every((item : any) => item.refund.status === 'Completed')){
+            const order = await Order.findById(order_item.order_id)
+            if(order){
+                order.status = 'Refunded';
+                await order.save();
+            }
+        }
 
         await sendRefundUpdate({
             email:  populatedRefund.order_item_id.order_id.customer.customer_id.email,
