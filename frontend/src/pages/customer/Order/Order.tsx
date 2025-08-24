@@ -25,7 +25,7 @@ const CustomerOrderDetails = () => {
     const isDark = useDarkmode();
     const { user : customer, loading : customerLoading} = useSelector((state : RootState) => state.user)
     const [loading, setLoading] = useState(false);
-    console.log(order)
+
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
         { label: 'Orders', href: '/orders' },

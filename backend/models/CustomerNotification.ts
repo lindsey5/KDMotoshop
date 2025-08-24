@@ -3,7 +3,6 @@ import { INotification } from '../types/notification';
 
 interface ICustomerNotification extends INotification{
     refund_id?: Types.ObjectId;
-    
 }
 
 // Define the schema

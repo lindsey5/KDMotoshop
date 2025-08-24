@@ -8,6 +8,7 @@ import { fetchData, updateData } from '../services/api';
 type Notification = {
     _id: string;
     from?: string | Customer;
+    refund_id?: string;
     to: string;
     order_id:  string;
     isViewed: boolean;

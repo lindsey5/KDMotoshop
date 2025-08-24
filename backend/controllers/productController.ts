@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import Product, { IProduct } from "../models/Product";

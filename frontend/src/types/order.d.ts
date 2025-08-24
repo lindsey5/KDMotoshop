@@ -24,6 +24,7 @@ type Order = {
     createdBy?: any;
     createdAt?: Date;
     updatedAt?: Date;
+    deliveredAt?: Date;
     orderItems?: OrderItem[];
 }
 

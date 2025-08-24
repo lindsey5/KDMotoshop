@@ -227,12 +227,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                 await payment.save()
             }
         }
-
-        const updatedOrder = await Order.findByIdAndUpdate(
-            id, 
-            req.body, 
-            { new: true }
-        );
+        let orderData = req.body;
+        if(req.body.status === 'Delivered') orderData.deliveredAt = new Date();
+        const updatedOrder = await Order.findByIdAndUpdate(id, req.body, { new: true });
 
         /*if(req.body.status !== 'Delivered'){
             for (const item of req.body.orderItems) {
@@ -254,15 +251,16 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                 if(order.status !== 'Delivered' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
             }
+
         }
 
         if(req.body.status !== order.status) {
             if(order.customer.customer_id) {
-                await sendCustomerNotification(
-                    order.customer?.customer_id?.toString() || '', 
-                    order._id as string, 
-                    `${order.order_id} has been updated to ${req.body.status}`,
-                );
+                await sendCustomerNotification({
+                    to: order.customer?.customer_id?.toString() || '', 
+                    order_id: order._id as string, 
+                    content: `${order.order_id} has been updated to ${req.body.status}`,
+                });
             }
             await create_activity_log({
                 admin_id: req.user_id ?? '',

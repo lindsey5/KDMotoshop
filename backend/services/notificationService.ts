@@ -4,17 +4,14 @@ import AdminNotification from "../models/AdminNotification";
 import CustomerNotification from "../models/CustomerNotification"
 import Admin from "../models/Admin";
 
-export const sendCustomerNotification = async (customer_id : string, order_id: string, content : string) => {
+export const sendCustomerNotification = async (newNotification : {to : string, order_id: string, content : string, refund_id?: string}) => {
     try{
-        const notification = new CustomerNotification({
-            to: customer_id,
-            order_id,
-            content,
-        })
 
+        const notification = new CustomerNotification(newNotification)
+        console.log(newNotification.to)
         await notification.save();
 
-        const socketId = userSocketMap.get(customer_id);
+        const socketId = userSocketMap.get(newNotification.to);
 
         if(socketId){
             socketInstance?.to(socketId).emit('customerNotification', notification);
@@ -31,6 +28,7 @@ type AdminNotificationData = {
     product_id?: string;
     content: string;
     review_id?: string;
+    refund_id?: string;
 }
 
 export const sendAdminsNotification = async (notificationData : AdminNotificationData) => {

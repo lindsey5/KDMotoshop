@@ -12,6 +12,7 @@ type Notification = {
     _id: string;
     to: string;
     from?: string | Customer;
+    refund_id?: string;
     order_id?:  string;
     product_id?: string;
     review_id?: string;
@@ -58,7 +59,9 @@ export const NotificationTableRow = ({ notification } : { notification : Notific
     const navigateToOrder = () => {
         if(notification.review_id && notification.product_id){
             navigate(`/admin/reviews/${notification.product_id}?id=${notification.review_id}`)
-        }else if(notification.order_id){
+        }else if(notification.refund_id){
+             navigate(`/admin/refunds?id=${notification.refund_id}`)
+        }else {
             navigate(`/admin/orders/${notification.order_id}`)
         }
         if(!notification.isViewed)  dispatch(updateNotification({ id: notification._id, user: "admin"}));

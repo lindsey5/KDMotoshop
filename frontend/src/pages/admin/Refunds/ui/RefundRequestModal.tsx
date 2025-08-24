@@ -22,6 +22,7 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
   refundRequest,
 }) => {
     const isDark = useDarkmode();
+    console.log(refundRequest)
 
     return (
         <Modal

@@ -5,6 +5,9 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import GradeIcon from '@mui/icons-material/Grade';
 import WarningIcon from '@mui/icons-material/Warning';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import CancelIcon from '@mui/icons-material/Cancel';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { formatDate } from "../utils/dateUtils";
 import { useState, type JSX } from "react";
@@ -14,16 +17,21 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { notificationsNextPage, updateAllNotifications } from "../redux/notification-reducer";
 
+
 const statusMap: Record<string, JSX.Element> = {
-    'Pending':  <PendingActionsOutlinedIcon fontSize="large" />,
-    'Confirmed': <CheckCircleIcon fontSize="large" />,
-    'Shipped': <LocalShippingIcon fontSize="large" />,
-    'Delivered': <AssignmentTurnedInIcon fontSize="large" />,
-    'Rated': <GradeIcon fontSize="large" />,
-    'Cancelled': <WarningIcon fontSize="large" />,
-    'Failed': <WarningIcon fontSize="large" />,
-    'Rejected': <WarningIcon fontSize="large" />,
-    'Refunded': <WarningIcon fontSize="large" />,
+  'Pending': <PendingActionsOutlinedIcon fontSize="large" color="warning" />,
+  'Confirmed': <CheckCircleIcon fontSize="large" color="success" />,
+  'Shipped': <LocalShippingIcon fontSize="large" color="info" />,
+  'Delivered': <AssignmentTurnedInIcon fontSize="large" color="success" />,
+  'Rated': <GradeIcon fontSize="large" color="secondary" />,
+  'Cancelled': <WarningIcon fontSize="large" color="error" />,
+  'Failed': <WarningIcon fontSize="large" color="error" />,
+  'Rejected': <CancelIcon fontSize="large" color="error" />,
+  'Refunded': <WarningIcon fontSize="large" color="warning" />,
+  'Under Review': <HourglassBottomIcon fontSize="large" color="info" />,
+  'Approved': <CheckCircleIcon fontSize="large" color="success" />,
+  'Processing': <AssignmentTurnedInIcon fontSize="large" color="info" />,
+  'Completed': <DoneAllIcon fontSize="large" color="success" />,
 };
 
 const extractStatus = (content: string): string | undefined => {

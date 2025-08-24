@@ -6,12 +6,13 @@ import OrderItem from "../models/OrderItem";
 import { sendRefundUpdate } from "../services/emailService";
 import Payment from "../models/Payment";
 import { refundPayment } from "../services/paymentService";
+import { sendAdminsNotification, sendCustomerNotification } from "../services/notificationService";
 
 export const createRefundRequest = async (req :AuthenticatedRequest, res : Response) => {
     try{
         const { video, ...rest } = req.body;
 
-        const orderItem = await OrderItem.findById(req.body.order_item_id);
+        const orderItem : any = await OrderItem.findById(req.body.order_item_id).populate('order_id');
 
         if(!orderItem){
             res.status(404).json({ success: false, message: 'Order item id not found'});
@@ -25,12 +26,19 @@ export const createRefundRequest = async (req :AuthenticatedRequest, res : Respo
             return;
         }
         
-        const uploadedVideo = await uploadVideo(video as string)
+        const uploadedVideo = await uploadVideo(video)
         const request = new RefundRequest({ ...rest, video: uploadedVideo, customer_id: req.user_id })
         await request.save();
 
         orderItem.refund_status = 'Pending';
         await orderItem.save();
+
+        await sendAdminsNotification({
+            from: req.user_id as string,
+            order_id: orderItem.order_id._id,
+            content: `Has requested a refund for ${orderItem.order_id.order_id}.`,
+            refund_id: request._id as string,
+        });
 
         res.status(201).json({ success: true, request });
 
@@ -112,9 +120,7 @@ export const getRefundRequests = async (req : Request, res : Response) => {
 export const updateRefundRequest = async (req : Request, res : Response) => {
     try{
         const { status } = req.body;
-        const refundRequest = await RefundRequest
-        .findById(req.params.id)
-            
+        const refundRequest = await RefundRequest.findById(req.params.id)
 
         if(!refundRequest){
             res.status(404).json({ success: false, message: 'Refund request not found' });
@@ -158,10 +164,16 @@ export const updateRefundRequest = async (req : Request, res : Response) => {
             product_image:  populatedRefund.order_item_id.product_id.thumbnail.imageUrl
         })
 
-        const payment = await Payment.findOne({ order_id: populatedRefund.order_item_id.order_id._id });
+        await sendCustomerNotification({
+            refund_id: refundRequest._id as string,
+            to: refundRequest.customer_id.toString(), 
+            order_id: populatedRefund.order_item_id.order_id._id, 
+            content: `Your refund request for ${populatedRefund.order_item_id.order_id.order_id} has been updated to ${status}`,
+        });
 
-        if(payment && status === 'Completed'){
-            await refundPayment(payment.payment_id, populatedRefund.totalAmount * 100);
+        if(status === 'Completed'){
+            const payment = await Payment.findOne({ order_id: populatedRefund.order_item_id.order_id._id });
+            if(payment) await refundPayment(payment.payment_id, populatedRefund.totalAmount * 100);
         }
 
         res.status(200).json({ success: true, message: 'Refund request updated successfully', refundRequest });

@@ -8,6 +8,7 @@ import { formatNumber } from "../../../../utils/utils";
 import { useState } from "react";
 import RefundRequestModal from "./RefundRequestModal";
 import { RefundStatusChip } from "../../../../components/Chip";
+import { useSearchParams } from "react-router-dom";
 
 export const RefundsTableColumns = () => {
     return (
@@ -26,8 +27,10 @@ export const RefundsTableColumns = () => {
 
 export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
     const isDark = useDarkmode();
-    const [open ,setOpen] = useState<boolean>(false);
-
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get('id')
+    const [open ,setOpen] = useState<boolean>(request._id === id);
+    console.log(request)
     return (
         <>
         <RefundRequestModal open={open} close={() => setOpen(false)} refundRequest={request}/>
