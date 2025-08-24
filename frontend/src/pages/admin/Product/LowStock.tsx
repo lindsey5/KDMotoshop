@@ -5,7 +5,9 @@ import { LowStockTableColumns, LowStockTableRow } from "./ui/LowStocksTable"
 import CustomizedTable from "../../../components/Table"
 import { Title } from "../../../components/text/Text"
 import useFetch from "../../../hooks/useFetch"
-import { CircularProgress } from "@mui/material"
+import { Button, CircularProgress } from "@mui/material"
+import { formatDate } from "../../../utils/dateUtils"
+import { exportData } from "../../../utils/utils"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -15,10 +17,28 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const LowStockProducts = () => {
     const { data, loading } = useFetch('/api/products/low-stock')
 
+     const exportReport= () => {
+        const dataToExport = data?.products.map((p : any) => ({
+            SKU: p.sku,
+            Product: p.product_name,
+            SafetyStock: p.safetyStock,
+            ReorderLevel: p.reorderLevel,
+            ReOrderQuantity: p.reorderQuantity,
+            Status: p.status
+        }))
+        
+        exportData({ dataToExport, filename: `KDMotoshop - Low Stock Report (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
+    }
+
     return (
         <PageContainer className="w-full flex flex-col gap-5">
-            <Title className="mb-4">Low Stock Products</Title>
-            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            <div className="justify-between flex items-center">
+                <div>
+                    <Title className="mb-4">Low Stock Products</Title>
+                    <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+                </div>
+                <Button variant="contained" onClick={exportReport}>Export</Button>
+            </div>
             <Card className="h-screen overflow-y-auto">
                 <CustomizedTable 
                     cols={<LowStockTableColumns />}

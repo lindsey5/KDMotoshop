@@ -132,11 +132,11 @@ export const get_daily_sales = async (req: Request, res: Response) => {
     const startOfMonth = new Date(Date.UTC(yearNum, monthNum - 1, 1));
     const endOfMonth = new Date(Date.UTC(yearNum, monthNum, 0, 23, 59, 59, 999));
 
-    const dailySales = await Order.aggregate([
+    const dailySales = await OrderItem.aggregate([
       {
         $match: {
           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-          status: { $in: ['Delivered', 'Rated'] }
+          status: { $in: ['Fulfilled', 'Rated'] }
         }
       },
       {
@@ -148,7 +148,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
               timezone: "Asia/Manila"
             }
           },
-          netTotal: '$total'
+          netTotal: '$lineTotal'
         }
       },
       {
@@ -200,23 +200,23 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
       {
         $match: {
           createdAt: { $gte: startDate },
-          status: { $in: ["Delivered", "Rated"] },
+          status: { $in: ["Fulfilled", "Rated"] },
         },
       },
       {
         $group: {
           _id: null,
-          total: { $sum: "$total" },
+          total: { $sum: "$lineTotal" },
         },
       },
     ];
 
     const [salesToday, salesThisWeek, salesThisMonth, salesThisYear] =
       await Promise.all([
-        Order.aggregate(makeSalesAgg(startOfToday)),
-        Order.aggregate(makeSalesAgg(startOfWeek)),
-        Order.aggregate(makeSalesAgg(startOfMonth)),
-        Order.aggregate(makeSalesAgg(startOfYear)),
+        OrderItem.aggregate(makeSalesAgg(startOfToday)),
+        OrderItem.aggregate(makeSalesAgg(startOfWeek)),
+        OrderItem.aggregate(makeSalesAgg(startOfMonth)),
+        OrderItem.aggregate(makeSalesAgg(startOfYear)),
       ]);
 
     res.status(200).json({

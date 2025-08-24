@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { UploadedImage } from '../types/types';
-import { getProductAvgDailyDemand } from '../services/orderService';
+import { getProductDailyDemand } from '../services/orderService';
 
 interface Variant {
   _id: Types.ObjectId;
@@ -97,9 +97,9 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
 ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
     let dailySales;
     if (this.product_type === 'Variable' && sku) {
-      dailySales = await getProductAvgDailyDemand(this._id, sku);
+      dailySales = await getProductDailyDemand(this._id, sku);
     } else {
-      dailySales = await getProductAvgDailyDemand(this._id);
+      dailySales = await getProductDailyDemand(this._id);
     }
 
     if (!dailySales.length) return 0;
@@ -118,9 +118,9 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<{
   const safetyStock = await this.getSafetyStock(sku);
   let dailySales;
   if (this.product_type === 'Variable' && sku) {
-    dailySales = await getProductAvgDailyDemand(this._id, sku);
+    dailySales = await getProductDailyDemand(this._id, sku);
   } else {
-    dailySales = await getProductAvgDailyDemand(this._id);
+    dailySales = await getProductDailyDemand(this._id);
   }
 
   const salesArray = dailySales.length ? dailySales.map(d => d.totalQuantity) : [0];

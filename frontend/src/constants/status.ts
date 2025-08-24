@@ -7,7 +7,6 @@ export const statusColorMap: Record<string, { bg: string; icon: string }> = {
   Rejected:  { bg: 'bg-red-100',    icon: '#ef4444' },  // red
   Failed:  { bg: 'bg-red-100',    icon: '#ef4444' },
   Cancelled: { bg: 'bg-gray-200',   icon: '#9ca3af' },  // gray
-  Refunded:  { bg: 'bg-gray-200',   icon: '#9ca3af' },  // gray
 };
 
 export const Statuses = [
@@ -20,5 +19,4 @@ export const Statuses = [
     { value: 'Rejected', label: 'Rejected', color: 'red' },
     { value: 'Failed', label: 'Failed', color: 'red' },
     { value: 'Cancelled', label: 'Cancelled', color: 'gray' },
-    { value: 'Refunded', label: 'Refunded', color: 'gray' },
 ]

@@ -128,10 +128,12 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
     }
 }
 
-export const getProductAvgDailyDemand = async (product_id: string, variant_sku?: string) => {
+export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
+    const mongoose = require('mongoose');
+
     const match: any = {
-        product_id: new (require('mongoose').Types.ObjectId)(product_id),
-        status: { $in: ['Fulfilled', 'Rated'] }, 
+        product_id: new mongoose.Types.ObjectId(product_id),
+        status: { $in: ['Fulfilled', 'Rated'] },
     };
 
     if (variant_sku) {
@@ -140,17 +142,19 @@ export const getProductAvgDailyDemand = async (product_id: string, variant_sku?:
 
     const dailySales = await OrderItem.aggregate([
         { $match: match },
+        { $sort: { createdAt: -1 } }, // latest orders first
+        { $limit: 30 }, // take last 30 orders
         {
-        $group: {
-            _id: {
-            year: { $year: '$createdAt' },
-            month: { $month: '$createdAt' },
-            day: { $dayOfMonth: '$createdAt' },
+            $group: {
+                _id: {
+                    year: { $year: '$createdAt' },
+                    month: { $month: '$createdAt' },
+                    day: { $dayOfMonth: '$createdAt' },
+                },
+                totalQuantity: { $sum: '$quantity' },
             },
-            totalQuantity: { $sum: '$quantity' },
         },
-        },
-        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
+        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }, // sort by date ascending
     ]);
 
     return dailySales;
