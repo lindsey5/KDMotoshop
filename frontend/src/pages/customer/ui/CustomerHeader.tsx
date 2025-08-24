@@ -98,7 +98,7 @@ const CustomerHeader = () => {
                     </Tooltip>
                     </Link>
                 </RedBadge>
-                <Link href="/orders">
+                <Link className="hidden md:block" href="/orders">
                     <Tooltip title="My Orders">
                         <IconButton  
                             sx={{ 

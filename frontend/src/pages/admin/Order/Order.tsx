@@ -10,7 +10,7 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import OrderItemsContainer from "./ui/OrderItems";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { RedButton } from "../../../components/buttons/Button";
-import { confirmDialog, errorAlert } from "../../../utils/swal";
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
 import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
@@ -23,7 +23,7 @@ import PlatformChip from "../../../components/Chip";
 
 const OrderDetails = () => {
     const { id } = useParams();
-    const [order, setOrder] = useState<Order>();
+    const [order, setOrder] = useState<Order>({} as Order);
     const navigate = useNavigate();
     const isDark = useDarkmode();
 
@@ -37,19 +37,20 @@ const OrderDetails = () => {
         const getOrderAsync = async () => {
             const response = await fetchData(`/api/orders/${id}`)
             if(response.success){
-                const { customer, ...rest } = response.order
-                setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
+              const { customer, ...rest } = response.order
+              setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}})
             }else window.location.href = '/admin/dashboard'
         }
 
         getOrderAsync();
     }, [id])
     
-    if(!order) return (
+    if(!order._id) return (
         <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
             <CircularProgress sx={{ color: 'red'}}/>
          </div>
     )
+
 
     return <PageContainer className="flex flex-col justify-start p-0">
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
@@ -79,7 +80,7 @@ const OrderDetails = () => {
                     </div>
                 </Card>
                 <Card className="justify-end hidden lg:flex">
-                    <UpdateButton id={id as string} order={order} />
+                    <UpdateButton id={id as string} order={order} setOrder={setOrder}/>
                 </Card>
             </div>
             <div className="w-full lg:w-[350px] flex flex-col gap-5">
@@ -122,7 +123,7 @@ const OrderDetails = () => {
                     </div>
                 </Card>}
                 <Card className="flex justify-end lg:hidden">
-                    <UpdateButton id={id as string} order={order} />
+                    <UpdateButton id={id as string} order={order} setOrder={setOrder}/>
                 </Card>
             </div>
         </div>
@@ -131,7 +132,7 @@ const OrderDetails = () => {
 
 export default OrderDetails
 
-const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
+const UpdateButton = ({ order, setOrder, id }: { order: Order, id: string, setOrder: React.Dispatch<React.SetStateAction<Order>> }) => {
   const isDark = useDarkmode();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -140,7 +141,8 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
       setLoading(true)
       const response = await updateData(`/api/orders/${id}`, { ...order, status });
       if (response.success) {
-        window.location.reload();
+        await successAlert(`${order.order_id} successfully updated from ${order.status} to ${status}`, '', isDark)
+        setOrder(prev => ({ ...prev, status: status as Order['status'] }))
       } else {
         errorAlert(response.message, '', isDark);
       }
@@ -151,7 +153,7 @@ const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
   return (
     <div className="flex gap-5">
       <Backdrop
-          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          sx={{ color: '#fff', zIndex: 1 }}
           open={loading}
       >
         <CircularProgress color="inherit" />

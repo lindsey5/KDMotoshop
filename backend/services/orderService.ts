@@ -20,59 +20,66 @@ export const generateOrderId = async () : Promise<string> => {
   return order_id;
 };
 
-export const decrementStock = async (item : any) => {
-    if (item.product_type === 'Variable') {
-        const product = await Product.findById(item.product_id);
-        await Product.updateOne(
-            {  _id: item.product_id,  "variants.sku": item.sku },
-            { $inc: { "variants.$.stock": -item.quantity } }
-        );
-        if(!product) return;
-        for(const variant of product.variants){
-            if(variant.sku === item.sku){
-                const current_stock = variant.stock;
-                const newStock = variant.stock - item.quantity;
-                variant.stock = newStock;
-                if(newStock < 5) {
-                    await sendLowStockAlert(
-                        product._id as string,
-                        product.product_name,
-                        product.thumbnail.imageUrl,
-                        variant.sku,
-                        variant.stock,
-                        current_stock
-                    );
-                }
-            }
-        }
+export const decrementStock = async (item: any) => {
+  const product = await Product.findById(item.product_id);
+  if (!product) return;
 
-        product.markModified('variants');
-        await product.save();
-        
-    } else {
-        await Product.updateOne(
-            { _id: item.product_id },
-            { $inc: { stock: -item.quantity } }
-        );
-        const product = await Product.findById(item.product_id);
+  if (item.product_type === 'Variable') {
+    // Decrement variant stock
+    await Product.updateOne(
+      { _id: item.product_id, 'variants.sku': item.sku },
+      { $inc: { 'variants.$.stock': -item.quantity } }
+    );
 
-        if (!product) return;
-        const current_stock = product.stock;
-        const newStock = product.stock - item.quantity;
-        product.stock = newStock;
-        await product.save();
-        if(newStock < 5) {
-            await sendLowStockAlert(
-                product._id as string,
-                product.product_name,
-                product.thumbnail.imageUrl,
-                product.sku,
-                product.stock,
-                current_stock
-            );
-        }
+    const variant = product.variants.find(v => v.sku === item.sku);
+    if (!variant) return;
+
+    const currentStock = variant.stock;
+    variant.stock -= item.quantity;
+
+    // Get dynamic reorder level using method
+    const status = await product.getStockStatus(item.sku);
+
+    if (status === 'Low Stock' || status === 'Out of Stock') {
+      await sendLowStockAlert(
+        product._id as string,
+        product.product_name,
+        product.thumbnail.imageUrl,
+        variant.sku,
+        variant.stock,
+        currentStock
+      );
     }
-}
+
+    product.markModified('variants');
+    await product.save();
+  } else {
+    // Simple product
+    await Product.updateOne(
+      { _id: item.product_id },
+      { $inc: { stock: -item.quantity } }
+    );
+
+    const currentStock = product.stock ?? 0;
+    product.stock = currentStock - item.quantity;
+
+    // Get dynamic reorder level
+    const status = await product.getStockStatus();
+
+    await product.save();
+
+    if (status === 'Low Stock' || status === 'Out of Stock') {
+      await sendLowStockAlert(
+        product._id as string,
+        product.product_name,
+        product.thumbnail.imageUrl,
+        product.sku,
+        product.stock,
+        currentStock
+      );
+    }
+  }
+};
 
 export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) : Promise<any> => {
     try{
@@ -120,3 +127,31 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
         return null
     }
 }
+
+export const getProductAvgDailyDemand = async (product_id: string, variant_sku?: string) => {
+    const match: any = {
+        product_id: new (require('mongoose').Types.ObjectId)(product_id),
+        status: { $in: ['Fulfilled', 'Rated'] }, 
+    };
+
+    if (variant_sku) {
+        match.sku = variant_sku;
+    }
+
+    const dailySales = await OrderItem.aggregate([
+        { $match: match },
+        {
+        $group: {
+            _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+            },
+            totalQuantity: { $sum: '$quantity' },
+        },
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
+    ]);
+
+    return dailySales;
+};

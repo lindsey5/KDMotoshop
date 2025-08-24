@@ -6,9 +6,7 @@ import Admin from "../models/Admin";
 
 export const sendCustomerNotification = async (newNotification : {to : string, order_id: string, content : string, refund_id?: string}) => {
     try{
-
         const notification = new CustomerNotification(newNotification)
-        console.log(newNotification.to)
         await notification.save();
 
         const socketId = userSocketMap.get(newNotification.to);

@@ -277,37 +277,37 @@ export const get_top_products = async (req: Request, res: Response) => {
 }
 
 export const get_low_stock_products = async (req: Request, res: Response) => {
-    try{
-      const threshold = parseInt(req.query.threshold as string) || 5;
+  try {
+    const products = await Product.find({ status: { $ne: 'Deleted' } });
+    const allLowStockProducts: any[] = [];
 
-      const products = await Product.find({
-        $or: [
-          { variants: { $elemMatch: { stock: { $lte: threshold } } } },
-          { stock: { $lte: threshold } },
-        ],
-        status: { $ne: 'Deleted' }
-      })
+    for (const product of products) {
+      if (product.product_type === 'Variable') {
+        // For each variant
+        for (const variant of product.variants) {
+          const sku = variant.sku;
+          const status = await product.getStockStatus(sku);
+          if (status === 'Low Stock' || status === 'Out of Stock') {
+            const suggested = await product.getSuggestedRestock(sku);
 
-      const allLowStockProducts : any = []
+            allLowStockProducts.push({
+              _id: product._id,
+              product_name: product.product_name,
+              thumbnail: product.thumbnail,
+              product_type: product.product_type,
+              sku,
+              status,
+              ...suggested,
+              stock: variant.stock,
+            });
+          }
+        }
+      } else {
+        // Simple product
+        const status = await product.getStockStatus();
+        if (status === 'Low Stock' || status === 'Out of Stock') {
+          const suggested = await product.getSuggestedRestock();
 
-      products.forEach(product => {
-        if (product.product_type === 'Variable') {
-          product.variants.forEach(variant => {
-            if (variant.stock <= threshold) {
-              const status = variant.stock === 0 ? 'Out of Stock' : (variant.stock <= threshold ? 'Low Stock' : 'In Stock');
-              allLowStockProducts.push({
-                _id: product._id,
-                product_name: product.product_name,
-                thumbnail: product.thumbnail,
-                product_type: product.product_type,
-                sku: variant.sku,
-                status,
-                stock: variant.stock
-              });
-            }
-          });
-        } else {
-          const status = product.stock === 0 ? 'Out of Stock' : (product.stock <= threshold ? 'Low Stock' : 'In Stock');
           allLowStockProducts.push({
             _id: product._id,
             product_name: product.product_name,
@@ -315,15 +315,16 @@ export const get_low_stock_products = async (req: Request, res: Response) => {
             product_type: product.product_type,
             sku: product.sku,
             status,
-            stock: product.stock
+            ...suggested,
+            stock: product.stock,
           });
-         }
-      });
-
-      res.status(200).json({ success: true, products: allLowStockProducts });
-
-    }catch(err : any){
-      console.error(err);
-      res.status(500).json({ success: false, message: err.message });
+        }
+      }
     }
-}
+
+    res.status(200).json({ success: true, products: allLowStockProducts });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

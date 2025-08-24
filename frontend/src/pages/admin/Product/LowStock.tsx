@@ -5,6 +5,7 @@ import { LowStockTableColumns, LowStockTableRow } from "./ui/LowStocksTable"
 import CustomizedTable from "../../../components/Table"
 import { Title } from "../../../components/text/Text"
 import useFetch from "../../../hooks/useFetch"
+import { CircularProgress } from "@mui/material"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -12,7 +13,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const LowStockProducts = () => {
-    const { data } = useFetch('/api/products/low-stock')
+    const { data, loading } = useFetch('/api/products/low-stock')
 
     return (
         <PageContainer className="w-full flex flex-col gap-5">
@@ -23,6 +24,11 @@ const LowStockProducts = () => {
                     cols={<LowStockTableColumns />}
                     rows={data?.products.map((product : any) => <LowStockTableRow product={product}/>)}
                 />
+                {loading && (
+                    <div className="flex justify-center items-center p-4">
+                        <CircularProgress />
+                    </div>
+                )}
             </Card>
         </PageContainer>
     )
