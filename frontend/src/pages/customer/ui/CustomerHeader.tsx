@@ -1,4 +1,4 @@
-import { Button, IconButton, Link } from "@mui/material";
+import { Button, IconButton, Link, Tooltip } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../../components/buttons/Button";
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../../../redux/cart-reducer";
 import type { AppDispatch, RootState } from "../../../redux/store";
 import { SocketContext } from "../../../context/socketContext";
+import { ClipboardList } from "lucide-react";
 import { addNotification, fetchNotifications } from "../../../redux/notification-reducer";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
@@ -85,16 +86,30 @@ const CustomerHeader = () => {
                 {user && user.role === 'Customer' && !loading && <>
                 <RedBadge content={cart.length}>
                     <Link href="/cart">
-                    <IconButton  
-                        sx={{ 
-                            color: 'white', 
-                            ":hover": { color: 'red' } 
-                        }}
-                    >
-                        <ShoppingCartOutlinedIcon />
-                    </IconButton>
+                    <Tooltip title="Cart">
+                        <IconButton  
+                            sx={{ 
+                                color: 'white', 
+                                ":hover": { color: 'red' } 
+                            }}
+                        >
+                            <ShoppingCartOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                     </Link>
                 </RedBadge>
+                <Link href="/orders">
+                    <Tooltip title="My Orders">
+                        <IconButton  
+                            sx={{ 
+                                color: 'white', 
+                                ":hover": { color: 'red' } 
+                            }}
+                        >
+                            <ClipboardList size={24} />
+                        </IconButton>
+                    </Tooltip>
+                </Link>
                 <CustomerDropdownMenu image={user?.image?.imageUrl}/>
                 </>
                 }
