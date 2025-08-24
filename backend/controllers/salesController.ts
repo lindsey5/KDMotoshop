@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
+import RefundRequest from "../models/Refund";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
+    await RefundRequest.updateMany({ status: 'Completed' }, { $set: { status: 'Refunded' } });
+
     const yearParam = req.query.year as string;
     const year = parseInt(yearParam, 10) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00Z`);

@@ -33,7 +33,7 @@ const RefundRequestSchema: Schema<IRefundRequest> = new Schema(
           'Approved',     
           'Rejected',     
           'Processing',    
-          'Completed',    
+          'Refunded',    
           'Cancelled'     
         ],
         default: 'Pending',

@@ -30,6 +30,10 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
                     ))}
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)}</p>
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>QTY: {item.quantity}</p>
+                    {item.refund?.status && <div className="flex gap-3">
+                        <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>Refund Status:</p>
+                        <RefundStatusChip status={item.refund?.status} />
+                    </div>}
                     {review && (
                         <div>
                             <Rating 
@@ -46,7 +50,6 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
             </div>
             <div className="flex gap-3 my-5">
                 <OrderItemStatusChip status={item.status} />
-                {item.refund?.status && <RefundStatusChip status={item.refund?.status} />}
             </div>
             <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
         </div>

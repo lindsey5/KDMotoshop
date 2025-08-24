@@ -41,7 +41,7 @@ type OrderItem = {
     price: number;
     lineTotal: number;
     image:  string | null,
-    status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated' | 'Cancelled',
+    status: 'Unfulfilled' | 'Fulfilled' | 'Rated' | 'Cancelled',
     refund?: RefundRequest;
     weight: number;
     createdAt?: Date;

@@ -37,7 +37,7 @@ const RefundsPage = () => {
                         label="Status"
                         value={status}
                         onChange={(e) => setStatus(e.target.value as string)}
-                        menu={['All', 'Pending', 'Under Review', 'Approved', 'Processing', 'Completed', 'Cancelled'].map(method => ({ value: method, label: method }))}
+                        menu={['All', 'Pending', 'Under Review', 'Approved', 'Processing', 'Refunded', 'Cancelled'].map(method => ({ value: method, label: method }))}
                     />
                 </div>
             </div>

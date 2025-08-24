@@ -22,7 +22,7 @@ interface RefundRequest {
     | 'Approved'
     | 'Rejected'
     | 'Processing'
-    | 'Completed'
+    | 'Refunded'
     price: Number;
     reason: string;
     video: { videoPublicId: string; videoUrl: string}

@@ -3,7 +3,6 @@ import useDarkmode from "../hooks/useDarkmode";
 import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
@@ -69,11 +68,6 @@ function getStatusConfig(status: OrderItem['status']) {
         color: "success" as const,
         icon: <CheckCircleRoundedIcon fontSize="small" />,
       };
-    case "Refunded":
-      return {
-        color: "info" as const,
-        icon: <ReplayRoundedIcon fontSize="small" />,
-      };
     case "Rated":
       return {
         color: "primary" as const,
@@ -130,8 +124,8 @@ function getRefundStatusConfig(status: RefundRequest['status']) {
       return { color: "error" as const, icon: <CancelRoundedIcon fontSize="small" /> };
     case "Processing":
       return { color: "primary" as const, icon: <AutorenewRoundedIcon fontSize="small" /> };
-    case "Completed":
-      return { color: "success" as const, icon: <DoneAllRoundedIcon fontSize="small" /> };
+    case "Refunded":
+      return { color: "success" as const, icon: <ReplayRoundedIcon fontSize="small" /> };
     default:
       return { color: "default" as const, icon: undefined };
   }

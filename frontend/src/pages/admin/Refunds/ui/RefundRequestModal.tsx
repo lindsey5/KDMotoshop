@@ -230,7 +230,7 @@ const RefundRequestButtons = ({ status, id } : { status : RefundRequest['status'
         );
     }
 
-    if(status === 'Completed') {
+    if(status === 'Refunded') {
         return (
             <button 
                 disabled

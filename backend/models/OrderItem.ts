@@ -10,7 +10,7 @@ interface OrderItem extends Document {
     quantity: number;
     price: number;
     lineTotal: number;
-    status: 'Unfulfilled' | 'Fulfilled' | 'Refunded' | 'Rated';
+    status: 'Unfulfilled' | 'Fulfilled' | 'Rated';
 }
 
 const OrderItemSchema: Schema<OrderItem> = new Schema(
@@ -24,7 +24,7 @@ const OrderItemSchema: Schema<OrderItem> = new Schema(
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     lineTotal: { type: Number, required: true },
-    status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Refunded', 'Rated', 'Cancelled'], default: 'Unfulfilled' },
+    status: { type: String, enum: ['Unfulfilled', 'Fulfilled', 'Rated', 'Cancelled'], default: 'Unfulfilled' },
   },
   { timestamps: true }
 );
