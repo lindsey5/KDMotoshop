@@ -1,12 +1,10 @@
-import { Avatar, Divider, Drawer, IconButton } from "@mui/material"
+import { Avatar, Drawer, IconButton } from "@mui/material"
 import { useState, } from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useDarkmode from "../hooks/useDarkmode";
 import { cn } from "../utils/utils";
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./Toggle";
 import { NotificationsDrawerList } from "./Drawer";
@@ -28,11 +26,6 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const handleOpen = () => {
         setOpen(!open);
     };
-
-    const handleClick = (path : string) => {
-        navigate(path)
-        setOpen(false)
-    }
 
     const toggleDrawer =(open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
