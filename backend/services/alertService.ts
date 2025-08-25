@@ -12,7 +12,7 @@ export const sendLowStockAlert = async (product_id : string, product_name: strin
 
       socketInstance?.to(admin_id).emit('lowStockNotification', alert);
     }
-    
+    socketInstance?.emit('lowStockNotification', alert);
     console.log(`Low stock alert created for SKU ${sku}`);
   } catch (error) {
     console.error('Error creating low stock alert:', error);
