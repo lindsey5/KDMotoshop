@@ -5,6 +5,7 @@ import Product from "../models/Product";
 import { ICart } from "../models/Cart";
 import { sendAdminsNotification } from "./notificationService";
 import { sendLowStockAlert } from "./alertService";
+import { Types } from "mongoose";
 
 export const generateOrderId = async () : Promise<string> => {
   const prefix = 'ORD-';
@@ -129,10 +130,9 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
 }
 
 export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
-    const mongoose = require('mongoose');
 
     const match: any = {
-        product_id: new mongoose.Types.ObjectId(product_id),
+        product_id: new Types.ObjectId(product_id),
         status: { $in: ['Fulfilled', 'Rated'] },
     };
 
@@ -142,8 +142,8 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     const dailySales = await OrderItem.aggregate([
         { $match: match },
-        { $sort: { createdAt: -1 } }, // latest orders first
-        { $limit: 30 }, // take last 30 orders
+        { $sort: { createdAt: -1 } },
+        { $limit: 30 }, 
         {
             $group: {
                 _id: {

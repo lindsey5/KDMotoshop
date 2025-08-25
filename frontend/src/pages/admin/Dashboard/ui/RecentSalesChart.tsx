@@ -28,7 +28,7 @@ const RecentSalesChart = () => {
                     Recent Sales
                 </h1>
                 <select className="border" id="monthFilter" name="monthFilter" value={filter} onChange={handleChange}>
-                   {['Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(item => <option value={item}>{item}</option>)}
+                   {['All', 'Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(item => <option value={item}>{item}</option>)}
                 </select>
             </div>
 
