@@ -11,7 +11,7 @@ interface AuthenticatedSocket extends Socket {
   user?: JwtPayload;
 }
 
-export let socketInstance: AuthenticatedSocket | undefined;
+export let io: Server;
 
 export const initializeSocket = (server: HTTPServer): void => {
   const origin = [
@@ -19,7 +19,7 @@ export const initializeSocket = (server: HTTPServer): void => {
     'https://kdmotoshop.onrender.com',
   ];
 
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin,
       methods: ['GET', 'POST'],
@@ -41,13 +41,18 @@ export const initializeSocket = (server: HTTPServer): void => {
 
     try {
       if (token) {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+        const decodedToken = jwt.verify(
+          token,
+          process.env.JWT_SECRET as string
+        ) as JwtPayload;
+
+        socket.user = decodedToken;
+
+        // ✅ Join room by user ID
         socket.join(decodedToken.id);
-        console.log('User connected:', decodedToken.id)
+        console.log('User connected:', decodedToken.id);
 
         socket.on('disconnect', () => {
-          socket.join(token);
-          socketInstance = undefined;
           console.log('User disconnected:', decodedToken.id);
         });
       }
@@ -56,6 +61,5 @@ export const initializeSocket = (server: HTTPServer): void => {
       socket.disconnect();
     }
 
-    socketInstance = socket;
   });
 };

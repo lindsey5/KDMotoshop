@@ -1,16 +1,16 @@
 import { Types } from "mongoose";
-import { socketInstance } from "../middlewares/socket"
+import { io } from "../middlewares/socket"
 import AdminNotification from "../models/AdminNotification";
 import CustomerNotification from "../models/CustomerNotification"
 import Admin from "../models/Admin";
 
 export const sendCustomerNotification = async (newNotification : {to : string, order_id: string, content : string, refund_id?: string}) => {
     try{
+
         const notification = new CustomerNotification(newNotification)
         await notification.save();
 
-        socketInstance?.to(newNotification.to).emit('customerNotification', notification);
-
+        io?.to(newNotification.to).emit('customerNotification', notification);
     }catch(err : any){
         throw new Error(err.message)
     }
@@ -35,9 +35,8 @@ export const sendAdminsNotification = async (notificationData : AdminNotificatio
             await notification.save();
             const admin_id = (admin._id as Types.ObjectId).toString();
 
-
             const completedNotification = await AdminNotification.findById(notification._id).populate('from');
-            socketInstance?.to(admin_id).emit('adminNotification', completedNotification);
+            io?.to(admin_id).emit('adminNotification', completedNotification);
         }
 
     }catch(err : any){
