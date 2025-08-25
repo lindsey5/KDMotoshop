@@ -147,6 +147,7 @@ const CustomerOrderDetails = () => {
                             <p>{order.address?.region}</p>
                         </div>}
                         <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                        {order?.deliveredAt && <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Delivered At: {formatToLongDateFormat(order?.deliveredAt)}</p>}
 
                     </Card>
                 </div>

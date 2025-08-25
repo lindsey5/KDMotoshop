@@ -14,7 +14,13 @@ export const SidebarLink = ({ label, icon, path, badgeContent }: SidebarLinkProp
   const pathname = useLocation().pathname;
 
   return (
-    <Badge badgeContent={badgeContent} color="primary">
+    <Badge 
+      badgeContent={badgeContent} 
+      color="primary"    
+      sx={{
+        '& .MuiBadge-badge': { right: 10 },
+      }}
+    >
       <Link
         to={path}
         className={cn(

@@ -110,6 +110,7 @@ const OrderDetails = () => {
                         <p>{order.address?.region}</p>
                     </div>}
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                    {order?.deliveredAt && <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Delivered At: {formatToLongDateFormat(order?.deliveredAt)}</p>}
                     <div className="flex gap-3">
                       <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Channel:</p>
                       <PlatformChip platform={order.order_source} />

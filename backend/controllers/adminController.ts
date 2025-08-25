@@ -44,9 +44,10 @@ export const get_admin= async(req: AuthenticatedRequest, res: Response) => {
 
 export const update_admin = async (req: AuthenticatedRequest, res: Response) => {
     try{
-        const { _id: id, ...updatedData } = req.body;
+        const updatedData = req.body;
+        const id = req.user_id;
 
-        const isSuperAdmin = await findAdmin({ _id: req.user_id, role: 'Super Admin'})
+        const isSuperAdmin = await findAdmin({ _id: id, role: 'Super Admin'})
 
         if(!isSuperAdmin){
             res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });

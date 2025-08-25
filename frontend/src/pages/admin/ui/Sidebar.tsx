@@ -85,14 +85,14 @@ export const AdminSidebar = () => {
           md:translate-x-0 md:w-[200px] w-[200px]`}
         >
           <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
-          <div className="w-full flex-col flex gap-3 flex-1">
+          <div className="w-full flex-col flex gap-3 flex-grow min-h-0 overflow-hidden">
             <SidebarLink label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} path="/admin/dashboard" />
 
             {/* Store Dropdown */}
             <div>
               <button
                 onClick={() => setStoreOpen(!storeOpen)}
-                className="flex items-center w-full text-white font-medium px-2 py-2 rounded hover:bg-gray-700 transition"
+                className="cursor-pointer flex items-center w-full text-white font-medium px-2 py-2 rounded hover:bg-gray-700 transition"
               >
                 <StoreIcon sx={{ width: 25, height: 25, marginRight: '8px' }} />
                 <span className="flex-1 text-left">Store</span>
