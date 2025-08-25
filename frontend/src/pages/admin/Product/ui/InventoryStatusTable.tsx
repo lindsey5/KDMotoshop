@@ -1,6 +1,5 @@
-import { IconButton, TableRow } from "@mui/material"
+import { IconButton, Link, TableRow } from "@mui/material"
 import { StyledTableCell, StyledTableRow } from "../../../../components/Table";
-import { useNavigate } from "react-router-dom"
 import useDarkmode from "../../../../hooks/useDarkmode";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
@@ -48,12 +47,8 @@ export const InventoryStatusTableColumns = () => {
     )
 }
 
-
-
 export const InventoryStatusTableRow = ({ product } : { product : InventoryStatus }) => {
-  const navigate = useNavigate();
   const isDark = useDarkmode();
-  const handleNavigate = () => navigate(`/admin/product?id=${product._id}`)
 
   return (
     <StyledTableRow isDark={isDark}>
@@ -83,9 +78,11 @@ export const InventoryStatusTableRow = ({ product } : { product : InventoryStatu
       </StyledTableCell>
       <StyledTableCell isDark={isDark} align="center"><StockChip status={product.status}/></StyledTableCell>
       <StyledTableCell isDark={isDark} align="center">
-        <IconButton onClick={handleNavigate}>
+        <Link href={`/admin/product?id=${product._id}`} target="_blank"> 
+          <IconButton>
             <VisibilityIcon sx={{ color: isDark ? 'white' : 'black' }}/>
         </IconButton>
+        </Link>
       </StyledTableCell>
 
     </StyledTableRow>

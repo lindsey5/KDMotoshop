@@ -11,7 +11,7 @@ export const sendLowStockAlert = async (product_id : string, product_name: strin
       const admin_id = (admin._id as Types.ObjectId).toString();
 
       const socketId = userSocketMap.get(admin_id as string);
-
+      console.log(socketId)
       if(socketId) socketInstance?.to(socketId).emit('lowStockNotification', alert);
     }
     
