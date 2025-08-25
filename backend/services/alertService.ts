@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { socketInstance, userSocketMap } from "../middlewares/socket";
+import { socketInstance } from "../middlewares/socket";
 import Admin from "../models/Admin";
 
 export const sendLowStockAlert = async (product_id : string, product_name: string, product_image : string, sku: string, currentStock: number, prevStock: number) => {
@@ -10,9 +10,7 @@ export const sendLowStockAlert = async (product_id : string, product_name: strin
     for(const admin of admins){
       const admin_id = (admin._id as Types.ObjectId).toString();
 
-      const socketId = userSocketMap.get(admin_id as string);
-      console.log(socketId)
-      if(socketId) socketInstance?.to(socketId).emit('lowStockNotification', alert);
+      socketInstance?.to(admin_id).emit('lowStockNotification', alert);
     }
     
     console.log(`Low stock alert created for SKU ${sku}`);

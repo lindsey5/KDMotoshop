@@ -13,8 +13,6 @@ interface AuthenticatedSocket extends Socket {
 
 export let socketInstance: AuthenticatedSocket | undefined;
 
-export const userSocketMap = new Map<string, string>();
-
 export const initializeSocket = (server: HTTPServer): void => {
   const origin = [
     'http://localhost:5173',
@@ -41,23 +39,17 @@ export const initializeSocket = (server: HTTPServer): void => {
 
     const token = cookies.accessToken;
 
-    socket.on('disconnect', () => {
-      for (const [id, sId] of userSocketMap) {
-        if (sId === socket.id) {
-          userSocketMap.delete(id);
-          break;
-        }
-      }
-      socketInstance = undefined;
-      console.log('User disconnected:', socket.id);
-    });
-
     try {
       if (token) {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-        socket.user = decodedToken;
-        userSocketMap.set(socket.user.id, socket.id);
-        console.log('User connected:', socket.id)
+        socket.join(decodedToken.id);
+        console.log('User connected:', decodedToken.id)
+
+        socket.on('disconnect', () => {
+          socket.join(token);
+          socketInstance = undefined;
+          console.log('User disconnected:', decodedToken.id);
+        });
       }
     } catch (err: any) {
       console.log('Error verifying token:', err.message);
