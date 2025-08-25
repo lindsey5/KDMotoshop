@@ -37,9 +37,9 @@ const SalesPredictionChart = () => {
     }, [actualSalesRes, dateLabels])
 
     return (
-        <Card className="h-[500px] xl:flex-3 flex flex-col gap-3">
+        <Card className="h-[500px] xl:flex-3 flex flex-col gap-3 mt-8">
             <div className="flex justify-between items-center px-4 mt-2">
-                <h1 className="font-bold text-xl">Sales Trend: {monthNames[month - 1]} {year}</h1>
+                <h1 className="font-bold text-xl">Sales Forecast: {monthNames[month - 1]} {year}</h1>
             </div>
 
             {(forecastLoading || actualLoading) ? (

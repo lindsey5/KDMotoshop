@@ -51,3 +51,16 @@ type Review = {
     product_id: Product;
     createdAt: Date;
 }
+
+type InventoryStatus = {
+    _id: string;
+    product_name: string;
+    thumbnail: UploadedImage;
+    product_type: string;
+    sku: string;
+    status: "Understock" | "Overstock" | "Balanced";
+    amount: number;
+    reorderLevel: number;
+    optimalStockLevel: number;
+    stock: number;
+}

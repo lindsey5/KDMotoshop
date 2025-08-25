@@ -23,7 +23,7 @@ import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import WarningIcon from '@mui/icons-material/Warning';
+import { Boxes } from "lucide-react";
 
 const NotificationLink = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -105,7 +105,7 @@ export const AdminSidebar = () => {
                   <SidebarLink label="Orders" icon={<ShoppingCartIcon sx={{ width: 22, height: 22 }} />} path="/admin/orders" />
                   <SidebarLink label="Refunds" icon={<ReplayRoundedIcon sx={{ width: 22, height: 22 }} />} path="/admin/refunds" />
                   <SidebarLink label="Customers" icon={<PersonIcon sx={{ width: 22, height: 22 }} />} path="/admin/customers" />
-                   <SidebarLink label="Low Stocks" icon={<WarningIcon sx={{ width: 22, height: 22 }} />} path="/admin/products/low-stocks" />
+                   <SidebarLink label="Inventory Status" icon={<Boxes size={22}/>} path="/admin/inventory-status" />
                 </div>
               </Collapse>
             </div>

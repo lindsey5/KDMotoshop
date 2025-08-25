@@ -3,7 +3,7 @@ import OrderItem from "../models/OrderItem";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
-
+    
     const yearParam = req.query.year as string;
     const year = parseInt(yearParam, 10) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00Z`);
@@ -119,6 +119,62 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
 
   } catch (err: any) {
     console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const get_last_30_days_sales = async (req: Request, res: Response) => {
+  try {
+    const channel = req.query.channel || undefined;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // start of today
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 9); // 10 days ago
+
+    // Fetch sales from DB
+    const dailySales = await OrderItem.aggregate([
+      {
+        $lookup: {
+          from: 'orders',
+          localField: 'order_id',
+          foreignField: '_id',
+          as: 'order'
+        }
+      },
+      { $unwind: '$order' },
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: today },
+          status: { $in: ['Fulfilled', 'Rated'] },
+          'order.status': { $in: ['Rated', 'Delivered'] },
+          ...(channel && channel !== 'All' ? { 'order.order_source': channel } : {})
+        }
+      },
+      {
+        $project: {
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+              timezone: "Asia/Manila"
+            }
+          },
+          lineTotal: 1
+        }
+      },
+      {
+        $group: {
+          _id: '$date',
+          total: { $sum: '$lineTotal' }
+        }
+      },
+      { $sort: { _id: 1 } },
+      { $project: { date: '$_id', total: 1, _id: 0 } }
+    ]);
+
+    res.status(200).json({ success: true, dailySales });
+
+  } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
 };

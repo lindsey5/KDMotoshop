@@ -1,7 +1,7 @@
 import BreadCrumbs from "../../../components/BreadCrumbs"
 import Card from "../../../components/Card"
 import PageContainer from "../ui/PageContainer"
-import { LowStockTableColumns, LowStockTableRow } from "./ui/LowStocksTable"
+import { InventoryStatusTableColumns, InventoryStatusTableRow } from "./ui/InventoryStatusTable"
 import CustomizedTable from "../../../components/Table"
 import { Title } from "../../../components/text/Text"
 import useFetch from "../../../hooks/useFetch"
@@ -11,38 +11,40 @@ import { exportData } from "../../../utils/utils"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
-    { label: 'Low Stocks', href: '/admin/products/low-stocks' },
+    { label: 'Inventory Status', href: '/admin/inventory-status' },
 ]
 
-const LowStockProducts = () => {
-    const { data, loading } = useFetch('/api/products/low-stock')
+const InventoryStatus = () => {
+    const { data, loading } = useFetch('/api/products/inventory-status')
 
      const exportReport= () => {
-        const dataToExport = data?.products.map((p : any) => ({
+        const dataToExport = data?.products.map((p : InventoryStatus) => ({
             SKU: p.sku,
             Product: p.product_name,
-            SafetyStock: p.safetyStock,
+            Stock: p.stock,
             ReorderLevel: p.reorderLevel,
-            ReOrderQuantity: p.reorderQuantity,
+            ReOrderQuantity: p.optimalStockLevel,
+            UnitsToReduce: p.status === 'Overstock' ? p.amount : 0,
+            UnitsToRestock: p.status === 'Understock' ? p.amount : 0,
             Status: p.status
         }))
         
-        exportData({ dataToExport, filename: `KDMotoshop - Low Stock Report (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
+        exportData({ dataToExport, filename: `KDMotoshop - Inventory Status Report (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
     }
 
     return (
         <PageContainer className="w-full flex flex-col gap-5">
             <div className="justify-between flex items-center">
                 <div>
-                    <Title className="mb-4">Low Stock Products</Title>
+                    <Title className="mb-4">Inventory Status</Title>
                     <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 </div>
                 <Button variant="contained" onClick={exportReport}>Export</Button>
             </div>
             <Card className="h-screen overflow-y-auto">
                 <CustomizedTable 
-                    cols={<LowStockTableColumns />}
-                    rows={data?.products.map((product : any) => <LowStockTableRow product={product}/>)}
+                    cols={<InventoryStatusTableColumns />}
+                    rows={data?.products.map((product : any) => <InventoryStatusTableRow product={product}/>)}
                 />
                 {loading && (
                     <div className="flex justify-center items-center p-4">
@@ -54,4 +56,4 @@ const LowStockProducts = () => {
     )
 }
 
-export default LowStockProducts
+export default InventoryStatus

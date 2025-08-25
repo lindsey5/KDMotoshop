@@ -7,6 +7,7 @@ import OrderItem from "../models/OrderItem";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
+import Order from "../models/Order";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -276,53 +277,54 @@ export const get_top_products = async (req: Request, res: Response) => {
     }
 }
 
-export const get_low_stock_products = async (req: Request, res: Response) => {
+export const get_inventory_status = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find({ status: { $ne: 'Deleted' } });
-    const allLowStockProducts: any[] = [];
+    // Step 1: Get all product IDs that have sales
+    const productIdsWithSales = await OrderItem.distinct("product_id");
+
+    // Step 2: Fetch paginated products
+    const products = await Product.find({ _id: { $in: productIdsWithSales } }).sort({ product_name: 1 })
+
+    const allProducts: any[] = [];
 
     for (const product of products) {
-      if (product.product_type === 'Variable') {
+      if (product.product_type === "Variable") {
         // For each variant
         for (const variant of product.variants) {
-          const sku = variant.sku;
-          const status = await product.getStockStatus(sku);
-          if (status === 'Low Stock' || status === 'Out of Stock') {
-            const reorder = await product.getReorderQuantity(sku);
-
-            allLowStockProducts.push({
-              _id: product._id,
-              product_name: product.product_name,
-              thumbnail: product.thumbnail,
-              product_type: product.product_type,
-              sku,
-              status,
-              ...reorder,
-              stock: variant.stock,
+          const inventory = await product.getStockStatus(variant.sku);
+          if (inventory.status !== "Balanced") {
+            allProducts.push({
+                _id: product._id,
+                product_name: product.product_name,
+                thumbnail: product.thumbnail,
+                product_type: product.product_type,
+                sku: variant.sku,
+                stock: variant.stock,
+                ...inventory,
             });
           }
         }
       } else {
-        // Simple product
-        const status = await product.getStockStatus();
-        if (status === 'Low Stock' || status === 'Out of Stock') {
-          const reorder = await product.getReorderQuantity();
-
-          allLowStockProducts.push({
+        // Single product
+        const inventory = await product.getStockStatus();
+        if (inventory.status !== "Balanced") {
+          allProducts.push({
             _id: product._id,
             product_name: product.product_name,
             thumbnail: product.thumbnail,
             product_type: product.product_type,
             sku: product.sku,
-            status,
-            ...reorder,
             stock: product.stock,
+            ...inventory,
           });
         }
       }
     }
 
-    res.status(200).json({ success: true, products: allLowStockProducts });
+    res.status(200).json({
+      success: true,
+      products: allProducts,
+    });
   } catch (err: any) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });

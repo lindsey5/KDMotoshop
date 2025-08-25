@@ -31,7 +31,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "./redux/store";
 import { fetchUser } from "./redux/user-reducer";
 import RefundsPage from "./pages/admin/Refunds/Refunds";
-import LowStockProducts from "./pages/admin/Product/LowStock";
+import InventoryStatus from "./pages/admin/Product/InventoryStatus";
 
 export default function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -74,7 +74,7 @@ export default function App() {
                 <Route path="admins" element={<Admins />} />
                 <Route path="reviews/:id" element={<AdminProductReviews />} />
                 <Route path="refunds" element={<RefundsPage />} />
-                <Route path="products/low-stocks" element={<LowStockProducts />} />
+                <Route path="inventory-status" element={<InventoryStatus />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

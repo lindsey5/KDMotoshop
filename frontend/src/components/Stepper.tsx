@@ -13,7 +13,7 @@ type OrderStatusStepperProps = {
 
 const OrderStatusStepper = ({ order } : OrderStatusStepperProps) => {
     if(!order) return null
-    console.log(order)
+
     const status = order.status;
     const linearSteps = [
         { status: 'Pending', icon: <PendingActionsOutlinedIcon fontSize="large" />},

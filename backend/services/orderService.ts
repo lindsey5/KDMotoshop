@@ -35,18 +35,18 @@ export const decrementStock = async (item: any) => {
     if (!variant) return;
 
     const currentStock = variant.stock;
-    variant.stock -= item.quantity;
+    const newStock = currentStock - item.quantity;
+    variant.stock = newStock;
 
-    // Get dynamic reorder level using method
-    const status = await product.getStockStatus(item.sku);
+    const { status } = await product.getStockStatus(variant.sku);
 
-    if (status === 'Low Stock' || status === 'Out of Stock') {
+    if (status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
         product._id as string,
         product.product_name,
         product.thumbnail.imageUrl,
         variant.sku,
-        variant.stock,
+        newStock,
         currentStock
       );
     }
@@ -61,20 +61,20 @@ export const decrementStock = async (item: any) => {
     );
 
     const currentStock = product.stock ?? 0;
-    product.stock = currentStock - item.quantity;
-
-    // Get dynamic reorder level
-    const status = await product.getStockStatus();
+    const newStock = currentStock - item.quantity;
+    product.stock = newStock;
 
     await product.save();
 
-    if (status === 'Low Stock' || status === 'Out of Stock') {
+    const { status } = await product.getStockStatus();
+
+    if (status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
         product._id as string,
         product.product_name,
         product.thumbnail.imageUrl,
         product.sku,
-        product.stock,
+        newStock,
         currentStock
       );
     }
