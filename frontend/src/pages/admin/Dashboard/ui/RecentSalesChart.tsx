@@ -7,7 +7,7 @@ import useFetch from "../../../../hooks/useFetch";
 
 const RecentSalesChart = () => {
     const [filter, setFilter] = useState('All');
-    const { data: salesRes, loading } = useFetch(`/api/sales/last-30-days?channel=${filter}`);
+    const { data: salesRes, loading } = useFetch(`/api/sales/recent?channel=${filter}`);
 
     const { labels, sales } = useMemo(() => {
         if (!salesRes?.dailySales) return { labels: [], sales: [] };

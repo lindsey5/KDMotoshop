@@ -123,13 +123,21 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
   }
 };
 
-export const get_last_30_days_sales = async (req: Request, res: Response) => {
+export const get_recent_sales = async (req: Request, res: Response) => {
   try {
     const channel = req.query.channel || undefined;
+
+    // Today and 10 days ago
     const today = new Date();
     today.setHours(0, 0, 0, 0); // start of today
+
     const startDate = new Date(today);
     startDate.setDate(today.getDate() - 9); // 10 days ago
+
+    // Set tomorrow for $lt comparison
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // start of tomorrow
+    tomorrow.setHours(0, 0, 0, 0);
 
     // Fetch sales from DB
     const dailySales = await OrderItem.aggregate([
@@ -144,7 +152,7 @@ export const get_last_30_days_sales = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          createdAt: { $gte: startDate, $lte: today },
+          createdAt: { $gte: startDate, $lt: tomorrow }, // include all of today
           status: { $in: ['Fulfilled', 'Rated'] },
           'order.status': { $in: ['Rated', 'Delivered'] },
           ...(channel && channel !== 'All' ? { 'order.order_source': channel } : {})
