@@ -74,7 +74,7 @@ export const decrementStock = async (item: any) => {
         product._id as string,
         product.product_name,
         product.thumbnail.imageUrl,
-        product.sku,
+        product.sku ?? '',
         newStock,
         currentStock
       );

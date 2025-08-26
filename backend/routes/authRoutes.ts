@@ -4,8 +4,8 @@ import rateLimit from 'express-rate-limit';
 import { tokenRequire } from "../middlewares/authMiddleware";
 
 const authLimiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  max: 10,
+  windowMs: 15 * 60 * 1000,
+  max: 5,
   message: 'Too many attempts, please try again later.',
 });
 

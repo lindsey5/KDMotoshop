@@ -8,6 +8,7 @@ import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
 import Order from "../models/Order";
+import { getProductDailyDemand } from "../services/orderService";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -291,6 +292,9 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       if (product.product_type === "Variable") {
         // For each variant
         for (const variant of product.variants) {
+          const dailySalesLength = await getDailySalesLength(product._id as string, product.product_type, variant.sku)
+          if(dailySalesLength < 5) continue;
+          
           const inventory = await product.getStockStatus(variant.sku);
           if (inventory.status !== "Balanced") {
             allProducts.push({
@@ -306,6 +310,8 @@ export const get_inventory_status = async (req: Request, res: Response) => {
         }
       } else {
         // Single product
+        const dailySalesLength = await getDailySalesLength(product._id as string, product.product_type)
+        if(dailySalesLength < 5) continue;
         const inventory = await product.getStockStatus();
         if (inventory.status !== "Balanced") {
           allProducts.push({
@@ -330,3 +336,13 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+const getDailySalesLength = async (id : string, product_type: string,sku?: string) => {
+  let dailySales;
+  if (product_type === 'Variable' && sku) {
+    dailySales = await getProductDailyDemand(id, sku);
+  } else {
+     dailySales = await getProductDailyDemand(id);
+  }
+  return dailySales.length
+}

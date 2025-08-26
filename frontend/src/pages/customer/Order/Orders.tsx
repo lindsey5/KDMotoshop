@@ -64,7 +64,7 @@ const CustomerOrders = () => {
     }
 
     return (
-        <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#121212]')}>
+        <div className={cn("flex flex-col gap-5 min-h-screen transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             <div className="flex flex-col md:flex-row justify-between gap-5">
                 <Title className="text-2xl md:text-4xl">My Orders</Title>

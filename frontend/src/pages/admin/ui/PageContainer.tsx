@@ -11,7 +11,7 @@ const PageContainer = ({ className, children } : PageContainerProps) => {
     const isDark = useDarkmode();
 
     return (
-        <div className={cn("transition-colors duration-600 p-5 bg-gray-100", className, isDark && 'text-white bg-[#121212]')}>
+        <div className={cn("transition-colors duration-600 p-5 bg-gray-100", className, isDark && 'text-white bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
         {children}
         </div>
     )

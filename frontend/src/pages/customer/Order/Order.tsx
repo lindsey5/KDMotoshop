@@ -75,7 +75,7 @@ const CustomerOrderDetails = () => {
     }
 
     if(customer?._id === order.customer?.customer_id) {
-        return <div className={cn("pt-20 transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#121212] text-white')}>
+        return <div className={cn("pt-20 transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800 text-white')}>
             <Backdrop
                 sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
                 open={loading}

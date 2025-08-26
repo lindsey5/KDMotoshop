@@ -134,7 +134,7 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<n
   let avgDailyDemand: number;
   
   const salesArray = dailySales.map(d => d.totalQuantity);
-    avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
+  avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
 
   const leadTime = this.lead_time;
   
@@ -150,6 +150,16 @@ ProductSchema.methods.getStockStatus = async function (
   amount: number;
   optimalStockLevel: number;
 }> {
+  let dailySales;
+  if (this.product_type === 'Variable' && sku) {
+    dailySales = await getProductDailyDemand(this._id, sku);
+  } else {
+    dailySales = await getProductDailyDemand(this._id);
+  }
+  const totalQuantity = dailySales.reduce((total, sales) => total + sales.totalQuantity, 0)
+
+  if(totalQuantity < 5) return { status: 'Balanced', reorderLevel: 0, currentStock: 0, amount: 0, optimalStockLevel: 0 }
+
   const reorderLevel = await this.getReorderLevel(sku);
   const currentStock = this.getCurrentStock(sku);
   

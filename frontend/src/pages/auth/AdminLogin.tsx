@@ -9,7 +9,6 @@ import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
 import { Title } from "../../components/text/Text";
 import { ThemeToggle } from "../../components/Toggle";
-import SplashCursor from "../../components/SplashCursor";
 
 const AdminLogin = () => {
     const [email, setEmail] = useState<string>('');
@@ -42,7 +41,6 @@ const AdminLogin = () => {
             <div className="fixed top-5 right-5">
                 <ThemeToggle />
             </div>
-            {isDark && <SplashCursor />}
             <div className="hidden md:flex h-full flex flex-col items-center justify-center gap-6 shadow-red-600/25 bg-gradient-to-br from-black via-red-900 to-gray-900">
                 <h1 className="text-white text-5xl font-bold">Welcome to</h1>
                 <img className="w-[50%] h-[230px]" src="/kd-logo (1).png" alt="logo" />
