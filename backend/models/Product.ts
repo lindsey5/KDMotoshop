@@ -11,6 +11,8 @@ interface Variant {
   attributes: { [key: string]: string };
 }
 
+const lead_time = 2
+
 export interface IProduct extends Document {
   product_name: string;
   description: string;
@@ -27,7 +29,6 @@ export interface IProduct extends Document {
   variants: Variant[];
   attributes: string[];
   rating: number;
-  lead_time: number;
 
   getCurrentStock(sku?: string): number;
   getSafetyStock(sku?: string): Promise<number>;
@@ -81,7 +82,6 @@ const ProductSchema: Schema<IProduct> = new Schema(
     },
     attributes: { type: [String] },
     rating: { type: Number, default: 0 },
-    lead_time: { type: Number, default: 3 },
   },
   { timestamps: true }
 );
@@ -112,7 +112,7 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
 
   const stdDev = Math.sqrt(variance);
   const Z = 1.65; // 95% service level
-  const leadTime = this.lead_time;
+  const leadTime = lead_time;
 
   return Math.round(Z * stdDev * Math.sqrt(leadTime));
 };
@@ -131,7 +131,7 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<n
 
   avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
 
-  const leadTime = this.lead_time;
+  const leadTime = lead_time;
   
   return Math.round(avgDailyDemand * leadTime + safetyStock)
 };

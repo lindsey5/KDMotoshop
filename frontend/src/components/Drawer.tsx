@@ -1,4 +1,4 @@
-import { Box, CircularProgress, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
+import { Box, CircularProgress, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material"
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -12,7 +12,6 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import { formatDate } from "../utils/dateUtils";
 import { useState, type JSX } from "react";
 import useDarkmode from "../hooks/useDarkmode";
-import { Title } from "./text/Text";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { notificationsNextPage, updateAllNotifications } from "../redux/notification-reducer";
@@ -38,7 +37,7 @@ const extractStatus = (content: string): string | undefined => {
   return Object.keys(statusMap).find(status => content.includes(status));
 };
 
-export const NotificationsDrawerList = () => {
+export const NotificationsDrawerList = ({ close } : { close : () => void }) => {
     const { notifications, total, loading } = useSelector((state : RootState) => state.notification)
     const [page, setPage] = useState(1);
     const isDark = useDarkmode();
@@ -57,7 +56,16 @@ export const NotificationsDrawerList = () => {
 
     return (
         <Box sx={{ width: 300, backgroundColor: isDark ? '#2a2a2a' : 'white', color: isDark ? 'white' : 'black'}}>
-            <Title className="pt-10 px-3 pb-5">Notifications</Title>
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                p={2}
+                borderBottom="1px solid #ddd"
+            >
+                <h1 className="text-2xl">Notifications</h1>
+                <IconButton sx={{ color: isDark ? "white" : "black" }} onClick={close}>✕</IconButton>
+            </Box>
             {notifications.length < 1 && <p className="w-full text-center mt-4">No notifications yet</p>}
             <List sx={{ backgroundColor: isDark ? '#2a2a2a' : 'white' }}>
                 {notifications.map((n) => {
