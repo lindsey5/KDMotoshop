@@ -39,7 +39,7 @@ export const decrementStock = async (item: any) => {
     const newStock = currentStock - item.quantity;
     variant.stock = newStock;
 
-    const { status } = await product.getStockStatus(variant.sku);
+    const { status, amount } = await product.getStockStatus(variant.sku);
 
     if (status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
@@ -48,7 +48,8 @@ export const decrementStock = async (item: any) => {
         product.thumbnail.imageUrl,
         variant.sku,
         newStock,
-        currentStock
+        currentStock,
+        amount
       );
     }
 
@@ -64,10 +65,8 @@ export const decrementStock = async (item: any) => {
     const currentStock = product.stock ?? 0;
     const newStock = currentStock - item.quantity;
     product.stock = newStock;
-
     await product.save();
-
-    const { status } = await product.getStockStatus();
+    const { status, amount } = await product.getStockStatus();
 
     if (status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
@@ -76,7 +75,8 @@ export const decrementStock = async (item: any) => {
         product.thumbnail.imageUrl,
         product.sku ?? '',
         newStock,
-        currentStock
+        currentStock,
+        amount
       );
     }
   }
@@ -159,3 +159,13 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     return dailySales;
 };
+
+export const getDailySalesLength = async (id : string, product_type: string,sku?: string) => {
+  let dailySales;
+  if (product_type === 'Variable' && sku) {
+    dailySales = await getProductDailyDemand(id, sku);
+  } else {
+     dailySales = await getProductDailyDemand(id);
+  }
+  return dailySales.length
+}

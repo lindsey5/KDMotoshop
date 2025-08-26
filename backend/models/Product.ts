@@ -97,14 +97,11 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
 
 // Safety Stock formula: Safety Stock = Z * σdemand * √Lead Time
 ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
-  let dailySales;
-  if (this.product_type === 'Variable' && sku) {
-    dailySales = await getProductDailyDemand(this._id, sku);
-  } else {
-    dailySales = await getProductDailyDemand(this._id);
-  }
+  const dailySales = await this.getDailySales();
 
-  const salesArray = dailySales.map(d => d.totalQuantity);
+  if(dailySales.length < 5) return 0
+
+  const salesArray : number[] = dailySales.map((d : any) => d.totalQuantity);
   const mean = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
 
   // sample variance (n - 1)
@@ -124,22 +121,30 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
 ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<number> {
   const safetyStock = await this.getSafetyStock(sku);
 
+  const dailySales = await this.getDailySales();
+
+  if(dailySales.length < 5) return 0
+
+  let avgDailyDemand: number;
+  
+  const salesArray : number[] = dailySales.map((d : any)=> d.totalQuantity);
+
+  avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
+
+  const leadTime = this.lead_time;
+  
+  return Math.round(avgDailyDemand * leadTime + safetyStock)
+};
+
+ProductSchema.methods.getDailySales = async function (sku? : string): Promise<any[]> {
   let dailySales;
   if (this.product_type === 'Variable' && sku) {
     dailySales = await getProductDailyDemand(this._id, sku);
   } else {
     dailySales = await getProductDailyDemand(this._id);
   }
-
-  let avgDailyDemand: number;
-  
-  const salesArray = dailySales.map(d => d.totalQuantity);
-  avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
-
-  const leadTime = this.lead_time;
-  
-  return Math.round(avgDailyDemand * leadTime + safetyStock)
-};
+  return dailySales
+}
 
 ProductSchema.methods.getStockStatus = async function (
   sku?: string
@@ -150,19 +155,9 @@ ProductSchema.methods.getStockStatus = async function (
   amount: number;
   optimalStockLevel: number;
 }> {
-  let dailySales;
-  if (this.product_type === 'Variable' && sku) {
-    dailySales = await getProductDailyDemand(this._id, sku);
-  } else {
-    dailySales = await getProductDailyDemand(this._id);
-  }
-  const totalQuantity = dailySales.reduce((total, sales) => total + sales.totalQuantity, 0)
-
-  if(totalQuantity < 5) return { status: 'Balanced', reorderLevel: 0, currentStock: 0, amount: 0, optimalStockLevel: 0 }
-
   const reorderLevel = await this.getReorderLevel(sku);
   const currentStock = this.getCurrentStock(sku);
-  
+
   // Calculate optimal stock level (target stock after restocking)
   const optimalStockLevel = Math.round(reorderLevel * 1.2);
 
@@ -171,9 +166,12 @@ ProductSchema.methods.getStockStatus = async function (
 
   if (currentStock === 0) {
     status = 'Out of Stock';
-    amount = optimalStockLevel;
+    amount = optimalStockLevel !== 0 ? optimalStockLevel : 5;
 
-  } else if (currentStock <= reorderLevel) {
+  } else if(optimalStockLevel === 0){
+    status = 'Balanced'
+    amount = 0;
+  }else if (currentStock <= reorderLevel) {
     status = 'Understock'; 
     amount = optimalStockLevel - currentStock; 
 

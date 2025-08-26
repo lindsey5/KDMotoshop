@@ -11,6 +11,7 @@ interface Alert {
     sku: string;
     currentStock: number;
     prevStock: number;
+    amount: number;
 }
 
 const LowStockNotification = () => {
@@ -62,6 +63,7 @@ const LowStockNotification = () => {
                 <p className="mb-3 text-sm text-gray-800">
                     {a.product_name} <span className="text-gray-500">({a.sku})</span>
                 </p>
+                <p className="text-sm text-gray-600">Restock {a.amount} units</p>
                 <p className="text-sm text-gray-600">
                     Stock dropped from{" "}
                     <span className="font-medium">{a.prevStock}</span> →{" "}

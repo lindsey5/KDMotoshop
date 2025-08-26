@@ -2,9 +2,9 @@ import { Types } from "mongoose";
 import { io } from "../middlewares/socket";
 import Admin from "../models/Admin";
 
-export const sendLowStockAlert = async (product_id : string, product_name: string, product_image : string, sku: string, currentStock: number, prevStock: number) => {
+export const sendLowStockAlert = async (product_id : string, product_name: string, product_image : string, sku: string, currentStock: number, prevStock: number, amount: number) => {
   try {
-    const alert = { _id: product_id, product_name, product_image, sku, currentStock, prevStock };
+    const alert = { _id: product_id, product_name, product_image, sku, currentStock, prevStock, amount };
     const admins = await Admin.find();
 
     for(const admin of admins){

@@ -58,7 +58,7 @@ type InventoryStatus = {
     thumbnail: UploadedImage;
     product_type: string;
     sku: string;
-    status: "Understock" | "Overstock" | "Balanced";
+    status: "Understock" | "Overstock" | "Balanced" | "Out of Stock";
     amount: number;
     reorderLevel: number;
     optimalStockLevel: number;

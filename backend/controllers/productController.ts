@@ -280,11 +280,10 @@ export const get_top_products = async (req: Request, res: Response) => {
 
 export const get_inventory_status = async (req: Request, res: Response) => {
   try {
-    // Step 1: Get all product IDs that have sales
-    const productIdsWithSales = await OrderItem.distinct("product_id");
-
-    // Step 2: Fetch paginated products
-    const products = await Product.find({ _id: { $in: productIdsWithSales } }).sort({ product_name: 1 })
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const products = await Product.find().sort({ product_name: 1 }).skip(skip).limit(limit)
 
     const allProducts: any[] = [];
 
@@ -292,12 +291,9 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       if (product.product_type === "Variable") {
         // For each variant
         for (const variant of product.variants) {
-          const dailySalesLength = await getDailySalesLength(product._id as string, product.product_type, variant.sku)
-          if(dailySalesLength < 5) continue;
           
           const inventory = await product.getStockStatus(variant.sku);
-          if (inventory.status !== "Balanced") {
-            allProducts.push({
+          allProducts.push({
                 _id: product._id,
                 product_name: product.product_name,
                 thumbnail: product.thumbnail,
@@ -305,16 +301,11 @@ export const get_inventory_status = async (req: Request, res: Response) => {
                 sku: variant.sku,
                 stock: variant.stock,
                 ...inventory,
-            });
-          }
+          });
         }
       } else {
-        // Single product
-        const dailySalesLength = await getDailySalesLength(product._id as string, product.product_type)
-        if(dailySalesLength < 5) continue;
         const inventory = await product.getStockStatus();
-        if (inventory.status !== "Balanced") {
-          allProducts.push({
+        allProducts.push({
             _id: product._id,
             product_name: product.product_name,
             thumbnail: product.thumbnail,
@@ -322,8 +313,7 @@ export const get_inventory_status = async (req: Request, res: Response) => {
             sku: product.sku,
             stock: product.stock,
             ...inventory,
-          });
-        }
+        });
       }
     }
 

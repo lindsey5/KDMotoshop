@@ -16,7 +16,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const InventoryStatus = () => {
     const { data, loading } = useFetch('/api/products/inventory-status')
-
+    console.log(data)
      const exportReport= () => {
         const dataToExport = data?.products.map((p : InventoryStatus) => ({
             SKU: p.sku,

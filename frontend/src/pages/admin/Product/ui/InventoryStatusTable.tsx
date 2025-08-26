@@ -4,7 +4,7 @@ import useDarkmode from "../../../../hooks/useDarkmode";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type StockChipProps = {
-  status: "Understock" | "Overstock" | "Balanced";
+  status: "Understock" | "Overstock" | "Balanced" | "Out of Stock";
 };
 
 const StockChip = ({ status }: StockChipProps) => {
@@ -72,7 +72,7 @@ export const InventoryStatusTableRow = ({ product } : { product : InventoryStatu
       <StyledTableCell isDark={isDark} align="center">
         {product.status === "Overstock"
           ? `Reduce inventory by ${product.amount} units`
-          : product.status === "Understock"
+          : product.status === "Understock" || product.status === 'Out of Stock'
           ? `Restock ${product.amount} units`
           : "No action needed"}
       </StyledTableCell>
