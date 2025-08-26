@@ -39,20 +39,19 @@ export const initializeSocket = (server: HTTPServer): void => {
 
     const token = cookies.accessToken;
 
+    if(!token){
+      return socket.disconnect();
+    }
+
     try {
-      if (token) {
-        const decodedToken = jwt.verify(
-          token,
-          process.env.JWT_SECRET as string
-        ) as JwtPayload;
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
 
-        socket.join(decodedToken.id);
-        console.log('User connected:', decodedToken.id);
+      socket.join(decodedToken.id);
+      console.log('User connected:', decodedToken.id);
 
-        socket.on('disconnect', () => {
-          console.log('User disconnected:', decodedToken.id);
-        });
-      }
+      socket.on('disconnect', () => {
+        console.log('User disconnected:', decodedToken.id);
+      });
     } catch (err: any) {
       console.log('Error verifying token:', err.message);
       socket.disconnect();
