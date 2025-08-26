@@ -25,17 +25,13 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
   useEffect(() => {
     const connectSocket =() => {
       try {
-        const token = localStorage.getItem('token');
-        
-        if (token) {
-          const newSocket = io(SOCKET_URL, { withCredentials: true });
+        const newSocket = io(SOCKET_URL, { withCredentials: true });
 
-          newSocket.on("connect", () => {
-            console.log("Connected to Socket");
-          });
+        newSocket.on("connect", () => {
+          console.log("Connected to Socket");
+        });
 
-          setSocket(newSocket);
-        }
+        setSocket(newSocket);
       } catch (error : any) {
         console.error("Error connecting to socket:", error.message);
       }

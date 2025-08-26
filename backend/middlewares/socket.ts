@@ -46,9 +46,6 @@ export const initializeSocket = (server: HTTPServer): void => {
           process.env.JWT_SECRET as string
         ) as JwtPayload;
 
-        socket.user = decodedToken;
-
-        // ✅ Join room by user ID
         socket.join(decodedToken.id);
         console.log('User connected:', decodedToken.id);
 
