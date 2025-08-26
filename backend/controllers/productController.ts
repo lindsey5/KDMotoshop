@@ -283,7 +283,14 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
-    const products = await Product.find().sort({ product_name: 1 }).skip(skip).limit(limit)
+
+    // Get total products count for pagination
+    const totalProducts = await Product.countDocuments();
+
+    const products = await Product.find()
+      .sort({ product_name: 1 })
+      .skip(skip)
+      .limit(limit);
 
     const allProducts: any[] = [];
 
@@ -291,34 +298,35 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       if (product.product_type === "Variable") {
         // For each variant
         for (const variant of product.variants) {
-          
           const inventory = await product.getStockStatus(variant.sku);
           allProducts.push({
-                _id: product._id,
-                product_name: product.product_name,
-                thumbnail: product.thumbnail,
-                product_type: product.product_type,
-                sku: variant.sku,
-                stock: variant.stock,
-                ...inventory,
+            _id: product._id,
+            product_name: product.product_name,
+            thumbnail: product.thumbnail,
+            product_type: product.product_type,
+            sku: variant.sku,
+            stock: variant.stock,
+            ...inventory,
           });
         }
       } else {
         const inventory = await product.getStockStatus();
         allProducts.push({
-            _id: product._id,
-            product_name: product.product_name,
-            thumbnail: product.thumbnail,
-            product_type: product.product_type,
-            sku: product.sku,
-            stock: product.stock,
-            ...inventory,
+          _id: product._id,
+          product_name: product.product_name,
+          thumbnail: product.thumbnail,
+          product_type: product.product_type,
+          sku: product.sku,
+          stock: product.stock,
+          ...inventory,
         });
       }
     }
 
     res.status(200).json({
       success: true,
+      page,
+      totalPages: Math.ceil(totalProducts / limit),
       products: allProducts,
     });
   } catch (err: any) {
@@ -326,13 +334,3 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
-const getDailySalesLength = async (id : string, product_type: string,sku?: string) => {
-  let dailySales;
-  if (product_type === 'Variable' && sku) {
-    dailySales = await getProductDailyDemand(id, sku);
-  } else {
-     dailySales = await getProductDailyDemand(id);
-  }
-  return dailySales.length
-}

@@ -8,6 +8,8 @@ import useFetch from "../../../hooks/useFetch"
 import { Button, CircularProgress } from "@mui/material"
 import { formatDate } from "../../../utils/dateUtils"
 import { exportData } from "../../../utils/utils"
+import CustomizedPagination from "../../../components/Pagination"
+import usePagination from "../../../hooks/usePagination"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -15,9 +17,10 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const InventoryStatus = () => {
-    const { data, loading } = useFetch('/api/products/inventory-status')
-    console.log(data)
-     const exportReport= () => {
+    const { pagination, setPagination } = usePagination();
+    const { data, loading } = useFetch(`/api/products/inventory-status?page=${pagination.page}&limit=5`)
+
+    const exportReport= () => {
         const dataToExport = data?.products.map((p : InventoryStatus) => ({
             SKU: p.sku,
             Product: p.product_name,
@@ -30,6 +33,10 @@ const InventoryStatus = () => {
         }))
         
         exportData({ dataToExport, filename: `KDMotoshop - Inventory Status Report (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
+    }
+
+    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPagination(prev => ({ ...prev, page: value }));
     }
 
     return (
@@ -51,6 +58,14 @@ const InventoryStatus = () => {
                         <CircularProgress />
                     </div>
                 )}
+                <div className="flex justify-end mt-4">
+                    <CustomizedPagination 
+                        count={data?.totalPages} 
+                        onChange={handlePage} 
+                        page={pagination.page}
+                        disabled={loading}
+                    />
+                </div>
             </Card>
         </PageContainer>
     )
