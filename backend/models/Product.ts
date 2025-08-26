@@ -99,7 +99,7 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
 ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
   const dailySales = await this.getDailySales();
 
-  if(dailySales.length < 5) return 0
+  if(dailySales.length < 2) return 0
 
   const salesArray : number[] = dailySales.map((d : any) => d.totalQuantity);
   const mean = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
@@ -123,7 +123,7 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<n
 
   const dailySales = await this.getDailySales();
 
-  if(dailySales.length < 5) return 0
+  if(dailySales.length < 2) return 0
 
   let avgDailyDemand: number;
   

@@ -52,7 +52,7 @@ const RecentSalesChart = () => {
                         />
                     </div>
                     <p className="text-end font-bold text-lg px-4">
-                        Total Sales: {formatNumber(sales.reduce((acc : number, total : number) => acc + total, 0))}
+                        Total: {formatNumber(sales.reduce((acc : number, total : number) => acc + total, 0))}
                     </p>
                 </>
             )}
