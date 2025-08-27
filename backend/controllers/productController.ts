@@ -7,8 +7,6 @@ import OrderItem from "../models/OrderItem";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
-import Order from "../models/Order";
-import { getProductDailyDemand } from "../services/orderService";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -78,7 +76,7 @@ export const get_products = async (req: Request, res: Response) => {
       const sortOption = determineSortOption(req.query.sort as string ?? '')
 
       const [products, total] = await Promise.all([
-        Product.find({...filter, status: { $ne: 'Deleted' }})
+        Product.find({...filter, visibility: { $ne: 'Deleted' }})
           .populate("added_by", ["firstname", "lastname"])
           .skip(skip)
           .sort(sortOption)
@@ -107,6 +105,14 @@ export const get_product_by_id = async (req: Request, res: Response) => {
         return;
       }
 
+      if (product.visibility === 'Deleted') {
+        res.status(404).json({ 
+          success: false, 
+          message: 'This product has been deleted and is no longer available.' 
+        });
+        return;
+      }
+
       res.status(200).json({ success: true, product })
 
     } catch (err: any) {
@@ -132,6 +138,14 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
     if (!oldProduct) {
       res.status(404).json({ success: false, message: 'Product not found.' });
       return;
+    }
+
+    if (oldProduct.visibility === 'Deleted') {
+        res.status(404).json({ 
+          success: false, 
+          message: 'This product has been deleted and is no longer available.' 
+        });
+        return;
     }
 
     const isExist = await Product.findOne({
@@ -225,7 +239,6 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-
 export const get_top_products = async (req: Request, res: Response) => {
     try{
       const limit = Number(req.query.limit) || undefined;
@@ -306,7 +319,7 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     // Get total products count for pagination
     const totalProducts = await Product.countDocuments();
 
-    const products = await Product.find()
+    const products = await Product.find({ visibility: { $ne: 'Deleted' }})
       .sort({ product_name: 1 })
       .skip(skip)
       .limit(limit);
