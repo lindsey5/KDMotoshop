@@ -177,7 +177,6 @@ const ChatbotButton = () => {
                                 placeholder="Type your message..."
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                disabled={loading}
                             />
                             <button
                                 type="submit"
