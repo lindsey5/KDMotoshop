@@ -52,7 +52,9 @@ const CustomerProduct = () => {
 
     const filteredVariants = useMemo(() => {
         setQuantity(1)
-        if (!product) { return [] };
+        if (!product || product?.product_type === 'Single') { return [] };
+
+        console.log(product)
     
         return product.variants.filter((variant) =>
             Object.entries(selectedAttributes).every(

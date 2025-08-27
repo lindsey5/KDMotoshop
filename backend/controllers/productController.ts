@@ -105,14 +105,6 @@ export const get_product_by_id = async (req: Request, res: Response) => {
         return;
       }
 
-      if (product.visibility === 'Deleted') {
-        res.status(404).json({ 
-          success: false, 
-          message: 'This product has been deleted and is no longer available.' 
-        });
-        return;
-      }
-
       res.status(200).json({ success: true, product })
 
     } catch (err: any) {
@@ -185,8 +177,8 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
         product.price = null;
         product.stock = null;
       } else {
-        product.attributes = null;
-        product.variants = null;
+        product.attributes = [];
+        product.variants = [];
       }
     }
 

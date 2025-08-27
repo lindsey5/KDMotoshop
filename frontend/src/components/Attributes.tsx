@@ -10,7 +10,7 @@ type AttributesProps = {
 
 const Attributes = ({ product, selectedAttributes, handleSelect} : AttributesProps) => {
     const context = useContext(DarkmodeContext);
-    
+
     return ( 
         <div className="flex flex-col gap-5">
         {product?.attributes.map(attribute => {
