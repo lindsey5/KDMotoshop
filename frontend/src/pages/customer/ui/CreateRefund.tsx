@@ -25,15 +25,23 @@ const reasons = [
     "Other"
 ];
 
-const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boolean, close : () => void}) => {
+const VideoContainer = memo(({ videoFile } : { videoFile : File}) => {
+    return <video
+        src={URL.createObjectURL(videoFile)}
+        controls
+        className="w-full max-h-[500px] rounded-lg border"
+    />
+})
+
+const RequestRefundModal = ({ id, open, close } : { id : string, open : boolean, close : () => void}) => {
     const isDark = useDarkmode();
     const [refundItem, setRefundItem] = useState<RefundItem>();
     const [quantity, setQuantity] = useState<number>(1);
     const [reason, setReason] = useState<string>();
-    const [videoFile, setVideoFile] = useState<string>();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [description, setDescription] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [videoFile, setVideoFile] = useState<File | null>(null);
 
     useEffect(() => {
         const getOrderItem = async () => {
@@ -47,45 +55,54 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
     }, [])
 
     const handleSubmit = async () => {
-        setLoading(true)
-        const response = await postData('/api/refunds', {
-            order_item_id: refundItem?._id,
-            quantity,
-            price: refundItem?.price,
-            video: videoFile,
-            description,
-            reason,
-            totalAmount: (refundItem?.price ?? 0) * (quantity ?? 0)
-        })
-
-        if (response.success) {
-            setLoading(false);
-            close();
-            await successAlert(
-                'Refund Request Submitted',
-                'Your refund request is now pending. We will review it shortly.',
-                isDark
-            );
-            window.location.href = '/';
-        }else{
-            setLoading(false);
-            errorAlert(response.message, '', isDark)
+        if (!videoFile) {
+            errorAlert("Video is required for a refund request.", "", isDark);
+            return;
         }
-    }
 
-    const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
+
+        try {
+            const formData = new FormData();
+            formData.append("video", videoFile);
+            formData.append("order_item_id", refundItem?._id || "");
+            formData.append("quantity", String(quantity));
+            formData.append("price", String(refundItem?.price || 0));
+            formData.append("description", description);
+            formData.append("reason", reason || "");
+            formData.append("totalAmount", String((refundItem?.price ?? 0) * (quantity ?? 0)));
+
+            const response = await postData('/api/refunds', formData)
+
+            if (response.success) {
+                close();
+                await successAlert(
+                    "Refund Request Submitted",
+                    "Your refund request is now pending. We will review it shortly.",
+                    isDark
+                );
+                window.location.reload();
+            } else {
+                errorAlert(response.message, "", isDark);
+            }
+        } catch (error) {
+            console.error("Refund request error:", error);
+            errorAlert("Something went wrong. Please try again later.", "", isDark);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if(!file) return;
+        if (!file) return;
 
         if (file.size > 30 * 1024 * 1024) {
             window.alert("File size exceeds 30MB limit. Please upload a smaller video.");
             return;
         }
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setVideoFile(reader.result as string)
-            };
-        reader.readAsDataURL(file);
+
+        setVideoFile(file);
     };
 
     const triggerFileSelect = () => {
@@ -96,10 +113,16 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
         <Modal open={open} onClose={close} className="p-5 flex justify-center items-start overflow-y-auto">
                 <Card className="w-[90%] md:max-w-[600px] md:w-[70%] lg:w-1/2 flex flex-col gap-5">
                     <Backdrop
-                        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                        sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
                         open={loading}
                     >
-                        <CircularProgress color="inherit" />
+                    <Card className="max-w-[400px] flex flex-col items-center justify-center p-6 text-center">
+                        <CircularProgress />
+                        <h1 className="text-2xl font-semibold mt-2">Uploading Video...</h1>
+                        <p className="text-md text-gray-500 mt-2">
+                            This may take a moment. Please don’t close or reload the page.
+                        </p>
+                    </Card>
                     </Backdrop>
                     <Title className="text-xl md:text-2xl">Request a refund</Title>
                     <div className="flex gap-5">
@@ -151,11 +174,7 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
                         </Button>
 
                         {videoFile && (
-                            <video
-                                src={videoFile}
-                                controls
-                                className="w-full max-h-[500px] rounded-lg border"
-                            />
+                            <VideoContainer videoFile={videoFile}/>
                         )}
                     </div>
                     <p>Note: NO VIDEO, NO REFUND</p>
@@ -174,6 +193,6 @@ const RequestRefundModal = memo(({ id, open, close } : { id : string, open : boo
                 </Card>
         </Modal>
     )
-})
+}
 
 export default RequestRefundModal

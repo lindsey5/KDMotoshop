@@ -10,7 +10,21 @@ import { OrderItemStatusChip, RefundStatusChip } from "../../../../components/Ch
 import RequestRefundModal from "../../ui/CreateRefund";
 import CustomerRefundRequestModal from "../../ui/CustomerRefundRequest";
 
-const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string }) => {
+function isWithinLast7Days(dateValue: string | Date | null | undefined): boolean {
+  if (!dateValue) return false;
+
+  const givenDate = new Date(dateValue);
+  if (isNaN(givenDate.getTime())) return false; 
+
+  const now = new Date();
+  const diffMs = now.getTime() - givenDate.getTime();
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+
+  return diffMs >= 0 && diffMs <= sevenDaysMs;
+}
+
+
+const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, status: string, deliveredAt: Date | undefined }) => {
     const isDark = useDarkmode();
     const [ratingData, setRatingData] = useState<{orderItemId: string; product_id: string} | undefined>(undefined);
     const [review, setReview] = useState<Review>();
@@ -77,7 +91,7 @@ const CustomerOrderItem = ({ item, status } : { item : OrderItem, status: string
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
                 )}
-                {item?.refund?.status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setRefund(item?.refund)}>View Refund Status</Button>}
+                {item?.refund?.status && isWithinLast7Days(deliveredAt) && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setRefund(item?.refund)}>View Refund Status</Button>}
                 {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund?.status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
             </div>
         </div>
@@ -91,7 +105,7 @@ const CustomerOrderItems = ({ order } : { order : Order}) => {
     return (
         <Card className="flex flex-col gap-10 p-5 rounded-lg">
             <h1 className="font-bold text-xl">Items:</h1>
-            {order.orderItems?.map(item => <CustomerOrderItem key={item._id} item={item} status={order.status} />)}
+            {order.orderItems?.map(item => <CustomerOrderItem key={item._id}  deliveredAt={order.deliveredAt} item={item} status={order.status} />)}
         </Card>
     )            
 }

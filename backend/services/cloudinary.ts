@@ -39,7 +39,7 @@ export const deleteImage = async (publicId: string) => {
 
 export const uploadVideo = async (video: string): Promise<{ videoPublicId: string; videoUrl: string } | null> => {
   try {
-const result = await cloudinary.uploader.upload(video, {
+    const result = await cloudinary.uploader.upload(video, {
       folder: 'kd-motoshop/videos',
       resource_type: 'video',
       timeout: 300000,
@@ -50,7 +50,7 @@ const result = await cloudinary.uploader.upload(video, {
       videoUrl: result.secure_url,
     };
   } catch (error) {
-    console.error('Cloudinary video upload failed:', error);
+    console.log('Cloudinary video upload failed:', error);
     return null;
   }
 };

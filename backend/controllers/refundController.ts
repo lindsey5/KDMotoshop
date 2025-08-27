@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AuthenticatedRequest } from "../types/auth";
+import { AuthenticatedRequestWithFile } from "../types/auth";
 import RefundRequest from "../models/Refund";
 import { uploadVideo } from "../services/cloudinary";
 import OrderItem from "../models/OrderItem";
@@ -9,12 +9,9 @@ import { refundPayment } from "../services/paymentService";
 import { sendAdminsNotification, sendCustomerNotification } from "../services/notificationService";
 import Order from "../models/Order";
 
-export const createRefundRequest = async (req :AuthenticatedRequest, res : Response) => {
+export const createRefundRequest = async (req :AuthenticatedRequestWithFile, res : Response) => {
     try{
-        const { video, ...rest } = req.body;
-
         const orderItem : any = await OrderItem.findById(req.body.order_item_id).populate('order_id');
-
         if(!orderItem){
             res.status(404).json({ success: false, message: 'Order item id not found'});
             return;
@@ -26,9 +23,16 @@ export const createRefundRequest = async (req :AuthenticatedRequest, res : Respo
             res.status(409).json({ success: false, message: 'A refund request for this item has already been submitted.' })
             return;
         }
-        
-        const uploadedVideo = await uploadVideo(video)
-        const request = new RefundRequest({ ...rest, video: uploadedVideo, customer_id: req.user_id })
+        let uploadedVideo = null;
+
+        if (req.file) {
+            uploadedVideo = await uploadVideo(req.file.path);
+        } else {
+            res.status(400).json({ success: false, message: "Video is required" });
+            return;
+        }
+
+        const request = new RefundRequest({ ...req.body, video: uploadedVideo, customer_id: req.user_id })
         await request.save();
 
         await sendAdminsNotification({
