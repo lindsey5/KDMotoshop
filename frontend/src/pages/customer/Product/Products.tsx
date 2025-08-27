@@ -144,7 +144,10 @@ const CustomerProducts = () => {
                                 ...categories.map(category => ({ label: category.category_name, value: category.category_name}))
                             ]}
                             value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value as string)}
+                            onChange={(e) => {
+                                setSelectedCategory(e.target.value as string)
+                                setPagination(prev => ({...prev, page: 1}))
+                            }}
                         />
                         <CustomizedSelect 
                             label="Sort by"
