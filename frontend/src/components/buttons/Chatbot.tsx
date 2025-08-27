@@ -127,7 +127,7 @@ const ChatbotButton = () => {
                                         </div>
                                     )}
                                     <div className={cn(
-                                        "px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm",
+                                        "px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm whitespace-pre-line",
                                         msg.from === 'bot'
                                             ? isDark
                                                 ? "bg-gray-800 text-gray-100 border border-gray-700/50"
