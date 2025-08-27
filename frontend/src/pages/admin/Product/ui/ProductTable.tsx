@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom"
 import { formatDate } from "../../../../utils/dateUtils";
 import EditIcon from '@mui/icons-material/Edit';
 import useDarkmode from "../../../../hooks/useDarkmode";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import StarIcon from '@mui/icons-material/Star';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteData } from "../../../../services/api";
+import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal";
 
 export const ProductTableColumns = () => {
   
@@ -25,6 +28,20 @@ export const ProductTableColumns = () => {
 export const ProductTableRow = ({ product } : { product : Product }) => {
   const navigate = useNavigate();
   const isDark = useDarkmode();
+
+  const deleteProduct = async () => {
+    if (await confirmDialog('Delete Product?', 'Are you sure you want to delete this product?')) {
+      const response = await deleteData(`/api/products/${product._id}`);
+      
+      if (!response.success) {
+        await errorAlert(response.message, 'Please try again.', isDark);
+        return;
+      }
+
+      await successAlert(response.message, '', isDark);
+      window.location.reload();
+    }
+  };
 
   return (
     <StyledTableRow isDark={isDark}>
@@ -80,16 +97,25 @@ export const ProductTableRow = ({ product } : { product : Product }) => {
         align="center"
         isDark={isDark}
       >
-        <Tooltip title="Edit Product">
-        <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
-          <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
-        </IconButton>
-        </Tooltip>
-        <Tooltip title="View Reviews">
-        <IconButton onClick={() => navigate(`/admin/reviews/${product._id}`)}>
-          <ThumbUpIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
-        </IconButton>
-        </Tooltip>
+        <div className="flex">
+          <Tooltip title="Edit Product">
+            <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+              <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="View Reviews">
+            <IconButton onClick={() => navigate(`/admin/reviews/${product._id}`)}>
+              <StarIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete">
+            <IconButton onClick={deleteProduct}>
+              <DeleteIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+            </IconButton>
+          </Tooltip>
+        </div>
       </StyledTableCell>
     </StyledTableRow>
     )

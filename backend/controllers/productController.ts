@@ -44,6 +44,25 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
     }
 }
 
+export const delete_product = async (req: Request, res: Response) => {
+  try{
+    const product = await Product.findById(req.params.id);
+
+    if(!product){
+      res.status(404).json({ success: false, message: 'Product not found'});
+      return;
+    }
+
+    product.visibility = 'Deleted';
+    await product.save(); 
+    res.status(200).json({ success: true, message: 'Product successfully deleted.'})
+
+  }catch(err : any){
+    console.log(err)
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
 export const get_products = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
