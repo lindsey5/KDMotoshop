@@ -9,10 +9,12 @@ interface ReceiptModalProps {
   open: boolean;
   onClose: () => void;
   order: Order;
+  payment: number;
+  change: number;
   orderItems: OrderItem[];
 }
 
-const ReceiptModal = ({ open, onClose, order, orderItems } : ReceiptModalProps) => {
+const ReceiptModal = ({ open, onClose, order, orderItems, payment, change } : ReceiptModalProps) => {
     if (!open) return null;
     const receiptRef = useRef<HTMLDivElement | null>(null);
 
@@ -109,16 +111,18 @@ const ReceiptModal = ({ open, onClose, order, orderItems } : ReceiptModalProps) 
                     <span>SUBTOTAL:</span>
                     <span>₱{formatNumber(order.subtotal)}</span>
                     </div>
-                    {order.order_source !== "Store" && (
-                    <div className="flex justify-between mb-1">
-                        <span>SHIPPING:</span>
-                        <span>₱{formatNumber(order.shipping_fee)}</span>
-                    </div>
-                    )}
                     <div className="border-t border-gray-300 pt-2 mt-2">
                     <div className="flex justify-between font-bold text-base">
                         <span>TOTAL:</span>
                         <span>₱{formatNumber(order.total)}</span>
+                    </div>
+                    <div className="flex justify-between mt-3 mb-1">
+                    <span>Payment:</span>
+                    <span>₱{formatNumber(payment)}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                    <span>Change:</span>
+                    <span>₱{formatNumber(change)}</span>
                     </div>
                     </div>
                 </div>

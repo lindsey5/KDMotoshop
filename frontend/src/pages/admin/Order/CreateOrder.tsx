@@ -57,6 +57,7 @@ const CreateOrderPage = () => {
     const isDark = useDarkmode()
     const [showSide, setShowSide] = useState<boolean>(false);
     const [showReceipt, setShowReceipt] = useState(false);
+    const [payment, setPayment] = useState<number>(0);
 
     const calculateTotal = useCallback(() => {
         setOrder(prev => (
@@ -176,6 +177,7 @@ const CreateOrderPage = () => {
         setOrderItems([]);
         setOrder(OrderState);
         setPagination({ ...pagination, page: 1, searchTerm: '' });
+        setPayment(0);
         setSelectedCategory('All');
     }
 
@@ -191,6 +193,8 @@ const CreateOrderPage = () => {
             onClose={closeReceipt} 
             order={order} 
             orderItems={orderItems} 
+            payment={payment}
+            change={payment - order.total}
         />
         {selectedProduct && <AddOrderModal 
             selectedProduct={selectedProduct} 
@@ -290,13 +294,30 @@ const CreateOrderPage = () => {
                         />
                     </div>}
                 </div>*/}
+                {order.order_source === 'Store' && <>
+                <div className="flex justify-between items-center">
+                    <h1 className="">Payment</h1>
+                    <input
+                        className="no-spinner outline-none border border-gray-500 px-2 py-1"
+                        type="number"
+                        min="0"        
+                        step="1"  
+                        onChange={(e) => setPayment(Number(e.target.value))}     
+                    />
+                </div>
+                <div className="flex justify-between items-center">
+                    <h1 className="">Change</h1>
+                    {payment && order.total && <h1>₱{formatNumber(payment - order.total)}</h1>}
+                </div>
+                
+                </>}
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
                     <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>
                 </div>
                 <RedButton
                     onClick={proceed}
-                    disabled={orderItems.length === 0}
+                    disabled={orderItems.length === 0 || (order.order_source === 'Store' && (payment < order.total))}
                 >Place Order</RedButton>
             </div>
         </div>
