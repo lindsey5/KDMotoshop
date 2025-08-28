@@ -34,12 +34,7 @@ const channels: Record<string, { border: string; bg: string }> = {
 };
 
 const ChannelSalesChart = () => {
-    const [filter, setFilter] = useState('All');
     const { data: salesRes, loading } = useFetch(`/api/sales/channels`);
-
-    const handleChange = (e : React.ChangeEvent<HTMLSelectElement>) => {
-        setFilter(e.target.value);
-    };
 
     const sales = useMemo(() => {
     if (!salesRes?.channels) return [];
