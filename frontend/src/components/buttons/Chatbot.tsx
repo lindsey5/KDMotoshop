@@ -62,7 +62,7 @@ const ChatbotButton = () => {
                         "bg-green-500"
                     )}></div>
                 </div>
-                <span className="hidden sm:block">Chat with Echo</span>
+                <span className="hidden sm:block">Chat with KD MotoBot</span>
                 <div className={cn(
                     "absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                     isDark
@@ -97,7 +97,7 @@ const ChatbotButton = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className={cn("text-xl font-bold", isDark ? "text-white" : "text-gray-900")}>Echo AI</h1>
+                                    <h1 className={cn("text-xl font-bold", isDark ? "text-white" : "text-gray-900")}>KD MotoBot</h1>
                                     <p className={cn("text-sm", isDark ? "text-gray-400" : "text-gray-500")}>Powered by Gemini</p>
                                 </div>
                             </div>
