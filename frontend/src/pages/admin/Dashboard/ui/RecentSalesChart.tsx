@@ -2,35 +2,62 @@ import Card from "../../../../components/Card";
 import { useMemo, useState } from "react";
 import AreaChart from "../../../../components/AreaChart";
 import { CircularProgress } from "@mui/material";
-import { formatNumber } from "../../../../utils/utils";
 import useFetch from "../../../../hooks/useFetch";
+
+const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+
+const channels: Record<string, { border: string; bg: string }> = {
+  Store: {
+    border: "rgb(255, 99, 132)",
+    bg: "rgba(255, 99, 132, 0.2)"
+  },
+  Website: {
+    border: "rgb(54, 162, 235)",
+    bg: "rgba(54, 162, 235, 0.2)"
+  },
+  Facebook: {
+    border: "rgb(75, 192, 192)",
+    bg: "rgba(75, 192, 192, 0.2)"
+  },
+  Shopee: {
+    border: "rgb(255, 159, 64)",
+    bg: "rgba(255, 159, 64, 0.2)"
+  },
+  Lazada: {
+    border: "rgb(153, 102, 255)",
+    bg: "rgba(153, 102, 255, 0.2)"
+  },
+  Tiktok: {
+    border: "rgb(255, 206, 86)",
+    bg: "rgba(255, 206, 86, 0.2)"
+  }
+};
 
 const RecentSalesChart = () => {
     const [filter, setFilter] = useState('All');
-    const { data: salesRes, loading } = useFetch(`/api/sales/recent?channel=${filter}`);
-
-    const { labels, sales } = useMemo(() => {
-        if (!salesRes?.dailySales) return { labels: [], sales: [] };
-
-        const labels = salesRes.dailySales.map((ds: any) => ds.date);
-        const sales = salesRes.dailySales.map((ds: any) => ds.total);
-        return { labels, sales };
-    }, [salesRes]);
+    const { data: salesRes, loading } = useFetch(`/api/sales/channels`);
 
     const handleChange = (e : React.ChangeEvent<HTMLSelectElement>) => {
         setFilter(e.target.value);
     };
 
+    const sales = useMemo(() => {
+    if (!salesRes?.channels) return [];
+
+    return salesRes.channels.map((channel: any) => {
+        const color = channels[channel.channel] || { border: "gray", bg: "rgba(128,128,128,0.2)" };
+        return {
+        label: channel.channel,
+        data: channel.sales ?? 0,
+        borderColor: color.border,
+        backgroundColor: color.bg
+        };
+    });
+    }, [salesRes]);
+
     return (
         <Card className="h-[500px] xl:flex-3 flex flex-col gap-3">
-            <div className="flex justify-between items-center px-4 mt-2">
-                <h1 className="font-bold text-xl">
-                    Recent Sales
-                </h1>
-                <select className="border" id="monthFilter" name="monthFilter" value={filter} onChange={handleChange}>
-                   {['All', 'Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(item => <option value={item}>{item}</option>)}
-                </select>
-            </div>
+            <h1 className="font-bold text-xl">Sales per Channel</h1>
 
             {loading ? (
                 <div className="w-full h-[300px] flex justify-center items-center">
@@ -41,19 +68,9 @@ const RecentSalesChart = () => {
                     <div className="flex-1">
                         <AreaChart
                             labels={labels}
-                            datasets={[
-                                {
-                                    label: 'Sales',
-                                    data: sales,
-                                    borderColor: 'green',
-                                    backgroundColor: 'rgba(0, 128, 0, 0.2)',
-                                },
-                            ]}
+                            datasets={sales}
                         />
                     </div>
-                    <p className="text-end font-bold text-lg px-4">
-                        Total: {formatNumber(sales.reduce((acc : number, total : number) => acc + total, 0))}
-                    </p>
                 </>
             )}
         </Card>

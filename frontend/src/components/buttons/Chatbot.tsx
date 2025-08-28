@@ -23,6 +23,7 @@ const ChatbotButton = () => {
         setMessage('');
 
         const response = await postData(`${url}api/chat`, { message, thread_id });
+        console.log(response)
         if (response.success) {
             if (!thread_id) localStorage.setItem('thread_id', response.thread_id);
             setMessages(prev => [...prev, { from: 'bot', content: response.response }]);
@@ -73,7 +74,7 @@ const ChatbotButton = () => {
             {/* Chat Window */}
             {!isHide && (
                 <div className={cn(
-                    "absolute z-50 flex flex-col border rounded-3xl w-[90vw] h-[75vh] sm:w-[420px] sm:h-[600px] bottom-[calc(100%+16px)] right-0 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in-0",
+                    "absolute z-50 flex flex-col border rounded-3xl w-[90vw] h-[80vh] sm:w-[60vw] bottom-[calc(100%+16px)] right-0 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in-0",
                     isDark
                         ? "bg-gray-900/95 border-gray-700/50"
                         : "bg-white/95 border-gray-200/50"
@@ -136,7 +137,10 @@ const ChatbotButton = () => {
                                                 ? "bg-gradient-to-r from-red-700 to-red-600 text-white"
                                                 : "bg-gradient-to-r from-red-600 to-red-500 text-white"
                                     )}>
-                                        {msg.content}
+                                            <div
+                                                className="products"
+                                                dangerouslySetInnerHTML={{ __html: msg.content }}
+                                            />
                                     </div>
                                 </div>
                             </div>

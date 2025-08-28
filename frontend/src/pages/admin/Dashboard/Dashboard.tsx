@@ -17,7 +17,7 @@ const AdminDashboard = () => {
         <h1 className={cn("font-bold text-4xl text-red-500", isDark && 'text-white')}>Dashboard</h1>
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
         <DashboardCards />
-        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-5">
+        <div className="flex xl:flex-row flex-col gap-5">
             <MonthlySales />
             <TopProductsChart />
         </div>

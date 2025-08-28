@@ -157,6 +157,7 @@ ProductSchema.methods.getStockStatus = async function (
 }> {
   const reorderLevel = await this.getReorderLevel(sku);
   const currentStock = this.getCurrentStock(sku);
+  const dailySales = await getProductDailyDemand(this._id)
 
   // Calculate optimal stock level (target stock after restocking)
   const optimalStockLevel = Math.round(reorderLevel * 1.2);
@@ -171,7 +172,12 @@ ProductSchema.methods.getStockStatus = async function (
   } else if(optimalStockLevel === 0){
     status = 'Balanced'
     amount = 0;
-  }else if (currentStock <= reorderLevel) {
+    
+  } else if(dailySales.length < 2 && currentStock < 5){
+    status = 'Understock'; 
+    amount = 5 - currentStock;
+
+  } else if (currentStock <= reorderLevel) {
     status = 'Understock'; 
     amount = optimalStockLevel - currentStock; 
 

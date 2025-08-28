@@ -123,65 +123,69 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
   }
 };
 
-export const get_recent_sales = async (req: Request, res: Response) => {
+export const get_sales_per_channel = async (req: Request, res: Response) => {
   try {
-    const channel = req.query.channel || undefined;
+    const yearParam = req.query.year as string;
+    const year = parseInt(yearParam, 10) || new Date().getFullYear();
+    const start = new Date(`${year}-01-01T00:00:00Z`);
+    const end = new Date(`${year + 1}-01-01T00:00:00Z`);
 
-    // Today and 10 days ago
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // start of today
-
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 9); // 10 days ago
-
-    // Set tomorrow for $lt comparison
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1); // start of tomorrow
-    tomorrow.setHours(0, 0, 0, 0);
-
-    // Fetch sales from DB
-    const dailySales = await OrderItem.aggregate([
+    const sales = await OrderItem.aggregate([
       {
         $lookup: {
-          from: 'orders',
-          localField: 'order_id',
-          foreignField: '_id',
-          as: 'order'
+          from: "orders",
+          localField: "order_id",
+          foreignField: "_id",
+          as: "order"
         }
       },
-      { $unwind: '$order' },
+      { $unwind: "$order" },
       {
         $match: {
-          createdAt: { $gte: startDate, $lt: tomorrow }, // include all of today
-          status: { $in: ['Fulfilled', 'Rated'] },
-          'order.status': { $in: ['Rated', 'Delivered'] },
-          ...(channel && channel !== 'All' ? { 'order.order_source': channel } : {})
+          createdAt: { $gte: start, $lt: end },
+          status: { $in: ["Fulfilled", "Rated"] },
+          "order.status": { $in: ["Rated", "Delivered"] }
         }
       },
       {
         $project: {
-          date: {
-            $dateToString: {
-              format: "%Y-%m-%d",
-              date: "$createdAt",
-              timezone: "Asia/Manila"
-            }
-          },
-          lineTotal: 1
+          month: { $month: '$createdAt' },
+          lineTotal: 1,
+          channel: "$order.order_source"
         }
       },
       {
         $group: {
-          _id: '$date',
-          total: { $sum: '$lineTotal' }
+          _id: { date: "$month", channel: "$channel" },
+          total: { $sum: "$lineTotal" }
         }
       },
-      { $sort: { _id: 1 } },
-      { $project: { date: '$_id', total: 1, _id: 0 } }
+      {
+        $project: {
+          date: "$_id.date",
+          channel: "$_id.channel",
+          total: 1,
+          _id: 0
+        }
+      }
     ]);
 
-    res.status(200).json({ success: true, dailySales });
+    const channels : { channel: string, sales: number[]}[]= [];
+    sales.forEach((s) => {
+      const isExists = channels.find(sales => sales.channel === s.channel)
+      if(!isExists){
+          channels.push({
+            channel: s.channel,
+            sales: new Array(12)
+        })
+      }
 
+      const channel : any = channels.find(sales => sales.channel === s.channel)
+      channel.sales[s.date] = s.total;
+      
+    });
+
+    res.status(200).json({ success: true, channels });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }

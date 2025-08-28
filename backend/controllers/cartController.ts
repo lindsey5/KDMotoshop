@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Cart from "../models/Cart";
-import Order from "../models/Order";
-import OrderItem from "../models/OrderItem";
 
 export const create_new_item = async (req : AuthenticatedRequest, res : Response) => {
     try{
@@ -55,36 +53,15 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const carts = await Cart.find({ customer_id: req.user_id }).populate('product_id');
 
-        const orders = await Order.find({ status: 'Confirmed' }, '_id');
-        const orderIds = orders.map(order => order._id);
-
-        // Get all orderItems for those orders (all products)
-        const orderItems = await OrderItem.find({ order_id: { $in: orderIds } });
-
-        // Build stock map
-        const stockMap = new Map<string, number>();
-        orderItems.forEach(item => {
-            const key = item.product_id.toString() + item.sku;
-            stockMap.set(key, (stockMap.get(key) || 0) + item.quantity);
-        });
-
         // Build response
         const completedCart = carts.map((item) => {
             const product: any = item.product_id;
 
             const variant = product.variants?.find((v: any) => v.sku === item.sku);
+            const stock = product.product_type === 'Single' ? product.stock : variant?.stock || 0
 
-            // Adjust stock
-            if (product.product_type === 'Single') {
-                const key = product._id.toString();
-                const orderedQty = stockMap.get(key) || 0;
-                product.stock = Math.max((product.stock || 0) - orderedQty, 0);
-            } else {
-                product.variants?.forEach((v: any) => {
-                    const varKey = product._id.toString() + v._id.toString();
-                    const varOrderedQty = stockMap.get(varKey) || 0;
-                    v.stock = Math.max((v.stock || 0) - varOrderedQty, 0);
-                });
+            if(stock === 0){
+                return null
             }
 
             return {
@@ -95,12 +72,12 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
                 sku: item.sku,
                 quantity: item.quantity,
                 attributes: variant?.attributes || [],
-                stock: product.product_type === 'Single' ? product.stock : variant?.stock || 0,
+                stock,
                 product_name: product.product_name,
                 price: product.product_type === 'Single' ? product.price : variant?.price || 0,
                 image: product.thumbnail?.imageUrl || ''
             };
-        })
+        }).filter(c => c)
 
         res.status(200).json({ success: true, carts: completedCart });
     } catch (err: any) {

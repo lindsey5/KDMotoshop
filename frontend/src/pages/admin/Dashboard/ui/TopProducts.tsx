@@ -12,7 +12,7 @@ const TopProductsChart = () => {
     };
 
     return (
-        <Card className="flex-1 2xl:w-[350px] h-[400px] flex flex-col gap-5 mt-10">
+        <Card className="flex-2 2xl:w-[350px] h-[500px] flex flex-col gap-5 mt-10">
             <div className="flex justify-between items-center">
                 <h1 className="font-bold text-lg">Most Selling Products</h1>
                 <select className="border" id="monthFilter" name="monthFilter" value={filter} onChange={handleChange}>
