@@ -1,5 +1,5 @@
 import Card from "../../../../components/Card";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import AreaChart from "../../../../components/AreaChart";
 import { CircularProgress } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
