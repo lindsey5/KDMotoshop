@@ -33,7 +33,7 @@ const channels: Record<string, { border: string; bg: string }> = {
   }
 };
 
-const RecentSalesChart = () => {
+const ChannelSalesChart = () => {
     const [filter, setFilter] = useState('All');
     const { data: salesRes, loading } = useFetch(`/api/sales/channels`);
 
@@ -77,4 +77,4 @@ const RecentSalesChart = () => {
     );
 };
 
-export default RecentSalesChart;
+export default ChannelSalesChart;

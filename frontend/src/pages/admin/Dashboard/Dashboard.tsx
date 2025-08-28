@@ -8,7 +8,7 @@ import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import PageContainer from "../ui/PageContainer";
 import ItemDemandForecast from "./ui/ItemDemandForecast";
-import RecentSalesChart from "./ui/RecentSalesChart";
+import ChannelSalesChart from "./ui/ChannelSalesChart";
 
 const AdminDashboard = () => {
     const isDark = useDarkmode();
@@ -23,7 +23,7 @@ const AdminDashboard = () => {
         </div>
         <div className="flex xl:flex-row flex-col mt-14 gap-5">
             <TopCategoriesChart />
-            <RecentSalesChart />
+            <ChannelSalesChart />
         </div>
         <SalesPredictionChart />
         <ItemDemandForecast />
