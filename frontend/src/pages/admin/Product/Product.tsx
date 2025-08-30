@@ -19,6 +19,7 @@ import { Title } from "../../../components/text/Text";
 import Card from "../../../components/Card";
 import PageContainer from "../ui/PageContainer";
 import { url } from "../../../constants/url";
+import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 
 const productInitialState = {
     product_name: '',
@@ -193,7 +194,7 @@ const ProductPage = () => {
             details = product.variants
                 .map(variant => {
                     const attrs = Object.entries(variant.attributes)
-                        .map(([key, value]) => `${value}`)
+                        .map(([_, value]) => `${value}`)
                         .join(" | ");
                     return `${attrs} - Price: ${variant.price}`;
                 })
@@ -209,7 +210,7 @@ const ProductPage = () => {
         setLoading(true)
         const response = await postData(`${url}api/generate_post`, {
             product_details: postContent,  
-            image: (product.thumbnail as UploadedImage).imageUrl
+            images: product.images.map(image => (image as UploadedImage).imageUrl)
         });
 
         if (response.success) {
@@ -240,7 +241,11 @@ const ProductPage = () => {
                 <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
-            <RedButton onClick={generateFBPost}>Post to Facebook</RedButton>
+            <Button
+                variant="contained"
+                startIcon={<FacebookRoundedIcon />}
+                onClick={generateFBPost}
+            >Post on Facebook</Button>
         </div>
         <div className="grid xl:grid-cols-[2fr_370px] gap-x-10 gap-y-10 mt-6">
             <div className="w-full">
