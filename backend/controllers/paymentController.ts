@@ -14,13 +14,6 @@ export const createPaymentCheckout = async (req : Request, res: Response) => {
             quantity: item.quantity 
         }))
 
-        line_items.push({
-            currency: "PHP",
-            amount: order.shipping_fee * 100,
-            name: "Shipping fee",
-            quantity: 1,
-        })
-
         const options = {
             method: 'POST',
             headers: {

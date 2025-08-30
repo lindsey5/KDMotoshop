@@ -2,7 +2,6 @@ type Order = {
     _id?: string;
     order_id?: string;
     order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
-    shipping_fee: number;
     total: number;
     subtotal: number;
     status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Failed" |"Rated";

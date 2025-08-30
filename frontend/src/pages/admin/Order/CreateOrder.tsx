@@ -22,7 +22,6 @@ import ReceiptModal from "./ui/ReceiptModal";
 
 const OrderState : Order = {
     order_source: 'Store',
-    shipping_fee: 0,
     total: 0,
     subtotal: 0,
     status: 'Delivered',
@@ -64,8 +63,7 @@ const CreateOrderPage = () => {
             { ...prev, 
                 subtotal: orderItems
                 .reduce((total, item) => item.lineTotal + total,0),
-                total: prev.shipping_fee + orderItems
-                .reduce((total, item) => item.lineTotal + total,0)
+                total: orderItems.reduce((total, item) => item.lineTotal + total,0)
             }
         ))
     }, [orderItems])

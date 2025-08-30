@@ -13,7 +13,6 @@ import { Button, RadioGroup } from "@mui/material";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CustomizedChip } from "../../../components/Chip";
 import PhoneInput from "react-phone-input-2";
-import { calculateShippingFee } from "../../../utils/shipping";
 import CheckoutItemContainer from "./ui/CheckoutItem";
 import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
 import PaymentSummaryCard from "../ui/PaymentSummary";
@@ -81,27 +80,9 @@ const CheckoutPage = () => {
     );
   }, [orderItems]);
 
-  const shipping_fee: number = useMemo(() => {
-    const totalQuantity = orderItems.reduce((total, item) => total + item.quantity, 0)
-    if (
-      customer?.role === 'Customer' && orderItems?.length > 0 &&
-      totalQuantity < 3 &&
-      customer?.addresses &&
-      customer?.addresses.length > 0
-    ) {
-      return orderItems.reduce(
-        (total, item) => item.quantity * calculateShippingFee(item.weight, customer?.addresses?.[selectedAddress]?.region ?? "") + total,0
-      );
-    }
-    return 0;
-  }, [selectedAddress, orderItems, customer]);
-
   const total: number = useMemo(() => {
-    return (
-      (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0) +
-      shipping_fee
-    );
-  }, [orderItems, shipping_fee]);
+    return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0)
+  }, [orderItems]);
 
   const areFieldsFilled = useMemo(() => {
     return Object.entries(address).every(([_, value]) => value !== "");
@@ -138,7 +119,6 @@ const CheckoutPage = () => {
       setLoading(true);
       const order = {
         order_source: "Website",
-        shipping_fee,
         subtotal,
         total,
         status: "Pending",
@@ -315,7 +295,7 @@ const CheckoutPage = () => {
                     </div>
                     {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
                 </Card>
-                <PaymentSummaryCard shipping_fee={shipping_fee} subtotal={subtotal} total={total}/>
+                <PaymentSummaryCard subtotal={subtotal} total={total}/>
             </div>
             <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
                 <h1 className="font-bold text-lg">Delivery</h1>

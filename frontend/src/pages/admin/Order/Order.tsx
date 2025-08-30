@@ -72,7 +72,7 @@ const OrderDetails = () => {
                         <p>Subtotal</p>
                         <p className="text-right">₱{formatNumber(order.subtotal)}</p>
                         <p>Shipping Fee</p>
-                        <p className="text-right">₱{formatNumber(order.shipping_fee)}</p>
+                        <p className="text-right">Free</p>
                     </div>
                     <div className="flex justify-between">
                         <h1 className="font-bold text-xl">Total</h1>

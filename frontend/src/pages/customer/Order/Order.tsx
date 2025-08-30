@@ -110,8 +110,8 @@ const CustomerOrderDetails = () => {
                         <div className="text-sm md:text-base my-6 grid grid-cols-2 gap-5 p-2">
                             <p >Subtotal</p>
                             <p className="text-right">₱{formatNumber(order.subtotal)}</p>
-                            <p>Shipping Fee</p>
-                            <p className="text-right">₱{formatNumber(order.shipping_fee)}</p>
+                            <p>Shipping fee</p>
+                            <p className="text-right">Free</p>
                         </div>
                         <div className="flex justify-between font-bold text-lg md:text-xl">
                             <h1>Total</h1>
