@@ -241,11 +241,11 @@ const ProductPage = () => {
                 <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             </div>
-            <Button
+            {product._id && <Button
                 variant="contained"
                 startIcon={<FacebookRoundedIcon />}
                 onClick={generateFBPost}
-            >Post on Facebook</Button>
+            >Post on Facebook</Button>}
         </div>
         <div className="grid xl:grid-cols-[2fr_370px] gap-x-10 gap-y-10 mt-6">
             <div className="w-full">
