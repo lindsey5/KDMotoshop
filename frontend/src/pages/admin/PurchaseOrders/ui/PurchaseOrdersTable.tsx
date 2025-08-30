@@ -1,7 +1,6 @@
-import { IconButton, TableRow, Tooltip } from "@mui/material";
+import { TableRow } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from '../../../../components/Table';
 import useDarkmode from '../../../../hooks/useDarkmode';
-import EditIcon from '@mui/icons-material/Edit';
 import { formatDate } from "../../../../utils/dateUtils";
 
 export const PurchaseOrdersTableColumns = () => {
@@ -10,6 +9,7 @@ export const PurchaseOrdersTableColumns = () => {
             <StyledTableCell>Supplier Name</StyledTableCell>
             <StyledTableCell>Total Items</StyledTableCell>
             <StyledTableCell>Total Amount</StyledTableCell>
+            <StyledTableCell>Order Date</StyledTableCell>
             <StyledTableCell>Received Date</StyledTableCell>
             <StyledTableCell>Status</StyledTableCell>
             <StyledTableCell align='center'>Action</StyledTableCell>
@@ -27,6 +27,7 @@ export const PurchaseOrderTableRow = ({ purchaseOrder } : { purchaseOrder : Purc
                 <StyledTableCell isDark={isDark}>{purchaseOrder.supplier.name}</StyledTableCell>
                 <StyledTableCell isDark={isDark}>{purchaseOrder.purchase_items.length}</StyledTableCell>
                 <StyledTableCell isDark={isDark}>{purchaseOrder.totalAmount}</StyledTableCell>
+                <StyledTableCell isDark={isDark}>{formatDate(purchaseOrder.createdAt)}</StyledTableCell>
                 <StyledTableCell isDark={isDark}>{!purchaseOrder?.receivedDate ? 'N/A' : formatDate(purchaseOrder.receivedDate)}</StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'>{purchaseOrder.status}</StyledTableCell>
             </StyledTableRow>

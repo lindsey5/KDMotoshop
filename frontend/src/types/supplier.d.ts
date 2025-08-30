@@ -5,7 +5,7 @@ type PurchaseOrder = {
     totalAmount: number;
     status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
     receivedDate?: Date;
-    createdBy: string;
+    createdAt: Date;
     notes?: string;
     purchase_items: PurchaseOrderItem[] 
 }

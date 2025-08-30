@@ -61,7 +61,12 @@ export const getPurchaseOrders = async (req : Request, res : Response) => {
             filter.status = status;
         }
 
-        const purchaseOrders = await PurchaseOrder.find(filter).skip(skip).limit(limit).populate(['supplier', 'purchase_items']);
+        const purchaseOrders = await PurchaseOrder
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .populate(['supplier', 'purchase_items'])
+        .sort({ createdAt: -1 });
         const total = await PurchaseOrder.countDocuments(filter);
 
         res.status(200).json({ 
