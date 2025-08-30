@@ -3,8 +3,9 @@ import {useMemo } from "react";
 import AreaChart from "../../../../components/AreaChart";
 import { url } from "../../../../constants/url";
 import { CircularProgress } from "@mui/material";
-import { formatNumber } from "../../../../utils/utils";
+import { cn, formatNumber } from "../../../../utils/utils";
 import useFetch from "../../../../hooks/useFetch";
+import useDarkmode from "../../../../hooks/useDarkmode";
 
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -14,7 +15,8 @@ const SalesPredictionChart = () => {
     const year = today.getFullYear()
     const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`)
     const { data : actualSalesRes, loading : actualLoading } = useFetch(`/api/sales/daily?month=${month}&year=${year}`)
-
+    const isDark = useDarkmode();
+    
     const dateLabels = useMemo<string[]>(() => {
         return forecastRes?.forecast_dates
     }, [forecastRes])
@@ -37,7 +39,7 @@ const SalesPredictionChart = () => {
     }, [actualSalesRes, dateLabels])
 
     return (
-        <Card className="h-[500px] xl:flex-3 flex flex-col gap-3 mt-8">
+        <Card className={cn("h-[500px] xl:flex-3 flex flex-col gap-3 mt-8 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
             <div className="flex justify-between items-center px-4 mt-2">
                 <h1 className="font-bold text-xl">Sales Forecast: {monthNames[month - 1]} {year}</h1>
             </div>

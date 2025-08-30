@@ -15,6 +15,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { cn } from '../../../../utils/utils';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -113,7 +114,7 @@ const ItemDemandForecast = () => {
     const handlePage = (_: React.ChangeEvent<unknown>, value: number) => setPage(value);
 
     return (
-        <Card className="mt-10">
+        <Card className={cn("mt-10 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
             <h2 className='mb-4 font-bold'>Demand Forecast ({month})</h2>
             {loading ? (
                 <div className="w-full h-[400px] flex justify-center items-center">

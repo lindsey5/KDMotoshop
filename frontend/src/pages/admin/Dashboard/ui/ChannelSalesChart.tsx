@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import AreaChart from "../../../../components/AreaChart";
 import { CircularProgress } from "@mui/material";
 import useFetch from "../../../../hooks/useFetch";
+import { cn } from "../../../../utils/utils";
+import useDarkmode from "../../../../hooks/useDarkmode";
 
 const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
@@ -35,6 +37,7 @@ const channels: Record<string, { border: string; bg: string }> = {
 
 const ChannelSalesChart = () => {
     const { data: salesRes, loading } = useFetch(`/api/sales/channels`);
+    const isDark = useDarkmode();
 
     const sales = useMemo(() => {
     if (!salesRes?.channels) return [];
@@ -51,7 +54,7 @@ const ChannelSalesChart = () => {
     }, [salesRes]);
 
     return (
-        <Card className="h-[500px] xl:flex-3 flex flex-col gap-3">
+        <Card className={cn("h-[500px] xl:flex-3 flex flex-col gap-3 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
             <h1 className="font-bold text-xl">Sales per Channel</h1>
 
             {loading ? (
