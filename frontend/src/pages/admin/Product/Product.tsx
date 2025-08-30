@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { RedTextField } from "../../../components/Textfield"
-import { fetchData } from "../../../services/api";
+import { fetchData, postData } from "../../../services/api";
 import { CustomizedSelect } from "../../../components/Select";
 import { Backdrop, Button, CircularProgress, IconButton, RadioGroup } from "@mui/material";
 import { RedButton } from "../../../components/buttons/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { confirmDialog, errorAlert } from "../../../utils/swal";
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
 import VariantContainer from "../Order/ui/VariantContainer";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { saveProduct } from "../../../services/productService";
@@ -18,6 +18,7 @@ import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
 import Card from "../../../components/Card";
 import PageContainer from "../ui/PageContainer";
+import { url } from "../../../constants/url";
 
 const productInitialState = {
     product_name: '',
@@ -185,6 +186,48 @@ const ProductPage = () => {
         setProduct({ ...product, category: newValue})
     }
 
+    const generateFBPost = async () => {
+        let details = "";
+
+        if (product.product_type === "Variable") {
+            details = product.variants
+                .map(variant => {
+                    const attrs = Object.entries(variant.attributes)
+                        .map(([key, value]) => `${value}`)
+                        .join(" | ");
+                    return `${attrs} - Price: ${variant.price}`;
+                })
+                .join("\n"); // join each variant with a newline
+        } else {
+            details = `Price: ${product.price}`;
+        }
+
+        const postContent = `
+        ${product.product_name}
+        ${details}
+        `;
+        setLoading(true)
+        const response = await postData(`${url}api/generate_post`, {
+            product_details: postContent,  
+            image: (product.thumbnail as UploadedImage).imageUrl
+        });
+
+        if (response.success) {
+            successAlert(
+                'Product successfully posted to Facebook!', 
+                'Your post is now live and visible to your followers.', 
+                isDark
+            );
+        } else {
+            errorAlert(
+                'Failed to post the product', 
+                'Please check your internet connection or try again later.',
+                isDark
+            );
+        }
+        setLoading(false)
+
+    };
     return <PageContainer>
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
@@ -192,9 +235,12 @@ const ProductPage = () => {
         >
             <CircularProgress color="inherit" />
         </Backdrop>
-        <div>
-            <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
-            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+        <div className="flex items-center justify-between">
+            <div>
+                <Title className="mb-4">{id ? 'Edit' : 'Create'} Product</Title>
+                <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            </div>
+            <RedButton onClick={generateFBPost}>Post to Facebook</RedButton>
         </div>
         <div className="grid xl:grid-cols-[2fr_370px] gap-x-10 gap-y-10 mt-6">
             <div className="w-full">
