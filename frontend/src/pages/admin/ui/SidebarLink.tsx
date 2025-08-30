@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { Badge } from '@mui/material';
 import { cn } from '../../../utils/utils';
 
-type SidebarLinkProps = {
+export type SidebarLinkProps = {
   icon: ReactNode;
   label: string;
   path: string;

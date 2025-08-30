@@ -32,6 +32,9 @@ import type { AppDispatch } from "./redux/store";
 import { fetchUser } from "./redux/user-reducer";
 import RefundsPage from "./pages/admin/Refunds/Refunds";
 import InventoryStatus from "./pages/admin/Product/InventoryStatus";
+import SuppliersPage from "./pages/admin/Suppliers/Suppliers";
+import PurchaseOrdersPage from "./pages/admin/PurchaseOrders/PurchaseOrders";
+import PurchaseOrder from "./pages/admin/PurchaseOrders/PurchaseOrder";
 
 export default function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,6 +78,9 @@ export default function App() {
                 <Route path="reviews/:id" element={<AdminProductReviews />} />
                 <Route path="refunds" element={<RefundsPage />} />
                 <Route path="inventory-status" element={<InventoryStatus />} />
+                <Route path="suppliers" element={<SuppliersPage />} />
+                <Route path="purchase-orders" element={<PurchaseOrdersPage />} />
+                <Route path="purchase-order" element={<PurchaseOrder />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />

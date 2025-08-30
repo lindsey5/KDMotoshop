@@ -149,6 +149,11 @@ const CustomerOrderDetails = () => {
                             <p>{order.address?.region}</p>
                         </div>}
                         <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                        {!['Cancelled', 'Delivered', 'Failed', 'Rejected'].includes(order.status) && (
+                        <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>
+                            Expected delivery: 3-7 days
+                        </p>
+                        )}
                         {order?.deliveredAt && <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Delivered At: {formatToLongDateFormat(order?.deliveredAt)}</p>}
 
                     </Card>

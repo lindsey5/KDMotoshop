@@ -7,9 +7,9 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Button, Divider, Collapse } from '@mui/material';
-import { SidebarLink } from './SidebarLink';
+import { SidebarLink, type SidebarLinkProps } from './SidebarLink';
 import { ThemeToggle } from '../../../components/Toggle';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import HistoryIcon from '@mui/icons-material/History';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../redux/store';
@@ -23,7 +23,8 @@ import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Box } from "lucide-react";
+import { Box } from 'lucide-react'
+import { Archive, Description } from '@mui/icons-material';
 
 const NotificationLink = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,12 +53,42 @@ const NotificationLink = () => {
   )
 }
 
+type SidebarDropdownProps = {
+  icon: React.ReactNode;
+  label: string;
+  options: SidebarLinkProps[];
+};
+
+
+const SidebarDropdown = ({ icon, label, options } :SidebarDropdownProps) => {
+  const [open, setOpen] = useState(false);
+   return (
+      <div>
+          <button
+            onClick={() => setOpen(!open)}
+            className="cursor-pointer flex items-center w-full text-white font-medium px-2 py-2 rounded hover:bg-gray-700 transition"
+          >
+                {icon}
+                <span className="ml-2 flex-1 text-left">{label}</span>
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </button>
+
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <div className="ml-4 flex flex-col gap-2 mt-2">
+              {options.map((optionProps, index) => (
+                <SidebarLink key={index} {...optionProps} />
+              ))}
+            </div>
+          </Collapse>
+        </div>
+   )
+}
+
 export const AdminSidebar = () => {
     const { user } = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
-    const [storeOpen, setStoreOpen] = useState(false);
 
     const handleSignout = () => {
       dispatch(resetNotifications());
@@ -88,27 +119,27 @@ export const AdminSidebar = () => {
           <div className="w-full flex-col flex gap-3 flex-grow min-h-0 overflow-hidden">
             <SidebarLink label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} path="/admin/dashboard" />
 
-            {/* Store Dropdown */}
-            <div>
-              <button
-                onClick={() => setStoreOpen(!storeOpen)}
-                className="cursor-pointer flex items-center w-full text-white font-medium px-2 py-2 rounded hover:bg-gray-700 transition"
-              >
-                <StoreIcon sx={{ width: 25, height: 25, marginRight: '8px' }} />
-                <span className="flex-1 text-left">Store</span>
-                {storeOpen ? <ExpandLess /> : <ExpandMore />}
-              </button>
 
-              <Collapse in={storeOpen} timeout="auto" unmountOnExit>
-                <div className="ml-4 flex flex-col gap-2 mt-2">
-                  <SidebarLink label="Products" icon={<SportsMotorsportsIcon sx={{ width: 22, height: 22 }} />} path="/admin/products" />
-                  <SidebarLink label="Orders" icon={<ShoppingCartIcon sx={{ width: 22, height: 22 }} />} path="/admin/orders" />
-                  <SidebarLink label="Refunds" icon={<ReplayRoundedIcon sx={{ width: 22, height: 22 }} />} path="/admin/refunds" />
-                  <SidebarLink label="Customers" icon={<PersonIcon sx={{ width: 22, height: 22 }} />} path="/admin/customers" />
-                   <SidebarLink label="Inventory Status" icon={<Box size={22}/>} path="/admin/inventory-status" />
-                </div>
-              </Collapse>
-            </div>
+            <SidebarDropdown
+              label="Store"
+              icon={<StoreIcon sx={{ width: 25, height: 25 }} />}
+              options={[
+                { label: "Products", icon: <SportsMotorsportsIcon sx={{ width: 22, height: 22 }} />, path: "/admin/products" },
+                { label: "Orders", icon: <ShoppingCartIcon sx={{ width: 22, height: 22 }} />, path: "/admin/orders" },
+                { label: "Refunds", icon: <ReplayRoundedIcon sx={{ width: 22, height: 22 }} />, path: "/admin/refunds" },
+                { label: "Customers", icon: <PersonIcon sx={{ width: 22, height: 22 }} />, path: "/admin/customers" },
+                { label: "Inventory Status", icon: <Box size={22} />, path: "/admin/inventory-status" }
+              ]}
+            />
+
+            <SidebarDropdown
+              label="Supplier"
+              icon={<Archive sx={{ width: 25, height: 25 }} />} // main dropdown icon
+              options={[
+                { label: "Suppliers", icon: <Archive sx={{ width: 22, height: 22 }} />, path: "/admin/suppliers" },
+                { label: "Purchase Orders", icon: <Description sx={{ width: 22, height: 22 }} />, path: "/admin/purchase-orders" },
+              ]}
+            />
 
             {user?.role === 'Super Admin' && (
               <SidebarLink label="Admins" icon={<BadgeIcon sx={{ width: 25, height: 25 }} />} path="/admin/admins" />

@@ -145,10 +145,10 @@ export const SearchField = ({ sx, placeholder, onChange } : TextFieldProps) => {
             borderColor: isDark ? '#919191' : '', 
           },
           '&:hover fieldset': {
-            borderColor: isDark ? '#919191' : 'gray',
+            borderColor: 'red',
           },
           '&.Mui-focused fieldset': {
-            borderColor: isDark ? '#919191' : 'gray',
+            borderColor: 'red',
           },
         },
         ...sx

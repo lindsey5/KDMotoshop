@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 import { UploadedImage } from '../types/types';
 import { getProductDailyDemand } from '../services/orderService';
+import PurchaseOrderItem from './PurchaseOrderItem';
 
 interface Variant {
   _id: Types.ObjectId;
@@ -10,8 +11,6 @@ interface Variant {
   stock: number;
   attributes: { [key: string]: string };
 }
-
-const lead_time = 2
 
 export interface IProduct extends Document {
   product_name: string;
@@ -95,9 +94,53 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
   return this.stock ?? 0;
 };
 
+ProductSchema.methods.getLeadTime = async function (sku?: string): Promise<number> {
+  const leadTimes = await PurchaseOrderItem.aggregate([
+    {
+      $match: { sku }, // filter by SKU
+    },
+    {
+      $lookup: {
+        from: 'purchaseorders', // ✅ actual collection name
+        localField: 'purchase_order',
+        foreignField: '_id',
+        as: 'po',
+      },
+    },
+    { $unwind: '$po' },
+    {
+      $match: {
+        'po.status': 'Received', 
+      },
+    },
+    {
+      $sort: { 'po.createdAt': -1 }, // newest first
+    },
+    { $limit: 30 }, // only take the latest 30
+    {
+      $project: {
+        leadTime: {
+          $divide: [
+            { $subtract: ['$po.receivedDate', '$po.createdAt'] },
+            1000 * 60 * 60 * 24, // ms → days
+          ],
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        avgLeadTime: { $avg: '$leadTime' },
+      },
+    },
+  ]);
+
+  return leadTimes.length > 0 ? leadTimes[0].avgLeadTime : this.default_lead_time ?? 5;
+};
+
 // Safety Stock formula: Safety Stock = Z * σdemand * √Lead Time
 ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
-  const dailySales = await this.getDailySales();
+  const dailySales = await this.getDailySales(sku);
 
   if(dailySales.length < 2) return 0
 
@@ -112,7 +155,7 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
 
   const stdDev = Math.sqrt(variance);
   const Z = 1.65; // 95% service level
-  const leadTime = lead_time;
+  const leadTime = await this.getLeadTime();
 
   return Math.round(Z * stdDev * Math.sqrt(leadTime));
 };
@@ -121,7 +164,7 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
 ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<number> {
   const safetyStock = await this.getSafetyStock(sku);
 
-  const dailySales = await this.getDailySales();
+  const dailySales = await this.getDailySales(sku);
 
   if(dailySales.length < 2) return 0
 
@@ -131,14 +174,14 @@ ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<n
 
   avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
 
-  const leadTime = lead_time;
+  const leadTime = await this.getLeadTime();
   
   return Math.round(avgDailyDemand * leadTime + safetyStock)
 };
 
 ProductSchema.methods.getDailySales = async function (sku? : string): Promise<any[]> {
   let dailySales;
-  if (this.product_type === 'Variable' && sku) {
+  if (this.product_type === 'Variable') {
     dailySales = await getProductDailyDemand(this._id, sku);
   } else {
     dailySales = await getProductDailyDemand(this._id);
@@ -157,7 +200,6 @@ ProductSchema.methods.getStockStatus = async function (
 }> {
   const reorderLevel = await this.getReorderLevel(sku);
   const currentStock = this.getCurrentStock(sku);
-  const dailySales = await getProductDailyDemand(this._id)
 
   // Calculate optimal stock level (target stock after restocking)
   const optimalStockLevel = Math.round(reorderLevel * 1.2);
@@ -167,16 +209,12 @@ ProductSchema.methods.getStockStatus = async function (
 
   if (currentStock === 0) {
     status = 'Out of Stock';
-    amount = optimalStockLevel !== 0 ? optimalStockLevel : 5;
+    amount = optimalStockLevel !== 0 ? optimalStockLevel : 10;
 
   } else if(optimalStockLevel === 0){
     status = 'Balanced'
     amount = 0;
     
-  } else if(dailySales.length < 2 && currentStock < 5){
-    status = 'Understock'; 
-    amount = 5 - currentStock;
-
   } else if (currentStock <= reorderLevel) {
     status = 'Understock'; 
     amount = optimalStockLevel - currentStock; 

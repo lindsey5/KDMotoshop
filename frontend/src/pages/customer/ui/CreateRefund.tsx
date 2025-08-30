@@ -170,14 +170,13 @@ const RequestRefundModal = ({ id, open, close } : { id : string, open : boolean,
                             startIcon={<VideocamIcon />} 
                             onClick={triggerFileSelect}
                         >
-                            Upload Video
+                            Upload Proof
                         </Button>
 
                         {videoFile && (
                             <VideoContainer videoFile={videoFile}/>
                         )}
                     </div>
-                    <p>Note: NO VIDEO, NO REFUND</p>
                     <div className="grid grid-cols-2 gap-5">
                         <Button 
                             variant="outlined" 
