@@ -1,5 +1,5 @@
 import useDarkmode from "../../../../hooks/useDarkmode"
-import { cn, formatNumber } from "../../../../utils/utils"
+import { cn, formatNumberToPeso } from "../../../../utils/utils"
 import { CustomizedChip } from "../../../../components/Chip";
 
 const CheckoutItemContainer = ({ item } : { item : OrderItem}) => {
@@ -16,7 +16,7 @@ const CheckoutItemContainer = ({ item } : { item : OrderItem}) => {
                     {Object.values(item?.attributes || {}).map((attribute, i) => <CustomizedChip key={i} label={attribute} />)}
                 </div>
             </div>
-            <strong>₱{formatNumber(item.lineTotal)}</strong>
+            <strong>{formatNumberToPeso(item.lineTotal)}</strong>
         </div>
     )
 }

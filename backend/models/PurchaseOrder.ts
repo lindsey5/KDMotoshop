@@ -35,6 +35,9 @@ POSchema.virtual('purchase_items', {
   justOne: false,
 });
 
+POSchema.set("toObject", { virtuals: true });
+POSchema.set("toJSON", { virtuals: true });
+
 const PurchaseOrder = model<IPurchaseOrder>('PurchaseOrder', POSchema);
 
 export default PurchaseOrder;

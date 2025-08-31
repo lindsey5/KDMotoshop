@@ -4,7 +4,7 @@ import { formatDate } from '../../../../utils/dateUtils';
 import useDarkmode from '../../../../hooks/useDarkmode';
 import UserAvatar from "../../../ui/UserAvatar";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatNumber } from "../../../../utils/utils";
+import { formatNumberToPeso } from "../../../../utils/utils";
 import { useState } from "react";
 import RefundRequestModal from "./RefundRequestModal";
 import { RefundStatusChip } from "../../../../components/Chip";
@@ -47,7 +47,7 @@ export const RefundsTableRow = ({ request } : { request: RefundRequest}) => {
             <StyledTableCell isDark={isDark}>{request.order_item_id.product_id.product_name}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{request.quantity}</StyledTableCell>
             <StyledTableCell isDark={isDark}><RefundStatusChip status={request.status}/></StyledTableCell>
-            <StyledTableCell isDark={isDark}>₱{formatNumber(request.totalAmount)}</StyledTableCell>
+            <StyledTableCell isDark={isDark}>{formatNumberToPeso(request.totalAmount)}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{formatDate(request.createdAt)}</StyledTableCell>
             <StyledTableCell isDark={isDark} align='center'>
                 <Tooltip title="View" followCursor>

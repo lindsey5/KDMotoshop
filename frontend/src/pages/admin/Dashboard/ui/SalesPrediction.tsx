@@ -3,7 +3,7 @@ import {useMemo } from "react";
 import AreaChart from "../../../../components/AreaChart";
 import { url } from "../../../../constants/url";
 import { CircularProgress } from "@mui/material";
-import { cn, formatNumber } from "../../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import useFetch from "../../../../hooks/useFetch";
 import useDarkmode from "../../../../hooks/useDarkmode";
 
@@ -16,7 +16,7 @@ const SalesPredictionChart = () => {
     const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`)
     const { data : actualSalesRes, loading : actualLoading } = useFetch(`/api/sales/daily?month=${month}&year=${year}`)
     const isDark = useDarkmode();
-    
+
     const dateLabels = useMemo<string[]>(() => {
         return forecastRes?.forecast_dates
     }, [forecastRes])
@@ -71,7 +71,7 @@ const SalesPredictionChart = () => {
                         />
                     </div>
                     <p className="text-end font-bold text-lg px-4">
-                        Expected Total Sales: {formatNumber(forecastSales.reduce((acc, total) => acc + total, 0))}
+                        Expected Total Sales: {formatNumberToPeso(forecastSales.reduce((acc, total) => acc + total, 0))}
                     </p>
                 </>
             )}

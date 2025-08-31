@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useDarkmode from "../../../../hooks/useDarkmode"
-import { cn, formatNumber } from "../../../../utils/utils"
+import { cn, formatNumberToPeso } from "../../../../utils/utils"
 import { RedButton } from "../../../../components/buttons/Button";
 import Card from "../../../../components/Card";
 import RateProductModal from "../../../ui/RateProduct";
@@ -65,7 +65,7 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
                     {item.attributes && Object.entries(item.attributes).map(([key, value]) => (
                         <p key={value} className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{key}: {value}</p>
                     ))}
-                    <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)} x {item.quantity}</p>
+                    <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{formatNumberToPeso(item.price)} x {item.quantity}</p>
                     <div className="my-5">
                         <OrderItemStatusChip status={item.status} />
                     </div>
@@ -86,7 +86,7 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
                     )}
                 </div>
             </div>
-            <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
+            <h1 className="font-bold">{formatNumberToPeso(item.lineTotal)}</h1>
             <div className="flex justify-between md:flex-col gap-5">
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>

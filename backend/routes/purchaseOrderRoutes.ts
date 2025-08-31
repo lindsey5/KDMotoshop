@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { adminRequireAuth } from "../middlewares/authMiddleware";
-import { createPurchaseOrder, getPurchaseOrders } from "../controllers/purchaseOrderController";
+import { createPurchaseOrder, getPurchaseOrderById, getPurchaseOrders } from "../controllers/purchaseOrderController";
 
 const router = Router();
 
 router.post('/', adminRequireAuth, createPurchaseOrder);
-router.get('/', adminRequireAuth, getPurchaseOrders)
+router.get('/', adminRequireAuth, getPurchaseOrders);
+router.get('/:id', adminRequireAuth, getPurchaseOrderById);
 
 const purchaseOrderRoutes = router;
 

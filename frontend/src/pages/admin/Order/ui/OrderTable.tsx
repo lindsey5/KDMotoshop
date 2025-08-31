@@ -1,7 +1,7 @@
 
 import { TableRow } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from '../../../../components/Table';
-import { formatNumber } from '../../../../utils/utils';
+import { formatNumberToPeso } from '../../../../utils/utils';
 import { formatDate } from '../../../../utils/dateUtils';
 import { RedButton } from '../../../../components/buttons/Button';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +36,7 @@ export const OrderTableRow = ({ order, index } : { order : Order, index : number
             <StyledTableCell isDark={isDark}>{index + 1}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{order?.customer?.firstname} {order?.customer?.lastname} </StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.order_id}</StyledTableCell>
-            <StyledTableCell isDark={isDark}>₱{formatNumber(order.total)}</StyledTableCell>
+            <StyledTableCell isDark={isDark}>{formatNumberToPeso(order.total)}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{order.payment_method}</StyledTableCell>
             <StyledTableCell isDark={isDark}>{formatDate(order.createdAt)}</StyledTableCell>
             <StyledTableCell isDark={isDark}><PlatformChip platform={order.order_source} /></StyledTableCell>

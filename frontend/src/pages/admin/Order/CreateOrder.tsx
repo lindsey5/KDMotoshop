@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddOrderModal from "./ui/AddOrderModal";
 import { confirmDialog, successAlert } from "../../../utils/swal";
 import OrderContainer from "./ui/OrderContainer";
-import { cn, formatNumber } from "../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../utils/utils";
 import OrderInformationModal from "./ui/OrderInformationModal";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CategoryFilter from "../ui/CategoryFilter";
@@ -305,13 +305,13 @@ const CreateOrderPage = () => {
                 </div>
                 <div className="flex justify-between items-center">
                     <h1 className="">Change</h1>
-                    {payment && order.total && <h1>₱{formatNumber(payment - order.total)}</h1>}
+                    {payment && order.total && <h1>{formatNumberToPeso(payment - order.total)}</h1>}
                 </div>
                 
                 </>}
                 <div className="flex justify-between mb-4">
                     <h1 className="font-bold text-2xl">Total</h1>
-                    <h1 className="font-bold text-2xl">₱{formatNumber(order.total)}</h1>
+                    <h1 className="font-bold text-2xl">{formatNumberToPeso(order.total)}</h1>
                 </div>
                 <RedButton
                     onClick={proceed}

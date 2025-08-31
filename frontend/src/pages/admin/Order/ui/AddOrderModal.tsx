@@ -2,7 +2,7 @@ import { Modal } from "@mui/material";
 import { memo, useMemo, useState } from "react";
 import { RedButton } from "../../../../components/buttons/Button";
 import { successAlert } from "../../../../utils/swal";
-import { cn, formatNumber } from "../../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import Counter from "../../../../components/Counter";
 import Attributes from "../../../../components/Attributes";
 import Card from "../../../../components/Card";
@@ -97,7 +97,7 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
             <div className={cn("flex-1 flex flex-col gap-10", isDark && 'text-white')}>
                 <h1 className={cn("font-bold text-2xl", isDark && 'text-white')}>{selectedProduct?.product_name}</h1>
                 {filteredVariants.length > 0 ? 
-                    <h1 className="font-bold text-3xl">₱{formatNumber(filteredVariants?.[0]?.price ?? 0)}</h1>
+                    <h1 className="font-bold text-3xl">{formatNumberToPeso(filteredVariants?.[0]?.price ?? 0)}</h1>
                 : <h1 className="text-red-500">Not Available</h1>}
 
                 {filteredVariants.length > 0 && ((

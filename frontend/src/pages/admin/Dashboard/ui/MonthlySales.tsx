@@ -1,7 +1,7 @@
 import Card from "../../../../components/Card"
 import AreaChart from "../../../../components/AreaChart"
 import useFetch from "../../../../hooks/useFetch";
-import { cn, formatNumber } from "../../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import useDarkmode from "../../../../hooks/useDarkmode";
 
 const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -27,7 +27,7 @@ const MonthlySales = () => {
                 ]}
             />
             </div>
-            <h1 className="text-right text-xl font-bold mt-5">Total: {formatNumber(data?.monthlySales.reduce((total : number, sales : number) => total + sales,0) ?? 0)}</h1>
+            <h1 className="text-right text-xl font-bold mt-5">Total: {formatNumberToPeso(data?.monthlySales.reduce((total : number, sales : number) => total + sales,0) ?? 0)}</h1>
         </Card>
     )
 }

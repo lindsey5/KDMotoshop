@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { fetchData, postData } from "../../../services/api";
 import Counter from "../../../components/Counter";
 import Attributes from "../../../components/Attributes";
-import { cn, formatNumber } from "../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../utils/utils";
 import { ExpandableText } from "../../../components/text/Text";
 import { RedButton } from "../../../components/buttons/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
@@ -172,13 +172,13 @@ const CustomerProduct = () => {
                     </div> : <p className={cn("text-gray-500", isDark && 'text-white')}>No Reviews</p>}
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 
-                            <h1 className="font-bold text-3xl">₱{formatNumber((
+                            <h1 className="font-bold text-3xl">{formatNumberToPeso((
                                 product?.product_type === 'Variable' ? 
                                     filteredVariants?.[0]?.price 
                                     : product?.price) ?? 0)}
                             </h1>
                         : <h1 className="text-red-500">Not Available</h1>)
-                    : <h1 className="font-bold text-2xl">₱{formatNumber(product?.price ?? 0)}</h1>}
+                    : <h1 className="font-bold text-2xl">{formatNumberToPeso(product?.price ?? 0)}</h1>}
 
                     <p className="text-lg">Stock: {product?.product_type === 'Variable' ? filteredVariants[0] ? filteredVariants[0]?.stock : 'none' : product?.stock}</p>
 

@@ -4,7 +4,7 @@ import { RefundStatusChip } from "../../../../components/Chip";
 import { ExpandableText } from "../../../../components/text/Text";
 import Card from "../../../../components/Card";
 import { cn } from "../../../../utils/utils";
-import { formatNumber } from "../../../../utils/utils";
+import { formatNumberToPeso } from "../../../../utils/utils";
 import { formatToLongDateFormat } from "../../../../utils/dateUtils";
 import { updateData } from "../../../../services/api";
 import { confirmDialog } from "../../../../utils/swal";
@@ -78,12 +78,12 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                 <div className={cn("space-y-1 rounded-md bg-gray-100 p-4", isDark && 'bg-gray-700')}>
                     <div className="flex justify-between gap-10">
                         <p>{refundRequest.order_item_id.product_id.product_name}</p>
-                    <p className="text-end">₱{formatNumber(refundRequest.order_item_id.price)} x {refundRequest.quantity}</p>
+                    <p className="text-end">{formatNumberToPeso(refundRequest.order_item_id.price)} x {refundRequest.quantity}</p>
                     </div>
                     <hr className="border-gray-300 mt-10 mb-4"/>
                     <div className="flex justify-between gap-10">
                         <p className="font-bold">Total:</p>
-                        <p className="font-bold text-end">₱{formatNumber(refundRequest.totalAmount)}</p>
+                        <p className="font-bold text-end">{formatNumberToPeso(refundRequest.totalAmount)}</p>
                     </div>
                 </div>
             </div>

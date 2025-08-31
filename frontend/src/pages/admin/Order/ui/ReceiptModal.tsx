@@ -1,6 +1,6 @@
 import { X, Download } from 'lucide-react';
 import { formatToLongDateFormat } from '../../../../utils/dateUtils';
-import { formatNumber } from '../../../../utils/utils';
+import { formatNumberToPeso } from '../../../../utils/utils';
 import { Modal } from '@mui/material';
 import { useRef } from 'react';
 import { receiptHTML } from '../../../../constants';
@@ -96,10 +96,10 @@ const ReceiptModal = ({ open, onClose, order, orderItems, payment, change } : Re
                     <div key={idx} className="mb-2">
                         <div className="flex justify-between">
                         <span className="flex-1 pr-2">{item.product_name}</span>
-                        <span className="whitespace-nowrap">₱{formatNumber(item.lineTotal)}</span>
+                        <span className="whitespace-nowrap">{formatNumberToPeso(item.lineTotal)}</span>
                         </div>
                         <div className="text-xs text-gray-600 ml-2">
-                        {item.quantity} x ₱{formatNumber(item.lineTotal / item.quantity)}
+                        {item.quantity} x {formatNumberToPeso(item.lineTotal / item.quantity)}
                         </div>
                     </div>
                     ))}
@@ -109,20 +109,20 @@ const ReceiptModal = ({ open, onClose, order, orderItems, payment, change } : Re
                 <div className="border-t-2 border-dashed border-gray-400 pt-3 mb-4">
                     <div className="flex justify-between mb-1">
                     <span>SUBTOTAL:</span>
-                    <span>₱{formatNumber(order.subtotal)}</span>
+                    <span>{formatNumberToPeso(order.subtotal)}</span>
                     </div>
                     <div className="border-t border-gray-300 pt-2 mt-2">
                     <div className="flex justify-between font-bold text-base">
                         <span>TOTAL:</span>
-                        <span>₱{formatNumber(order.total)}</span>
+                        <span>{formatNumberToPeso(order.total)}</span>
                     </div>
                     <div className="flex justify-between mt-3 mb-1">
                     <span>Payment:</span>
-                    <span>₱{formatNumber(payment)}</span>
+                    <span>{formatNumberToPeso(payment)}</span>
                     </div>
                     <div className="flex justify-between mb-1">
                     <span>Change:</span>
-                    <span>₱{formatNumber(change)}</span>
+                    <span>{formatNumberToPeso(change)}</span>
                     </div>
                     </div>
                 </div>

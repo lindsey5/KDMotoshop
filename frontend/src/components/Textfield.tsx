@@ -2,7 +2,7 @@ import { IconButton, InputAdornment, TextField, type StandardTextFieldProps, typ
 import SearchIcon from '@mui/icons-material/Search';
 import useDarkmode from "../hooks/useDarkmode";
 import React, { useEffect, useRef, useState } from "react";
-import { cn, formatNumber } from "../utils/utils";
+import { cn, formatNumberToPeso } from "../utils/utils";
 import ProductThumbnail from "../pages/ui/ProductThumbnail";
 import { getProducts } from "../services/productService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -240,7 +240,7 @@ export const HeaderSearchField = () => {
                         />
                         <div>
                              <strong className={cn(isDark && 'text-white')}>{product.product_name}</strong>
-                              <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>₱{formatNumber(Number(product.price))}</p>
+                              <p className={cn("text-gray-500 mt-2", isDark && 'text-gray-300')}>{formatNumberToPeso(Number(product.price))}</p>
                         </div>
                     </div>
                 )) : <p className={cn(isDark && 'text-white')}>No results</p>}

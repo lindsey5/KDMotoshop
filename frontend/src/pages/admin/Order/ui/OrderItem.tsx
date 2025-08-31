@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useDarkmode from "../../../../hooks/useDarkmode";
-import { cn, formatNumber } from "../../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import { Rating } from "@mui/material";
 import { fetchData } from "../../../../services/api";
 import { OrderItemStatusChip, RefundStatusChip } from "../../../../components/Chip";
@@ -28,7 +28,7 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
                     {item.attributes && Object.entries(item.attributes).map(([key, value]) => (
                         <p key={value} className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{key}: {value}</p>
                     ))}
-                    <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>₱{formatNumber(item.price)}</p>
+                    <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>{formatNumberToPeso(item.price)}</p>
                     <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>QTY: {item.quantity}</p>
                     {item.refund?.status && <div className="flex gap-3">
                         <p className={cn("mb-2 text-gray-500", isDark && 'text-gray-400')}>Refund Status:</p>
@@ -51,7 +51,7 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
             <div className="flex gap-3 my-5">
                 <OrderItemStatusChip status={item.status} />
             </div>
-            <h1 className="font-bold">₱{formatNumber(item.lineTotal)}</h1>
+            <h1 className="font-bold">{formatNumberToPeso(item.lineTotal)}</h1>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useDarkmode from "../../../../hooks/useDarkmode"
-import { cn, formatNumber } from "../../../../utils/utils"
+import { cn, formatNumberToPeso } from "../../../../utils/utils"
 import { CustomizedChip } from "../../../../components/Chip";
 import Counter from "../../../../components/Counter";
 import { updateData } from "../../../../services/api";
@@ -63,7 +63,7 @@ const CartItemContainer = ({ item } : CartItemContainerProps) => {
                 </div>
             </div>
             <div className="flex flex-1 items-end justify-between md:flex-col gap-2">
-                <strong className="text-md md:text-lg">₱{formatNumber(item.quantity * (item?.price ?? 0))}</strong>
+                <strong className="text-md md:text-lg">{formatNumberToPeso(item.quantity * (item?.price ?? 0))}</strong>
                 <Button sx={{ color: 'red'}} onClick={() => dispatch(deleteCartItem({id: item._id ?? '', isDark}))}>Remove</Button>
             </div>
         </div>

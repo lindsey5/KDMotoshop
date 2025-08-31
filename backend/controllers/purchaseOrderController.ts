@@ -28,12 +28,13 @@ export const createPurchaseOrder = async (req : Request, res : Response) => {
             return;
         }
 
-        const newPurchaseOrder = new PurchaseOrder({...purchaseOrder, po_id: await generatePOId()});
+        const po_id = await generatePOId()
+        const newPurchaseOrder = new PurchaseOrder({...purchaseOrder, po_id});
         
         await newPurchaseOrder.save();
 
-        await PurchaseOrderItem.insertMany(purchase_items);
-        const fullOrder = await PurchaseOrder.findById(newPurchaseOrder._id).populate('purchase_items');
+        await PurchaseOrderItem.insertMany(purchase_items.map((item : any) => ({...item, purchase_order: newPurchaseOrder._id })));
+        const fullOrder = await PurchaseOrder.findById(newPurchaseOrder._id).populate(['purchase_items', 'supplier']);
 
         res.status(201).json({ success: true, purchaseOrder: fullOrder });
 
@@ -45,18 +46,21 @@ export const createPurchaseOrder = async (req : Request, res : Response) => {
 
 export const getPurchaseOrders = async (req : Request, res : Response) => {
     try{
-         const page = parseInt(req.query.page as string) || 1;
+        const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
         const searchTerm = req.query?.searchTerm;
         const status = req.query?.status;
 
-        let filter : any = {
-            $or: [
+        let filter : any = { };
+
+        if(searchTerm){
+            filter.$or = [
                 { 'supplier.name': { $regex: searchTerm, $options: 'i' } },
+                { 'po_id': { $regex: searchTerm, $options: 'i' } },
             ]
         }
-
+        
         if(status && status !== 'All'){
             filter.status = status;
         }
@@ -75,6 +79,22 @@ export const getPurchaseOrders = async (req : Request, res : Response) => {
             page,
             totalPages: Math.ceil(total / limit) 
         });
+
+    }catch(err : any){
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server error'})
+    }
+}
+
+export const getPurchaseOrderById = async (req: Request, res : Response) => {
+    try{
+        const purchaseOrder = await PurchaseOrder.findById(req.params.id).populate(['purchase_items', 'supplier']);
+        if(!purchaseOrder){
+            res.status(404).json({ success: false, message: 'Purchase Order not found.'})
+            return;
+        }
+
+        res.status(200).json({ success: true, purchaseOrder });
 
     }catch(err : any){
         console.log(err)

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
-import { cn, formatNumber } from "../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../utils/utils";
 import { Avatar, Backdrop, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
@@ -109,13 +109,13 @@ const CustomerOrderDetails = () => {
                         <h1 className="font-bold text-lg md:text-xl">Payment Summary</h1>
                         <div className="text-sm md:text-base my-6 grid grid-cols-2 gap-5 p-2">
                             <p >Subtotal</p>
-                            <p className="text-right">₱{formatNumber(order.subtotal)}</p>
+                            <p className="text-right">{formatNumberToPeso(order.subtotal)}</p>
                             <p>Shipping fee</p>
                             <p className="text-right">Free</p>
                         </div>
                         <div className="flex justify-between font-bold text-lg md:text-xl">
                             <h1>Total</h1>
-                            <h1>₱{formatNumber(order.total)}</h1>
+                            <h1>{formatNumberToPeso(order.total)}</h1>
                         </div>
                     </Card>
                     <Card className="justify-end hidden lg:flex">

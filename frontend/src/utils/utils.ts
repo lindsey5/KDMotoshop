@@ -11,11 +11,11 @@ export function isStrongPassword(password : string) : boolean {
     return strongRegex.test(password);
   };
 
-export function formatNumber(number : number){
-  return number.toLocaleString('en-US', {
+export function formatNumberToPeso(number : number){
+  return `₱${number.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  });
+  })}`;
 }
 
 export function normalizeCityName(name: string): string {

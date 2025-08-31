@@ -24,7 +24,7 @@ export const createSupplier = async (req : Request, res : Response) => {
 
 export const getSuppliers = async (req :Request, res : Response) => {
     try{
-        const searchTerm = req.query?.searchTerm as string;
+        const searchTerm = req.query?.searchTerm as string ?? '';
         const suppliers = await Supplier.find({
             $or: [
                 { name: { $regex: searchTerm, $options: 'i' } },

@@ -1,4 +1,4 @@
-import { cn, formatNumber } from "../../../../utils/utils";
+import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import { Rating } from "@mui/material";
 import GradeIcon from '@mui/icons-material/Grade';
 
@@ -21,7 +21,7 @@ const CustomerProductContainer = ({ product, className } : { product: any, class
             />
             <div className="p-3 flex flex-col gap-3">
                 <h1 className="text-sm md:text-lg font-bold text-white">{product.product_name}</h1>
-                <h1 className="md:text-2xl text-lg font-bold text-red-600">₱{formatNumber(product.price)}</h1>
+                <h1 className="md:text-2xl text-lg font-bold text-red-600">{formatNumberToPeso(product.price)}</h1>
                 {stock === 0 && <p className="text-red-600 text-lg">Out of stock</p>}
 
                 {product.rating !== 0 ? 

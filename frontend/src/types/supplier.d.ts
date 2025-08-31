@@ -1,11 +1,11 @@
 type PurchaseOrder = {
     _id?: string;
-    po_id: string;
+    po_id?: string;
     supplier: Supplier;
     totalAmount: number;
     status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
     receivedDate?: Date;
-    createdAt: Date;
+    createdAt?: Date;
     notes?: string;
     purchase_items: PurchaseOrderItem[] 
 }
@@ -19,7 +19,7 @@ type Supplier = {
 }
 
 type PurchaseOrderItem = {
-    purchase_order: string;
+    purchase_order?: string;
     product_id: string;
     sku: string;
     quantity: number;

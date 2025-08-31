@@ -3,7 +3,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
-import { cn, formatNumber } from '../../../../utils/utils';
+import { cn, formatNumberToPeso } from '../../../../utils/utils';
 import { confirmDialog } from '../../../../utils/swal';
 import Counter from '../../../../components/Counter';
 import useDarkmode from '../../../../hooks/useDarkmode';
@@ -52,7 +52,7 @@ const OrderContainer = ({ orderItem, index, setOrderItems } : OrderContainerProp
                         </p>
                     )}
                 </div>
-                <h1 className='font-bold'>₱{formatNumber(orderItem.lineTotal)}</h1>
+                <h1 className='font-bold'>{formatNumberToPeso(orderItem.lineTotal)}</h1>
                 <IconButton onClick={remove} sx={{ color: isDark ? 'red' : ''}}>
                     <CancelIcon />
                 </IconButton>

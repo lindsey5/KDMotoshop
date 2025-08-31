@@ -81,6 +81,7 @@ export default function App() {
                 <Route path="suppliers" element={<SuppliersPage />} />
                 <Route path="purchase-orders" element={<PurchaseOrdersPage />} />
                 <Route path="purchase-order" element={<PurchaseOrder />} />
+                <Route path="purchase-order/:id" element={<PurchaseOrder />} />
                 <Route path="orders">
                   <Route index element={<Orders />} />
                   <Route path="create" element={<CreateOrderPage />} />
