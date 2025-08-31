@@ -47,12 +47,8 @@ export const saveProduct = async (
     } else if (product.images.length < 1) {
       errorAlert('Upload at least one product image', '');
       return;
-    } else if (product.weight === 0) {
-      errorAlert('Weight should not be 0', '');
-      return;
     }
     
-
     // --- Validate based on type ---
     if (product.product_type === 'Variable') {
       if (product.variants.length < 1) {
