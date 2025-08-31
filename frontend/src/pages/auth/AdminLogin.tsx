@@ -9,6 +9,7 @@ import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
 import { Title } from "../../components/text/Text";
 import { ThemeToggle } from "../../components/Toggle";
+import Card from "../../components/Card";
 
 const AdminLogin = () => {
     const [email, setEmail] = useState<string>('');
@@ -86,12 +87,7 @@ const AdminLogin = () => {
 
                     <div className="text-center space-y-8 max-w-md">
                         <div className="space-y-4">
-                            <h1 className={cn(
-                                "text-6xl font-bold bg-gradient-to-r bg-clip-text text-transparent animate-pulse",
-                                isDark 
-                                    ? "from-red-200 via-white to-gray-200" 
-                                    : "from-red-600 via-red-800 to-gray-800"
-                            )}>
+                            <h1 className= "text-6xl font-bold text-red-600">
                                 Welcome
                             </h1>
                             <div className="flex justify-center">
@@ -166,11 +162,10 @@ const AdminLogin = () => {
 
                 {/* Right panel - Login form */}
                 <div className="flex items-center justify-center p-6 lg:p-12">
-                    <div className={cn(
-                        "w-full max-w-md p-8 rounded-2xl backdrop-blur-xl border shadow-2xl transition-all duration-300 hover:shadow-3xl",
+                    <Card className={cn("w-full max-w-md p-8 rounded-2xl backdrop-blur-xl border shadow-2xl transition-all duration-300 hover:shadow-3xl", 
                         isDark 
-                            ? "bg-red-950/30 border-red-800/20 shadow-red-900/40" 
-                            : "bg-white/80 border-red-200/30 shadow-red-200/40"
+                            ? "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] border-red-800/30 shadow-red-900/20" 
+                            : "bg-gradient-to-br from-white/90 via-red-50/60 to-white/95 border-gray-500/40 shadow-red-100/50"
                     )}>
                         <form onSubmit={handleSubmit} className="space-y-8">
                             {/* Header */}
@@ -273,17 +268,8 @@ const AdminLogin = () => {
                                 </p>
                             </div>
                         </form>
-                    </div>
+                    </Card>
                 </div>
-            </div>
-
-            {/* Mobile logo overlay */}
-            <div className="lg:hidden absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
-                <img 
-                    className="w-32 h-20 object-contain opacity-10" 
-                    src="/kd-logo (1).png" 
-                    alt="logo" 
-                />
             </div>
         </main>
     )
