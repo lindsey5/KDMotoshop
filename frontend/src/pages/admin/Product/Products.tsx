@@ -106,7 +106,6 @@ const Products = () => {
                     sku: product.sku,
                     stock: product.stock,
                     category: product.category,
-                    weight: product.weight,
                     rating: product.rating,
                     price: product.price
                 })
@@ -117,7 +116,6 @@ const Products = () => {
                         sku: variant.sku,
                         stock: variant.stock,
                         category: product.category,
-                        weight: product.weight,
                         rating: product.rating,
                         price: variant.price
                     })

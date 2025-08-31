@@ -67,7 +67,6 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
                     image: selectedProduct && typeof selectedProduct.thumbnail === 'object' && selectedProduct.thumbnail !== null && 'imageUrl' in selectedProduct.thumbnail
                             ? selectedProduct.thumbnail.imageUrl
                             : null,
-                    weight: selectedProduct?.weight ?? 0
                 }
             ];
         });

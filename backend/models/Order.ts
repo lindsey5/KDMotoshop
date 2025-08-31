@@ -35,7 +35,7 @@ const OrderSchema: Schema<Order> = new Schema(
       enum: ['Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'],
       default: 'Website'
     },
-    shipping_fee: { type: Number, required: true },
+    shipping_fee: { type: Number, required: true, default: 0 },
     status: {
       type: String,
       enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Rejected", "Cancelled", "Refunded", "Failed", "Rated"],

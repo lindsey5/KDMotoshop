@@ -27,7 +27,6 @@ type Product = {
     added_by?: Admin; 
     images: (UploadedImage | string | ArrayBuffer)[], 
     thumbnail: UploadedImage | string | ArrayBuffer | null,
-    weight: number;
     variants: Variant[];
     attributes: string[];
     createdAt?: Date;

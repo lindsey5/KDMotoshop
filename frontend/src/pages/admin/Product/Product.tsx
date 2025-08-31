@@ -288,14 +288,6 @@ const ProductPage = () => {
                             <RedRadio label="Variable" value="Variable" />
                         </RadioGroup>
                     </div>
-                    <RedTextField 
-                        label="Weight" 
-                        type="number"
-                        onChange={(e) => setProduct({ ...product, weight: Number(e.target.value)})}
-                        value={product.weight}
-                        placeholder="Add product weight"
-                        fullWidth
-                    />
                     {product.product_type === 'Single' ? 
                     (<div className="grid grid-cols-2 gap-10">
                         <RedTextField 

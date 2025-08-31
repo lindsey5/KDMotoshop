@@ -120,7 +120,6 @@ const CreateOrderPage = () => {
                             price: product.price || 0,
                             lineTotal: product.price || 0,
                             status: "Unfulfilled",
-                            weight: product.weight,
                         }]
                     }
 

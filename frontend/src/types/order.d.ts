@@ -42,6 +42,5 @@ type OrderItem = {
     image:  string | null,
     status: 'Unfulfilled' | 'Fulfilled' | 'Rated' | 'Cancelled',
     refund?: RefundRequest;
-    weight: number;
     createdAt?: Date;
 }

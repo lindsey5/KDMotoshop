@@ -212,7 +212,6 @@ const CheckoutPage = () => {
                     ? product.thumbnail
                     : "/photo.png",
                 status: "Unfulfilled",
-                weight: product.weight,
               };
             }
 

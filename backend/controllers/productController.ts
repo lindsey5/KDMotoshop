@@ -199,7 +199,6 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
       'stock',
       'product_type',
       'visibility',
-      'weight'
     ];
 
     // Check changes in each field
