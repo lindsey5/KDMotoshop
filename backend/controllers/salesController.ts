@@ -3,13 +3,12 @@ import OrderItem from "../models/OrderItem";
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
-    
     const yearParam = req.query.year as string;
     const year = parseInt(yearParam, 10) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00Z`);
     const end = new Date(`${year + 1}-01-01T00:00:00Z`);
 
-    const salesArray = new Array(12);
+    const salesArray = new Array(12).fill(0);
 
     const monthlySales = await OrderItem.aggregate([
       {
@@ -23,20 +22,22 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          createdAt: { $gte: start, $lt: end },
+          updatedAt: { $gte: start, $lt: end },
           status: { $in: ['Fulfilled', 'Rated'] },
           'order.status': { $in: ['Delivered', 'Rated'] }
         }
       },
       {
         $project: {
-          month: { $month: '$createdAt' },
+          month: {
+            $dateToParts: { date: '$updatedAt', timezone: 'Asia/Manila' } // convert to Asia/Manila
+          },
           netTotal: '$lineTotal'
         }
       },
       {
         $group: {
-          _id: '$month',
+          _id: '$month.month', // extract month from date parts
           total: { $sum: '$netTotal' }
         }
       },
@@ -59,6 +60,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 export const get_product_quantity_sold = async (req: Request, res: Response) => {
   try {
@@ -83,7 +85,7 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
       { $unwind: '$product' },
       {
         $match: {
-          createdAt: { $gte: startDate, $lt: endDate },
+          updatedAt: { $gte: startDate, $lt: endDate },
           sku: skus.length < 1 ? '' : { $in: skus },
           status: { $in: ['Fulfilled', 'Rated'] }
         }
@@ -142,27 +144,27 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
       { $unwind: "$order" },
       {
         $match: {
-          createdAt: { $gte: start, $lt: end },
+          updatedAt: { $gte: start, $lt: end },
           status: { $in: ["Fulfilled", "Rated"] },
           "order.status": { $in: ["Rated", "Delivered"] }
         }
       },
       {
         $project: {
-          month: { $month: '$createdAt' },
+          month: { $dateToParts: { date: "$updatedAt", timezone: "Asia/Manila" } }, // Asia timezone
           lineTotal: 1,
           channel: "$order.order_source"
         }
       },
       {
         $group: {
-          _id: { date: "$month", channel: "$channel" },
+          _id: { month: "$month.month", channel: "$channel" }, // extract month
           total: { $sum: "$lineTotal" }
         }
       },
       {
         $project: {
-          date: "$_id.date",
+          month: "$_id.month",
           channel: "$_id.channel",
           total: 1,
           _id: 0
@@ -170,19 +172,15 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
       }
     ]);
 
-    const channels : { channel: string, sales: number[]}[]= [];
-    sales.forEach((s) => {
-      const isExists = channels.find(sales => sales.channel === s.channel)
-      if(!isExists){
-          channels.push({
-            channel: s.channel,
-            sales: new Array(12)
-        })
-      }
+    const channels: { channel: string; sales: number[] }[] = [];
 
-      const channel : any = channels.find(sales => sales.channel === s.channel)
-      channel.sales[s.date] = s.total;
-      
+    sales.forEach((s) => {
+      let ch = channels.find((c) => c.channel === s.channel);
+      if (!ch) {
+        ch = { channel: s.channel, sales: new Array(12).fill(0) };
+        channels.push(ch);
+      }
+      ch.sales[s.month - 1] = s.total; // subtract 1 for 0-based index
     });
 
     res.status(200).json({ success: true, channels });
@@ -190,6 +188,7 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 export const get_daily_sales = async (req: Request, res: Response) => {
   try {
@@ -219,7 +218,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+          updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
           status: { $in: ['Fulfilled', 'Rated'] },
           'order.status' : { $in: ['Rated', 'Delivered']}
         }
@@ -229,7 +228,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
           date: {
             $dateToString: {
               format: "%Y-%m-%d",
-              date: "$createdAt",
+              date: "$updatedAt",
               timezone: "Asia/Manila"
             }
           },
@@ -293,7 +292,7 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          createdAt: { $gte: startDate },
+          updatedAt: { $gte: startDate },
           status: { $in: ["Fulfilled", "Rated"] },
           'order.status' : { $in: ['Rated', 'Delivered']}
         },
