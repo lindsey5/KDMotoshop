@@ -74,7 +74,7 @@ const ChatbotButton = () => {
             {/* Chat Window */}
             {!isHide && (
                 <div className={cn(
-                    "absolute z-50 flex flex-col border rounded-3xl w-[90vw] h-[80vh] sm:w-[60vw] bottom-[calc(100%+16px)] right-0 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in-0",
+                    "absolute z-50 flex flex-col border rounded-3xl w-[90vw] h-[80vh] sm:w-[70vw] lg:w-[40vw] bottom-[calc(100%+16px)] right-0 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in-0",
                     isDark
                         ? "bg-gray-900/95 border-gray-700/50"
                         : "bg-white/95 border-gray-200/50"
