@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import PurchaseOrder from "../models/PurchaseOrder";
 import PurchaseOrderItem from "../models/PurchaseOrderItem";
+import Product from "../models/Product";
 
 export const generatePOId = async () : Promise<string> => {
   const prefix = 'PO-';
@@ -93,6 +94,45 @@ export const getPurchaseOrderById = async (req: Request, res : Response) => {
             res.status(404).json({ success: false, message: 'Purchase Order not found.'})
             return;
         }
+
+        res.status(200).json({ success: true, purchaseOrder });
+
+    }catch(err : any){
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server error'})
+    }
+}
+
+export const updatePurchaseOrder = async (req : Request, res : Response) => {
+    try{
+        const purchaseOrder = await PurchaseOrder.findById(req.params.id).populate(['purchase_items', 'supplier']);
+        if(!purchaseOrder){
+            res.status(404).json({ success: false, message: 'Purchase Order not found.'})
+            return;
+        }
+
+        if(req.body.status === 'Received'){
+            for(const item of purchaseOrder.purchase_items){
+                const product = await Product.findById(item.product_id);
+                if(!product) continue;
+
+                if(product.product_type === 'Single'){
+                    product.stock += item.quantity;
+                    await product.save();
+                    continue;
+                }
+
+                const variant = product.variants.find(v => v.sku === item.sku);
+                
+                if(!variant) continue;
+                variant.stock += item.quantity;
+                await product.save();
+            }
+        }
+
+        purchaseOrder.status = req.body.status;
+        purchaseOrder.receivedDate = new Date();
+        await purchaseOrder.save()
 
         res.status(200).json({ success: true, purchaseOrder });
 

@@ -12,10 +12,14 @@ import { cn, formatNumberToPeso } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import AddItemSection from "./ui/AddItemSection";
 import { RedButton } from "../../../components/buttons/Button";
-import { confirmDialog, errorAlert } from "../../../utils/swal";
-import { fetchData, postData } from "../../../services/api";
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
+import { fetchData, postData, updateData } from "../../../services/api";
 import PrintIcon from '@mui/icons-material/Print';
 import { POStatusChip } from "../../../components/Chip";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import BlockIcon from "@mui/icons-material/Block";
 
 const poInitialState : PurchaseOrder = {
     supplier: { } as Supplier,
@@ -122,7 +126,8 @@ const PurchaseOrder = () => {
                 <body>
                     <h1>Purchase Order</h1>
                     <p><strong>PO ID:</strong> ${purchaseOrder.po_id || ''}</p>
-                    <p><strong>Date:</strong> ${formatDate(new Date())}</p>
+                    <p><strong>Order Date:</strong> ${formatDate(purchaseOrder.createdAt)}</p>
+                    <p><strong>Status:</strong> ${purchaseOrder.status}</p>
                     
                     <h2>Supplier Information</h2>
                     <p><strong>Name:</strong> ${purchaseOrder.supplier?.name || ''}</p>
@@ -164,13 +169,31 @@ const PurchaseOrder = () => {
         printWindow.print();
     };
 
+    const onUpdate = async (status: PurchaseOrder['status']) => {
+        if (await confirmDialog(`Mark this as ${status}?`, '', isDark)) {
+            const response = await updateData(`/api/purchase-orders/${purchaseOrder._id}`, { status });
+
+            if (response.success) {
+                successAlert(`Purchase Order marked as ${status}`, '', isDark);
+                setPurchaseOrder((prev) => ({ ...prev, status }));
+            } else {
+                errorAlert('Failed to update status', 'Please try again later.', isDark);
+            }
+        }
+    };
+
     return (
         <PageContainer className="flex flex-col gap-5">
-            <Title>{id ? purchaseOrder.po_id : 'Create Purchase Order'}</Title>
-            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            <div className="flex justify-between gap-5 items-start">
+                <div>
+                    <Title className="mb-5">{id ? purchaseOrder.po_id : 'Create Purchase Order'}</Title>
+                    <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+                </div>
+                {purchaseOrder._id && <RedButton startIcon={<PrintIcon />} onClick={handlePrint}>Print</RedButton>}
+            </div>
             <div className="h-screen flex flex-col gap-5">
                 <div className="flex justify-between items-center gap-5">
-                    <p className="text-end">Date: {formatDate(purchaseOrder.createdAt ? purchaseOrder.createdAt : new Date())}</p>
+                    <p className="text-end">{`${purchaseOrder._id ? 'Order ' : ''}Date:`} {formatDate(purchaseOrder.createdAt ? purchaseOrder.createdAt : new Date())}</p>
                     {purchaseOrder._id && <POStatusChip status={purchaseOrder.status} />}
                 </div>
                 <h1 className="font-bold">Supplier Information</h1>
@@ -242,11 +265,10 @@ const PurchaseOrder = () => {
                         </tr>
                     </tfoot>
                 </table>
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-5">
                     {!purchaseOrder._id ? 
-                        <RedButton onClick={handleSubmit} disabled={loading}>Create</RedButton> :
-                        <RedButton startIcon={<PrintIcon />} onClick={handlePrint}>Print</RedButton>
-                    }
+                        <RedButton onClick={handleSubmit} disabled={loading}>Create</RedButton>
+                        : updateButtons(purchaseOrder.status, onUpdate)}
                 </div>
             </div> 
         </PageContainer>
@@ -254,3 +276,63 @@ const PurchaseOrder = () => {
 }
 
 export default PurchaseOrder
+
+const updateButtons = (
+  status: PurchaseOrder['status'],
+  onUpdate: (newStatus: PurchaseOrder['status']) => void
+) => {
+  switch (status) {
+    case 'Pending':
+      return (
+        <div className="flex gap-2">
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<CheckCircleIcon />}
+            onClick={() => onUpdate('Approved')}
+          >
+            Approve
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            startIcon={<CancelIcon />}
+            onClick={() => onUpdate('Rejected')}
+          >
+            Reject
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<BlockIcon />}
+            onClick={() => onUpdate('Cancelled')}
+          >
+            Cancel
+          </Button>
+        </div>
+      );
+    case 'Approved':
+      return (
+        <div className="flex gap-2">
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<DoneAllIcon />}
+            onClick={() => onUpdate('Received')}
+          >
+            Mark Received
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<BlockIcon />}
+            onClick={() => onUpdate('Cancelled')}
+          >
+            Cancel
+          </Button>
+        </div>
+      );
+    default:
+      return null;
+  }
+};

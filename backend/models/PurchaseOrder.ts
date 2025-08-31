@@ -1,4 +1,5 @@
 import { Schema, model, Types, Document } from 'mongoose';
+import { IPOItem } from './PurchaseOrderItem';
 
 interface IPurchaseOrder extends Document {
   po_id: string;
@@ -7,6 +8,7 @@ interface IPurchaseOrder extends Document {
   status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
   receivedDate?: Date;
   notes?: string;
+  purchase_items: IPOItem []
 }
 
 const POSchema: Schema<IPurchaseOrder> = new Schema(

@@ -307,11 +307,22 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
+    const searchTerm = req.query?.searchTerm || '';
 
     // Get total products count for pagination
     const totalProducts = await Product.countDocuments();
 
-    const products = await Product.find({ visibility: { $ne: 'Deleted' }})
+    let filter : any = { visibility: { $ne: 'Deleted' }};
+
+    if(searchTerm){
+      filter.$or = [
+        { 'variant.sku': { $regex: searchTerm, $options: 'i' } },
+        { sku: { $regex: searchTerm, $options: 'i' } },
+        { product_name: { $regex: searchTerm, $options: 'i' } },
+      ]
+    }
+
+    const products = await Product.find({ })
       .sort({ product_name: 1 })
       .skip(skip)
       .limit(limit);

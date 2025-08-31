@@ -1,6 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
 
-interface IPOItem extends Document{
+export interface IPOItem extends Document{
   purchase_order: Types.ObjectId;
   product_id: Types.ObjectId;
   sku: string;

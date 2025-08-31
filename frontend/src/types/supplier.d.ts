@@ -3,7 +3,7 @@ type PurchaseOrder = {
     po_id?: string;
     supplier: Supplier;
     totalAmount: number;
-    status: 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Cancelled';
+    status: 'Pending' | 'Approved' | 'Rejected' | 'Received' | 'Cancelled';
     receivedDate?: Date;
     createdAt?: Date;
     notes?: string;

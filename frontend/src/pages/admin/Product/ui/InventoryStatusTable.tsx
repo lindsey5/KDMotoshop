@@ -1,7 +1,6 @@
-import { IconButton, Link, TableRow } from "@mui/material"
+import { TableRow } from "@mui/material"
 import { StyledTableCell, StyledTableRow } from "../../../../components/Table";
 import useDarkmode from "../../../../hooks/useDarkmode";
-import VisibilityIcon from '@mui/icons-material/Visibility';
 
 type StockChipProps = {
   status: "Understock" | "Overstock" | "Balanced" | "Out of Stock";
@@ -42,7 +41,6 @@ export const InventoryStatusTableColumns = () => {
             <StyledTableCell align="center">Optimal Stock</StyledTableCell>
             <StyledTableCell align="center">Suggestion</StyledTableCell>
             <StyledTableCell align="center">Status</StyledTableCell>
-            <StyledTableCell align="center">Action</StyledTableCell>
         </TableRow>
     )
 }
@@ -77,14 +75,6 @@ export const InventoryStatusTableRow = ({ product } : { product : InventoryStatu
           : "No action needed"}
       </StyledTableCell>
       <StyledTableCell isDark={isDark} align="center"><StockChip status={product.status}/></StyledTableCell>
-      <StyledTableCell isDark={isDark} align="center">
-        <Link href={`/admin/product?id=${product._id}`} target="_blank"> 
-          <IconButton>
-            <VisibilityIcon sx={{ color: isDark ? 'white' : 'black' }}/>
-        </IconButton>
-        </Link>
-      </StyledTableCell>
-
     </StyledTableRow>
     )
 }

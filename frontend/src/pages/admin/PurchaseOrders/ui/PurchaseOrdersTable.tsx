@@ -4,6 +4,7 @@ import useDarkmode from '../../../../hooks/useDarkmode';
 import { formatDate } from "../../../../utils/dateUtils";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { POStatusChip } from "../../../../components/Chip";
+import { formatNumberToPeso } from "../../../../utils/utils";
 
 export const PurchaseOrdersTableColumns = () => {
     return (
@@ -30,13 +31,13 @@ export const PurchaseOrderTableRow = ({ purchaseOrder } : { purchaseOrder : Purc
                 <StyledTableCell isDark={isDark}>{purchaseOrder.po_id}</StyledTableCell>
                 <StyledTableCell isDark={isDark}>{purchaseOrder.supplier.name}</StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'>{purchaseOrder.purchase_items?.length}</StyledTableCell>
-                <StyledTableCell isDark={isDark} align='center'>{purchaseOrder.totalAmount}</StyledTableCell>
+                <StyledTableCell isDark={isDark} align='center'>{formatNumberToPeso(purchaseOrder.totalAmount)}</StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'>{formatDate(purchaseOrder.createdAt)}</StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'>{!purchaseOrder?.receivedDate ? 'N/A' : formatDate(purchaseOrder.receivedDate)}</StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'><POStatusChip status={purchaseOrder.status}/></StyledTableCell>
                 <StyledTableCell isDark={isDark} align='center'>
                     <IconButton onClick={() => window.location.href = `/admin/purchase-order/${purchaseOrder._id}`}>
-                        <VisibilityIcon />
+                        <VisibilityIcon sx={{ color: isDark ? 'white' : ''}}/>
                     </IconButton>
                 </StyledTableCell>
             </StyledTableRow>
