@@ -32,6 +32,10 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
             navigate(`/admin/orders/${activityLog.order_id._id}`)
         }else if(activityLog.product_id?._id){
             navigate(`/admin/product?id=${activityLog.product_id._id}`)
+        }else if(activityLog.supplier_id?._id){
+            navigate(`/admin/suppliers?id=${activityLog.supplier_id._id}`)
+        }else if(activityLog.po_id?._id){
+            navigate(`/admin/purchase-order/${activityLog.po_id._id}`)
         }
     }
 
@@ -55,7 +59,7 @@ const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
                     <p className="mt-2">{time}</p>
                 </div>
             </div>
-           {(activityLog.order_id || activityLog.product_id) && <RedButton onClick={handleClick}>View</RedButton>}
+           {(activityLog.order_id || activityLog.product_id || activityLog.supplier_id || activityLog.po_id) && <RedButton onClick={handleClick}>View</RedButton>}
         </div>
     )
 }
@@ -65,6 +69,8 @@ interface ActivityLog{
     admin_id: Admin;
     product_id?: Product;
     order_id?: Order;
+    supplier_id?: Supplier;
+    po_id?: PurchaseOrder;
     description: string;
     prev_value?: string;
     new_value?: string;

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AuthenticatedRequestWithFile } from "../types/auth";
+import { AuthenticatedRequest, AuthenticatedRequestWithFile } from "../types/auth";
 import RefundRequest from "../models/Refund";
 import { uploadVideo } from "../services/cloudinary";
 import OrderItem from "../models/OrderItem";
@@ -8,6 +8,7 @@ import Payment from "../models/Payment";
 import { refundPayment } from "../services/paymentService";
 import { sendAdminsNotification, sendCustomerNotification } from "../services/notificationService";
 import Order from "../models/Order";
+import { isSuperAdmin } from "../services/adminService";
 
 export const createRefundRequest = async (req :AuthenticatedRequestWithFile, res : Response) => {
     try{
@@ -50,9 +51,10 @@ export const createRefundRequest = async (req :AuthenticatedRequestWithFile, res
     }
 }
 
-export const getRefundRequests = async (req : Request, res : Response) => {
+export const getRefundRequests = async (req : AuthenticatedRequest, res : Response) => {
     try{
-         const page = parseInt(req.query.page as string) || 1;
+        await isSuperAdmin(req, res)
+        const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
         const searchTerm = req.query.searchTerm as string | undefined;
@@ -121,6 +123,7 @@ export const getRefundRequests = async (req : Request, res : Response) => {
 
 export const updateRefundRequest = async (req : Request, res : Response) => {
     try{
+        await isSuperAdmin(req, res)
         const { status } = req.body;
         const refundRequest = await RefundRequest.findById(req.params.id)
 

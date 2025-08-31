@@ -14,6 +14,8 @@ interface ActivityLog{
     admin_id: Admin;
     product_id?: Product;
     order_id?: Order;
+    supplier_id?: Supplier;
+    po_id?: PurchaseOrder;
     description: string;
     prev_value?: string;
     new_value?: string;
@@ -42,6 +44,7 @@ const ActivityLogs = () => {
     }, [selectedDates])
 
     const { data, loading } = useFetch(`/api/activities?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
+
     if (user && user.role === 'Admin' && !userLoading) {
         return <Navigate to="/admin/login" />;
     }

@@ -22,11 +22,11 @@ interface SupplierModalProps {
 }
 
 const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
-  const [supplierState, setSupplierState] = useState<Supplier>({
-    name: "",
-    email: "",
-    phone: "",
-  });
+    const [supplierState, setSupplierState] = useState<Supplier>({
+        name: "",
+        email: "",
+        phone: "",
+    });
     const [loading, setLoading] = useState<boolean>(false);
     const isDark = useDarkmode();
 

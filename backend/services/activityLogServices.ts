@@ -5,6 +5,8 @@ type ActivityLogType = {
     description: string;
     product_id?: string;
     order_id?: string;
+    supplier_id?: string;
+    po_id?: string;
     prev_value?: string;
     new_value?: string;
 }

@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
-import { createAdmin, findAdmin } from "../services/adminService";
+import { createAdmin, findAdmin, isSuperAdmin } from "../services/adminService";
 import Admin from "../models/Admin";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import { create_activity_log } from "../services/activityLogServices";
@@ -8,13 +8,7 @@ import { hashPassword } from "../utils/authUtils";
 
 export const create_new_admin = async(req: AuthenticatedRequest, res: Response) => {
     try{
-        const isSuperAdmin = await findAdmin({ _id: req.user_id, role: 'Super Admin'})
-
-        if(!isSuperAdmin){
-            res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
-            return;
-        }
-
+        await isSuperAdmin(req, res)
         const admin = await findAdmin({ email: req.body.email });
 
         if(admin) {

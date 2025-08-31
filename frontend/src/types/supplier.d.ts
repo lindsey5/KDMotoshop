@@ -8,6 +8,7 @@ type PurchaseOrder = {
     createdAt?: Date;
     notes?: string;
     purchase_items: PurchaseOrderItem[] 
+    createdBy?: Admin;
 }
 
 type Supplier = {

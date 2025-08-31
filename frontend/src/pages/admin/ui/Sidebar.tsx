@@ -119,14 +119,15 @@ export const AdminSidebar = () => {
           <div className="w-full flex-col flex gap-3 flex-grow min-h-0 overflow-hidden">
             <SidebarLink label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} path="/admin/dashboard" />
 
-
             <SidebarDropdown
               label="Store"
               icon={<StoreIcon sx={{ width: 25, height: 25 }} />}
               options={[
                 { label: "Products", icon: <SportsMotorsportsIcon sx={{ width: 22, height: 22 }} />, path: "/admin/products" },
                 { label: "Orders", icon: <ShoppingCartIcon sx={{ width: 22, height: 22 }} />, path: "/admin/orders" },
-                { label: "Refunds", icon: <ReplayRoundedIcon sx={{ width: 22, height: 22 }} />, path: "/admin/refunds" },
+                ...(user?.role === 'Super Admin'
+                  ? [{ label: "Refunds", icon: <ReplayRoundedIcon sx={{ width: 22, height: 22 }} />, path: "/admin/refunds" }]
+                  : []),
                 { label: "Customers", icon: <PersonIcon sx={{ width: 22, height: 22 }} />, path: "/admin/customers" },
                 { label: "Inventory Status", icon: <Box size={22} />, path: "/admin/inventory-status" }
               ]}

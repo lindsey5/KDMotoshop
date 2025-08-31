@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import Supplier from "../models/Supplier";
+import { create_activity_log } from "../services/activityLogServices";
+import { AuthenticatedRequest } from "../types/auth";
 
-export const createSupplier = async (req : Request, res : Response) => {
+export const createSupplier = async (req : AuthenticatedRequest, res : Response) => {
     try{
         const isExists = await Supplier.findOne({ email : req.body.email });
 
@@ -10,9 +12,15 @@ export const createSupplier = async (req : Request, res : Response) => {
             return;
         }
 
-        const newSupplier = new Supplier(req.body);
+        const newSupplier = new Supplier({...req.body, createdBy: req.user_id});
 
         await newSupplier.save();
+
+        await create_activity_log({
+            supplier_id: newSupplier._id.toString(),
+            description: 'created new supplier',
+            admin_id: req?.user_id ?? '',
+        })
 
         res.status(201).json({ success: true, newSupplier });
 
@@ -40,7 +48,7 @@ export const getSuppliers = async (req :Request, res : Response) => {
     }
 }
 
-export const updateSupplier = async (req : Request, res : Response) => {
+export const updateSupplier = async (req : AuthenticatedRequest, res : Response) => {
     try{
         const supplier = await Supplier.findById(req.params.id);
 
@@ -52,6 +60,12 @@ export const updateSupplier = async (req : Request, res : Response) => {
         supplier.set(req.body);
 
         await supplier.save();
+
+        await create_activity_log({
+            supplier_id: supplier._id.toString(),
+            description: 'update supplier details',
+            admin_id: req?.user_id ?? '',
+        })
 
         res.status(200).json({ success: true, supplier });
 

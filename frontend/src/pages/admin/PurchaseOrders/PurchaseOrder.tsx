@@ -128,6 +128,7 @@ const PurchaseOrder = () => {
                     <p><strong>PO ID:</strong> ${purchaseOrder.po_id || ''}</p>
                     <p><strong>Order Date:</strong> ${formatDate(purchaseOrder.createdAt)}</p>
                     <p><strong>Status:</strong> ${purchaseOrder.status}</p>
+                    <p><strong>Created By:</strong> ${purchaseOrder?.createdBy?.firstname} ${purchaseOrder?.createdBy?.lastname}</p>
                     
                     <h2>Supplier Information</h2>
                     <p><strong>Name:</strong> ${purchaseOrder.supplier?.name || ''}</p>
@@ -181,7 +182,7 @@ const PurchaseOrder = () => {
             }
         }
     };
-
+    console.log(purchaseOrder)
     return (
         <PageContainer className="flex flex-col gap-5">
             <div className="flex justify-between gap-5 items-start">
@@ -193,7 +194,10 @@ const PurchaseOrder = () => {
             </div>
             <div className="h-screen flex flex-col gap-5">
                 <div className="flex justify-between items-center gap-5">
-                    <p className="text-end">{`${purchaseOrder._id ? 'Order ' : ''}Date:`} {formatDate(purchaseOrder.createdAt ? purchaseOrder.createdAt : new Date())}</p>
+                    <div>
+                        <p>{`${purchaseOrder._id ? 'Order ' : ''}Date:`} {formatDate(purchaseOrder.createdAt ? purchaseOrder.createdAt : new Date())}</p>
+                        {purchaseOrder._id && <p>Created by: {purchaseOrder.createdBy?.firstname} {purchaseOrder.createdBy?.lastname}</p>}
+                    </div>
                     {purchaseOrder._id && <POStatusChip status={purchaseOrder.status} />}
                 </div>
                 <h1 className="font-bold">Supplier Information</h1>

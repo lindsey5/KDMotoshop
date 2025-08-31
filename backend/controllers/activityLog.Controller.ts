@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import ActivityLog from "../models/ActivityLog"
 import { AuthenticatedRequest } from "../types/auth";
+import { isSuperAdmin } from "../services/adminService";
 
 const createFilter = (startDate : string | undefined, endDate : string | undefined) => {
     let filter: any = {};
@@ -31,7 +32,7 @@ export const get_activity_logs = async (req : Request, res : Response) => {
                 .find(filter)
                 .limit(limit)
                 .skip(skip)
-                .populate(['product_id', 'order_id', 'admin_id'])
+                .populate(['product_id', 'order_id', 'admin_id', 'supplier_id', 'po_id'])
                 .sort({createdAt: -1}),
             ActivityLog.countDocuments(filter)
         ])
@@ -53,6 +54,7 @@ export const get_activity_logs = async (req : Request, res : Response) => {
 
 export const get_admin_activity_logs = async (req : AuthenticatedRequest, res : Response) => {
     try{
+        await isSuperAdmin(req, res)
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;
@@ -66,7 +68,7 @@ export const get_admin_activity_logs = async (req : AuthenticatedRequest, res : 
                 .find(filter)
                 .limit(limit)
                 .skip(skip)
-                .populate(['product_id', 'order_id', 'admin_id'])
+                .populate(['product_id', 'order_id', 'admin_id', 'supplier_id', 'po_id'])
                 .sort({createdAt: -1}),
             ActivityLog.countDocuments(filter)
         ])

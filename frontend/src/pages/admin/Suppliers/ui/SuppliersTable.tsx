@@ -4,6 +4,7 @@ import useDarkmode from '../../../../hooks/useDarkmode';
 import EditIcon from '@mui/icons-material/Edit';
 import SupplierModal from "./SupplierModal";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export const SuppliersTableColumns = () => {
     return (
@@ -19,7 +20,9 @@ export const SuppliersTableColumns = () => {
 
 export const SupplierTableRow = ({ supplier } : { supplier : Supplier }) => {
     const isDark = useDarkmode();
-    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get('id')
+    const [openModal, setOpenModal] = useState<boolean>(supplier._id === id);
 
     const chipStyle = `px-3 py-1 rounded-full text-xs font-semibold ${
         supplier.status === "Active"
