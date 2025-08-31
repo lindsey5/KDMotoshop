@@ -22,7 +22,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          updatedAt: { $gte: start, $lt: end },
+          createdAt: { $gte: start, $lt: end },
           status: { $in: ['Fulfilled', 'Rated'] },
           'order.status': { $in: ['Delivered', 'Rated'] }
         }
@@ -30,7 +30,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
       {
         $project: {
           month: {
-            $dateToParts: { date: '$updatedAt', timezone: 'Asia/Manila' } // convert to Asia/Manila
+            $dateToParts: { date: '$createdAt', timezone: 'Asia/Manila' } // convert to Asia/Manila
           },
           netTotal: '$lineTotal'
         }
@@ -61,17 +61,17 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
   }
 };
 
-
 export const get_product_quantity_sold = async (req: Request, res: Response) => {
   try {
     const items = req.query.items as string;
     const skus = items ? items.split(',').filter(item => item.trim() !== '') : [];
+
     const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
 
-    // Handle month overflow for December
-    const startDate = new Date(Date.UTC(year, month - 1, 1));
-    const endDate = new Date(Date.UTC(year, month, 1));
+    // Start and end of month in Asia/Manila timezone
+    const startDate = new Date(year, month - 1, 1, 0, 0, 0); // local time
+    const endDate = new Date(year, month, 0, 23, 59, 59, 999); // last day of month
 
     const productSales = await OrderItem.aggregate([
       {
@@ -85,8 +85,8 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
       { $unwind: '$product' },
       {
         $match: {
-          updatedAt: { $gte: startDate, $lt: endDate },
-          sku: skus.length < 1 ? '' : { $in: skus },
+          createdAt: { $gte: startDate, $lte: endDate },
+          ...(skus.length > 0 ? { sku: { $in: skus } } : {}),
           status: { $in: ['Fulfilled', 'Rated'] }
         }
       },
@@ -96,6 +96,7 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
           productName: { $first: '$product.product_name' },
           sku: { $first: '$sku' },
           totalQuantitySold: { $sum: '$quantity' },
+          totalRevenue: { $sum: { $multiply: ['$quantity', '$lineTotal'] } } // optional revenue
         }
       },
       {
@@ -105,9 +106,12 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
           productName: 1,
           sku: 1,
           totalQuantitySold: 1,
+          totalRevenue: 1
         }
       }
     ]);
+
+    // Map SKUs to include 0 for missing ones
     const productSalesMap = skus.map(sku => {
       const product = productSales.find(item => item.sku === sku);
       return {
@@ -115,10 +119,9 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
         totalQuantitySold: product ? product.totalQuantitySold : 0,
         totalRevenue: product ? product.totalRevenue : 0
       };
-    })
+    });
 
     res.status(200).json({ success: true, productSales: productSalesMap });
-
   } catch (err: any) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
@@ -144,14 +147,14 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
       { $unwind: "$order" },
       {
         $match: {
-          updatedAt: { $gte: start, $lt: end },
+          createdAt: { $gte: start, $lt: end },
           status: { $in: ["Fulfilled", "Rated"] },
           "order.status": { $in: ["Rated", "Delivered"] }
         }
       },
       {
         $project: {
-          month: { $dateToParts: { date: "$updatedAt", timezone: "Asia/Manila" } }, // Asia timezone
+          month: { $dateToParts: { date: "$createdAt", timezone: "Asia/Manila" } }, // Asia timezone
           lineTotal: 1,
           channel: "$order.order_source"
         }
@@ -189,22 +192,18 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
   }
 };
 
-
 export const get_daily_sales = async (req: Request, res: Response) => {
   try {
-    const { month, year } = req.query;
+    let { month, year } = req.query;
 
-    if (!month || !year) {
-      res.status(400).json({ success: false, message: 'Month and year are required' });
-      return;
-    }
+    // Default to current month/year if not provided
+    const now = new Date();
+    const monthNum = month ? parseInt(month as string, 10) : now.getMonth() + 1; // 1-12
+    const yearNum = year ? parseInt(year as string, 10) : now.getFullYear();
 
-    const monthNum = parseInt(month as string, 10);
-    const yearNum = parseInt(year as string, 10);
-
-    // Create date range for the given month and year
-    const startOfMonth = new Date(Date.UTC(yearNum, monthNum - 1, 1));
-    const endOfMonth = new Date(Date.UTC(yearNum, monthNum, 0, 23, 59, 59, 999));
+    // Create start and end of month in Asia/Manila timezone
+    const startOfMonth = new Date(yearNum, monthNum - 1, 1, 0, 0, 0); // local time
+    const endOfMonth = new Date(yearNum, monthNum, 0, 23, 59, 59, 999); // local time
 
     const dailySales = await OrderItem.aggregate([
       {
@@ -218,9 +217,9 @@ export const get_daily_sales = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          updatedAt: { $gte: startOfMonth, $lte: endOfMonth },
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
           status: { $in: ['Fulfilled', 'Rated'] },
-          'order.status' : { $in: ['Rated', 'Delivered']}
+          'order.status': { $in: ['Rated', 'Delivered'] }
         }
       },
       {
@@ -228,11 +227,11 @@ export const get_daily_sales = async (req: Request, res: Response) => {
           date: {
             $dateToString: {
               format: "%Y-%m-%d",
-              date: "$updatedAt",
+              date: "$createdAt",
               timezone: "Asia/Manila"
             }
           },
-          lineTotal: 1,
+          lineTotal: 1
         }
       },
       {
@@ -241,9 +240,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
           total: { $sum: '$lineTotal' }
         }
       },
-      {
-        $sort: { _id: 1 }
-      },
+      { $sort: { _id: 1 } },
       {
         $project: {
           date: '$_id',
@@ -254,7 +251,6 @@ export const get_daily_sales = async (req: Request, res: Response) => {
     ]);
 
     res.status(200).json({ success: true, dailySales });
-
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -292,7 +288,7 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
       { $unwind: '$order' },
       {
         $match: {
-          updatedAt: { $gte: startDate },
+          createdAt: { $gte: startDate },
           status: { $in: ["Fulfilled", "Rated"] },
           'order.status' : { $in: ['Rated', 'Delivered']}
         },
