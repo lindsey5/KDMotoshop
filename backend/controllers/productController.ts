@@ -7,6 +7,7 @@ import OrderItem from "../models/OrderItem";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
+import dayjs from "dayjs";
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -230,76 +231,88 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
+
 export const get_top_products = async (req: Request, res: Response) => {
-    try{
-      const limit = Number(req.query.limit) || undefined;
-      const filterType = req.query.filter || 'all'
-      const now = new Date();
-      let startDate, endDate;
+  try {
+    const limit = Number(req.query.limit) || undefined;
+    const filterType = req.query.filter || "all";
 
-      switch(filterType) { // 'thisMonth', 'lastMonth', 'all'
-        case 'thisMonth':
-          startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-          break;
-        case 'lastMonth':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-          endDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          break;
-        case 'all':
-          startDate = null;
-          endDate = null;
-          break;
-      }
+    const now = dayjs();
+    let startDate: Date | null = null;
+    let endDate: Date | null = null;
 
-      const matchStage: any = { status: 'Fulfilled' }; // 'any' bypasses TS checks
-
-      if (startDate && endDate) {
-        matchStage.createdAt = { $gte: startDate, $lt: endDate };
-      }
-
-      const topProductsAggregation = await OrderItem.aggregate([
-        { $match: matchStage },
-        { 
-          $group: { 
-            _id: '$product_id',
-            totalQuantity: { $sum: '$quantity' }
-          }
-        },
-        { $sort: { totalQuantity: -1 } },
-         ...(limit ? [{ $limit: limit }] : [])
-      ]);
-
-      const topProductIds = topProductsAggregation.map(item => item._id);
-
-      // Fetch matching products
-      const products = await Product.find({ _id: { $in: topProductIds } });
-
-      // Merge product data with totalQuantity from aggregation
-      const topProducts = topProductsAggregation.map(item => {
-        const product = products.find((p : any) => p._id.toString() === item._id.toString());
-
-        if (!product) return null;
-
-        return {
-          _id: product._id,
-          product_name: product.product_name,
-          image: product.thumbnail.imageUrl,
-          rating: product.rating,
-          totalQuantity: item.totalQuantity,
-          stock: product.product_type === 'Variable' ? product.variants.reduce((total, v) => total + (v.stock ?? 0), 0) : product.stock,
-          price: product.product_type === 'Variable' ? product.variants?.sort((a, b) => (a.price || 0) - (b.price || 0))[0].price : product.price,
-        };
-      });
-
-      res.status(200).json({ success: true, topProducts });
-
-
-    }catch(err : any){
-      console.error(err);
-      res.status(500).json({ success: false, message: err.message });
+    switch (filterType) {
+      case "thisMonth":
+        startDate = now.startOf("month").toDate();
+        endDate = now.endOf("month").add(1, "day").startOf("day").toDate();
+        break;
+      case "lastMonth":
+        startDate = now.subtract(1, "month").startOf("month").toDate();
+        endDate = now.subtract(1, "month").endOf("month").add(1, "day").startOf("day").toDate();
+        break;
+      case "all":
+        startDate = null;
+        endDate = null;
+        break;
     }
-}
+
+    const matchStage: any = { status: "Fulfilled" };
+
+    if (startDate && endDate) {
+      matchStage.createdAt = { $gte: startDate, $lt: endDate };
+    }
+
+    const topProductsAggregation = await OrderItem.aggregate([
+      { $match: matchStage },
+      {
+        $group: {
+          _id: "$product_id",
+          totalQuantity: { $sum: "$quantity" },
+        },
+      },
+      { $sort: { totalQuantity: -1 } },
+      ...(limit ? [{ $limit: limit }] : []),
+    ]);
+
+    const topProductIds = topProductsAggregation.map((item) => item._id);
+
+    const products = await Product.find({ _id: { $in: topProductIds } });
+
+    const topProducts = topProductsAggregation.map((item) => {
+      const product = products.find(
+        (p: any) => p._id.toString() === item._id.toString()
+      );
+
+      if (!product) return null;
+
+      return {
+        _id: product._id,
+        product_name: product.product_name,
+        image: product.thumbnail.imageUrl,
+        rating: product.rating,
+        totalQuantity: item.totalQuantity,
+        stock:
+          product.product_type === "Variable"
+            ? product.variants.reduce(
+                (total: number, v: any) => total + (v.stock ?? 0),
+                0
+              )
+            : product.stock,
+        price:
+          product.product_type === "Variable"
+            ? product.variants
+                ?.sort((a: any, b: any) => (a.price || 0) - (b.price || 0))[0]
+                .price
+            : product.price,
+      };
+    }).filter(Boolean); // remove nulls
+
+    res.status(200).json({ success: true, topProducts });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 export const get_inventory_status = async (req: Request, res: Response) => {
   try {

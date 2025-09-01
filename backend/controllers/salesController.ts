@@ -3,9 +3,11 @@ import OrderItem from "../models/OrderItem";
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import isoWeek from "dayjs/plugin/isoWeek";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(isoWeek);
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
@@ -211,9 +213,6 @@ export const get_daily_sales = async (req: Request, res: Response) => {
     const startOfMonth = dayjs.tz(`${yearNum}-${monthNum}-01 00:00:00`, 'Asia/Manila').toDate();
     const endOfMonth = dayjs(startOfMonth).endOf('month').toDate();
 
-    console.log('StartOfMonth:', startOfMonth);
-    console.log('EndOfMonth:', endOfMonth);
-
     const dailySales = await OrderItem.aggregate([
       {
         $lookup: {
@@ -268,39 +267,29 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
 export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
-    const now = new Date();
+    const now = dayjs();
 
-    const startOfToday = now;
-    startOfToday.setHours(0, 0, 0, 0);
-
-    // Start of the week (Monday)
-    const startOfWeek = new Date(now);
-    const day = startOfWeek.getDay(); // 0 = Sunday, 1 = Monday
-    const diff = day === 0 ? 6 : day - 1; // Monday = start
-    startOfWeek.setDate(now.getDate() - diff);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    // Start of the month
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    // Start of the year
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    // Start of periods using dayjs
+    const startOfToday = now.startOf("day").toDate();
+    const startOfWeek = now.startOf("isoWeek").toDate();   // Monday-based week
+    const startOfMonth = now.startOf("month").toDate();
+    const startOfYear = now.startOf("year").toDate();
 
     const makeSalesAgg = (startDate: Date) => [
       {
         $lookup: {
-          from: 'orders',
-          localField: 'order_id',
-          foreignField: '_id',
-          as: 'order'
-        }
+          from: "orders",
+          localField: "order_id",
+          foreignField: "_id",
+          as: "order",
+        },
       },
-      { $unwind: '$order' },
+      { $unwind: "$order" },
       {
         $match: {
           createdAt: { $gte: startDate },
           status: { $in: ["Fulfilled", "Rated"] },
-          'order.status' : { $in: ['Rated', 'Delivered']}
+          "order.status": { $in: ["Rated", "Delivered"] },
         },
       },
       {
