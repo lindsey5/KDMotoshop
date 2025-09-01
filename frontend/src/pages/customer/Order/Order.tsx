@@ -32,8 +32,6 @@ const CustomerOrderDetails = () => {
         { label: order?.order_id ?? '', href: `/order/${id}`}
     ]
 
-    console.log(order)
-
     useEffect(() => {
         const getOrderAsync = async () => {
             const response = await fetchData(`/api/orders/${id}`)
