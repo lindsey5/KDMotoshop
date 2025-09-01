@@ -7,7 +7,14 @@ import OrderItem from "../models/OrderItem";
 import { create_activity_log } from "../services/activityLogServices";
 import Admin from "../models/Admin";
 import { createProductFilter, determineSortOption } from "../utils/filter";
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import isoWeek from "dayjs/plugin/isoWeek";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(isoWeek);
 
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
@@ -231,13 +238,12 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
   }
 };
 
-
 export const get_top_products = async (req: Request, res: Response) => {
   try {
     const limit = Number(req.query.limit) || undefined;
     const filterType = req.query.filter || "all";
 
-    const now = dayjs();
+    const now = dayjs().tz('Asia/Manila');
     let startDate: Date | null = null;
     let endDate: Date | null = null;
 
@@ -257,7 +263,6 @@ export const get_top_products = async (req: Request, res: Response) => {
     }
 
     const matchStage: any = { status: "Fulfilled" };
-
     if (startDate && endDate) {
       matchStage.createdAt = { $gte: startDate, $lt: endDate };
     }
@@ -275,14 +280,10 @@ export const get_top_products = async (req: Request, res: Response) => {
     ]);
 
     const topProductIds = topProductsAggregation.map((item) => item._id);
-
     const products = await Product.find({ _id: { $in: topProductIds } });
 
     const topProducts = topProductsAggregation.map((item) => {
-      const product = products.find(
-        (p: any) => p._id.toString() === item._id.toString()
-      );
-
+      const product = products.find(p => p.id === item._id.toString());
       if (!product) return null;
 
       return {
@@ -293,10 +294,7 @@ export const get_top_products = async (req: Request, res: Response) => {
         totalQuantity: item.totalQuantity,
         stock:
           product.product_type === "Variable"
-            ? product.variants.reduce(
-                (total: number, v: any) => total + (v.stock ?? 0),
-                0
-              )
+            ? product.variants.reduce((total: number, v: any) => total + (v.stock ?? 0), 0)
             : product.stock,
         price:
           product.product_type === "Variable"

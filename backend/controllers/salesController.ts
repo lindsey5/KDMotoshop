@@ -267,9 +267,9 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
 export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
-    const now = dayjs();
+    const now = dayjs().tz('Asia/Manila');
 
-    // Start of periods using dayjs
+    // Start of periods using dayjs with Asia/Manila timezone
     const startOfToday = now.startOf("day").toDate();
     const startOfWeek = now.startOf("isoWeek").toDate();   // Monday-based week
     const startOfMonth = now.startOf("month").toDate();
