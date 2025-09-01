@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
 import OrderItem from "../models/OrderItem";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
@@ -69,9 +75,9 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
     const month = parseInt(req.query.month as string) || new Date().getMonth() + 1;
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
 
-    // Start and end of month in Asia/Manila timezone
-    const startDate = new Date(year, month - 1, 1, 0, 0, 0); // local time
-    const endDate = new Date(year, month, 0, 23, 59, 59, 999); // last day of month
+    // Use Asia/Manila timezone for start and end of month
+    const startDate = dayjs.tz(`${year}-${month}-01 00:00:00`, 'Asia/Manila').toDate();
+    const endDate = dayjs(startDate).endOf('month').toDate();
 
     const productSales = await OrderItem.aggregate([
       {
@@ -96,7 +102,7 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
           productName: { $first: '$product.product_name' },
           sku: { $first: '$sku' },
           totalQuantitySold: { $sum: '$quantity' },
-          totalRevenue: { $sum: { $multiply: ['$quantity', '$lineTotal'] } } // optional revenue
+          totalRevenue: { $sum: { $multiply: ['$quantity', '$lineTotal'] } }
         }
       },
       {
@@ -197,13 +203,16 @@ export const get_daily_sales = async (req: Request, res: Response) => {
     let { month, year } = req.query;
 
     // Default to current month/year if not provided
-    const now = new Date();
-    const monthNum = month ? parseInt(month as string, 10) : now.getMonth() + 1; // 1-12
-    const yearNum = year ? parseInt(year as string, 10) : now.getFullYear();
+    const now = dayjs().tz('Asia/Manila');
+    const monthNum = month ? parseInt(month as string, 10) : now.month() + 1; // 1-12
+    const yearNum = year ? parseInt(year as string, 10) : now.year();
 
     // Create start and end of month in Asia/Manila timezone
-    const startOfMonth = new Date(yearNum, monthNum - 1, 1, 0, 0, 0); // local time
-    const endOfMonth = new Date(yearNum, monthNum, 0, 23, 59, 59, 999); // local time
+    const startOfMonth = dayjs.tz(`${yearNum}-${monthNum}-01 00:00:00`, 'Asia/Manila').toDate();
+    const endOfMonth = dayjs(startOfMonth).endOf('month').toDate();
+
+    console.log('StartOfMonth:', startOfMonth);
+    console.log('EndOfMonth:', endOfMonth);
 
     const dailySales = await OrderItem.aggregate([
       {
@@ -252,6 +261,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
     res.status(200).json({ success: true, dailySales });
   } catch (err: any) {
+    console.error(err);
     res.status(500).json({ success: false, message: err.message });
   }
 };
