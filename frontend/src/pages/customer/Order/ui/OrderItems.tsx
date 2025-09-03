@@ -31,6 +31,8 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
     const [showRequest, setShowRequest]= useState<boolean>(false);
     const [refund, setRefund] = useState<RefundRequest>();
 
+    console.log(item)
+
     const handleClose = () => {
         setRatingData(undefined)
     }
@@ -91,8 +93,8 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>
                 )}
-                {item?.refund?.status && isWithinLast7Days(deliveredAt) && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setRefund(item?.refund)}>View Refund Status</Button>}
-                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund?.status && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
+                {item?.refund && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setRefund(item?.refund)}>View Refund Status</Button>}
+                {((status === 'Delivered' || status === 'Rated') && item.status === 'Fulfilled') && !item?.refund && isWithinLast7Days(deliveredAt) && <Button sx={{ color: isDark ? 'white' : 'red'}} onClick={() => setShowRequest(true)}>Refund Product</Button>}
             </div>
         </div>
         </>
