@@ -23,7 +23,7 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
             reader.onloadend = () => {
             setEditedCustomer(prev => ({
                 ...prev,
-                image: reader.result
+                image: reader.result as string
             }));
             };
             reader.readAsDataURL(file);
