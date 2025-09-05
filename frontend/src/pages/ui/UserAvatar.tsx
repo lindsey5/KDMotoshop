@@ -1,9 +1,9 @@
 import { Avatar } from "@mui/material"
 
 
-const UserAvatar = ({ image, sx } : { image : Admin['image'], sx?: Object }) => {
+const UserAvatar = ({ image, sx } : { image : Admin['image'] | Customer['image'], sx?: Object }) => {
     const avatar = typeof  image === 'object' &&  image !== null && 'imageUrl' in  image
-                ?  image.imageUrl
+                ?  image?.imageUrl
                     : typeof  image === 'string'
                     ? image
                 : ''
