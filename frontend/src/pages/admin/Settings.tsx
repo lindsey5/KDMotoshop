@@ -41,7 +41,7 @@ const Settings = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setUpdatedAdmin({...updatedAdmin!, image: reader.result})
+                setUpdatedAdmin({...updatedAdmin!, image: reader.result as string})
             };
             reader.readAsDataURL(file);
         }
@@ -77,7 +77,7 @@ const Settings = () => {
                 <div className="flex flex-col gap-5 items-center">
                     <UserAvatar
                         sx={{ width: '120px', height: '120px'}}
-                        image={updatedAdmin?.image}
+                        image={updatedAdmin?.image ?? ''}
                     />
                     <input
                         type="file"
