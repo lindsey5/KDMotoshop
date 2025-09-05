@@ -86,7 +86,10 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
                     <ClipboardList size={24} />
                     My Orders
                 </li>
-                <li className={cn("z-3 flex items-center gap-3 cursor-pointer hover:bg-gray-200 px-3 py-2", isDark && 'hover:bg-[#555555]')}>
+                <li 
+                    className={cn("z-3 flex items-center gap-3 cursor-pointer hover:bg-gray-200 px-3 py-2", isDark && 'hover:bg-[#555555]')}
+                    onClick={() => handleClick('/profile')}
+                >
                     <AccountCircleIcon/>
                     Profile
                 </li>

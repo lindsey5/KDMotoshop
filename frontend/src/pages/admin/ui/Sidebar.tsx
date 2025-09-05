@@ -111,7 +111,7 @@ export const AdminSidebar = () => {
 
         {/* Sidebar */}
         <aside
-          className={`fixed top-0 left-0 h-full bg-[#2A2A2A] p-5 flex flex-col items-center gap-5 transform transition-transform duration-300 z-40
+          className={`fixed top-0 left-0 h-full bg-[#121212] p-5 flex flex-col items-center gap-5 transform transition-transform duration-300 z-40
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
           md:translate-x-0 md:w-[200px] w-[200px]`}
         >

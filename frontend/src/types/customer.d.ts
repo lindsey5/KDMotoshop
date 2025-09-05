@@ -4,7 +4,7 @@ type Customer = {
   firstname: string;
   lastname: string;
   phone: string;
-  image: UploadedImage;
+  image: UploadedImage | string | ArrayBuffer | null;
   addresses?: Address[]
 }
 
@@ -16,6 +16,7 @@ type Address = {
     firstname: string;
     lastname: string;
     phone: string;
+    isDefault?: boolean;
 }
 
 type NewCustomer = {

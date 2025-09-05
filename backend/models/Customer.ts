@@ -16,6 +16,7 @@ export interface ICustomer extends Document {
       firstname: string;
       lastname: string;
       phone: string;
+      isDefault: boolean;
     }[]
 }
 
@@ -38,7 +39,8 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
             region: { type: String, required: true },
             firstname: { type: String, required: true },
             lastname: { type: String, required: true },
-            phone: { type: String, required: false }
+            phone: { type: String, required: true },
+            isDefault: { type: Boolean, default: false }
         }],
         required: false
     }

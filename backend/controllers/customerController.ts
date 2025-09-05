@@ -18,12 +18,14 @@ export const getCustomerById = async (req : AuthenticatedRequest, res: Response)
 export const updateCustomer = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { image, ...rest } = req.body;
+
     let update: any = rest;
 
     if (image && typeof image === 'string') {
       const uploaded = await uploadImage(image);
-      if(update.image.imagePublicId && update.image.imageUrl) await deleteImage(update.image.imageUrl)
-      if (uploaded) update.image = uploaded;
+
+      if(update.image?.imagePublicId && update.image?.imageUrl) await deleteImage(update.image.imageUrl)
+      if(uploaded) update.image = uploaded;
     }
 
     const customer = await Customer.findByIdAndUpdate(

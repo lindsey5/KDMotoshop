@@ -49,7 +49,10 @@ const CheckoutPage = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [addAddress, setAddAddress] = useState<boolean>(false);
   const [address, setAddress] = useState<Address>(addresssInitialState);
-  const [selectedAddress, setSelectedAddress] = useState<number>(0);
+  const [selectedAddress, setSelectedAddress] = useState<number>(
+    customer && customer?.role === 'Customer' ? 
+      customer?.addresses?.findIndex(address => address.isDefault) ?? 0 : 0
+  );
   const {
     selectedCity,
     setSelectedCity,
@@ -107,7 +110,6 @@ const CheckoutPage = () => {
   };
 
   const proceed = async () => {
-    console.log(orderItems)
     if (
       await confirmDialog(
         paymentMethod === "CASH" ? "Place this Order?" : "Proceed to payment?",
@@ -314,7 +316,7 @@ const CheckoutPage = () => {
                     />
                 ))}
                 </RadioGroup>
-                {addAddress ? <div className={cn("rounded-md flex flex-col gap-5 p-3 bg-gray-100", isDark && 'bg-[#353535]')}>
+                {addAddress ? <div className={cn("rounded-md flex flex-col gap-5 p-5 bg-gray-100", isDark && 'bg-[#1d1d1dff]')}>
                     <div className="flex gap-5">
                     <RedTextField 
                         value={address?.firstname || ''} 

@@ -10,6 +10,7 @@ import LazyLoader from "./components/LazyLoader";
 
 // Lazy imports
 import { lazy } from "react";
+import CustomerProfile from "./pages/customer/Profile/CustomerProfile";
 const AdminLogin = lazy(() => import("./pages/auth/AdminLogin"));
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard/Dashboard"));
@@ -64,6 +65,7 @@ export default function App() {
                 <Route path="cart" element={<Cart />} />
                 <Route path="orders" element={<CustomerOrders />} />
                 <Route path="order/:id" element={<CustomerOrderDetails />} />
+                <Route path="profile" element={<CustomerProfile />} />
               </Route>
               <Route path="admin">
                 <Route path="login" element={<AdminLogin />} />

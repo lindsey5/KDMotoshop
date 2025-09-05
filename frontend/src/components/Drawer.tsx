@@ -108,10 +108,10 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
 
   return (
     <div
-      className={`w-full max-w-sm h-screen flex flex-col ${
+      className={`w-full max-w-sm h-screen flex flex-col border-l border-neutral-600 ${
         isDark 
-          ? "bg-zinc-950 text-zinc-50 border-l border-zinc-800" 
-          : "bg-white text-zinc-900 border-l border-zinc-200"
+          ? "bg-[#121212] text-neutral-100" 
+          : "bg-white"
       }`}
     >
       {/* Ultra-Modern Header */}
@@ -174,13 +174,13 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
               <button
                 key={n._id}
                 onClick={() => navigateToOrder(n.order_id)}
-                className={`cursor-pointer group relative w-full flex items-start gap-4 p-5 rounded-2xl transition-all ${
+                className={`bg-[#2A2A2A] cursor-pointer group relative w-full flex items-start gap-4 p-5 rounded-2xl transition-all ${
                   !n.isViewed
                     ? isDark
-                      ? "bg-zinc-900 hover:bg-zinc-800 border border-zinc-800"
+                      ? "border border-zinc-800"
                       : "bg-zinc-50 hover:bg-zinc-100 border border-zinc-200"
                     : isDark
-                      ? "bg-zinc-950 hover:bg-zinc-900 border border-zinc-900"
+                      ? "border border-zinc-900"
                       : "bg-white hover:bg-zinc-50 border border-zinc-100"
                 }`}
               >
@@ -195,13 +195,13 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
                 <div className="flex-1 min-w-0 text-left">
                   <p className={`text-xs sm:text-sm md:text-base leading-relaxed mb-2 ${
                     !n.isViewed 
-                      ? "font-semibold text-zinc-900 dark:text-zinc-100" 
-                      : "font-medium text-zinc-600 dark:text-zinc-400"
+                      ? `font-semibold ${isDark && 'text-neutral-100'}`
+                      : `font-medium text-neutral-400`
                   }`}>
                     {n.content}
                   </p>
                   
-                  <span className="text-xs sm:text-sm text-zinc-500 font-medium">
+                  <span className="text-xs sm:text-sm font-medium text-neutral-400">
                       {formatDate(n.createdAt)}
                     </span>
                     {status && (
