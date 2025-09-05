@@ -127,7 +127,7 @@ const Addresses = ({ isDark, defaultAddresses }: AddressesProps) => {
                         </div>
                         
                         <div className={`ml-16 p-4 rounded-lg ${
-                            isDark ? 'bg-gray-700/50' : 'bg-gray-100'
+                            isDark ? 'bg-[#313131]' : 'bg-gray-100'
                         }`}>
                             <div className="flex items-start gap-2">
                             <MapPin size={16} className={`mt-1 ${
