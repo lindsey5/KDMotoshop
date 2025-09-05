@@ -76,7 +76,7 @@ const ChatbotButton = () => {
                 <div className={cn(
                     "absolute z-50 flex flex-col border rounded-3xl w-[90vw] h-[80vh] sm:w-[70vw] lg:w-[40vw] bottom-[calc(100%+16px)] right-0 shadow-2xl backdrop-blur-xl transition-all duration-300 ease-out animate-in slide-in-from-bottom-4 fade-in-0",
                     isDark
-                        ? "bg-gray-900/95 border-gray-700/50"
+                        ? "bg-[#121212] border-gray-700/50"
                         : "bg-white/95 border-gray-200/50"
                 )}>
                     {/* Header */}
@@ -118,7 +118,7 @@ const ChatbotButton = () => {
                     </div>
 
                     {/* Messages */}
-                    <div className={cn("flex-1 overflow-y-auto p-4 space-y-4", isDark ? "bg-gray-900/50" : "bg-gray-50/30")}>
+                    <div className={cn("flex-1 overflow-y-auto p-4 space-y-4", isDark ? "bg-[#121212]" : "bg-gray-50/30")}>
                         {messages.map((msg, index) => (
                             <div key={index} ref={index === messages.length - 1 ? bottomRef : undefined} className={cn("flex", msg.from === 'bot' ? 'justify-start' : 'justify-end')}>
                                 <div className={cn("flex items-end gap-3 max-w-[85%]", msg.from === 'user' && "flex-row-reverse")}>
@@ -131,7 +131,7 @@ const ChatbotButton = () => {
                                         "px-4 py-3 rounded-2xl text-sm leading-relaxed shadow-sm whitespace-pre-line",
                                         msg.from === 'bot'
                                             ? isDark
-                                                ? "bg-gray-800 text-gray-100 border border-gray-700/50"
+                                                ? "bg-[#2A2A2A] text-gray-100 border border-gray-700/50"
                                                 : "bg-white text-gray-800 border border-gray-200/50 shadow-lg"
                                             : isDark
                                                 ? "bg-gradient-to-r from-red-700 to-red-600 text-white"
@@ -169,7 +169,7 @@ const ChatbotButton = () => {
                         <div className={cn(
                             "flex items-center gap-3 p-2 rounded-2xl border backdrop-blur-sm transition-colors duration-200",
                             isDark
-                                ? "bg-gray-800/80 border-gray-600/50 focus-within:border-red-500/50"
+                                ? "bg-[#2A2A2A] border-gray-600/50 focus-within:border-red-500/50"
                                 : "bg-white/80 border-gray-200/50 focus-within:border-red-400/50 shadow-lg"
                         )}>
                             <input
