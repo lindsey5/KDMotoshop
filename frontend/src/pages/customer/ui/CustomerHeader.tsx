@@ -110,7 +110,7 @@ const CustomerHeader = () => {
                         </IconButton>
                     </Tooltip>
                 </Link>
-                <CustomerDropdownMenu image={user?.image?.imageUrl}/>
+                <CustomerDropdownMenu image={(user?.image as UploadedImage).imageUrl}/>
                 </>
                 }
                 <div className="hidden sm:block">

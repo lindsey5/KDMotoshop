@@ -79,7 +79,7 @@ export const NotificationTableRow = ({ notification } : { notification : Notific
         >
             <NotificationCell isDark={isDark} isViewed={notification.isViewed}>
             <div className="flex gap-3">
-                <Avatar src={customer?.image.imageUrl}/>
+                <Avatar src={(customer?.image as UploadedImage).imageUrl}/>
                 <div>
                     <h1>{customer?.firstname} {customer?.lastname}</h1>
                     <p className={cn('mt-2', isDark ? 'text-gray-400' : 'text-gray-500')}>{customer?.email}</p>
