@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { ThemeToggle } from "../../components/Toggle"
 import useDarkmode from "../../hooks/useDarkmode"
-import { cn } from "../../utils/utils"
+import { cn, isStrongPassword } from "../../utils/utils"
 import { GoogleButton, RedButton } from "../../components/buttons/Button"
 import { PasswordField, RedTextField } from "../../components/Textfield"
 import { useState } from "react"
@@ -22,6 +22,11 @@ const CustomerSignupPage = () => {
     const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
+        if (!isStrongPassword(newCustomer?.password ?? '')) {
+            setError("Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.");
+            setLoading(false); 
+            return;
+        }
         const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email})
         
         response.success ? setCode(response.code) : setError(response.message)
@@ -33,7 +38,7 @@ const CustomerSignupPage = () => {
     }
 
     return (
-        <div className={cn("h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
+        <div className={cn("min-h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
             <VerifyEmailModal open={code !== undefined} customer={newCustomer as NewCustomer} code={code}/>
             <div className="flex justify-between items-center w-full">
                 <img className={cn("hidden sm:block w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
@@ -73,22 +78,26 @@ const CustomerSignupPage = () => {
                             placeholder="Firstname" 
                             required 
                             onChange={(e) => setNewCustomer(prev => ({...prev!, firstname: e.target.value}))}
+                            inputProps={{ maxLength: 100 }}
                         />
                         <RedTextField 
                             placeholder="Lastname"  
                             required 
                             onChange={(e) => setNewCustomer(prev => ({...prev!, lastname: e.target.value}))}
+                            inputProps={{ maxLength: 100 }}
                         />
                         </div>
                         <PasswordField 
                             placeholder="Password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, password: e.target.value}))}
+                            inputProps={{ maxLength: 30 }}
                         />
                         <PasswordField 
                             placeholder="Confirm password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, confirmPassword: e.target.value}))}
+                            inputProps={{ maxLength: 30 }}
                         />
                         <RedButton disabled={loading} type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Sign Up</RedButton>
                         <div className="w-full flex items-center gap-5 text-gray-400">
@@ -98,7 +107,7 @@ const CustomerSignupPage = () => {
                         </div>
                         <GoogleButton  theme={isDark ? 'filled_black' : 'filled_blue'} />
                         <div className="w-full flex justify-center mt-4">
-                            <p className={cn("text-lg", isDark && 'text-gray-400')}>Already have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/login">Login</a></p>
+                            <p className={cn("text-lg", isDark && 'text-gray-400')}>Already have an account? <a className={cn("text-red-600 hover:underline font-semibold", isDark && 'text-white')} href="/login">Login</a></p>
                         </div>
                     </div>
                 </div>

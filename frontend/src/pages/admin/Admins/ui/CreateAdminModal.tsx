@@ -3,7 +3,6 @@ import { memo, useEffect, useState } from "react";
 import Card from "../../../../components/Card";
 import { RedTextField } from "../../../../components/Textfield";
 import { RedButton } from "../../../../components/buttons/Button";
-import PhoneInput from "react-phone-input-2";
 import useDarkmode from "../../../../hooks/useDarkmode";
 import { postData, updateData } from "../../../../services/api";
 import { errorAlert } from "../../../../utils/swal";
@@ -64,7 +63,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                         onChange={(e) => setAdmin(prev => ({ ...prev!, email: e.target.value }))}
                         required
                         type="Email"
-                        inputProps={{ maxLength: 50 }}
+                        inputProps={{ maxLength: 100 }}
                     />
                     <div className="flex gap-4">
                         <RedTextField 
@@ -72,14 +71,14 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                             value={admin?.firstname || ''} 
                             onChange={(e) => setAdmin(prev => ({ ...prev!, firstname: e.target.value }))}
                             required
-                            inputProps={{ maxLength: 50 }}
+                            inputProps={{ maxLength: 100 }}
                         />
                         <RedTextField 
                             label="Last Name" 
                             value={admin?.lastname || ''} 
                             onChange={(e) => setAdmin(prev => ({ ...prev!, lastname: e.target.value }))}
                             required
-                            inputProps={{ maxLength: 50 }}
+                            inputProps={{ maxLength: 100 }}
                         />
                     </div>
                     <RedTextField 
@@ -100,19 +99,16 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                         inputProps={{ maxLength: 30 }}
                     />
 
-                    <PhoneInput
-                        country={'ph'}
-                        onlyCountries={['ph']}
-                        specialLabel="" 
-                        value={admin?.phone || ''}
-                        onChange={(phone) => setAdmin(prev => ({ ...prev!, phone }))}
-                        containerStyle={{ width: '100%', height: '55px' }}
-                        inputStyle={{
-                            width: '100%',
-                            height: '55px',
-                            backgroundColor: isDark ? '#313131' : '#fff',
-                            color: isDark ? 'white' : 'black',
-                        }}
+                    <RedTextField 
+                    label="Phone"
+                    type="number"
+                    value={admin?.phone || ''}
+                    onChange={(e) => {
+                        const value = e.target.value.slice(0, 13);
+                        setAdmin(prev => ({ ...prev!, phone: value }));
+                    }}
+                    required
+                    placeholder="+63 XXX XXX XXXX"
                     />
                 
                     {/* Add more fields as necessary */}

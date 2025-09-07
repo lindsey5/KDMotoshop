@@ -263,6 +263,7 @@ const ProductPage = () => {
                         placeholder="Enter product name"
                         onChange={(e) => setProduct({ ...product, product_name: e.target.value })}
                         value={product.product_name}
+                        inputProps={{ maxLength: 100 }}
                     />
                     <CategorySelect value={product.category} handleChange={handleCategoryChange}/>
 
@@ -295,6 +296,7 @@ const ProductPage = () => {
                             placeholder="Enter product SKU"
                             onChange={(e) => setProduct({ ...product, sku: e.target.value})}
                             value={product.sku || ''}
+                            inputProps={{ maxLength: 50 }}
                         />
                         <RedTextField 
                             type="number"
@@ -320,6 +322,7 @@ const ProductPage = () => {
                                 placeholder="Enter attribute name"
                                 value={attributeName}
                                 onChange={(e) => setAttributeName(e.target.value)}
+                                inputProps={{ maxLength: 50 }}
                             />
                             <RedButton
                                 disabled={!attributeName}

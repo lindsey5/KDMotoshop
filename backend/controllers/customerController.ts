@@ -46,3 +46,30 @@ export const updateCustomer = async (req: AuthenticatedRequest, res: Response) =
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+export const getCustomers = async (req: AuthenticatedRequest, res: Response) => {
+  try{
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const searchTerm = req.query.searchTerm;
+
+    let filter: any = {};
+    if (searchTerm) {
+      filter.$or = [
+        { email: { $regex: searchTerm, $options: 'i' } },
+        { firstname: { $regex: searchTerm, $options: 'i' } },
+        { lastname: { $regex: searchTerm, $options: 'i' } },
+      ];
+    }
+
+    
+
+
+
+  }catch (err: any) {
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}

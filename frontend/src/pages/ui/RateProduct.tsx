@@ -42,9 +42,7 @@ const RateProductModal : React.FC<RateProductModalProps> = ({ open, close, order
                     value={rating}
                     icon={<GradeIcon fontSize="inherit" sx={{ color: 'red' }}/>}        
                     emptyIcon={<StarOutlineIcon fontSize="inherit" sx={{ color: isDark ? 'white' : ''}}/>} 
-                    sx={{
-                        fontSize: 40,
-                    }}
+                    sx={{ fontSize: 40, }}
                 />
                 <strong className="mt-6 mb-4">Product Review</strong>
                 <RedTextField 

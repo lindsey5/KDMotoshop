@@ -9,7 +9,7 @@ import { useAddress } from "../../../hooks/useAddress";
 import { CustomizedSelect } from "../../../components/Select";
 import { RedTextField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/buttons/Button";
-import { Button, RadioGroup } from "@mui/material";
+import { Backdrop, Button, CircularProgress, RadioGroup } from "@mui/material";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CustomizedChip } from "../../../components/Chip";
 import PhoneInput from "react-phone-input-2";
@@ -150,6 +150,7 @@ const CheckoutPage = () => {
 
       if (response.success) {
         if (paymentMethod === "CASH") {
+          setLoading(false);
           await successAlert(
             "Order successfully placed",
             "Thank you for choosing our service!",
@@ -286,6 +287,12 @@ const CheckoutPage = () => {
 
     return (
         <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
+            <Backdrop
+              sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+              open={loading}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
             <div className="flex-2 flex flex-col gap-5">
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
                 <Title className="text-2xl md:text-4xl">Checkout</Title>

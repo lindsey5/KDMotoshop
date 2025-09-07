@@ -45,10 +45,10 @@ const FormInput = ({
         value={value}
         disabled={disabled}
         onChange={(e) => onChange?.(e.target.value)}
-        className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 ${
+        className={`w-full pl-12 pr-4 py-3 rounded-xl border transition-colors focus:outline-none focus:ring-2 ${
           isDark
-            ? "bg-[#313131] border-slate-700 text-white placeholder-slate-500"
-            : "bg-neutral-50 border-neutral-200 text-slate-900 placeholder-slate-400"
+            ? "bg-[#313131] border-slate-700 text-white placeholder-slate-500 focus:ring-red-600"
+            : "bg-neutral-50 border-neutral-200 text-slate-900 placeholder-slate-400 focus:ring-red-500"
         }`}
         placeholder={`Enter ${label.toLowerCase()}`}
       />

@@ -5,6 +5,7 @@ import { CustomizedSelect } from "../../../../components/Select";
 import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal";
 import Card from "../../../../components/Card";
 import { RedButton } from "../../../../components/buttons/Button";
+import { RedTextField } from "../../../../components/Textfield";
 
 type AddAddressProps = {
   isDark: boolean;
@@ -60,13 +61,6 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
     }
     };
 
-  const inputStyle = `outline-none w-full px-4 py-3 rounded-lg border transition-all duration-200 
-    ${
-      isDark
-        ? "bg-[#313131] border-gray-400 text-white placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-        : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-    }`;
-
   const labelStyle = `block text-sm font-medium mb-2 ${
     isDark ? "text-gray-300" : "text-gray-700"
   }`;
@@ -117,38 +111,32 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
         <div className="space-y-4">
           <div>
             <label className={labelStyle}>First Name</label>
-            <input
-              type="text"
+            <RedTextField 
               placeholder="Enter first name"
               value={newAddress.firstname}
-              onChange={(e) =>
-                setNewAddress((p) => ({ ...p, firstname: e.target.value }))
-              }
-              className={inputStyle}
+              onChange={(e) => setNewAddress((p) => ({ ...p, firstname: e.target.value }))}
+              inputProps={{ maxLength: 100 }}
             />
           </div>
           <div>
             <label className={labelStyle}>Last Name</label>
-            <input
-              type="text"
+            <RedTextField 
               placeholder="Enter last name"
               value={newAddress.lastname}
-              onChange={(e) =>
-                setNewAddress((p) => ({ ...p, lastname: e.target.value }))
-              }
-              className={inputStyle}
+              onChange={(e) => setNewAddress((p) => ({ ...p, lastname: e.target.value }))}
+              inputProps={{ maxLength: 100 }}
             />
           </div>
           <div>
             <label className={labelStyle}>Phone Number</label>
-            <input
-              type="text"
+            <RedTextField 
+              type="number"
               placeholder="+63 XXX XXX XXXX"
               value={newAddress.phone}
-              onChange={(e) =>
-                setNewAddress((p) => ({ ...p, phone: e.target.value }))
-              }
-              className={inputStyle}
+              onChange={(e) =>{
+                const value = e.target.value.slice(0, 13);
+                setNewAddress((p) => ({ ...p, phone: value }))
+              }}
             />
           </div>
         </div>
@@ -156,12 +144,13 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
         <div className="space-y-4">
           <div>
             <label className={labelStyle}>Street Address</label>
-            <textarea
+            <RedTextField 
+              multiline
+              rows={3}
               placeholder="House number, street name, building"
               value={newAddress.street}
               onChange={(e) => setNewAddress((p) => ({ ...p, street: e.target.value }))}
-              rows={3}
-              className={`${inputStyle} resize-none outline-none`}
+              inputProps={{ maxLength: 100 }}
             />
           </div>
 

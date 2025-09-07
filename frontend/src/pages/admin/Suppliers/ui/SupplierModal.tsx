@@ -105,26 +105,23 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
                 label="Name"
                 required
                 value={supplierState.name}
-                onChange={(e) =>
-                setSupplierState((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={(e) => setSupplierState((prev) => ({ ...prev, name: e.target.value }))}
+                inputProps={{ maxLength: 100 }}
             />
             <RedTextField
                 label="Email"
                 type="email"
                 required
                 value={supplierState.email}
-                onChange={(e) =>
-                setSupplierState((prev) => ({ ...prev, email: e.target.value }))
-                }
+                onChange={(e) => setSupplierState((prev) => ({ ...prev, email: e.target.value }))}
+                inputProps={{ maxLength: 100 }}
             />
             <RedTextField
                 label="Phone"
                 required
+                type="number"
                 value={supplierState.phone}
-                onChange={(e) =>
-                setSupplierState((prev) => ({ ...prev, phone: e.target.value }))
-                }
+                onChange={(e) => setSupplierState((prev) => ({ ...prev, phone: e.target.value }))}
             />
 
             <RedButton type="submit">

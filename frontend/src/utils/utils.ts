@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function isStrongPassword(password : string) : boolean {
     const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     return strongRegex.test(password);
-  };
+};
 
 export function formatNumberToPeso(number : number){
   return `₱${number.toLocaleString('en-US', {
