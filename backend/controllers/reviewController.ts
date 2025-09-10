@@ -57,7 +57,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
 
         await sendAdminsNotification(
             {
-                from: customer._id as string,
+                from: customer._id.toString(),
                 product_id: product_id,
                 review_id: review._id.toString(),
                 content: `New review for ${product.product_name} by ${customer.firstname} ${customer.lastname}`

@@ -6,8 +6,10 @@ type Customer = {
   phone: string;
   image: UploadedImage | string | ArrayBuffer;
   addresses?: Address[],
-  totalOrders?: number,
-  lastOrder?: Date
+  pendingOrders?: number,
+  completedOrders?: number,
+  lastOrder?: Date,
+  isOnline?: boolean,
   createdAt?: Date
 }
 

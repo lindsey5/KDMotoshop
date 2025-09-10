@@ -10,8 +10,10 @@ export const CustomersTableColumns = () => {
         <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
             <StyledTableCell>Fullname</StyledTableCell>
             <StyledTableCell>Email</StyledTableCell>
+            <StyledTableCell>Status</StyledTableCell>
             <StyledTableCell>Last Order</StyledTableCell>
-            <StyledTableCell align="center">Total Orders</StyledTableCell>
+            <StyledTableCell align="center">Pending Orders</StyledTableCell>
+            <StyledTableCell align="center">Completed Orders</StyledTableCell>
         </TableRow>
     )
 }
@@ -34,8 +36,29 @@ export const CustomersTableRow = ({ customer } : { customer: Customer}) => {
                 </div>
             </StyledTableCell>
             <StyledTableCell isDark={isDark}>{customer.email}</StyledTableCell>
+             <StyledTableCell isDark={isDark}><StatusChip online={customer?.isOnline ?? false}/></StyledTableCell>
             <StyledTableCell isDark={isDark}>{customer?.lastOrder ? formatDate(customer.lastOrder) : 'N/A'}</StyledTableCell>
-            <StyledTableCell isDark={isDark} align="center">{customer?.totalOrders}</StyledTableCell>
+            <StyledTableCell isDark={isDark} align="center">{customer?.pendingOrders}</StyledTableCell>
+            <StyledTableCell isDark={isDark} align="center">{customer?.completedOrders}</StyledTableCell>
         </StyledTableRow>
     )
 }
+
+const StatusChip = ({ online } : { online : boolean }) => {
+  return (
+    <div
+      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium shadow-sm ${
+        online
+          ? "bg-green-100 text-green-700 border border-green-300"
+          : "bg-gray-100 text-gray-600 border border-gray-300"
+      }`}
+    >
+      <span
+        className={`h-2 w-2 rounded-full mr-2 ${
+          online ? "bg-green-500" : "bg-gray-400"
+        }`}
+      />
+      {online ? "Online" : "Offline"}
+    </div>
+  );
+};

@@ -59,3 +59,10 @@ export const initializeSocket = (server: HTTPServer): void => {
 
   });
 };
+
+export const isUserOnline = async (userId: string): Promise<boolean> => {
+  if (!io) return false; 
+  const sockets = await io.in(userId).fetchSockets();
+  
+  return sockets.length > 0;
+};

@@ -2,6 +2,7 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Customer from "../models/Customer";
 import { deleteImage, uploadImage } from "../services/cloudinary";
+import { isUserOnline } from "../middlewares/socket";
 
 
 export const getCustomerById = async (req : AuthenticatedRequest, res: Response) => {
@@ -71,8 +72,11 @@ export const getCustomers = async (req: AuthenticatedRequest, res: Response) => 
 
     const customersWithLastOrder = await Promise.all(customers.map(async (customer) => {
       const lastOrder = await customer.getLastOrder();
-      const totalOrders = await customer.getTotalOrders();
-      return { ...customer.toJSON(), lastOrder, totalOrders }
+      const completedOrders = await customer.getTotalCompletedOrders();
+      const pendingOrders = await customer.getTotalPendingOrders();
+      const isOnline = await isUserOnline(customer._id.toString());
+
+      return { ...customer.toJSON(), lastOrder, pendingOrders, completedOrders, isOnline }
 
     }))
     

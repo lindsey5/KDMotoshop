@@ -63,8 +63,8 @@ export const customerLogin = async (req: Request, res: Response) => {
         res.status(401).json({ success: false, message: 'Incorrect Password'})
         return;
       }
-      const accessToken = createAccessToken(user._id as string);
-      const refreshToken = createRefreshToken(user._id as string);
+      const accessToken = createAccessToken(user._id.toString());
+      const refreshToken = createRefreshToken(user._id.toString());
 
       setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
       setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
@@ -87,8 +87,8 @@ export const signupCustomer = async (req : Request, res: Response) => {
 
     const newCustomer = await createCustomer(req.body);
 
-    const accessToken = createAccessToken(newCustomer._id as string);
-    const refreshToken = createRefreshToken(newCustomer._id as string);
+    const accessToken = createAccessToken(newCustomer._id.toString());
+    const refreshToken = createRefreshToken(newCustomer._id.toString());
 
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
     setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 

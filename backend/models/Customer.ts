@@ -1,9 +1,10 @@
-import mongoose, { Document, Schema,  } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { UploadedImage } from '../types/types';
 import { hashPassword } from '../utils/authUtils';
 import Order from './Order';
 
 export interface ICustomer extends Document {
+    _id: Types.ObjectId;
     email: string;
     password: string;
     firstname: string;
@@ -20,7 +21,8 @@ export interface ICustomer extends Document {
       isDefault: boolean;
     }[],
     getLastOrder() : Promise<Date | null>,
-    getTotalOrders() : Promise<number>
+    getTotalPendingOrders() : Promise<number>,
+    getTotalCompletedOrders() : Promise<number>
 }
 
 // Define the schema
@@ -68,8 +70,14 @@ CustomerSchema.methods.getLastOrder = async function () {
   return order?.createdAt;
 }
 
-CustomerSchema.methods.getTotalOrders = async function () {
-  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id })
+CustomerSchema.methods.getTotalCompletedOrders = async function () {
+  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id, status: { $in: ['Delivered', 'Rated']} })
+
+  return totalOrders
+}
+
+CustomerSchema.methods.getTotalPendingOrders = async function () {
+  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id, status: { $in: ['Pending', 'Confirmed', 'Shipped']} })
 
   return totalOrders
 }
