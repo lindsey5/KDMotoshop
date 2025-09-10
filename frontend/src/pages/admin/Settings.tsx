@@ -7,7 +7,6 @@ import React, { useEffect, useState} from "react"
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { Backdrop, Button, CircularProgress } from "@mui/material"
 import { RedTextField } from "../../components/Textfield"
-import PhoneInput from "react-phone-input-2"
 import { confirmDialog, errorAlert } from "../../utils/swal"
 import { RedButton } from "../../components/buttons/Button"
 import { updateData } from "../../services/api"
