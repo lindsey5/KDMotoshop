@@ -45,7 +45,7 @@ const CustomersPage = () => {
                 />
                 <CustomizedTable 
                     cols={<CustomersTableColumns />}  
-                    rows={customersRes?.customers.map((customer : Customer) => <CustomersTableRow customer={customer}/>)}
+                    rows={customersRes?.customers.map((customer : Customer) => <CustomersTableRow key={customer._id} customer={customer}/>)}
                 />
                 {loading && (
                     <div className="flex justify-center items-center p-4">
