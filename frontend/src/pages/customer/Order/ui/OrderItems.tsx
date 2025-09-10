@@ -9,19 +9,7 @@ import { Button, Rating } from "@mui/material";
 import { OrderItemStatusChip, RefundStatusChip } from "../../../../components/Chip";
 import RequestRefundModal from "../../ui/CreateRefund";
 import CustomerRefundRequestModal from "../../ui/CustomerRefundRequest";
-
-function isWithinLast7Days(dateValue: string | Date | null | undefined): boolean {
-  if (!dateValue) return false;
-
-  const givenDate = new Date(dateValue);
-  if (isNaN(givenDate.getTime())) return false; 
-
-  const now = new Date();
-  const diffMs = now.getTime() - givenDate.getTime();
-  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-
-  return diffMs >= 0 && diffMs <= sevenDaysMs;
-}
+import { isWithinLast7Days } from "../../../../utils/dateUtils";
 
 
 const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, status: string, deliveredAt: Date | undefined }) => {
@@ -30,8 +18,6 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
     const [review, setReview] = useState<Review>();
     const [showRequest, setShowRequest]= useState<boolean>(false);
     const [refund, setRefund] = useState<RefundRequest>();
-
-    console.log(item)
 
     const handleClose = () => {
         setRatingData(undefined)

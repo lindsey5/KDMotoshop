@@ -64,9 +64,25 @@ export const getCustomers = async (req: AuthenticatedRequest, res: Response) => 
       ];
     }
 
+    const [customers, totalCustomers] = await Promise.all([
+      Customer.find(filter).skip(skip).limit(limit),
+      Customer.countDocuments(filter)
+    ])
+
+    const customersWithLastOrder = await Promise.all(customers.map(async (customer) => {
+      const lastOrder = await customer.getLastOrder();
+      const totalOrders = await customer.getTotalOrders();
+      return { ...customer.toJSON(), lastOrder, totalOrders }
+
+    }))
     
-
-
+    res.status(200).json({ 
+      success: true, 
+      customers: customersWithLastOrder,
+      totalPages: Math.ceil(totalCustomers / limit),
+      page,
+      totalCustomers
+    })
 
   }catch (err: any) {
     console.log(err);

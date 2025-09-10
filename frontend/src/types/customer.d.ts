@@ -5,7 +5,10 @@ type Customer = {
   lastname: string;
   phone: string;
   image: UploadedImage | string | ArrayBuffer;
-  addresses?: Address[]
+  addresses?: Address[],
+  totalOrders?: number,
+  lastOrder?: Date
+  createdAt?: Date
 }
 
 type Address = {

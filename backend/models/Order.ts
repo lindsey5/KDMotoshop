@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface Order extends Document {
+export interface IOrder extends Document {
     order_id: string;
     order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
     shipping_fee: number;
@@ -23,9 +23,10 @@ interface Order extends Document {
     deliveredAt: Date,
     payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
     createdBy?: Types.ObjectId;
+    createdAt: Date
 }
 
-const OrderSchema: Schema<Order> = new Schema(
+const OrderSchema: Schema<IOrder> = new Schema(
   {
     order_id: { type: String, required: true, unique: true },
     total: { type: Number, required: true },
@@ -86,5 +87,5 @@ OrderSchema.virtual("orderItems", {
 OrderSchema.set("toObject", { virtuals: true });
 OrderSchema.set("toJSON", { virtuals: true });
 
-const Order = mongoose.model<Order>('Order', OrderSchema);
+const Order = mongoose.model<IOrder>('Order', OrderSchema);
 export default Order;

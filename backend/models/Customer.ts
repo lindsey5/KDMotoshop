@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema,  } from 'mongoose';
 import { UploadedImage } from '../types/types';
 import { hashPassword } from '../utils/authUtils';
+import Order from './Order';
 
 export interface ICustomer extends Document {
     email: string;
@@ -17,7 +18,9 @@ export interface ICustomer extends Document {
       lastname: string;
       phone: string;
       isDefault: boolean;
-    }[]
+    }[],
+    getLastOrder() : Promise<Date | null>,
+    getTotalOrders() : Promise<number>
 }
 
 // Define the schema
@@ -56,6 +59,20 @@ CustomerSchema.pre<ICustomer>('save', async function (next) {
   this.password = await hashPassword(this.password);
   next();
 });
+
+CustomerSchema.methods.getLastOrder = async function () {
+  const order = await Order.findOne({ 'customer.customer_id': this._id }).sort({ createdAt: -1})
+
+  if(!order) return null
+
+  return order?.createdAt;
+}
+
+CustomerSchema.methods.getTotalOrders = async function () {
+  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id })
+
+  return totalOrders
+}
 
 // Create the model
 const Customer = mongoose.model<ICustomer>('Customer', CustomerSchema);

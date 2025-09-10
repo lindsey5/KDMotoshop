@@ -61,3 +61,16 @@ export const formatToLongDateFormat = (date: Date | string | null | undefined): 
     hour12: true
   });
 };
+
+export function isWithinLast7Days(dateValue: string | Date | null | undefined): boolean {
+  if (!dateValue) return false;
+
+  const givenDate = new Date(dateValue);
+  if (isNaN(givenDate.getTime())) return false; 
+
+  const now = new Date();
+  const diffMs = now.getTime() - givenDate.getTime();
+  const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+
+  return diffMs >= 0 && diffMs <= sevenDaysMs;
+}

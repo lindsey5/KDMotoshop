@@ -1,5 +1,5 @@
 import Cart from "../models/Cart";
-import Order from "../models/Order";
+import Order, { IOrder } from "../models/Order";
 import OrderItem from "../models/OrderItem";
 import Product from "../models/Product";
 import { ICart } from "../models/Cart";
@@ -82,7 +82,7 @@ export const decrementStock = async (item: any) => {
   }
 };
 
-export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: Order, cart?: ICart[]}) : Promise<any> => {
+export const createNewOrder = async ({ orderItems, order, cart } : { orderItems : OrderItem[], order: IOrder, cart?: ICart[]}) : Promise<any> => {
     try{
         const newOrder = new Order(order);
 
