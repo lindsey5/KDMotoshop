@@ -129,20 +129,11 @@ const Settings = () => {
                     required
                     onChange={(e) => handleChange('email', e.target.value) }
                 />
-                <PhoneInput
-                    country={'ph'}
-                    onlyCountries={['ph']}
-                    specialLabel="Phone"
-                    value={updatedAdmin?.phone || ''}
-                    dropdownStyle={{ color: 'black'}}
-                    containerStyle={{ width: '100%', height: '55px', color: isDark ? 'gray' : 'black'  }}
-                    inputStyle={{
-                        width: '100%',
-                        height: '55px',
-                        backgroundColor: isDark ? '#313131' : '#fff',
-                        color: isDark ? 'white' : 'black',
-                    }}
-                    onChange={(value) => setUpdatedAdmin((prev) => ({ ...prev!, phone: value}))}
+                <RedTextField 
+                    label="Phone" 
+                    value={updatedAdmin?.phone ?? ''}
+                    required
+                    onChange={(e) => setUpdatedAdmin((prev) => ({ ...prev!, phone: e.target.value}))}
                 />
             </div>
             <div className="flex justify-between">

@@ -157,7 +157,7 @@ export const AdminSidebar = () => {
               startIcon={<LogoutIcon sx={{ width: 25, height: 25 }} />}
               sx={{
                 fontWeight: 'bold',
-                backgroundColor: '#2A2A2A',
+                backgroundColor: '#121212',
                 '&:hover': { backgroundColor: 'red' },
                 color: 'white',
                 justifyContent: 'flex-start',
