@@ -6,9 +6,10 @@ import Counter from "../../../../components/Counter";
 import { updateData } from "../../../../services/api";
 import { Button, Checkbox } from "@mui/material";
 import { red } from "@mui/material/colors";
-import type { AppDispatch } from "../../../../redux/store";
+import type { AppDispatch } from "../../../../features/store";
 import { useDispatch } from "react-redux";
-import { deleteCartItem, updateCartItem } from "../../../../redux/cart-reducer";
+import { deleteCartItem } from "../../../../features/cart/cartThunks";
+import { updateCartItem } from "../../../../features/cart/cartSlice";
 
 type CartItemContainerProps = {
     item : CartItem;

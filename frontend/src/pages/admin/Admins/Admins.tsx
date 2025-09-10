@@ -12,7 +12,7 @@ import { RedButton } from "../../../components/buttons/Button";
 import CreateAdminModal from "./ui/CreateAdminModal";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },

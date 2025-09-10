@@ -8,11 +8,12 @@ import { ThemeToggle } from "../../../components/Toggle";
 import { HeaderSearchField } from "../../../components/Textfield";
 import RedBadge from "../../../components/Badge";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart } from "../../../redux/cart-reducer";
-import type { AppDispatch, RootState } from "../../../redux/store";
+import { fetchCart } from "../../../features/cart/cartThunks";
+import type { AppDispatch, RootState } from "../../../features/store";
 import { SocketContext } from "../../../context/socketContext";
 import { ClipboardList } from "lucide-react";
-import { addNotification, fetchNotifications } from "../../../redux/notification-reducer";
+import { addNotification,  } from "../../../features/notifications/notificationSlice";
+import { fetchNotifications } from "../../../features/notifications/notificationThunks";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -58,7 +59,7 @@ const CustomerHeader = () => {
 
     useEffect(() => {
         dispatch(fetchCart());
-        dispatch(fetchNotifications('customer'));
+        dispatch(fetchNotifications({ user: 'customer', page: 1}));
     }, [dispatch]);
 
     useEffect(() => {

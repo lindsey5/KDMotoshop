@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { AdminSidebar } from "../pages/admin/ui/Sidebar"
 import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import type { RootState } from "../features/store";
 import { CircularProgress } from "@mui/material";
 import useDarkmode from "../hooks/useDarkmode";
 import { cn } from "../utils/utils";

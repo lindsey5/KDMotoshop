@@ -16,7 +16,7 @@ import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
 import CustomerOrderItems from "./ui/OrderItems";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 
 const CustomerOrderDetails = () => {
     const { id } = useParams();

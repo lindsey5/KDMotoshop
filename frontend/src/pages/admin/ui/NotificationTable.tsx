@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
-import { type AppDispatch } from "../../../redux/store";
-import { updateNotification } from "../../../redux/notification-reducer";
+import { type AppDispatch } from "../../../features/store";
+import { updateNotification } from "../../../features/notifications/notificationThunks";
 
 type Notification = {
     _id: string;

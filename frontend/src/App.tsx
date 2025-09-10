@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import type { AppDispatch } from "./redux/store";
-import { fetchUser } from "./redux/user-reducer";
+import type { AppDispatch } from "./features/store";
+import { fetchUser } from "./features/user/userThunks";
 import { DarkmodeContextProvider } from "./context/DarkmodeContext";
 import { SocketContextProvider } from "./context/socketContext";
 import { ToastContainer } from "react-toastify";

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, MapPin, Trash2, Phone, User } from "lucide-react";
 import AddAddress from "./AddAddress";
 import { updateData } from "../../../../services/api";
-import type { RootState } from "../../../../redux/store";
+import type { RootState } from "../../../../features/store";
 import { useSelector } from "react-redux";
 import { confirmDialog, successAlert } from "../../../../utils/swal";
 import Card from "../../../../components/Card";

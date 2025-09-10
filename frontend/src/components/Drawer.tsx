@@ -14,8 +14,8 @@ import { formatDate } from "../utils/dateUtils";
 import { useState, type JSX } from "react";
 import useDarkmode from "../hooks/useDarkmode";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../redux/store";
-import { notificationsNextPage, updateAllNotifications } from "../redux/notification-reducer";
+import type { AppDispatch, RootState } from "../features/store";
+import { notificationsNextPage, updateAllNotifications,  } from "../features/notifications/notificationThunks";
 
 const statusMap: Record<string, { icon: JSX.Element; color: string; bgColor: string }> = {
   'Pending': { 

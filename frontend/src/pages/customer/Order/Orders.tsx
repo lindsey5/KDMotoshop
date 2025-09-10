@@ -16,7 +16,7 @@ import OrderItem from "../../admin/Order/ui/OrderItem";
 import usePagination from "../../../hooks/usePagination";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },

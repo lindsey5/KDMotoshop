@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { User, MapPin } from "lucide-react";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 import UserAvatar from "../../ui/UserAvatar";
 import useDarkmode from "../../../hooks/useDarkmode";
 import ProfileSettings from "./ui/ProfileSetting";

@@ -12,10 +12,9 @@ import { ThemeToggle } from '../../../components/Toggle';
 import React, { useContext, useEffect, useState } from 'react';
 import HistoryIcon from '@mui/icons-material/History';
 import { useDispatch, useSelector } from 'react-redux';
-import type { AppDispatch, RootState } from '../../../redux/store';
-import { addNotification, fetchNotifications, resetNotifications } from '../../../redux/notification-reducer';
+import type { AppDispatch, RootState } from '../../../features/store';
 import { SocketContext } from '../../../context/socketContext';
-import { logoutUser } from '../../../redux/user-reducer';
+import { logoutUser } from '../../../features/user/userThunks';
 import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,6 +24,8 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box } from 'lucide-react'
 import { Archive, Description } from '@mui/icons-material';
+import { addNotification, resetNotifications } from '../../../features/notifications/notificationSlice';
+import { fetchNotifications } from '../../../features/notifications/notificationThunks';
 
 const NotificationLink = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +40,7 @@ const NotificationLink = () => {
   }, [socket]);
 
   useEffect(() => {
-    dispatch(fetchNotifications('admin'));
+    dispatch(fetchNotifications({ user: 'admin', page: 1}));
   }, [dispatch]);
 
 

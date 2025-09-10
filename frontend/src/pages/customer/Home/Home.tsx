@@ -13,7 +13,7 @@ import RippleGrid from "../../../components/backgrounds/RippleGrid";
 import TextType from "../../../components/text/TextType";
 import ChatbotButton from "../../../components/buttons/Chatbot";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 import { Navigate } from "react-router-dom";
 
 const KDMotoshopHome = () => {

@@ -15,7 +15,7 @@ import UserAvatar from "../../ui/UserAvatar";
 import PageContainer from "../ui/PageContainer";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 
 const ActiviyContainer = ({ activityLog } : { activityLog: ActivityLog}) => {
     const isDark = useDarkmode();

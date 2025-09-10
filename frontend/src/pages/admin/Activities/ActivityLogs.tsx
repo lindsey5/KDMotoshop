@@ -6,7 +6,7 @@ import type { Dayjs } from "dayjs";
 import usePagination from "../../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 import useFetch from "../../../hooks/useFetch";
 
 interface ActivityLog{

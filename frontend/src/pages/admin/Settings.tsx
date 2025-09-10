@@ -15,7 +15,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import PageContainer from "./ui/PageContainer"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
-import type { RootState } from "../../redux/store"
+import type { RootState } from "../../features/store"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },

@@ -9,7 +9,7 @@ import CustomizedPagination from "../../components/Pagination";
 import { CustomizedChip } from "../../components/Chip";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
+import type { RootState } from "../../features/store";
 import { useLocation } from "react-router-dom";
 
 const ProductReviews = ({ product_id } : { product_id : string }) => {  

@@ -9,7 +9,7 @@ import { RedButton } from "../../../components/buttons/Button";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Title } from "../../../components/text/Text";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },

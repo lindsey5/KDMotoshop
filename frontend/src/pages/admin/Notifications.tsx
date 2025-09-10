@@ -6,8 +6,8 @@ import { Title } from "../../components/text/Text";
 import CustomizedPagination from "../../components/Pagination";
 import PageContainer from "./ui/PageContainer";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../redux/store";
-import { notificationsPage } from "../../redux/notification-reducer";
+import type { AppDispatch, RootState } from "../../features/store";
+import { fetchNotifications } from "../../features/notifications/notificationThunks";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -19,7 +19,7 @@ const AdminNotifications = () => {
     const dispatch = useDispatch<AppDispatch>();
     
     const handlePage = async (_event: React.ChangeEvent<unknown>, value: number) => {
-        await dispatch(notificationsPage({ page: value, user: 'admin'}))
+        await dispatch(fetchNotifications({ page: value, user: 'admin'}))
     };
 
     return (

@@ -10,10 +10,11 @@ import { ThemeToggle } from "./Toggle";
 import { NotificationsDrawerList } from "./Drawer";
 import RedBadge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../redux/store";
-import { resetNotifications, updateAllNotifications } from "../redux/notification-reducer";
-import { clearCart } from "../redux/cart-reducer";
-import { logoutUser } from "../redux/user-reducer";
+import type { AppDispatch, RootState } from "../features/store";
+import { resetNotifications } from "../features/notifications/notificationSlice"
+import { updateAllNotifications } from "../features/notifications/notificationThunks";
+import { clearCart } from "../features/cart/cartSlice";
+import { logoutUser } from "../features/user/userThunks";
 import { ClipboardList } from "lucide-react";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{

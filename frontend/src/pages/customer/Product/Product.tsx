@@ -15,8 +15,8 @@ import ProductThumbnail from "../../ui/ProductThumbnail";
 import ProductReviews from "../../ui/ProductReviews";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../../redux/store";
-import { setCart } from "../../../redux/cart-reducer";
+import type { AppDispatch, RootState } from "../../../features/store";
+import { setCart } from "../../../features/cart/cartSlice";
 
 const CustomerProduct = () => {
     const { id } = useParams();

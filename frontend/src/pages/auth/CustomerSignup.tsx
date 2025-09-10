@@ -8,7 +8,7 @@ import { useState } from "react"
 import VerifyEmailModal from "../ui/VerifyEmail"
 import { postData } from "../../services/api"
 import { useSelector } from "react-redux"
-import type { RootState } from "../../redux/store"
+import type { RootState } from "../../features/store"
 import { Navigate } from "react-router-dom"
 
 const CustomerSignupPage = () => {

@@ -7,7 +7,7 @@ import { cn } from "../../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal";
 import { updateData } from "../../../../services/api";
-import { setUser } from "../../../../redux/user-reducer";
+import { setUser } from "../../../../features/user/userSlice";
 import { Backdrop, CircularProgress } from "@mui/material";
 
 const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boolean }) => {

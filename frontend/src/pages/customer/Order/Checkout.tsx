@@ -20,9 +20,9 @@ import AddressContainer from "./ui/AddressContainer";
 import { RedRadio } from "../../../components/Radio";
 import { Title } from "../../../components/text/Text";
 import { Navigate } from "react-router-dom";
-import type { RootState } from "../../../redux/store";
+import type { RootState } from "../../../features/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../../redux/user-reducer";
+import { setUser } from "../../../features/user/userSlice";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },

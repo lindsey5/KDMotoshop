@@ -8,7 +8,7 @@ import { useState } from "react";
 import { postData } from "../../services/api";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
+import type { RootState } from "../../features/store";
 
 const CustomerLogin = () => {
     const isDark = useDarkmode();

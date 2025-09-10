@@ -4,7 +4,7 @@ import { RedButton } from "../../components/buttons/Button";
 import { postData } from "../../services/api";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
+import type { RootState } from "../../features/store";
 import useDarkmode from "../../hooks/useDarkmode";
 import { cn } from "../../utils/utils";
 import { Title } from "../../components/text/Text";
