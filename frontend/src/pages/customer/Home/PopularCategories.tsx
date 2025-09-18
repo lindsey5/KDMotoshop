@@ -44,7 +44,7 @@ const PopularCategoriesSection = () => {
         }
         };
         getCategories();
-  }, []);
+    }, []);
 
     const totalPages = Math.ceil(categories.length / pageSize);
 
