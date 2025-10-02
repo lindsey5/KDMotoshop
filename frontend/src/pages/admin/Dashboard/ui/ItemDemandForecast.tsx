@@ -31,10 +31,12 @@ const ITEMS_PER_PAGE = 10;
 const ItemDemandForecast = () => {
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
-    const today = new Date();
-    const month = today.getMonth() + 1
-    const year = today.getFullYear()
-    const { data, loading } = useFetch(`${url}api/predict/items`);
+    const now = new Date();
+
+    // Get next month (0-based, so add +1 for display)
+    const nextMonth = now.getMonth() + 2;
+    const year = now.getFullYear();
+    const { data, loading } = useFetch(`${url}api/predict/items?month=${nextMonth}&year=${year}`);
 
     const { forecast } = useMemo<{ forecast: Prediction[]; month: string }>(() => {
         if (!data) return { forecast: [], month: '' };
@@ -119,7 +121,7 @@ const ItemDemandForecast = () => {
 
     return (
         <Card className={cn("mt-10 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
-            <h2 className='mb-4 font-bold'>Demand Forecast ({monthNames[month - 1]} {year})</h2>
+            <h2 className='mb-4 font-bold'>Demand Forecast ({monthNames[nextMonth - 1]} {year})</h2>
             {loading ? (
                 <div className="w-full h-[400px] flex justify-center items-center">
                     <CircularProgress sx={{ color: 'red' }} />
