@@ -31,12 +31,26 @@ const ITEMS_PER_PAGE = 10;
 const ItemDemandForecast = () => {
     const isDark = useDarkmode();
     const [page, setPage] = useState<number>(1);
+    const [selected, setSelected] = useState<"current" | "next">("next"); 
     const now = new Date();
 
-    // Get next month (0-based, so add +1 for display)
-    const nextMonth = now.getMonth() + 2;
-    const year = now.getFullYear();
-    const { data, loading } = useFetch(`${url}api/predict/items?month=${nextMonth}&year=${year}`);
+    const getMonthYear = () => {
+        let month = now.getMonth() + 1; // current month (1-12)
+        let year = now.getFullYear();
+
+        if (selected === "next") {
+            month += 1;
+            if (month > 12) {
+                month = 1;
+                year += 1;
+            }
+        }
+        return { month, year };
+    };
+
+    const { month, year } = getMonthYear();
+
+    const { data, loading } = useFetch(`${url}api/predict/items?month=${month}&year=${year}`);
 
     const { forecast } = useMemo<{ forecast: Prediction[]; month: string }>(() => {
         if (!data) return { forecast: [], month: '' };
@@ -55,11 +69,10 @@ const ItemDemandForecast = () => {
 
     const { data: itemSold, loading: itemLoading } = useFetch(
         itemsQuery ? `/api/sales/product-quantity-sold?items=${itemsQuery}` : ''
-    )
+    );
 
     const actualItemSales = useMemo(() => {
         if (!itemSold || itemLoading) return [];
-
         return itemSold?.productSales.map((item: any) => item.totalQuantitySold);
     }, [itemSold, itemLoading]);
 
@@ -121,7 +134,20 @@ const ItemDemandForecast = () => {
 
     return (
         <Card className={cn("mt-10 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
-            <h2 className='mb-4 font-bold'>Demand Forecast ({monthNames[nextMonth - 1]} {year})</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className='font-bold'>
+                    Demand Forecast ({monthNames[month - 1]} {year})
+                </h2>
+                <select
+                    value={selected}
+                    onChange={(e) => { setSelected(e.target.value as "current" | "next"); setPage(1); }}
+                    className="border rounded px-2 py-1 text-sm bg-white text-black"
+                >
+                    <option value="current">Current Month</option>
+                    <option value="next">Next Month</option>
+                </select>
+            </div>
+
             {loading ? (
                 <div className="w-full h-[400px] flex justify-center items-center">
                     <CircularProgress sx={{ color: 'red' }} />
