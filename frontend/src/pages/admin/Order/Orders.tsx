@@ -142,7 +142,10 @@ const Orders = () => {
                     'Payment Method' : order.payment_method,
                     'Order Date' : formatDate(order.createdAt),
                     'Order Channel' : <PlatformChip platform={order.order_source} />,
-                    'Status' : <Status status={order.status} isDark={isDark}/>,
+                    'Status' : <div className="flex justify-center">
+                        <Status status={order.status} isDark={isDark}/>
+
+                    </div>,
                     'Action' : <RedButton onClick={() => navigate(`/admin/orders/${order._id}`)}>Details</RedButton>
                 })) || []} 
             />
