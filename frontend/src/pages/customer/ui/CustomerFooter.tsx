@@ -23,7 +23,7 @@ const CustomerFooter = () => {
     }, [])
 
     return (
-        <footer className="w-full px-20 pt-20 pb-10 text-white bg-black">
+        <footer className="w-full px-10 lg:px-20 pt-10 lg:pt-20 pb-10 text-white bg-black">
             <div className="flex flex-col md:flex-row gap-20">
                 <div className="flex-1 flex flex-col gap-3 items-start">
                     <img className="w-35 h-20 md:w-50 md:h-25 cursor-pointer" src="/kd-logo.png" alt="" />

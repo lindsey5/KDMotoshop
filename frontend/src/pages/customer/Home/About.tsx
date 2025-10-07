@@ -8,7 +8,7 @@ import Orb from '../../../components/backgrounds/Orb';
 const AboutSection = ({ isParallax } : { isParallax : boolean}) => {
 
   return (
-    <div className={cn("h-screen relative transition-colors duration-600 flex justify-center lg:justify-end p-10 text-white", !isParallax && 'bg-[url(/bg.png)] bg-cover')}>
+    <div className={cn("min-h-screen relative transition-colors duration-600 flex justify-center lg:justify-end p-10 text-white", !isParallax && 'bg-[url(/bg.png)] bg-cover')}>
           <Orb 
             hoverIntensity={0.5}
             rotateOnHover={true}
