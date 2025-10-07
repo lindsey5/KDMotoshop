@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchData } from "../../../services/api";
 import PageContainer from "../ui/PageContainer";
 import ProductThumbnail from "../../ui/ProductThumbnail";
 import { IconButton, Rating } from "@mui/material";
@@ -10,24 +8,13 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import { Title } from "../../../components/text/Text";
 import ProductReviews from "../../ui/ProductReviews";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import useFetch from "../../../hooks/useFetch";
 
 const AdminProductReviews = () => {
     const { id } = useParams();
-    const [product, setProduct] = useState<Product>();
     const isDark = useDarkmode();
     const navigate = useNavigate();
-    
-    useEffect(() => {
-        const getProductAsync = async () => {
-            const response = await fetchData(`/api/products/${id}`);
-            if(response.success) {
-                console.log(response)
-                setProduct(response.product)
-            }
-        }
-
-        getProductAsync()
-    }, [])
+    const { data } = useFetch(`/api/products/${id}`)
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -47,15 +34,15 @@ const AdminProductReviews = () => {
             <div className="flex gap-5 my-10">
                 <ProductThumbnail 
                     className="w-50 h-50 rounded-md"
-                    product={product}
+                    product={data?.product}
                 />
                 <div className="flex flex-col gap-2">
-                    <h1 className="text-2xl font-bold">{product?.product_name}</h1>
-                    <p>{product?.category}</p>
+                    <h1 className="text-2xl font-bold">{data?.product.product_name}</h1>
+                    <p>{data?.product.category}</p>
                     <Rating 
                         sx={{ fontSize: 30 }} 
                         name="read-only" 
-                        value={product?.rating ?? 0} 
+                        value={data?.product.rating ?? 0} 
                         readOnly 
                         precision={0.5}
                         emptyIcon={<GradeOutlinedIcon fontSize="inherit" sx={{ color: isDark ? 'white' : ''}}/>}

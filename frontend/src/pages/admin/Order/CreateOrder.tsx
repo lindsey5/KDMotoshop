@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
-import { fetchData, postData } from "../../../services/api";
+import { postData } from "../../../services/api";
 import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/buttons/Button";
@@ -19,6 +19,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PageContainer from "../ui/PageContainer";
 import CloseIcon from '@mui/icons-material/Close';
 import ReceiptModal from "./ui/ReceiptModal";
+import useFetch from "../../../hooks/useFetch";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -41,13 +43,8 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const CreateOrderPage = () => {
-    const [pagination, setPagination] = useState<Pagination>({
-        totalPages: 1,
-        page: 1,
-        searchTerm: ''
-    });
+    const [page, setPage] = useState<number>(1);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [products, setProducts] = useState<Product[]>([]);
     const [selectedProduct, setSelectProduct] = useState<Product | undefined>();
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
@@ -57,6 +54,9 @@ const CreateOrderPage = () => {
     const [showSide, setShowSide] = useState<boolean>(false);
     const [showReceipt, setShowReceipt] = useState(false);
     const [payment, setPayment] = useState<number>(0);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const searchDebounce = useDebounce(searchTerm, 500);
+    const { data : productsRes } = useFetch(`/api/products?page=${page}&limit=100&searchTerm=${searchDebounce}&category=${selectedCategory}`)
 
     const calculateTotal = useCallback(() => {
         setOrder(prev => (
@@ -72,32 +72,8 @@ const CreateOrderPage = () => {
         calculateTotal()
     }, [orderItems])
 
-    useEffect(() => {
-        setSelectedCategory('All')
-    }, [pagination.searchTerm])
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            fetchProducts();
-        }, 300); 
-        
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm, pagination.page, selectedCategory])
-
-    const fetchProducts = async () => {
-        const response = await fetchData(`/api/products?page=${pagination.page}&limit=100&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`);
-
-        if(response.success) {
-            setPagination(prev => ({
-                ...prev,
-                totalPages: response.totalPages,
-            }))
-            setProducts(response.products)
-        }
-    }
-
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}))
+        setPage(value)
     };
 
     const addOrder = (product : Product) => {
@@ -156,7 +132,7 @@ const CreateOrderPage = () => {
                         successAlert('Order Created', 'Order successfully created', isDark);
                         setOrderItems([]);
                         setOrder(OrderState);
-                        setPagination({ ...pagination, page: 1, searchTerm: '' });
+                        setPage(1);
                         setSelectedCategory('All');
                     }
                 }
@@ -166,14 +142,12 @@ const CreateOrderPage = () => {
 
     }
 
-    const closeReceipt = async () => {
+    const closeReceipt = () => {
         setLoading(true)
-        await fetchProducts();
         setLoading(false)
         setShowReceipt(false)
         setOrderItems([]);
         setOrder(OrderState);
-        setPagination({ ...pagination, page: 1, searchTerm: '' });
         setPayment(0);
         setSelectedCategory('All');
     }
@@ -222,12 +196,13 @@ const CreateOrderPage = () => {
 
             <div className="flex flex-wrap gap-5 justify-between items-center mt-6">
                 <SearchField 
-                    onChange={(e) => setPagination({...pagination, searchTerm: e.target.value })}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     sx={{ maxWidth: '450px' }}
+                    value={searchTerm}
                     placeholder="Search by Product name, SKU, Category..." 
                 />
                 <Pagination 
-                    count={pagination.totalPages} 
+                    count={productsRes?.totalPages} 
                     onChange={handlePage} 
                 />
             </div>
@@ -241,7 +216,7 @@ const CreateOrderPage = () => {
             {/* Products */}
             <div className="flex flex-col flex-grow min-h-0 mt-4 overflow-y-auto">
                 <div className="2xl:grid-cols-4 lg:grid-cols-3 grid grid-cols-2 flex flex-wrap gap-5 p-3">
-                    {products.map(product => (
+                    {productsRes?.products.map((product : Product) => (
                         <AddOrderProductContainer
                             product={product}
                             key={product._id}

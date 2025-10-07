@@ -1,11 +1,12 @@
 import { IconButton, InputAdornment, TextField, type StandardTextFieldProps, type TextFieldProps } from "@mui/material"
 import SearchIcon from '@mui/icons-material/Search';
 import useDarkmode from "../hooks/useDarkmode";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { cn, formatNumberToPeso } from "../utils/utils";
 import ProductThumbnail from "../pages/ui/ProductThumbnail";
-import { getProducts } from "../services/productService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useDebounce } from "../hooks/useDebounce";
+import useFetch from "../hooks/useFetch";
 
 interface LineTextFieldProps extends StandardTextFieldProps {
   label: string;
@@ -166,35 +167,21 @@ export const SearchField = ({ sx, placeholder, onChange } : TextFieldProps) => {
 
 
 export const HeaderSearchField = () => {
-    const [products, setProducts] = useState<Product[]>([]);
     const [autoComplete, setAutoComplete] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const isDark = useDarkmode();
-    const [pagination, setPagination] = useState<Pagination>({
-        page: 1,
-        searchTerm: '',
-        totalPages: 1,
-    });
+    const searchDebounce = useDebounce(searchTerm, 0.5);
+    const { data } = useFetch(`/api/products?limit=30&searchTerm=${searchDebounce}`)
 
-    const getProductsAsync = async () => {
-        const response = await getProducts(`limit=30&searchTerm=${pagination.searchTerm}`)
+    const products = useMemo<Product[]>(() => {
+      if(!data?.products) return []
 
-        if(response.success) {
-            const mappedProducts = response.products.map((product : Product) => ({
-                    ...product,
-                    price: product.product_type === 'Single' ? product.price : product.variants.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0].price
-            }))
+      return data?.products.map((product : Product) => ({
+          ...product,
+          price: product.product_type === 'Single' ? product.price : product.variants.sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0].price
+        }))
 
-            setProducts(mappedProducts)
-        }
-    }
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            getProductsAsync();
-        }, 300); 
-        
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm, pagination.page])
+    }, [data])
 
     const handleBlur = () => {
         setTimeout(() => {
@@ -206,7 +193,7 @@ export const HeaderSearchField = () => {
 
     const handleSearch = (e : React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      window.location.href = `/products?search=${pagination.searchTerm}`
+      window.location.href = `/products?search=${searchTerm}`
 
     }
 
@@ -222,11 +209,11 @@ export const HeaderSearchField = () => {
               type="text"
               placeholder="Search..."
               className={cn("flex-1 py-2 pr-2 md:pr-12 outline-none text-sm md:text-base", isDark && "text-white placeholder-gray-300")}
-              onChange={(e) => setPagination(prev => ({ ...prev, searchTerm: e.target.value as string}))}
+              onChange={(e) => setSearchTerm(e.target.value)}
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            {autoComplete && pagination.searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-5 z-10 p-3 border border-gray-300 rounded-md", isDark && 'border-gray-600 bg-[#121212]')}>
+            {autoComplete && searchTerm && <div className={cn("bg-white max-h-[300px] overflow-y-auto absolute top-[calc(100%+5px)] inset-x-5 z-10 p-3 border border-gray-300 rounded-md", isDark && 'border-gray-600 bg-[#121212]')}>
                 {products.length > 0 ? products.map((product) => (
                     <div 
                         key={product._id}

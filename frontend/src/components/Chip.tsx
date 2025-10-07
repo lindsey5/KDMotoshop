@@ -200,3 +200,30 @@ export const POStatusChip = ({ status }: { status: PurchaseOrder['status'] }) =>
     </span>
   );
 };
+
+type StockStatusChipProps = {
+  status: "Understock" | "Overstock" | "Balanced" | "Out of Stock";
+};
+
+export const StockStatusChip = ({ status }: StockStatusChipProps) => {
+  const getChipClass = () => {
+    switch (status) {
+      case "Understock":
+        return "bg-red-100 text-red-700 border border-red-400";
+      case "Overstock":
+        return "bg-blue-100 text-blue-700 border border-blue-400";
+      case "Balanced":
+        return "bg-green-100 text-green-700 border border-green-400";
+      default:
+        return "bg-gray-100 text-gray-700 border border-gray-400";
+    }
+  };
+
+  return (
+    <div
+      className={`min-w-[100px] px-3 py-1 text-sm rounded-full font-medium ${getChipClass()}`}
+    >
+      {status}
+    </div>
+  );
+};

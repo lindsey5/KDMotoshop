@@ -1,13 +1,16 @@
 import BreadCrumbs from "../../components/BreadCrumbs";
 import Card from "../../components/Card";
 import CustomizedTable from "../../components/Table";
-import { NotificationTableRow, NotificationsTableColumns } from "./ui/NotificationTable";
 import { Title } from "../../components/text/Text";
 import CustomizedPagination from "../../components/Pagination";
 import PageContainer from "./ui/PageContainer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
 import { fetchNotifications } from "../../features/notifications/notificationThunks";
+import { Avatar } from "@mui/material";
+import { cn } from "../../utils/utils";
+import useDarkmode from "../../hooks/useDarkmode";
+import { formatDate } from "../../utils/dateUtils";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -15,6 +18,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const AdminNotifications = () => {
+    const isDark = useDarkmode();
     const { notifications, total } = useSelector((state : RootState) => state.notification)
     const dispatch = useDispatch<AppDispatch>();
     
@@ -31,8 +35,25 @@ const AdminNotifications = () => {
                     <CustomizedPagination count={Math.ceil(total / 30)} onChange={handlePage} />
                 </div>
                 <CustomizedTable
-                    cols={<NotificationsTableColumns />}
-                    rows={notifications.map(n => <NotificationTableRow key={n._id} notification={n}/>)}
+                    cols={['Customer Name', 'Message', 'Date']}
+                    rows={notifications.map(n => {
+                        const customer = typeof n.from === 'object' ? n.from : undefined
+                        
+                        return ({
+                            'Customer Name' : (
+                                <div className={cn('flex gap-3', !n.isViewed && 'font-bold')}>
+                                    <Avatar src={(customer?.image as UploadedImage)?.imageUrl}/>
+                                    <div>
+                                        <h1>{customer?.firstname} {customer?.lastname}</h1>
+                                        <p className={cn('mt-2', isDark ? 'text-gray-400' : 'text-gray-500')}>{customer?.email}</p>
+                                    </div>
+                                </div>
+                            ),
+                            'Message' : <p className={`${!n.isViewed && 'font-bold'}`}>{n.content}</p>,
+                            'Date' : <p className={`${!n.isViewed && 'font-bold'}`}>{formatDate(n.createdAt)}</p>
+                        })
+
+                    })}
                 />
             </Card>
         </PageContainer>

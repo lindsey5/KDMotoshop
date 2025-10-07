@@ -35,7 +35,6 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
     };
 
     const handleSave = async () => {
-        console.log(editedCustomer)
         if (
             await confirmDialog(
             "Save Profile Changes?",

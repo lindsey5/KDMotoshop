@@ -87,16 +87,17 @@ type ActivityContainerProps = {
     breadcrumbs: { label: string, href: string }[],
     selectedDates: DateRange<Dayjs> | undefined
     setSelectedDates : React.Dispatch<React.SetStateAction<DateRange<Dayjs> | undefined>>
-    pagination: Pagination
-    setPagination:React.Dispatch<React.SetStateAction<Pagination>>
+    page: number;
+    setPage:React.Dispatch<React.SetStateAction<number>>,
+    totalPages: number;
     loading: boolean
 }
 
-const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates, setSelectedDates, pagination, setPagination, loading} :ActivityContainerProps) => {
+const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates, setSelectedDates, page, setPage, totalPages, loading} :ActivityContainerProps) => {
     const { user } = useSelector((state : RootState) => state.user)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}))
+        setPage(value)
     };
 
     
@@ -128,7 +129,7 @@ const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates
                 </Card>
             ))}
             {activityLogs && !loading && <div className="flex justify-end mt-6">
-                <CustomizedPagination count={pagination.totalPages} onChange={handlePage} page={pagination.page}/>
+                <CustomizedPagination count={totalPages} onChange={handlePage} page={page}/>
             </div>}
         </PageContainer>
     )

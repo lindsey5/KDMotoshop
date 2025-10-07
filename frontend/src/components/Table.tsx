@@ -6,7 +6,7 @@ import TableContainer, { type TableContainerProps } from '@mui/material/TableCon
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import type { ReactNode } from 'react';
+import useDarkmode from '../hooks/useDarkmode';
 
 export const StyledTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => prop !== 'isDark',
@@ -39,19 +39,27 @@ export const StyledTableRow = styled(TableRow, {
 }));
 
 interface CustomizedTableProps extends TableContainerProps{ 
-  cols: ReactNode, 
-  rows: ReactNode
+  cols: string[], 
+  rows: any[],
 }
 
 const CustomizedTable = ({cols, rows, ...props} : CustomizedTableProps) => {
+  const isDark = useDarkmode();
+
   return (
     <TableContainer component={Paper} {...props}>
       <Table aria-label="customized table">
         <TableHead>
-          {cols}
+          <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
+            {cols.map((col, index) => <StyledTableCell key={index} align={index !== 0 ? 'center' : 'left'}>{col}</StyledTableCell>)}
+          </TableRow>
         </TableHead>
         <TableBody>
-          {rows}
+          {rows.map((row, index) => (
+            <StyledTableRow key={index} isDark={isDark}>
+              {cols.map((col, index) => (<StyledTableCell key={index} align={index !== 0 ? 'center' : 'left'} isDark={isDark}>{row[col]}</StyledTableCell>))}
+            </StyledTableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>

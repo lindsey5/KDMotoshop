@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
-import usePagination from "../../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
 import useFetch from "../../../hooks/useFetch";
 
@@ -28,7 +27,7 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const MyActivity = () => {
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
-
+    const [page, setPage] = useState(1);
     const { startDate, endDate } = useMemo(()=> {
         const startDate = selectedDates?.[0] ? selectedDates?.[0].toString() : '';
         const endDate = selectedDates?.[1] ? selectedDates?.[1].toString()  : '';
@@ -36,8 +35,7 @@ const MyActivity = () => {
         return { startDate, endDate }
     }, [selectedDates])
 
-    const { pagination, setPagination } = usePagination();
-    const { data, loading } = useFetch(`/api/activities/admin?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`);
+    const { data, loading } = useFetch(`/api/activities/admin?limit=50&page=${page}&startDate=${startDate}&endDate=${endDate}`);
 
     const activityLogs = useMemo<GroupedActivityLogs>(() => {
         if(!data) return {}
@@ -49,7 +47,6 @@ const MyActivity = () => {
             acc[dateKey].push(item);
             return acc;
         }, {})
-        setPagination(prev => ({ ...prev, totalPages: data.totalPages}))
         return groupedLogs
     }, [data])
 
@@ -61,8 +58,9 @@ const MyActivity = () => {
             setSelectedDates={setSelectedDates}
             breadcrumbs={PageBreadCrumbs}
             loading={loading}
-            setPagination={setPagination}
-            pagination={pagination}
+            setPage={setPage}
+            page={page}
+            totalPages={data?.totalPages}
         />
     )
 }

@@ -3,16 +3,19 @@ import BreadCrumbs from "../../../components/BreadCrumbs";
 import { Title } from "../../../components/text/Text";
 import Card from "../../../components/Card";
 import { SearchField } from "../../../components/Textfield";
-import usePagination from "../../../hooks/usePagination";
-import { useEffect, useState } from "react";
-import { fetchData } from "../../../services/api";
+import { useState } from "react";
 import CustomizedTable from "../../../components/Table";
-import { AdminsTableColumns, AdminsTableRow } from "./ui/AdminsTable";
 import { RedButton } from "../../../components/buttons/Button";
 import CreateAdminModal from "./ui/CreateAdminModal";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
+import useFetch from "../../../hooks/useFetch";
+import { useDebounce } from "../../../hooks/useDebounce";
+import UserAvatar from "../../ui/UserAvatar";
+import { IconButton } from "@mui/material";
+import useDarkmode from "../../../hooks/useDarkmode";
+import EditIcon from '@mui/icons-material/Edit';
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -20,23 +23,13 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const Admins = () => {
-    const { pagination, setPagination } = usePagination();
+    const isDark = useDarkmode();
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const searchDebounce = useDebounce(searchTerm, 500);
+    const { data } = useFetch(`/api/admins/all?&search=${searchDebounce}`)
     const [adminData, setAdminData] = useState<Admin | undefined>();
     const [showAdmin, setShowAdmin] = useState<boolean>(false);
     const { user } = useSelector((state : RootState) => state.user)
-    const [admins, setAdmins] = useState<Admin[]>([]);
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(async () => {
-            const response = await fetchData(`/api/admins/all?&search=${pagination.searchTerm}`);
-            if(response.success) {
-                setAdmins(response.admins);
-                setPagination(prev => ({...prev, totalPages: response.totalPages }));
-            }
-        }, 300);
-
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm]);
 
     const handleClose = () => {
         setShowAdmin(false);
@@ -69,12 +62,28 @@ const Admins = () => {
             <Card className="flex-grow min-h-0 flex flex-col gap-5 p-5">
                 <SearchField 
                     sx={{ width: '400px'}}
-                    onChange={(e) => setPagination(prev => ({...prev, searchTerm: e.target.value }))}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search by Email, Firstname, Lastname..."
                 />
                 <CustomizedTable 
-                    cols={<AdminsTableColumns />}  
-                    rows={admins.map(admin => <AdminsTableRow key={admin._id} openModal={openModal} admin={admin}/>)}
+                    cols={['Fullname', 'Email', 'Phone', 'Role', 'Created At', 'Actions']}  
+                    rows={data?.admins.map((admin : Admin) => ({
+                        'Fullname' : (
+                            <div className="flex items-center gap-2">
+                                <UserAvatar image={admin.image}/>
+                                {admin.firstname} {admin.lastname}
+                            </div>
+                        ),
+                        'Email' : admin.email,
+                        'Phone' : admin.phone,
+                        'Role' : admin.role,
+                        'Created At' : admin.createdAt,
+                        'Actions' : (
+                            <IconButton onClick={() => openModal(admin)}>
+                                <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+                            </IconButton>
+                        )
+                    })) || []}
                 />
             </Card>
         </PageContainer>

@@ -51,7 +51,7 @@ type Review = {
     createdAt: Date;
 }
 
-type InventoryStatus = {
+type ProductInventoryStatus = {
     _id: string;
     product_name: string;
     thumbnail: UploadedImage;

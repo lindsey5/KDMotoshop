@@ -4,23 +4,25 @@ import CustomizedTable from "../../../components/Table";
 import { SearchField } from "../../../components/Textfield";
 import { CustomizedSelect, StatusSelect } from "../../../components/Select";
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../../components/DatePicker";
 import { useNavigate } from "react-router-dom";
-import { OrderTableColumns, OrderTableRow } from "./ui/OrderTable";
 import BreadCrumbs from "../../../components/BreadCrumbs";
-import { fetchData } from "../../../services/api";
 import { Statuses } from "../../../constants/status";
 import { OrderStatsCards } from "./ui/OrderStatsCard";
 import Card from "../../../components/Card";
 import CustomizedPagination from "../../../components/Pagination";
-import { Title } from "../../../components/text/Text";
+import { Status, Title } from "../../../components/text/Text";
 import PageContainer from "../ui/PageContainer";
-import usePagination from "../../../hooks/usePagination";
 import { Button } from "@mui/material";
-import { exportData } from "../../../utils/utils";
+import { exportData, formatNumberToPeso } from "../../../utils/utils";
+import useFetch from "../../../hooks/useFetch";
+import { useDebounce } from "../../../hooks/useDebounce";
+import { formatDate } from "../../../utils/dateUtils";
+import PlatformChip from "../../../components/Chip";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -30,49 +32,37 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
 
 const Orders = () => {
-    const [orders, setOrders] = useState<Order[]>([]);
+    const isDark = useDarkmode();
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
-    const [searchTerm, setSearchTerm] = useState<string>('');
     const [paymentMethod, setPaymentMethod] = useState<string>('All');
     const navigate = useNavigate();
-    const { pagination, setPagination } = usePagination();
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>();
     const [from, setFrom] = useState<string>('Website');
- 
-    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}))
-    };
-
-    const getOrdersAsync = useCallback(async () => {
+    const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const searchDebounce = useDebounce(searchTerm, 0.5);
+    
+    const formattedSelectedDates = useMemo(() => {
         const startDate = selectedDates?.[0] ? selectedDates[0].toString() : '';
         const endDate = selectedDates?.[1] ? selectedDates[1].toString() : '';
 
-        const response = await fetchData(`/api/orders?page=${pagination.page}&limit=50&status=${selectedStatus}&searchTerm=${searchTerm}&startDate=${startDate}&endDate=${endDate}&payment_method=${paymentMethod}&from=${from}`);
-
-        if (response.success) {
-            setPagination(prev => ({ ...prev, totalPages: response.totalPages }));
-            setOrders(response.orders);
-        }
-    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, searchTerm, from]);
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            setPagination(prev => ({...prev, searchTerm }));
-            setSelectedStatus('All');
-            setSelectedDates(undefined);
-            getOrdersAsync();
-        }, 300); 
-        
-        return () => clearTimeout(delayDebounce);
-    }, [searchTerm]);
+        return { startDate, endDate }
+    }, [selectedDates])
+    
+    const { data } = useFetch(`/api/orders?page=${page}&limit=50&status=${selectedStatus}&searchTerm=${searchDebounce}&startDate=${formattedSelectedDates.startDate}&endDate=${formattedSelectedDates.endDate}&payment_method=${paymentMethod}&from=${from}`)
+ 
+    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value)
+    };
 
     useEffect(() => {
-        getOrdersAsync();
-    }, [selectedDates, selectedStatus, pagination.page, paymentMethod, from])
+        setSelectedStatus('All');
+        setSelectedDates(undefined);
+    }, [searchDebounce]);
 
     const exportOrders = () => {
         const dataToExport : any[] = []
-        orders.forEach(order => {
+        data?.orders.forEach((order : Order) => {
             order.orderItems?.forEach(item => {
                 dataToExport.push({
                     order_id: order.order_id,
@@ -110,7 +100,7 @@ const Orders = () => {
             <div className="flex flex-col md:flex-row md:flex-wrap justify-between mb-6 gap-10">
                 <SearchField
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value as string)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search by Customer Name, Order ID" 
                     sx={{ flex: 1, maxWidth: '400px', height: 55 }}
                 />
@@ -143,11 +133,21 @@ const Orders = () => {
                 </div>
             </div>
             <CustomizedTable
-                cols={<OrderTableColumns />}
-                rows={orders.map((order, index) => <OrderTableRow key={`${order._id}`} index={index} order={order} />)} 
+                cols={['#', 'Customer Name', 'Order ID', 'Amount', 'Payment Method', 'Order Date', 'Order Channel', 'Status', 'Action']}
+                rows={data?.orders.map((order : Order, index : number) => ({
+                    '#' : index + 1,
+                    'Customer Name' : `${order.customer.firstname} ${order.customer.lastname}`,
+                    'Order ID' : order.order_id,
+                    'Amount' : formatNumberToPeso(order.total),
+                    'Payment Method' : order.payment_method,
+                    'Order Date' : formatDate(order.createdAt),
+                    'Order Channel' : <PlatformChip platform={order.order_source} />,
+                    'Status' : <Status status={order.status} isDark={isDark}/>,
+                    'Action' : <RedButton onClick={() => navigate(`/admin/orders/${order._id}`)}>Details</RedButton>
+                })) || []} 
             />
             <div className="flex justify-end mt-4">
-                <CustomizedPagination count={pagination.totalPages} page={pagination.page} onChange={handlePage} />
+                <CustomizedPagination count={data?.totalPages} page={page} onChange={handlePage} />
             </div>
         </Card>
     </PageContainer>

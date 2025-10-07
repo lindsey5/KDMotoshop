@@ -80,7 +80,6 @@ const ProductPage = () => {
         { label: `${id ? 'Edit' : 'Create'} Product`, href: '/admin/products/product' },
     ]
 
-
     const getProduct = async (id : string) => {
         const response = await fetchData(`/api/products/${id}`);
         if(response.success) setProduct(response.product)

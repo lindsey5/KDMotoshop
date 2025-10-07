@@ -8,12 +8,6 @@ type Menu = {
     label: string;
 }
 
-type Pagination = {
-    totalPages: number;
-    page: number;
-    searchTerm: string;
-}
-
 type ChartData = {
     data: { value: number; label: string} []
 }

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn } from "../../../utils/utils"
-import { fetchData } from "../../../services/api";
 import Card from "../../../components/Card";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { RedButton } from "../../../components/buttons/Button";
@@ -13,10 +12,10 @@ import CustomizedPagination from "../../../components/Pagination";
 import { Navigate, useNavigate } from "react-router-dom";
 import FuzzyText from "../../../components/text/FuzzyText";
 import OrderItem from "../../admin/Order/ui/OrderItem";
-import usePagination from "../../../hooks/usePagination";
 import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
+import useFetch from "../../../hooks/useFetch";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -26,31 +25,16 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 const CustomerOrders = () => {
     const isDark = useDarkmode();
     const navigate = useNavigate();
-    const [orders, setOrders] = useState<Order[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
-    const [loading, setLoading] = useState<boolean>(true);
-    const { pagination, setPagination } = usePagination();
+    const [page, setPage] = useState(1);
+    const today = new Date();
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(today.getDate() - 60);
     const { user : customer, loading : customerLoading } = useSelector((state : RootState) => state.user)
-    
-    useEffect(() => {
-        const getOrders = async () => {
-            setLoading(true);
-            const today = new Date();
-            const sixtyDaysAgo = new Date();
-            sixtyDaysAgo.setDate(today.getDate() - 60);
-            const response = await fetchData(`/api/orders/customer?page=${pagination.page}&limit=10&status=${selectedStatus}&startDate=${sixtyDaysAgo}&endDate=${new Date()}`);
-            if(response.success) {
-                setOrders(response.orders)
-                setPagination(prev => ({...prev, totalPages: response.totalPages }));
-            }
-            setLoading(false);
-        }
-
-        getOrders();
-    }, [selectedStatus, pagination.page])
+    const { data, loading } = useFetch(`/api/orders/customer?page=${page}&limit=10&status=${selectedStatus}&startDate=${sixtyDaysAgo}&endDate=${new Date()}`)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value}))
+        setPage(value)
     };
 
     if(loading) return (
@@ -76,7 +60,7 @@ const CustomerOrders = () => {
                     />
                 </div>
             </div>
-            {!loading && orders.length === 0 && <div className="flex flex-col gap-5 items-center p-30">
+            {!loading && data?.orders.length === 0 && <div className="flex flex-col gap-5 items-center p-30">
                 <img className="w-[200px] h-[200px]" src={isDark ? "/white-cart.png" : "/cart.png"} />
                 <FuzzyText 
                     baseIntensity={0.2} 
@@ -89,7 +73,7 @@ const CustomerOrders = () => {
                 </FuzzyText>
                 <strong className={cn("text-xl", isDark ? 'text-gray-300' : 'text-black')}>Status: {selectedStatus}</strong>
             </div>}
-            {orders.map(order => (
+            {data?.orders.map((order : Order) => (
                 <Card key={order._id} className="flex flex-col gap-5">
                     <div className={cn("flex items-start justify-between items-center gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-600')}>
                         <div className="md:text-base text-sm flex flex-col items-start md:flex-row gap-3 md:items-center">
@@ -105,7 +89,7 @@ const CustomerOrders = () => {
                     </div>
                 </Card>
             ))}
-        {orders.length > 0 && <CustomizedPagination page={pagination.page} count={pagination.totalPages} onChange={handlePage} />}
+        {data?.orders.length > 0 && <CustomizedPagination page={page} count={data?.totalPages} onChange={handlePage} />}
         </div>
     )
 }

@@ -3,7 +3,6 @@ import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import { Navigate } from "react-router-dom";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import type { Dayjs } from "dayjs";
-import usePagination from "../../../hooks/usePagination";
 import ActivityLogsPage from "./ActivityLogsPage";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
@@ -32,8 +31,8 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const ActivityLogs = () => {
+    const [page, setPage] = useState<number>(1);
     const [selectedDates, setSelectedDates] = useState<DateRange<Dayjs> | undefined>()
-    const { pagination, setPagination } = usePagination();
     const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
 
     const { startDate, endDate } = useMemo(() => { 
@@ -43,7 +42,7 @@ const ActivityLogs = () => {
         return { startDate, endDate }
     }, [selectedDates])
 
-    const { data, loading } = useFetch(`/api/activities?limit=50&page=${pagination.page}&startDate=${startDate}&endDate=${endDate}`)
+    const { data, loading } = useFetch(`/api/activities?limit=50&page=${page}&startDate=${startDate}&endDate=${endDate}`)
 
     if (user && user.role === 'Admin' && !userLoading) {
         return <Navigate to="/admin/login" />;
@@ -59,7 +58,6 @@ const ActivityLogs = () => {
             acc[dateKey].push(item);
             return acc;
         }, {})
-        setPagination(prev => ({ ...prev, totalPages: data.totalPages}))
         return groupedLogs
     }, [data])
     
@@ -75,8 +73,9 @@ const ActivityLogs = () => {
             setSelectedDates={setSelectedDates}
             breadcrumbs={PageBreadCrumbs}
             loading={loading}
-            setPagination={setPagination}
-            pagination={pagination}
+            setPage={setPage}
+            page={page}
+            totalPages={data?.totalPages}
         />
     )
 }

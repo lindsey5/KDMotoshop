@@ -1,20 +1,18 @@
-import {  useEffect, useState } from "react"
-import { fetchData } from "../../../services/api"
+import {  useMemo, useState } from "react"
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import CustomerProductContainer from "./ui/CustomerProductContainer";
 import { CircularProgress, Slider } from "@mui/material";
 import { CustomizedSelect } from "../../../components/Select";
-import { RedButton } from "../../../components/buttons/Button";
-import { getProducts } from "../../../services/productService";
 import TopProductsContainer from "../../ui/TopProductContainer";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import CustomizedPagination from "../../../components/Pagination";
-import usePagination from "../../../hooks/usePagination";
 import { Title } from "../../../components/text/Text";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
+import useFetch from "../../../hooks/useFetch";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -34,18 +32,34 @@ const CustomerProducts = () => {
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
     const searchTerm = searchParams.get('search');
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [products, setProducts] = useState<Product[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>(category || 'All');
     const [selectedSort, setSelectedSort] = useState<string>(options[0].value);
-    const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
     const isDark = useDarkmode();
-    const { pagination, setPagination } = usePagination();
     const [value, setValue] = useState<number[]>([0, 10000]);
-    const [loading, setLoading] = useState<boolean>(true);
     const minDistance = 1000;
+    const [page, setPage] = useState(1);
     const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
-    
+    const valueDebounce = useDebounce<number[]>(value, 500);
+    const min = valueDebounce?.[0] ?? 0;
+    const max = valueDebounce?.[1] ?? 10000; 
+    const { data : productsRes, loading : productsLoading } = useFetch(`/api/products?page=${page}&limit=${20}&min=${min}&max=${max}&category=${selectedCategory}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm || ''}`)
+    const { data : topProductsRes } = useFetch('/api/products/top');
+    const { data : categoriesRes } = useFetch('/api/categories');
+
+    const products = useMemo(() => {
+        if(!productsRes?.products) return []
+
+        return productsRes.products.map((product : any) => ({
+            ...product,
+            image: product.thumbnail.imageUrl,
+            price: product.product_type === 'Variable' ?  
+                product.variants
+                .sort((a : any, b: any) => (a.price - b.price))[0].price 
+                : product.price
+        }))
+
+    }, [productsRes])
+
     const marks = [
         { value: 0, label: '₱0' },
         { value: 10000, label: '₱10000' }
@@ -59,76 +73,14 @@ const CustomerProducts = () => {
         }
     };
 
-    const getCategories = async () => {
-        const response = await fetchData('/api/categories')
-        if(response.success) setCategories(response.categories)
-    }
-
-    const getTopProducts = async () => {
-        const response = await fetchData('/api/products/top');
-        if(response.success) setTopProducts(response.topProducts)
-    }
-
-    const getAllProducts = async () => {
-        setLoading(true);
-        const response = await getProducts(`page=${pagination.page}&limit=${20}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm ?? ''}`);
-        
-        if(response.success) {
-            setPagination(prev => ({
-                ...prev,
-                totalPages: response.totalPages,
-            }))
-            setProducts(response.products.map((product : any) => ({
-                ...product,
-                image: product.thumbnail.imageUrl,
-                price: product.product_type === 'Variable' ?  product.variants.sort((a : any, b: any) => (a.price - b.price))[0].price : product.price
-                })))
-        }
-        setLoading(false);
-    }
-
-    useEffect(() => {
-        getTopProducts();
-        getCategories();
-    }, [])
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            getAllProducts()
-        }, 300); 
-
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.page, selectedCategory, selectedSort])
-
     const handlePage = (_: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({...prev, page: value }))
+        setPage(value)
     };
-
-    const filterProducts = async () => {
-        setLoading(true);
-        const response = await getProducts(`page=1&limit=${20}&category=${selectedCategory}&min=${value[0]}&max=${value[1]}&visibility=Published&sort=${selectedSort}`);
-        
-        if(response.success) {
-            setPagination(prev => ({
-                ...prev,
-                totalPages: response.totalPages,
-                page: response.page
-            }))
-            setProducts(response.products.map((product : any) => ({
-                ...product,
-                image: product.thumbnail.imageUrl,
-                price: product.product_type === 'Variable' ?  
-                    product.variants
-                    .sort((a : any, b: any) => (a.price - b.price))[0].price 
-                    : product.price
-                })))
-        }
-        setLoading(false);
-    }
 
     if (user && user.role === 'Admin' && !userLoading) {
         return <Navigate to="/admin/login" />;
     }
+
 
     return (
         <div className="flex flex-col md:flex-row pt-20">
@@ -141,12 +93,12 @@ const CustomerProducts = () => {
                             label="Category"
                             menu={[
                                 { label: 'All', value: 'All'},
-                                ...categories.map(category => ({ label: category.category_name, value: category.category_name}))
+                                ...(categoriesRes?.categories.map((category : Category) => ({ label: category.category_name, value: category.category_name})) || [])
                             ]}
                             value={selectedCategory}
                             onChange={(e) => {
                                 setSelectedCategory(e.target.value as string)
-                                setPagination(prev => ({...prev, page: 1}))
+                                setPage(1);
                             }}
                         />
                         <CustomizedSelect 
@@ -157,16 +109,16 @@ const CustomerProducts = () => {
                         />
                     </div>
                 </div>
-                {loading ? <div className="w-full h-[400px] flex justify-center items-center">
+                {productsLoading ? <div className="w-full h-[400px] flex justify-center items-center">
                     <CircularProgress sx={{ color: 'red'}}/>
                 </div> : 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 my-10 md:gap-10 gap-3">
-                    {products.map((product : any) => <CustomerProductContainer key={product._id} product={product}/>)}
+                    {products.map((product : Product) => <CustomerProductContainer key={product._id} product={product}/>)}
                 </div>}
                 {products.length > 0 &&  (
                     <div className="flex justify-end">
                         <CustomizedPagination 
-                            count={pagination.totalPages}
+                            count={productsRes.totalPages}
                             onChange={handlePage}
                             shape="rounded"
                             size="large" 
@@ -196,11 +148,10 @@ const CustomerProducts = () => {
                             },
                         }}
                     />
-                    <RedButton onClick={filterProducts}>Filter</RedButton>
                 </div>
                 <div className={cn("flex flex-col mt-12", isDark && 'text-white')}>
                     <h1 className="font-bold text-lg">Most Popular Products</h1>
-                    {topProducts.map(product => (
+                    {topProductsRes?.topProducts.map((product : TopProduct) => (
                         <div 
                             key={product._id}
                             className={cn("cursor-pointer hover:bg-gray-100 p-3 rounded-md",

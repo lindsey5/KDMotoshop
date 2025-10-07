@@ -1,14 +1,12 @@
-import { Button, CircularProgress } from "@mui/material"
+import { Button, CircularProgress, IconButton, Tooltip } from "@mui/material"
 import CustomizedTable from "../../../components/Table"
 import { SearchField } from "../../../components/Textfield"
-import { useCallback, useEffect, useState } from "react"
+import { useState } from "react"
 import CreateCategoryModal from "./ui/CreateCategory"
-import { fetchData } from "../../../services/api"
 import { CustomizedChip } from "../../../components/Chip"
-import { confirmDialog } from "../../../utils/swal"
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal"
 import { deleteData } from "../../../services/api"
 import BreadCrumbs from "../../../components/BreadCrumbs"
-import { ProductTableRow, ProductTableColumns } from "./ui/ProductTable"
 import Card from "../../../components/Card"
 import useDarkmode from "../../../hooks/useDarkmode"
 import CustomizedPagination from "../../../components/Pagination"
@@ -16,9 +14,13 @@ import { RedButton } from "../../../components/buttons/Button"
 import { useNavigate } from "react-router-dom"
 import { Title } from "../../../components/text/Text"
 import PageContainer from "../ui/PageContainer"
-import usePagination from "../../../hooks/usePagination"
 import { exportData } from "../../../utils/utils"
 import { formatDate } from "../../../utils/dateUtils"
+import useFetch from "../../../hooks/useFetch"
+import { useDebounce } from "../../../hooks/useDebounce"
+import EditIcon from '@mui/icons-material/Edit';
+import StarIcon from '@mui/icons-material/Star';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -29,43 +31,18 @@ const Products = () => {
     const isDark = useDarkmode();
     const navigate = useNavigate();
     const [openCategory, setOpenCategory] = useState<boolean>(false);
-    const { pagination, setPagination } = usePagination();
-    const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [products, setProducts] = useState<Product[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        const delayDebounce = setTimeout(() => {
-            const fetchDataTogether = async () => {
-                setIsLoading(true);
-                const [categoryRes, productRes] = await Promise.all([
-                    fetchData('/api/categories'),
-                    fetchData(`/api/products?page=${pagination.page}&limit=50&searchTerm=${pagination.searchTerm}&category=${selectedCategory}`)
-                ]);
-
-                if (categoryRes.success) setCategories(categoryRes.categories || []);
-
-                if (productRes.success) {
-                    setPagination(prev => ({
-                        ...prev,
-                        totalPages: productRes.totalPages || 1,
-                    }));
-                    setProducts(productRes.products || []);
-                }
-                setIsLoading(false);
-            };
-            fetchDataTogether();
-        }, 300);
-
-        return () => clearTimeout(delayDebounce);
-    }, [pagination.searchTerm, pagination.page, selectedCategory]);
+    const [page, setPage] = useState<number>(1);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const searchDebounce = useDebounce(searchTerm, 500);
+    const { data : categoriesRes } = useFetch('/api/categories');
+    const { data : productsRes, loading } = useFetch(`/api/products?page=${page}&limit=50&searchTerm=${searchDebounce}&category=${selectedCategory}`)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
-        setPagination(prev => ({ ...prev, page: value }));
+        setPage(value)
     }
 
-    const deleteCategory = useCallback(async (id: string) => {
+    const deleteCategory = async (id: string) => {
         const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!', isDark);
 
         if (confirmed) {
@@ -78,28 +55,23 @@ const Products = () => {
                 console.error('Error deleting category:', error);
             }
         }
-    }, [isDark, categories, selectedCategory]);
+    }
 
     const handleCategoryClick = (category : string) => {
         if (category === selectedCategory) return;
         
         setSelectedCategory(category);
-        setPagination(prev => ({ ...prev, page: 1 }));
-        setIsLoading(true);
+        setPage(1);
     }
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPagination(prev => ({ 
-            ...prev, 
-            searchTerm: e.target.value,
-            page: 1
-        }));
+        setSearchTerm(e.target.value)
     };
     
     const exportProducts = () => {
         const dataToExport : any[] = []
         
-        products.forEach(product => {
+        productsRes?.products.forEach((product : Product) => {
             if(product.product_type === 'Single'){
                 dataToExport.push({
                     product_name: product.product_name,
@@ -124,6 +96,20 @@ const Products = () => {
         })
         exportData({ dataToExport, filename: `KDMotoshop - Inventory (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
     }
+
+    const deleteProduct = async (product_id : string) => {
+        if (await confirmDialog('Delete Product?', 'Are you sure you want to delete this product?')) {
+          const response = await deleteData(`/api/products/${product_id}`);
+          
+          if (!response.success) {
+            await errorAlert(response.message, 'Please try again.', isDark);
+            return;
+          }
+    
+          await successAlert(response.message, '', isDark);
+          window.location.reload();
+        }
+    };
 
     return (
         <PageContainer className="w-full flex flex-col">
@@ -159,7 +145,7 @@ const Products = () => {
                     label="All"
                     isSelected={selectedCategory === 'All'}
                 />
-                {categories.map(category => 
+                {categoriesRes?.categories.map((category : Category) => 
                     <CustomizedChip 
                         key={category._id}
                         onClick={() => handleCategoryClick(category.category_name)}
@@ -176,27 +162,69 @@ const Products = () => {
                         sx={{ width: '100%', maxWidth: '350px' }}
                         onChange={handleSearchChange}
                         placeholder="Search by Product name, SKU, Category..."
-                        value={pagination.searchTerm || ''}
+                        value={searchTerm}
                     />
                     <Button variant="contained" onClick={exportProducts}>Export</Button>
                 </div>
                 <CustomizedTable
-                    cols={<ProductTableColumns />}
-                    rows={products.map(product => 
-                        <ProductTableRow key={product._id} product={product} />
-                    )}
+                    cols={['Product', 'Stock', 'Category', 'Product Type', 'Created At', 'Created By', 'Rating', 'Actions']}
+                    rows={productsRes?.products.map((product : Product) => ({
+                        'Product' : (
+                            <div className="flex items-center gap-2 min-w-[200px]">
+                                <img 
+                                    className="bg-gray-100 w-12 h-12 object-cover rounded"
+                                    src={
+                                    typeof product.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+                                        ? product.thumbnail.imageUrl
+                                        : typeof product.thumbnail === 'string'
+                                        ? product.thumbnail
+                                        : '/photo.png'
+                                    }
+                                    alt="thumbnail"
+                                />
+                                <span>{product.product_name}</span>
+                            </div>
+                        ),
+                        'Stock' : product.product_type === 'Single' ? product.stock : product.variants.reduce((total, variant) => total + (variant.stock || 0), 0),
+                        'Category' : product.category,
+                        'Product Type': product.product_type,
+                        'Created At' : formatDate(product.createdAt),
+                        'Created By' : `${product.added_by?.firstname} ${product.added_by?.lastname}`,
+                        'Rating' : `${product.rating} / 5`,
+                        'Actions' : (
+                            <div className="flex">
+                                <Tooltip title="Edit Product">
+                                    <IconButton onClick={() => navigate(`/admin/product?id=${product._id}`)}>
+                                    <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+                                    </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title="View Reviews">
+                                    <IconButton onClick={() => navigate(`/admin/reviews/${product._id}`)}>
+                                    <StarIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+                                    </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title="Delete">
+                                    <IconButton onClick={() => deleteProduct(product._id || '')}>
+                                        <DeleteIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        )
+                    })) || []}
                 />
-                {isLoading && (
+                {loading && (
                     <div className="flex justify-center items-center p-4">
                         <CircularProgress />
                     </div>
                 )}
                 <div className="flex justify-end mt-4">
                     <CustomizedPagination 
-                        count={pagination.totalPages} 
+                        count={productsRes?.totalPages} 
                         onChange={handlePage} 
-                        page={pagination.page}
-                        disabled={isLoading}
+                        page={page}
+                        disabled={loading}
                     />
                 </div>
             </Card>
