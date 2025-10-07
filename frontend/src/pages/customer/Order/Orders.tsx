@@ -27,11 +27,8 @@ const CustomerOrders = () => {
     const navigate = useNavigate();
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
     const [page, setPage] = useState(1);
-    const today = new Date();
-    const sixtyDaysAgo = new Date();
-    sixtyDaysAgo.setDate(today.getDate() - 60);
     const { user : customer, loading : customerLoading } = useSelector((state : RootState) => state.user)
-    const { data, loading } = useFetch(`/api/orders/customer?page=${page}&limit=10&status=${selectedStatus}&startDate=${sixtyDaysAgo}&endDate=${new Date()}`)
+    const { data, loading } = useFetch(`/api/orders/customer?page=${page}&limit=10&status=${selectedStatus}`)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
