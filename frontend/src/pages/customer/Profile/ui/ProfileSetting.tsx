@@ -68,7 +68,7 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
     return (
         <div className="max-w-4xl">
             <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: 1 })}
+                sx={{ color: '#fff', zIndex: 1 }}
                 open={loading}
             >
                 <CircularProgress color="inherit" />
