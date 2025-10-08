@@ -16,6 +16,7 @@ import useDarkmode from "../hooks/useDarkmode";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../features/store";
 import { notificationsNextPage, updateAllNotifications,  } from "../features/notifications/notificationThunks";
+import Card from "./Card";
 
 const statusMap: Record<string, { icon: JSX.Element; color: string; bgColor: string }> = {
   'Pending': { 
@@ -120,11 +121,7 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
       }`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-              isDark ? "bg-red-500/10 border border-red-500/20" : "bg-red-50 border border-red-100"
-            }`}>
-              <NotificationsOutlinedIcon className="w-6 h-6 text-red-500" />
-            </div>
+           <NotificationsOutlinedIcon className="w-6 h-6 text-red-500" />
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight">Notifications</h1>
           </div>
           <button
@@ -140,7 +137,6 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
         </div>
       </div>
 
-      {/* Ultra-Modern Empty State */}
       {notifications.length < 1 && (
         <div className="flex-1 flex flex-col items-center justify-center px-8">
           <div className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-6 ${
@@ -171,19 +167,11 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
             };
 
             return (
-              <button
+              <Card
                 key={n._id}
-                onClick={() => navigateToOrder(n.order_id)}
-                className={`bg-[#2A2A2A] cursor-pointer group relative w-full flex items-start gap-4 p-5 rounded-2xl transition-all ${
-                  !n.isViewed
-                    ? isDark
-                      ? "border border-zinc-800"
-                      : "bg-zinc-50 hover:bg-zinc-100 border border-zinc-200"
-                    : isDark
-                      ? "border border-zinc-900"
-                      : "bg-white hover:bg-zinc-50 border border-zinc-100"
-                }`}
+                className=""
               >
+                <button className="cursor-pointer w-full flex items-start gap-4 hover:opacity-70" onClick={() => navigateToOrder(n.order_id)}>
                 {/* Status Indicator */}
                 <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${statusConfig.bgColor}`}>
                   <div className={`w-5 h-5 ${statusConfig.color}`}>
@@ -218,12 +206,8 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
                 {!n.isViewed && (
                   <div className="flex-shrink-0 w-2.5 h-2.5 bg-red-500 rounded-full mt-2"></div>
                 )}
-
-                {/* Hover Effect */}
-                <div className={`absolute inset-0 rounded-2xl transition-opacity opacity-0 group-hover:opacity-100 ${
-                  isDark ? "bg-gradient-to-r from-red-500/5 to-transparent" : "bg-gradient-to-r from-red-500/5 to-transparent"
-                }`}></div>
-              </button>
+                </button>
+              </Card>
             );
           })}
         </div>
@@ -248,11 +232,7 @@ export const NotificationsDrawerList = ({ close }: { close: () => void }) => {
           <div className="pt-6">
             <button
               onClick={handleNextPage}
-              className={`cursor-pointer w-full py-4 px-6 rounded-2xl text-xs sm:text-sm md:text-base font-semibold transition-all ${
-                isDark 
-                  ? "bg-red-600 hover:bg-red-700 text-white" 
-                  : "bg-red-500 hover:bg-red-600 text-white"
-              }`}
+              className="bg-red-600 hover:bg-red-700 text-white cursor-pointer w-full py-4 px-6 rounded-2xl text-xs sm:text-sm md:text-base font-semibold"
             >
               Load more notifications
             </button>
