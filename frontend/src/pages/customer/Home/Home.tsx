@@ -98,14 +98,14 @@ const KDMotoshopHome = () => {
                         <img className="w-100 h-45 absolute right-20 bottom-[60%]" src="/icons/satellite.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={2} speed={0.3}>
+                    <ParallaxLayer offset={2} speed={0.5}>
                         <PopularProductsSection isParallax />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={3} speed={0.3}>
+                    <ParallaxLayer offset={3} speed={0.5}>
                         <PopularCategoriesSection />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={4} speed={0.3}>
+                    <ParallaxLayer offset={4} speed={0.5}>
                         <PromoSection isParallax={true} />
                     </ParallaxLayer>
 
