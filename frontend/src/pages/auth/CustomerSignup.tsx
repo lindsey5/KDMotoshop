@@ -72,32 +72,33 @@ const CustomerSignupPage = () => {
                             type="email" 
                             required 
                             onChange={(e) => setNewCustomer(prev => ({...prev!, email: e.target.value}))}
+                            inputProps={{ maxLength: 100 }}
                         />
                         <div className="w-full flex gap-5">
                         <RedTextField 
                             placeholder="Firstname" 
                             required 
                             onChange={(e) => setNewCustomer(prev => ({...prev!, firstname: e.target.value}))}
-                            inputProps={{ maxLength: 100 }}
+                            inputProps={{ maxLength: 50 }}
                         />
                         <RedTextField 
                             placeholder="Lastname"  
                             required 
                             onChange={(e) => setNewCustomer(prev => ({...prev!, lastname: e.target.value}))}
-                            inputProps={{ maxLength: 100 }}
+                            inputProps={{ maxLength: 50 }}
                         />
                         </div>
                         <PasswordField 
                             placeholder="Password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, password: e.target.value}))}
-                            inputProps={{ maxLength: 30 }}
+                            inputProps={{ maxLength: 64 }}
                         />
                         <PasswordField 
                             placeholder="Confirm password" 
                             required
                             onChange={(e) => setNewCustomer(prev => ({...prev!, confirmPassword: e.target.value}))}
-                            inputProps={{ maxLength: 30 }}
+                            inputProps={{ maxLength: 64 }}
                         />
                         <RedButton disabled={loading} type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Sign Up</RedButton>
                         <div className="w-full flex items-center gap-5 text-gray-400">

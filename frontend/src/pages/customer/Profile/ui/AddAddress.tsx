@@ -115,7 +115,7 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
               placeholder="Enter first name"
               value={newAddress.firstname}
               onChange={(e) => setNewAddress((p) => ({ ...p, firstname: e.target.value }))}
-              inputProps={{ maxLength: 100 }}
+              inputProps={{ maxLength: 50 }}
             />
           </div>
           <div>
@@ -124,7 +124,7 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
               placeholder="Enter last name"
               value={newAddress.lastname}
               onChange={(e) => setNewAddress((p) => ({ ...p, lastname: e.target.value }))}
-              inputProps={{ maxLength: 100 }}
+              inputProps={{ maxLength: 50 }}
             />
           </div>
           <div>

@@ -275,7 +275,7 @@ const ProductPage = () => {
                         fullWidth
                         multiline
                         rows={10}
-                        inputProps={{ maxLength: 500 }}
+                        inputProps={{ maxLength: 200 }}
                     />
                     <div className="flex gap-4 items-center">
                         <h1 className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Product Type</h1>

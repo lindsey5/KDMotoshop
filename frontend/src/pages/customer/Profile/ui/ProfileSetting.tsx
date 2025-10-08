@@ -125,6 +125,7 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
                     isDark={isDark}
                     icon={<User size={18} />}
                     value={editedCustomer.firstname}
+                    maxLength={50}
                     onChange={(value : string) => setEditedCustomer(prev => ({ ...prev, firstname: value}))}
                 />
                 <FormInput
@@ -133,6 +134,7 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
                     isDark={isDark}
                     icon={<User size={18} />}
                     value={editedCustomer.lastname}
+                    maxLength={50}
                     onChange={(value : string) => setEditedCustomer(prev => ({ ...prev, lastname: value}))}
                 />
                 <FormInput
@@ -143,6 +145,7 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
                     disabled
                     value={editedCustomer.email}
                     icon={<Mail size={18} />}
+                    maxLength={100}
                     onChange={(value : string) => setEditedCustomer(prev => ({ ...prev, email: value}))}
                 />
                 </div>
