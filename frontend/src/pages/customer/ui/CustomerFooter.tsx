@@ -23,22 +23,22 @@ const CustomerFooter = () => {
     }, [])
 
     return (
-        <footer className="w-full px-10 lg:px-20 pt-10 lg:pt-20 pb-10 text-white bg-black">
-            <div className="flex flex-col md:flex-row gap-20">
+        <footer className="w-full px-10 lg:px-20 pt-5 lg:pt-20 pb-10 text-white bg-black">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-20">
                 <div className="flex-1 flex flex-col gap-3 items-start">
-                    <img className="w-35 h-20 md:w-50 md:h-25 cursor-pointer" src="/kd-logo.png" alt="" />
+                    <img className="w-30 h-20 md:w-50 md:h-25 cursor-pointer" src="/kd-logo.png" alt="" />
                     <p className="text-md md:text-lg">KDmotoshop@gmail.com</p>
                     <p className="text-md md:text-lg">Blk. 2 Lot 19 Phase 1 Pinagsama, Taguig, Philippines.</p>
                 </div>
 
-                <div className="text-md md:text-base flex-1 flex flex-col gap-3 items-start">
-                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-5">Products</h1>
+                <div className="text-sm md:text-base flex-1 flex flex-col gap-3 items-start">
+                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-2 md:pb-5">Products</h1>
                     {categories.map(category => (
                         <Link key={category._id} href="/" underline="hover" sx={{ color: "white"}}>{category.category_name}</Link>
                     ))}
                 </div>
-                <div className="text-md md:text-base flex-1 flex flex-col gap-3 items-start">
-                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-5">Other Info</h1>
+                <div className="text-sm md:text-base flex-1 flex flex-col gap-3 items-start">
+                    <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-2 md:pb-5">Other Info</h1>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Home</Link>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Contact</Link>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Privacy Policy</Link>

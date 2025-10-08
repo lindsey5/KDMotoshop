@@ -91,6 +91,8 @@ const CheckoutPage = () => {
     return Object.entries(address).every(([_, value]) => value !== "");
   }, [address]);
 
+  console.log(orderItems)
+
   const saveAddress = async () => {
     setLoading(true);
     if(customer?.role === 'Customer'){

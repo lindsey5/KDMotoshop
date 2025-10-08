@@ -15,6 +15,7 @@ import ChatbotButton from "../../../components/buttons/Chatbot";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
 import { Navigate } from "react-router-dom";
+import PromoSection from "./Promo";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -30,7 +31,7 @@ const KDMotoshopHome = () => {
                 {isDark && <SplashCursor />}
                 <ChatbotButton />
                 <MobileHome />
-                <Parallax ref={parallax} pages={6} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
+                <Parallax ref={parallax} pages={7} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
                     <ParallaxLayer className="relative z-100" offset={0}>
                         <CustomerHeader />
                          <div className='relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
@@ -80,6 +81,7 @@ const KDMotoshopHome = () => {
                             opacity={0.8}
                         />
                     </ParallaxLayer>
+                    
 
                     <ParallaxLayer className="relative flex justify-center items-center z-10" offset={1} speed={1}>
                         <TextType 
@@ -96,34 +98,38 @@ const KDMotoshopHome = () => {
                         <img className="w-100 h-45 absolute right-20 bottom-[60%]" src="/icons/satellite.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={2}>
+                    <ParallaxLayer offset={2} speed={0.3}>
                         <PopularProductsSection isParallax />
                     </ParallaxLayer>
-                    <ParallaxLayer offset={3}>
+                    <ParallaxLayer offset={3} speed={0.3}>
                         <PopularCategoriesSection />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={4} speed={0.5}>
+                    <ParallaxLayer offset={4} speed={0.3}>
+                        <PromoSection isParallax={true} />
+                    </ParallaxLayer>
+
+                    <ParallaxLayer offset={5} speed={0.5}>
                         <AboutSection isParallax={true}/>
                     </ParallaxLayer>
 
-                    <ParallaxLayer className="relative" sticky={{ start: 4, end: 4.2 }}>
+                    <ParallaxLayer className="relative" sticky={{ start: 5, end: 5.2 }}>
                         <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={5} speed={0.3}>
+                    <ParallaxLayer offset={6} speed={0.3}>
                         <img className="w-full h-screen" src="/moon.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={5} speed={-0.2}>
+                    <ParallaxLayer offset={6} speed={-0.2}>
                         <img className="w-full h-screen" src="/mountain.png" />
                     </ParallaxLayer>
                 
-                    <ParallaxLayer offset={5}>
+                    <ParallaxLayer offset={6}>
                         <img className="w-full h-screen" src="/road.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={5.3} speed={-0.3}>
+                    <ParallaxLayer offset={6.3} speed={-0.3}>
                         <img className="w-full h-screen" src="/moto-pov.png" />
                     </ParallaxLayer>
                 </Parallax>
