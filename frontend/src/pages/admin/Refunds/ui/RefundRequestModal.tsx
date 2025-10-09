@@ -222,7 +222,7 @@ const RefundRequestButtons = ({ status, id } : { status : RefundRequest['status'
     if(status === 'Processing') {
         return (
             <button 
-                onClick={() => handleUpdate('Completed')}
+                onClick={() => handleUpdate('Refunded')}
                 className={getBtnClass("bg-green-600 text-white hover:bg-green-700")}
             >
                 Complete
