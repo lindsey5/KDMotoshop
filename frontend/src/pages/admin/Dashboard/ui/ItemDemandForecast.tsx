@@ -68,7 +68,7 @@ const ItemDemandForecast = () => {
     const itemsQuery = useMemo(() => paginatedData.map(item => item.item).join(','), [paginatedData]);
 
     const { data: itemSold, loading: itemLoading } = useFetch(
-        itemsQuery ? `/api/sales/product-quantity-sold?items=${itemsQuery}` : ''
+        selected === 'current' && itemsQuery ? `/api/sales/product-quantity-sold?items=${itemsQuery}` : ''
     );
 
     const actualItemSales = useMemo(() => {
