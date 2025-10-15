@@ -1,15 +1,22 @@
-import nodemailer from 'nodemailer'
+import SibApiV3Sdk from 'sib-api-v3-sdk';
 
+// ✅ Initialize Brevo API client once
+const brevoClient = SibApiV3Sdk.ApiClient.instance;
+brevoClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY as string;
+
+const brevo = new SibApiV3Sdk.TransactionalEmailsApi();
+
+// Shared sender info
+const sender = {
+  name: 'KD Motoshop',
+  email: process.env.EMAIL_USER as string, // e.g. noreply@kdmotoshop.com
+};
+
+// -------------------------------------------------------------------
+// ✅ 1. Send Verification Code
+// -------------------------------------------------------------------
 export const sendVerificationCode = async (email: string) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const verificationCode = Math.floor(1000 + Math.random() * 9000);
 
     const htmlContent = `
@@ -25,66 +32,72 @@ export const sendVerificationCode = async (email: string) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: 'KD Motoshop <' + process.env.EMAIL_USER + '>',
-      to: email,
+    await brevo.sendTransacEmail({
+      sender,
+      to: [{ email }],
       subject: 'Your KD Motoshop Verification Code',
-      html: htmlContent,
+      htmlContent,
     });
 
     return verificationCode;
-  } catch (err : any) {
-    throw new Error(err.message)
+  } catch (err: any) {
+    console.error('Error sending verification email:', err.message);
+    throw new Error('Failed to send verification email.');
   }
 };
 
-export const sendOrderUpdate = async (email: string, order_id : string, firstname : string, status: string) => {
+// -------------------------------------------------------------------
+// ✅ 2. Send Order Update
+// -------------------------------------------------------------------
+export const sendOrderUpdate = async (
+  email: string,
+  order_id: string,
+  firstname: string,
+  status: string
+) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const htmlContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; background: #ffffff; border: 1px solid #eaeaea; border-radius: 10px;">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <h2 style="color: #222;">KD Motoshop Order Update</h2>
-            </div>
-            <p style="font-size: 16px; color: #333;">Hi <strong>${firstname || 'Customer'}</strong>,</p>
-            <p style="font-size: 16px; color: #333;">
-                We're writing to let you know that your order <strong>${order_id}</strong> has been updated.
-            </p>
-            <div style="background-color: #f8f8f8; padding: 15px; margin: 20px 0; border-left: 4px solid #007bff;">
-                <p style="font-size: 18px; margin: 0; color: #007bff;"><strong>Status:</strong> ${status}</p>
-            </div>
-            <p style="font-size: 16px; color: #333;">
-                If you have any questions or concerns, feel free to reach out to our support team.
-            </p>
-            <p style="font-size: 16px; color: #333;">Thank you for choosing KD Motoshop!</p>
-            <hr style="margin: 30px 0;">
-            <p style="text-align: center; color: #aaa; font-size: 12px;">
-                © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
-            </p>
-            </div>
-        `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; background: #ffffff; border: 1px solid #eaeaea; border-radius: 10px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="color: #222;">KD Motoshop Order Update</h2>
+        </div>
+        <p style="font-size: 16px; color: #333;">Hi <strong>${firstname || 'Customer'}</strong>,</p>
+        <p style="font-size: 16px; color: #333;">
+          We're writing to let you know that your order <strong>${order_id}</strong> has been updated.
+        </p>
+        <div style="background-color: #f8f8f8; padding: 15px; margin: 20px 0; border-left: 4px solid #007bff;">
+          <p style="font-size: 18px; margin: 0; color: #007bff;"><strong>Status:</strong> ${status}</p>
+        </div>
+        <p style="font-size: 16px; color: #333;">
+          If you have any questions or concerns, feel free to reach out to our support team.
+        </p>
+        <p style="font-size: 16px; color: #333;">Thank you for choosing KD Motoshop!</p>
+        <hr style="margin: 30px 0;">
+        <p style="text-align: center; color: #aaa; font-size: 12px;">
+          © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
+        </p>
+      </div>
+    `;
 
-    await transporter.sendMail({
-      from: `KD Motoshop <${process.env.EMAIL_USER}>`,
-      to: email,
+    const response = await brevo.sendTransacEmail({
+      sender,
+      to: [{ email }],
       subject: 'KD Motoshop - Order Update',
-      html: htmlContent,
+      htmlContent,
     });
+
+    console.log(response)
 
     return true;
   } catch (err: any) {
-    console.error('Error sending email:', err.message);
+    console.error('Error sending order update email:', err.message);
     throw new Error('Failed to send order update email.');
   }
 };
 
+// -------------------------------------------------------------------
+// ✅ 3. Send Refund Update
+// -------------------------------------------------------------------
 interface RefundUpdateProps {
   email: string;
   order_id: string;
@@ -105,47 +118,42 @@ export const sendRefundUpdate = async ({
   product_image,
 }: RefundUpdateProps) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: `KD Motoshop <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: `KD MotoShop Refund Update - Order #${order_id}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>Hi ${firstname},</h2>
-          <p>Your refund request for the following item has been updated:</p>
-          <div style="border:1px solid #ddd; padding:10px; margin:15px 0;">
-            <img src="${product_image}" alt="${product_name}" width="100" style="margin-bottom:10px;" />
-            <p><strong>Product:</strong> ${product_name}</p>
-            <p><strong>Quantity:</strong> ${quantity}</p>
-            <p><strong>Status:</strong> <span style="color:${status === "Rejected" ? "red" : status === "Approved" ? "green" : "blue"};">${status}</span></p>
-          </div>
-          <p>Order ID: <strong>${order_id}</strong></p>
-          <p style="font-size: 16px; color: #333;">
-            If you have any questions or concerns, feel free to reach out to our support team.
-          </p>
-          <p style="font-size: 16px; color: #333;">Thank you for choosing KD Motoshop!</p>
-          <hr style="margin: 30px 0;">
-          <p style="text-align: center; color: #aaa; font-size: 12px;">
-              © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Hi ${firstname},</h2>
+        <p>Your refund request for the following item has been updated:</p>
+        <div style="border:1px solid #ddd; padding:10px; margin:15px 0;">
+          <img src="${product_image}" alt="${product_name}" width="100" style="margin-bottom:10px;" />
+          <p><strong>Product:</strong> ${product_name}</p>
+          <p><strong>Quantity:</strong> ${quantity}</p>
+          <p><strong>Status:</strong> 
+            <span style="color:${status === 'Rejected' ? 'red' : status === 'Approved' ? 'green' : 'blue'};">
+              ${status}
+            </span>
           </p>
         </div>
-      `,
-    };
+        <p>Order ID: <strong>${order_id}</strong></p>
+        <p style="font-size: 16px; color: #333;">
+          If you have any questions or concerns, feel free to reach out to our support team.
+        </p>
+        <p style="font-size: 16px; color: #333;">Thank you for choosing KD Motoshop!</p>
+        <hr style="margin: 30px 0;">
+        <p style="text-align: center; color: #aaa; font-size: 12px;">
+          © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
+        </p>
+      </div>
+    `;
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Refund update email sent:", info.messageId);
+    await brevo.sendTransacEmail({
+      sender,
+      to: [{ email }],
+      subject: `KD Motoshop Refund Update - Order #${order_id}`,
+      htmlContent,
+    });
 
     return true;
   } catch (err: any) {
-    console.error("Error sending email:", err.message);
-    throw new Error("Failed to send refund update email.");
+    console.error('Error sending refund update email:', err.message);
+    throw new Error('Failed to send refund update email.');
   }
 };
