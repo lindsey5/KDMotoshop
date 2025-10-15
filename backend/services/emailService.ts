@@ -1,9 +1,14 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from 'nodemailer'
 
 export const sendVerificationCode = async (email: string) => {
   try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
     const verificationCode = Math.floor(1000 + Math.random() * 9000);
 
@@ -20,8 +25,8 @@ export const sendVerificationCode = async (email: string) => {
       </div>
     `;
 
-    await resend.emails.send({
-      from: "KD Motoshop <noreply@kdmotoshop.onrender.com>",
+    await transporter.sendMail({
+      from: 'KD Motoshop <' + process.env.EMAIL_USER + '>',
       to: email,
       subject: 'Your KD Motoshop Verification Code',
       html: htmlContent,
@@ -35,6 +40,14 @@ export const sendVerificationCode = async (email: string) => {
 
 export const sendOrderUpdate = async (email: string, order_id : string, firstname : string, status: string) => {
   try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
     const htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; background: #ffffff; border: 1px solid #eaeaea; border-radius: 10px;">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -58,14 +71,12 @@ export const sendOrderUpdate = async (email: string, order_id : string, firstnam
             </div>
         `
 
-    await resend.emails.send({
-      from: "KD Motoshop <noreply@kdmotoshop.onrender.com>",
+    await transporter.sendMail({
+      from: `KD Motoshop <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Your KD Motoshop Verification Code',
+      subject: 'KD Motoshop - Order Update',
       html: htmlContent,
     });
-
-    console.log("Order update sent.")
 
     return true;
   } catch (err: any) {
@@ -94,8 +105,16 @@ export const sendRefundUpdate = async ({
   product_image,
 }: RefundUpdateProps) => {
   try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
     const mailOptions = {
-      from: "KD Motoshop <noreply@kdmotoshop.onrender.com>",
+      from: `KD Motoshop <${process.env.EMAIL_USER}>`,
       to: email,
       subject: `KD MotoShop Refund Update - Order #${order_id}`,
       html: `
@@ -121,7 +140,8 @@ export const sendRefundUpdate = async ({
       `,
     };
 
-    await resend.emails.send(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Refund update email sent:", info.messageId);
 
     return true;
   } catch (err: any) {
