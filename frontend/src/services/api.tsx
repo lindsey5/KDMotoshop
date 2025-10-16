@@ -2,10 +2,10 @@ import axios from 'axios'
 
 axios.defaults.withCredentials = true;
 
-export const fetchData = async (endpoint : string) => {
+export const fetchData = async (endpoint : string, allowCredentials : boolean = true) => {
   try {
     const response = await axios.get(endpoint, {
-      withCredentials: true,
+      withCredentials: allowCredentials
     });
     return response.data;
   } catch (error : any) {
