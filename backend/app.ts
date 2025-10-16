@@ -18,6 +18,7 @@ import cookieParser from 'cookie-parser';
 import refundRoutes from './routes/refundRoutes';
 import supplierRoutes from './routes/supplierRoutes';
 import purchaseOrderRoutes from './routes/purchaseOrderRoutes';
+import aiRoutes from './routes/aiRoutes';
 
 const app = express();
 
@@ -81,5 +82,6 @@ app.use('/api/reviews', reviewRoutes)
 app.use('/api/refunds', refundRoutes)
 app.use('/api/suppliers', supplierRoutes)
 app.use('/api/purchase-orders', purchaseOrderRoutes)
+app.use(aiRoutes);
 
 export default app

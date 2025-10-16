@@ -1,1 +1,1 @@
-export const url = process.env.NODE_ENV === 'production' ? 'https://bf612176672a.ngrok-free.app/' : 'https://bf612176672a.ngrok-free.app/';
+export const url = process.env.NODE_ENV === 'production' ? process.env.NGROK_URL : process.env.NGROK_URL;

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import Card from '../../../../components/Card';
 import useDarkmode from '../../../../hooks/useDarkmode';
 import CustomizedPagination from '../../../../components/Pagination';
-import { url } from '../../../../constants/url';
 import { CircularProgress } from '@mui/material';
 import useFetch from '../../../../hooks/useFetch';
 import {
@@ -50,7 +49,7 @@ const ItemDemandForecast = () => {
 
     const { month, year } = getMonthYear();
 
-    const { data, loading } = useFetch(`${url}api/predict/items?month=${month}&year=${year}`);
+    const { data, loading } = useFetch(`/api/predict/items?month=${month}&year=${year}`);
 
     const { forecast } = useMemo<{ forecast: Prediction[]; month: string }>(() => {
         if (!data) return { forecast: [], month: '' };

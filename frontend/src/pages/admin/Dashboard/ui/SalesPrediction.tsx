@@ -1,7 +1,6 @@
 import Card from "../../../../components/Card";
 import { useMemo, useState } from "react";
 import AreaChart from "../../../../components/AreaChart";
-import { url } from "../../../../constants/url";
 import { CircularProgress } from "@mui/material";
 import { cn, formatNumberToPeso } from "../../../../utils/utils";
 import useFetch from "../../../../hooks/useFetch";
@@ -33,7 +32,7 @@ const SalesPredictionChart = () => {
 
     const { month, year } = getMonthYear();
 
-    const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`);
+    const { data : forecastRes, loading : forecastLoading } = useFetch(`/api/predict?month=${month}&year=${year}`);
     const { data : actualSalesRes, loading : actualLoading } = useFetch(`/api/sales/daily?month=${month}&year=${year}`);
     const isDark = useDarkmode();
 
