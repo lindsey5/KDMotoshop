@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fetchData } from "../../../services/api";
 import { RedButton } from "../../../components/buttons/Button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -46,7 +46,9 @@ const PopularCategoriesSection = () => {
         getCategories();
     }, []);
 
-    const totalPages = Math.ceil(categories.length / pageSize);
+    const totalPages = useMemo(() => {
+        return Math.ceil(categories.length / pageSize);
+    }, [categories])
 
     const paginate = (newDirection: number) => {
         setPage(([prevPage]) => {
@@ -78,6 +80,7 @@ const PopularCategoriesSection = () => {
                     color: isDark ? 'white' : ''
                 }}
                 onClick={() => paginate(-1)}
+                disabled={page === 0}
                 >
                 <ArrowBackIosIcon />
             </IconButton>
@@ -92,6 +95,7 @@ const PopularCategoriesSection = () => {
                     color: isDark ? 'white' : ''
                 }}
                 onClick={() => paginate(1)}
+                disabled={page === totalPages - 1}
                 >
                 <ArrowForwardIosIcon />
             </IconButton>
