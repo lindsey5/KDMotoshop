@@ -60,7 +60,7 @@ export const getCart = async (req: AuthenticatedRequest, res: Response) => {
             const variant = product.variants?.find((v: any) => v.sku === item.sku);
             const stock = product.product_type === 'Single' ? product.stock : variant?.stock || 0
 
-            if(stock === 0){
+            if(stock === 0 || product.visibility !== 'Published'){
                 return null
             }
 

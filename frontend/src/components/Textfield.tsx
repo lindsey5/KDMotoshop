@@ -171,7 +171,7 @@ export const HeaderSearchField = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const isDark = useDarkmode();
     const searchDebounce = useDebounce(searchTerm, 0.5);
-    const { data } = useFetch(`/api/products?limit=30&searchTerm=${searchDebounce}`)
+    const { data } = useFetch(`/api/products?limit=30&searchTerm=${searchDebounce}&visibility=Published`)
 
     const products = useMemo<Product[]>(() => {
       if(!data?.products) return []

@@ -84,7 +84,7 @@ export const get_products = async (req: Request, res: Response) => {
       const sortOption = determineSortOption(req.query.sort as string ?? '')
 
       const [products, total] = await Promise.all([
-        Product.find({...filter, visibility: { $ne: 'Deleted' }})
+        Product.find(filter)
           .populate("added_by", ["firstname", "lastname"])
           .skip(skip)
           .sort(sortOption)

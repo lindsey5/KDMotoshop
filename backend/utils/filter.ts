@@ -31,10 +31,12 @@ export const createProductFilter = ({ searchTerm, min, max, category, visibility
       }];
     }
 
-    if(visibility) filter.visibility = visibility;
+    if(visibility) filter.$and = [ { visibility  }, { visibility: { $ne: "Deleted" } } ]
 
     if (category && category !== "All") filter.category = category;
     
+    console.log(filter)
+
     return filter
 }
 
