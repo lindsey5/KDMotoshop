@@ -33,7 +33,7 @@ const SalesPredictionChart = () => {
 
     const { month, year } = getMonthYear();
 
-    const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`, false);
+    const { data : forecastRes, loading : forecastLoading } = useFetch(`${url}api/predict?month=${month}&year=${year}`);
     const { data : actualSalesRes, loading : actualLoading } = useFetch(`/api/sales/daily?month=${month}&year=${year}`);
     const isDark = useDarkmode();
 

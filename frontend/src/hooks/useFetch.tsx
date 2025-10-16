@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 import { fetchData } from "../services/api"
 
-const useFetch = (endpoint : string, allowCredentials : boolean = true) => {
+const useFetch = (endpoint : string) => {
     const [data, setData] = useState<any>();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getData = async () => {
             setLoading(true)
-            const response = await fetchData(endpoint, allowCredentials);
+            const response = await fetchData(endpoint);
             if(response.success) setData(response);
             setLoading(false)
         }

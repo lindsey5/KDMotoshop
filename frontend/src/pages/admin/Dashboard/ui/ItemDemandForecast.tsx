@@ -50,7 +50,7 @@ const ItemDemandForecast = () => {
 
     const { month, year } = getMonthYear();
 
-    const { data, loading } = useFetch(`${url}api/predict/items?month=${month}&year=${year}`, false);
+    const { data, loading } = useFetch(`${url}api/predict/items?month=${month}&year=${year}`);
 
     const { forecast } = useMemo<{ forecast: Prediction[]; month: string }>(() => {
         if (!data) return { forecast: [], month: '' };
