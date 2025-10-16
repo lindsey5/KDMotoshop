@@ -22,7 +22,7 @@ const ChatbotButton = () => {
         setMessages(prev => [...prev, { from: 'user', content: message }]);
         setMessage('');
 
-        const response = await postData(`${url}api/chat`, { message, thread_id });
+        const response = await postData(`${url}/api/chat`, { message, thread_id });
         console.log(response)
         if (response.success) {
             if (!thread_id) localStorage.setItem('thread_id', response.thread_id);

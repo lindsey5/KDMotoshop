@@ -207,7 +207,7 @@ const ProductPage = () => {
         ${details}
         `;
         setLoading(true)
-        const response = await postData(`${url}api/generate_post`, {
+        const response = await postData(`${url}/api/generate_post`, {
             product_details: postContent,  
             images: product.images.map(image => (image as UploadedImage).imageUrl)
         });
