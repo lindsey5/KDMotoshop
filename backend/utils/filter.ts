@@ -31,7 +31,9 @@ export const createProductFilter = ({ searchTerm, min, max, category, visibility
       }];
     }
 
-    if(visibility) filter.$and = [ { visibility  }, { visibility: { $ne: "Deleted" } } ]
+    filter.$and = [  { visibility: { $ne: "Deleted" } } ]
+
+    if(visibility) filter.$and.push({ visibility })
 
     if (category && category !== "All") filter.category = category;
     
