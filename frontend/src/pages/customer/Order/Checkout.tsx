@@ -49,10 +49,7 @@ const CheckoutPage = () => {
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [addAddress, setAddAddress] = useState<boolean>(false);
   const [address, setAddress] = useState<Address>(addresssInitialState);
-  const [selectedAddress, setSelectedAddress] = useState<number>(
-    customer && customer?.role === 'Customer' ? 
-      customer?.addresses?.findIndex(address => address.isDefault) ?? 0 : 0
-  );
+  const [selectedAddress, setSelectedAddress] = useState<number>(0);
   const {
     selectedCity,
     setSelectedCity,
@@ -74,6 +71,10 @@ const CheckoutPage = () => {
         firstname: customer.firstname,
         lastname: customer.lastname,
       }));
+      
+      setSelectedAddress(customer && customer?.role === 'Customer' ? 
+      customer?.addresses?.findIndex(address => address.isDefault) ?? 0 : 0)
+  
     }
   }, [customer]);
 
@@ -90,8 +91,6 @@ const CheckoutPage = () => {
   const areFieldsFilled = useMemo(() => {
     return Object.entries(address).every(([_, value]) => value !== "");
   }, [address]);
-
-  console.log(orderItems)
 
   const saveAddress = async () => {
     setLoading(true);
@@ -390,7 +389,7 @@ const CheckoutPage = () => {
                         >Close</Button>}
                         <RedButton 
                             onClick={saveAddress} 
-                            disabled={!areFieldsFilled || loading}
+                            disabled={(!areFieldsFilled || loading) && selectedAddress < 0}
                         >Save</RedButton>
                     </div>
                 </div> : 
