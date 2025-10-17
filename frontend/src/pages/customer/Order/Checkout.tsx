@@ -50,6 +50,7 @@ const CheckoutPage = () => {
   const [addAddress, setAddAddress] = useState<boolean>(false);
   const [address, setAddress] = useState<Address>(addresssInitialState);
   const [selectedAddress, setSelectedAddress] = useState<number>(0);
+  const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
   const {
     selectedCity,
     setSelectedCity,
@@ -111,6 +112,11 @@ const CheckoutPage = () => {
   };
 
   const proceed = async () => {
+    if (!acceptedTerms) {
+      errorAlert("Please accept the Terms & Privacy Policy", "", isDark);
+      return;
+    }
+
     if (
       await confirmDialog(
         paymentMethod === "CASH" ? "Place this Order?" : "Proceed to payment?",
@@ -286,152 +292,175 @@ const CheckoutPage = () => {
     return <Navigate to="/" />;
   }
 
-    return (
-        <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
-            <Backdrop
-              sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-              open={loading}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-            <div className="flex-2 flex flex-col gap-5">
-                <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-                <Title className="text-2xl md:text-4xl">Checkout</Title>
-                <Card>
-                    <div className={cn("flex items-center gap-5 pb-5 border-b border-gray-300", isDark && 'border-gray-500')}>
-                        <h1 className={cn("text-xl font-bold", isDark && 'text-white')}>Order Summary</h1>
-                        <CustomizedChip label={`${orderItems.length} items`} />
-                    </div>
-                    {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
-                </Card>
-                <PaymentSummaryCard subtotal={subtotal} total={total}/>
-            </div>
-            <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
-                <h1 className="font-bold text-lg">Delivery</h1>
-                <RadioGroup
-                    className="flex flex-col gap-5"
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    name="radio-buttons-group"
-                    onChange={handleChange} 
-                >
-                {customer?.role === 'Customer' && customer?.addresses?.map((address, index) => (
-                    <AddressContainer 
-                        key={index}
-                        address={address} 
-                        selectedAddress={selectedAddress} 
-                        index={index}
-                        remove={removeAddress}
-                    />
-                ))}
-                </RadioGroup>
-                {addAddress ? <div className={cn("rounded-md flex flex-col gap-5 p-5 bg-gray-100", isDark && 'bg-[#1d1d1dff]')}>
-                    <div className="flex gap-5">
-                    <RedTextField 
-                        value={address?.firstname || ''} 
-                        label="Firstname" 
-                        onChange={(e) => setAddress(prev => ({...prev, firstname: e.target.value}))}
-                    />
-                    <RedTextField 
-                        value={address?.lastname || ''} 
-                        label="Lastname" 
-                        onChange={(e) => setAddress(prev => ({...prev, lastname: e.target.value}))}
-                    />
-                    </div>
-                    <CustomizedSelect 
-                        label="Region"
-                        value={selectedRegion}
-                        menu={regions.map((region : any) => ({ value: region.code, label: region.name }))}
-                        onChange={(e) => handleRegionChange(e.target.value as string)}
-                    />
-                    {selectedRegion && <CustomizedSelect 
-                        label="City/Municipalities"
-                        value={selectedCity}
-                        menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
-                        onChange={(e) => handleCityChange(e.target.value as string)}
-                    />}
-                    {selectedCity && <CustomizedSelect 
-                        label="Barangay"
-                        value={address?.barangay}
-                        menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
-                        onChange={(e) => handleBarangayChange(e.target.value as string)}
-                    />}
-                    <RedTextField 
-                        label="Street, Building, House No." 
-                        fullWidth 
-                        value={address?.street || ''}
-                        onChange={(e) => setAddress((prev) => ({ ...prev!, street: e.target.value}))}
-                    />
-                    <div>
-                        <label className={`mb-2 block text-sm font-medium ${isDark ? 'text-[#919191]' : 'text-gray-400'}`}>
-                            Phone
-                        </label>
-                        <PhoneInput
-                            country={'ph'}
-                            onlyCountries={['ph']}
-                            specialLabel=""
-                            value={address?.phone || ''}
-                            dropdownStyle={{ color: 'black'}}
-                            containerStyle={{ width: '100%', height: '55px', color: isDark ? 'gray' : 'black'  }}
-                            inputStyle={{
-                                width: '100%',
-                                height: '55px',
-                                backgroundColor: isDark ? '#313131' : '#fff',
-                                color: isDark ? 'white' : 'black',
-                            }}
-                            onChange={(value) => setAddress((prev) => ({ ...prev!, phone: value}))}
-                        />
-                    </div>
-                    <div className="flex justify-end items-center gap-5">
-                        {(customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) > 0) && <Button 
-                            variant="outlined" 
-                            sx={{ border: 1, borderColor: isDark ? 'white' : 'gray', color: isDark ? 'white' : 'gray'}}
-                            onClick={() => setAddAddress(false)}
-                        >Close</Button>}
-                        <RedButton 
-                            onClick={saveAddress} 
-                            disabled={(!areFieldsFilled || loading) && selectedAddress < 0}
-                        >Save</RedButton>
-                    </div>
-                </div> : 
-                
-                <button 
-                    className={cn("w-full border flex items-center justify-between cursor-pointer gap-5 rounded-md px-5 py-3 border-gray-300 hover:bg-gray-100", isDark && 'border-gray-500 hover:bg-gray-500')}
-                    onClick={() => setAddAddress(true)}
-                >
-                    <div className="flex items-center gap-3">
-                        <LocationPinIcon />
-                        Add Address
-                    </div>
-                    <AddIcon />
-                </button>}
-                
-                <strong>Payment Method</strong>
-                <RadioGroup
-                    className="flex flex-col gap-5"
-                    aria-labelledby="demo-radio-buttons-group-label"
-                    value={paymentMethod}
-                    name="radio-buttons-group"
-                    onChange={handlePaymentMethod}
-                >
-                    <RedRadio label="Cash on delivery" value="CASH"/>
-                    <div className="flex justify-between items-center">
-                        <RedRadio label="E-Wallets / Card" value="ONLINE PAYMENT" />
-                        <div className="flex gap-2">
-                            <img className="w-8 h-6" src="/icons/gcash.jpeg" alt="gcash" />
-                            <img className="w-8 h-6" src="/icons/maya.png" alt="gcash" />
-                            <img className="w-9 h-6" src="/icons/mastercard.png" alt="gcash" />
-                            <img className="w-8 h-6" src="/icons/visa.jpg" alt="gcash" />
-                        </div>
-                    </div>
-                </RadioGroup>
-
-                <RedButton 
-                    onClick={proceed}
-                    disabled={(customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) < 1) || loading || !savedItems}
-                >{paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}</RedButton>
+  return (
+    <div className={cn("flex flex-col lg:flex-row gap-5 lg:items-start transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
+        <Backdrop
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <div className="flex-2 flex flex-col gap-5">
+            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            <Title className="text-2xl md:text-4xl">Checkout</Title>
+            <Card>
+                <div className={cn("flex items-center gap-5 pb-5 border-b border-gray-300", isDark && 'border-gray-500')}>
+                    <h1 className={cn("text-xl font-bold", isDark && 'text-white')}>Order Summary</h1>
+                    <CustomizedChip label={`${orderItems.length} items`} />
+                </div>
+                {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
             </Card>
+            <PaymentSummaryCard subtotal={subtotal} total={total}/>
         </div>
-    )
+        <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
+            <h1 className="font-bold text-lg">Delivery</h1>
+            <RadioGroup
+                className="flex flex-col gap-5"
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="radio-buttons-group"
+                onChange={handleChange} 
+            >
+            {customer?.role === 'Customer' && customer?.addresses?.map((address, index) => (
+                <AddressContainer 
+                    key={index}
+                    address={address} 
+                    selectedAddress={selectedAddress} 
+                    index={index}
+                    remove={removeAddress}
+                />
+            ))}
+            </RadioGroup>
+            {addAddress ? <div className={cn("rounded-md flex flex-col gap-5 p-5 bg-gray-100", isDark && 'bg-[#1d1d1dff]')}>
+                <div className="flex gap-5">
+                <RedTextField 
+                    value={address?.firstname || ''} 
+                    label="Firstname" 
+                    onChange={(e) => setAddress(prev => ({...prev, firstname: e.target.value}))}
+                />
+                <RedTextField 
+                    value={address?.lastname || ''} 
+                    label="Lastname" 
+                    onChange={(e) => setAddress(prev => ({...prev, lastname: e.target.value}))}
+                />
+                </div>
+                <CustomizedSelect 
+                    label="Region"
+                    value={selectedRegion}
+                    menu={regions.map((region : any) => ({ value: region.code, label: region.name }))}
+                    onChange={(e) => handleRegionChange(e.target.value as string)}
+                />
+                {selectedRegion && <CustomizedSelect 
+                    label="City/Municipalities"
+                    value={selectedCity}
+                    menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
+                    onChange={(e) => handleCityChange(e.target.value as string)}
+                />}
+                {selectedCity && <CustomizedSelect 
+                    label="Barangay"
+                    value={address?.barangay}
+                    menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
+                    onChange={(e) => handleBarangayChange(e.target.value as string)}
+                />}
+                <RedTextField 
+                    label="Street, Building, House No." 
+                    fullWidth 
+                    value={address?.street || ''}
+                    onChange={(e) => setAddress((prev) => ({ ...prev!, street: e.target.value}))}
+                />
+                <div>
+                    <label className={`mb-2 block text-sm font-medium ${isDark ? 'text-[#919191]' : 'text-gray-400'}`}>
+                        Phone
+                    </label>
+                    <PhoneInput
+                        country={'ph'}
+                        onlyCountries={['ph']}
+                        specialLabel=""
+                        value={address?.phone || ''}
+                        dropdownStyle={{ color: 'black'}}
+                        containerStyle={{ width: '100%', height: '55px', color: isDark ? 'gray' : 'black'  }}
+                        inputStyle={{
+                            width: '100%',
+                            height: '55px',
+                            backgroundColor: isDark ? '#313131' : '#fff',
+                            color: isDark ? 'white' : 'black',
+                        }}
+                        onChange={(value) => setAddress((prev) => ({ ...prev!, phone: value}))}
+                    />
+                </div>
+                <div className="flex justify-end items-center gap-5">
+                    {(customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) > 0) && <Button 
+                        variant="outlined" 
+                        sx={{ border: 1, borderColor: isDark ? 'white' : 'gray', color: isDark ? 'white' : 'gray'}}
+                        onClick={() => setAddAddress(false)}
+                    >Close</Button>}
+                    <RedButton 
+                        onClick={saveAddress} 
+                        disabled={(!areFieldsFilled || loading) && selectedAddress < 0}
+                    >Save</RedButton>
+                </div>
+            </div> : 
+            
+            <button 
+                className={cn("w-full border flex items-center justify-between cursor-pointer gap-5 rounded-md px-5 py-3 border-gray-300 hover:bg-gray-100", isDark && 'border-gray-500 hover:bg-gray-500')}
+                onClick={() => setAddAddress(true)}
+            >
+                <div className="flex items-center gap-3">
+                    <LocationPinIcon />
+                    Add Address
+                </div>
+                <AddIcon />
+            </button>}
+            
+            <strong>Payment Method</strong>
+            <RadioGroup
+                className="flex flex-col gap-5"
+                aria-labelledby="demo-radio-buttons-group-label"
+                value={paymentMethod}
+                name="radio-buttons-group"
+                onChange={handlePaymentMethod}
+            >
+                <RedRadio label="Cash on delivery" value="CASH"/>
+                <div className="flex justify-between items-center">
+                    <RedRadio label="E-Wallets / Card" value="ONLINE PAYMENT" />
+                    <div className="flex gap-2">
+                        <img className="w-8 h-6" src="/icons/gcash.jpeg" alt="gcash" />
+                        <img className="w-8 h-6" src="/icons/maya.png" alt="gcash" />
+                        <img className="w-9 h-6" src="/icons/mastercard.png" alt="gcash" />
+                        <img className="w-8 h-6" src="/icons/visa.jpg" alt="gcash" />
+                    </div>
+                </div>
+            </RadioGroup>
+
+            <div className="flex items-center gap-2 mt-4 mb-2">
+              <input 
+                type="checkbox" 
+                id="terms" 
+                checked={acceptedTerms} 
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="w-4 h-4 accent-red-600"
+              />
+              <label htmlFor="terms" className={cn("text-sm", isDark ? "text-gray-300" : "text-gray-700")}>
+                I agree to the 
+                <a href="/terms" target="_blank" className="text-red-600 underline mx-1">Terms of Service</a> 
+                and 
+                <a href="/privacy-policy" target="_blank" className="text-red-600 underline mx-1">Privacy Policy</a>.
+              </label>
+            </div>
+
+            <RedButton 
+                onClick={proceed}
+                disabled={
+                    (customer?.role === 'Customer' && (customer?.addresses?.length ?? 0) < 1) 
+                    || loading 
+                    || !savedItems
+                    || !acceptedTerms
+                }
+            >
+                {paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}
+            </RedButton>
+        </Card>
+    </div>
+  )
 }
 
-export default CheckoutPage
+export default CheckoutPage;

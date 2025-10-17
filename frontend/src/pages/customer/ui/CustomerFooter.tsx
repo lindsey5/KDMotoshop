@@ -40,9 +40,10 @@ const CustomerFooter = () => {
                 <div className="text-sm md:text-base flex-1 flex flex-col gap-3 items-start">
                     <h1 className="w-full font-bold text-xl md:text-2xl mb-2 border-b-1 border-gray-300 pb-2 md:pb-5">Other Info</h1>
                     <Link href="/" underline="hover" sx={{ color: "white"}}>Home</Link>
-                    <Link href="/" underline="hover" sx={{ color: "white"}}>Contact</Link>
-                    <Link href="/" underline="hover" sx={{ color: "white"}}>Privacy Policy</Link>
-                    <Link href="/" underline="hover" sx={{ color: "white"}}>FAQ's</Link>
+                    <Link href="/contact" underline="hover" sx={{ color: "white"}}>Contact</Link>
+                    <Link href="/privacy-policy" underline="hover" sx={{ color: "white"}}>Privacy Policy</Link>
+                    <Link href="/faq" underline="hover" sx={{ color: "white"}}>FAQ's</Link>
+                    <Link href="/terms-and-conditions" underline="hover" sx={{ color: "white"}}>Terms</Link>
                 </div>
             </div>
             <div className="flex flex-wrap justify-between items-center gap-5 mt-20">

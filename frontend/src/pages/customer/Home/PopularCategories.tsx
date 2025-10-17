@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { fetchData } from "../../../services/api";
+import { useMemo, useState } from "react";
 import { RedButton } from "../../../components/buttons/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconButton } from "@mui/material";
@@ -8,6 +7,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { cn } from "../../../utils/utils";
 import useDarkmode from "../../../hooks/useDarkmode";
 import { Title } from "../../../components/text/Text";
+import useFetch from "../../../hooks/useFetch";
 
 type TopCategory = {
   totalQuantity: number;
@@ -31,20 +31,16 @@ const variants = {
 };
 
 const PopularCategoriesSection = () => {
-    const [categories, setCategories] = useState<TopCategory[]>([]);
+    const { data } = useFetch('/api/categories/top');
     const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
     const isDark = useDarkmode();
     const pageSize = 3;
 
-    useEffect(() => {
-        const getCategories = async () => {
-        const response = await fetchData("/api/categories/top");
-        if (response.success) {
-            setCategories(response.topCategories);
-        }
-        };
-        getCategories();
-    }, []);
+    const categories = useMemo<TopCategory []>(() => {
+        if(!data?.topCategories) return []
+
+        return data.topCategories
+    }, [data])
 
     const totalPages = useMemo(() => {
         return Math.ceil(categories.length / pageSize);

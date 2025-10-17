@@ -12,6 +12,10 @@ import LazyLoader from "./components/LazyLoader";
 import { lazy } from "react";
 import CustomerProfile from "./pages/customer/Profile/CustomerProfile";
 import CustomersPage from "./pages/admin/Customers/Customers";
+import PrivacyPolicy from "./pages/customer/PrivacyPolicy";
+import TermsAndConditions from "./pages/customer/TermsAndConditions";
+import FAQ from "./pages/customer/FAQ";
+import Contact from "./pages/customer/Contact";
 const AdminLogin = lazy(() => import("./pages/auth/AdminLogin"));
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard/Dashboard"));
@@ -60,6 +64,10 @@ export default function App() {
               <Route path="signup" element={<CustomerSignupPage />} />
               <Route index element={<Home />} />
               <Route element={<CustomerLayout />}>
+                <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+                <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="faq" element={<FAQ />} />
+                <Route path="contact" element={<Contact />} />
                 <Route path="products" element={<CustomerProducts />} />
                 <Route path="product/:id" element={<CustomerProduct />} />
                 <Route path="checkout" element={<CheckoutPage />} />
