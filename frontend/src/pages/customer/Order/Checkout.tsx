@@ -441,7 +441,7 @@ const CheckoutPage = () => {
               />
               <label htmlFor="terms" className={cn("text-sm", isDark ? "text-gray-300" : "text-gray-700")}>
                 I agree to the 
-                <a href="/terms" target="_blank" className="text-red-600 underline mx-1">Terms of Service</a> 
+                <a href="/terms-and-conditions" target="_blank" className="text-red-600 underline mx-1">Terms of Service</a> 
                 and 
                 <a href="/privacy-policy" target="_blank" className="text-red-600 underline mx-1">Privacy Policy</a>.
               </label>

@@ -36,8 +36,6 @@ export const createProductFilter = ({ searchTerm, min, max, category, visibility
     if(visibility) filter.$and.push({ visibility })
 
     if (category && category !== "All") filter.category = category;
-    
-    console.log(filter)
 
     return filter
 }
