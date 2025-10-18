@@ -52,13 +52,14 @@ const InventoryStatus = () => {
                 </div>
                 <Button variant="contained" onClick={exportReport}>Export</Button>
             </div>
-            <Card className="h-screen overflow-y-auto">
+            <div className="w-full md:w-1/2">
                 <SearchField 
                     placeholder="Search by name, sku..."
                     onChange={(e) => setSearch(e.target.value)}
                     value={search}
-                    sx={{ marginBottom: 4 }}
                 />
+            </div>
+            <Card className="h-screen overflow-y-auto">
                 <CustomizedTable 
                     cols={['Product name', 'Stock', 'SKU', 'Product Type', 'Reorder Level', 'Optimal Stock', 'Suggestion', 'Status']}
                     rows={data?.products.map((product : ProductInventoryStatus) => ({
