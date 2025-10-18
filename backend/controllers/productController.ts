@@ -376,7 +376,6 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       .sort({ product_name: 1 })
       .skip(skip)
       .limit(limit)
-      .lean();
 
     const totalProducts = await Product.countDocuments(filter);
 
