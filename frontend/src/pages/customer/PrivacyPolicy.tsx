@@ -103,7 +103,7 @@ const PrivacyPolicy = () => {
                 </div>
 
                 {/* Footer */}
-                <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-800 text-gray-500" : "border-gray-200 text-gray-500"}`}>
+                <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-700 text-gray-300" : "border-gray-200 text-gray-500"}`}>
                     <p>© {new Date().getFullYear()} KD Motoshop. All rights reserved.</p>
                 </footer>
             </div>

@@ -15,7 +15,7 @@ export const createProductFilter = ({ searchTerm, min, max, category, visibility
           { product_name: { $regex: searchTerm, $options: "i" } },
           { sku: { $regex: searchTerm, $options: "i" } },
           { category: { $regex: searchTerm, $options: "i" } },
-          { "variants.sku": { $regex: searchTerm, $options: "i" } },
+          { "variant.sku": { $regex: searchTerm, $options: "i" } },
         ];
     }
 

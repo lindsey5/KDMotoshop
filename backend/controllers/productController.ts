@@ -16,6 +16,44 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isoWeek);
 
+const validate_product = async (product : IProduct) => {
+  
+    // ✅ 1️⃣ Check for duplicate SKUs within the same product
+    if (product.variants && product.variants.length > 0) {
+      const skuSet = new Set();
+      const duplicates : any = [];
+  
+      product.variants.forEach((variant) => {
+        if (skuSet.has(variant.sku)) {
+          duplicates.push(variant.sku);
+        }
+        skuSet.add(variant.sku);
+      });
+  
+      if (duplicates.length > 0) {
+        throw new Error(`Duplicate SKUs found in variants: ${duplicates.join(', ')}`)
+      }
+    }
+  
+    // ✅ 2️⃣ Check for duplicate SKUs across all products
+    const allSkus = [
+      product.sku,
+      ...(product.variants ? product.variants.map((v) => v.sku) : []),
+    ].filter(Boolean);
+  
+    const existing = await Product.find({
+      _id: { $ne: product._id }, // exclude self when updating
+      $or: [
+        { sku: { $in: allSkus } },
+        { 'variants.sku': { $in: allSkus } },
+      ],
+    });
+  
+    if (existing) {
+      throw new Error(`SKUs already exist in another product: ${existing.map(e => e.sku).join(', ')}`)
+    }
+}
+
 export const create_product = async (req : AuthenticatedRequest, res: Response) => {
     try{
         const product = req.body;
@@ -29,6 +67,8 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
             images, 
             added_by: req.user_id 
         })
+
+        await validate_product(newProduct);
 
         await newProduct.save();
 
@@ -156,6 +196,8 @@ export const update_product = async (req: AuthenticatedRequest, res: Response) =
       res.status(400).json({ success: false, message: 'Product name already exists.' });
       return;
     }
+
+    await validate_product(product as IProduct)
 
     // Handle thumbnail upload
     let thumbnail: UploadedImage | null = oldProduct.thumbnail;
@@ -319,9 +361,6 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
     const searchTerm = req.query?.searchTerm || '';
 
-    // Get total products count for pagination
-    const totalProducts = await Product.countDocuments();
-
     let filter : any = { visibility: { $ne: 'Deleted' }};
 
     if(searchTerm){
@@ -332,10 +371,12 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       ]
     }
 
-    const products = await Product.find({ })
+    const products = await Product.find(filter)
       .sort({ product_name: 1 })
       .skip(skip)
       .limit(limit);
+
+    const totalProducts = await Product.countDocuments(filter);
 
     const allProducts: any[] = [];
 

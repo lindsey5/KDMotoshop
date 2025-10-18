@@ -83,47 +83,6 @@ const ProductSchema: Schema<IProduct> = new Schema(
   { timestamps: true }
 );
 
-ProductSchema.pre('validate', async function (next) {
-  const product = this;
-
-  // ✅ 1️⃣ Check for duplicate SKUs within the same product
-  if (product.variants && product.variants.length > 0) {
-    const skuSet = new Set();
-    const duplicates : any = [];
-
-    product.variants.forEach((variant) => {
-      if (skuSet.has(variant.sku)) {
-        duplicates.push(variant.sku);
-      }
-      skuSet.add(variant.sku);
-    });
-
-    if (duplicates.length > 0) {
-      return next(new Error(`Duplicate SKUs found in variants: ${duplicates.join(', ')}`));
-    }
-  }
-
-  // ✅ 2️⃣ Check for duplicate SKUs across all products
-  const allSkus = [
-    product.sku,
-    ...(product.variants ? product.variants.map((v) => v.sku) : []),
-  ].filter(Boolean);
-
-  const existing = await mongoose.model('Product').find({
-    _id: { $ne: product._id }, // exclude self when updating
-    $or: [
-      { sku: { $in: allSkus } },
-      { 'variants.sku': { $in: allSkus } },
-    ],
-  });
-
-  if (existing) {
-    return next(new Error(`SKUs already exist in another product: ${existing.map(e => e.sku).join(', ')}`));
-  }
-
-  next();
-});
-
 // Get current stock
 ProductSchema.methods.getCurrentStock = function (sku?: string): number {
   if (this.product_type === 'Variable' && sku) {
@@ -241,11 +200,11 @@ ProductSchema.methods.getStockStatus = async function (
   const currentStock = this.getCurrentStock(sku);
 
   // Calculate optimal stock level (target stock after restocking)
-  const optimalStockLevel = Math.round(reorderLevel * 1.2);
+  let optimalStockLevel = Math.round(reorderLevel * 1.2) ;
 
   let status: 'Overstock' | 'Understock' | 'Balanced' | 'Out of Stock';
-  let amount: number;
-
+  let amount: number; // Suggested amount
+  
   if (currentStock === 0) {
     status = 'Out of Stock';
     amount = optimalStockLevel !== 0 ? optimalStockLevel : 10;

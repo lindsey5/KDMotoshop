@@ -308,7 +308,7 @@ const FAQ: React.FC = () => {
     const filteredFaqs = faqs.filter(faq => activeCategory === "all" || faq.category === activeCategory);
 
     return (
-        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-gradient-to-br from-red-50 via-red-100 to-red-200"}`}>
+        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-white"}`}>
         
         {/* Hero Section */}
         <div className={`relative overflow-hidden ${isDark ? "bg-gradient-to-r from-red-900 to-red-800" : "bg-red-600"}`}>

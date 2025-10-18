@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import useDarkmode from "../../hooks/useDarkmode";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { RedTextField } from "../../components/Textfield";
+import { RedButton } from "../../components/buttons/Button";
+import Card from "../../components/Card";
 
 const Contact: React.FC = () => {
     const isDark = useDarkmode();
@@ -19,10 +22,10 @@ const Contact: React.FC = () => {
     };
 
     return (
-        <main className={`pt-20 pb-5 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-gradient-to-br from-red-50 via-red-100 to-red-200"}`}>
+        <main className={`pt-20 pb-5 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-white"}`}>
         
         {/* Hero Section */}
-        <div className={`relative overflow-hidden ${isDark ? "bg-gradient-to-r from-red-900 to-red-800" : "bg-red-600"}`}>
+        <div className={`relative overflow-hidden bg-red-600`}>
             <div className="max-w-6xl mx-auto px-6 py-16 text-center">
             <h1 className="text-5xl font-bold text-white mb-4">Contact Us</h1>
             <p className="text-red-100 text-lg">
@@ -32,10 +35,13 @@ const Contact: React.FC = () => {
         </div>
 
         {/* Contact Section */}
-        <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <form 
+            onSubmit={handleSubmit} 
+            className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 gap-12"
+        >
             
             {/* Contact Info */}
-            <div className={`space-y-6 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+            <div className={`space-y-6 text-gray-300 ${isDark ? "text-white" : "text-gray-700"}`}>
             <h2 className="text-3xl font-semibold mb-4">Get in Touch</h2>
             <p>Have questions or need assistance? Our team is ready to help.</p>
             <div className="flex items-center gap-3">
@@ -53,59 +59,39 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Contact Form */}
-            <form 
-            onSubmit={handleSubmit} 
-            className={`space-y-4 rounded-2xl p-6 ${isDark ? "bg-gray-900 border border-gray-800" : "bg-white border border-gray-200 shadow-sm"}`}
-            >
+            <Card className="flex flex-col gap-4">
             {submitted && (
                 <p className="text-green-500 font-semibold text-center">
                 Your message has been sent!
                 </p>
             )}
-            <input
-                type="text"
+            <RedTextField 
                 placeholder="Your Name"
-                value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className={`w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 transition-all ${
-                isDark ? "bg-gray-800 text-white placeholder-gray-400" : "bg-red-50 text-gray-900 placeholder-gray-500"
-                }`}
+                value={name}
             />
-            <input
+            <RedTextField 
                 type="email"
                 placeholder="Your Email"
-                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className={`w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 transition-all ${
-                isDark ? "bg-gray-800 text-white placeholder-gray-400" : "bg-red-50 text-gray-900 placeholder-gray-500"
-                }`}
+                value={email}
             />
-            <textarea
+            <RedTextField 
+                rows={5}
                 placeholder="Your Message"
-                value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
-                rows={5}
-                className={`w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 transition-all ${
-                isDark ? "bg-gray-800 text-white placeholder-gray-400" : "bg-red-50 text-gray-900 placeholder-gray-500"
-                }`}
+                value={message}
             />
-            <button
-                type="submit"
-                className={`w-full py-3 rounded-lg font-medium transition-all ${
-                isDark ? "bg-red-600 text-white hover:bg-red-700" : "bg-red-600 text-white hover:bg-red-700 shadow-lg hover:shadow-xl"
-                }`}
-            >
-                Send Message
-            </button>
-            </form>
+            <RedButton type="submit">Send Message</RedButton>
+            </Card>
 
-        </div>
+        </form>
 
         {/* Footer */}
-        <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-800 text-gray-500" : "border-gray-200 text-gray-500"}`}>
+        <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-700 text-gray-300" : "border-gray-200 text-gray-500"}`}>
             <p>© {new Date().getFullYear()} KD Motoshop. All rights reserved.</p>
         </footer>
         </main>

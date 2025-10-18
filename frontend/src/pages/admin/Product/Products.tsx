@@ -167,7 +167,7 @@ const Products = () => {
                     <Button variant="contained" onClick={exportProducts}>Export</Button>
                 </div>
                 <CustomizedTable
-                    cols={['Product', 'Stock', 'Category', 'Product Type', 'Created At', 'Created By', 'Rating', 'Actions']}
+                    cols={['Product', 'Stock', 'Category', 'Product Type', 'Created At', 'Created By', 'Rating', 'Visibility', 'Actions']}
                     rows={productsRes?.products.map((product : Product) => ({
                         'Product' : (
                             <div className="flex items-center gap-2 min-w-[200px]">
@@ -191,6 +191,7 @@ const Products = () => {
                         'Created At' : formatDate(product.createdAt),
                         'Created By' : `${product.added_by?.firstname} ${product.added_by?.lastname}`,
                         'Rating' : `${product.rating} / 5`,
+                        'Visibility' : product.visibility,
                         'Actions' : (
                             <div className="flex">
                                 <Tooltip title="Edit Product">

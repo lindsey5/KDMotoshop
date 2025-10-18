@@ -10,6 +10,8 @@ import { exportData } from "../../../utils/utils"
 import CustomizedPagination from "../../../components/Pagination"
 import { StockStatusChip } from "../../../components/Chip"
 import { useState } from "react"
+import { useDebounce } from "../../../hooks/useDebounce"
+import { SearchField } from "../../../components/Textfield"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -18,7 +20,9 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const InventoryStatus = () => {
     const [page, setPage] = useState(1);
-    const { data, loading } = useFetch(`/api/products/inventory-status?page=${page}&limit=5`)
+    const [search, setSearch] = useState('');
+    const searchDebounce = useDebounce(search, 500);
+    const { data, loading } = useFetch(`/api/products/inventory-status?page=${page}&limit=5&searchTerm=${searchDebounce}`)
 
     const exportReport= () => {
         const dataToExport = data?.products.map((p : ProductInventoryStatus) => ({
@@ -49,6 +53,12 @@ const InventoryStatus = () => {
                 <Button variant="contained" onClick={exportReport}>Export</Button>
             </div>
             <Card className="h-screen overflow-y-auto">
+                <SearchField 
+                    placeholder="Search by name, sku..."
+                    onChange={(e) => setSearch(e.target.value)}
+                    value={search}
+                    sx={{ marginBottom: 4 }}
+                />
                 <CustomizedTable 
                     cols={['Product name', 'Stock', 'SKU', 'Product Type', 'Reorder Level', 'Optimal Stock', 'Suggestion', 'Status']}
                     rows={data?.products.map((product : ProductInventoryStatus) => ({
@@ -66,12 +76,12 @@ const InventoryStatus = () => {
                         'SKU' : product.sku,
                         'Product Type' : product.product_type,
                         'Reorder Level' : product.reorderLevel,
-                        'Optimal Stock' : product.optimalStockLevel,
+                        'Optimal Stock' : product.status === 'Out of Stock' ? 10 : product.optimalStockLevel || 'N/A',
                         'Suggestion' : (
                             product.status === "Overstock"
-                            ? `Reduce inventory by ${product.amount} units`
+                            ? `Reduce inventory by ${product.amount} items`
                             : product.status === "Understock" || product.status === 'Out of Stock'
-                            ? `Restock ${product.amount} units`
+                            ? `Restock ${product.amount} items`
                             : "No action needed"
                         ),
                         'Status' : <StockStatusChip status={product.status}/>
