@@ -8,37 +8,55 @@ type ProductFilterType = {
   visibility : string | undefined
 }
 
-export const createProductFilter = ({ searchTerm, min, max, category, visibility } : ProductFilterType) => {
-    let filter: any = {};
-    if (searchTerm) {
-      filter.$or = [
-          { product_name: { $regex: searchTerm, $options: "i" } },
-          { sku: { $regex: searchTerm, $options: "i" } },
-          { category: { $regex: searchTerm, $options: "i" } },
-          { "variant.sku": { $regex: searchTerm, $options: "i" } },
-        ];
-    }
+export const createProductFilter = ({
+  searchTerm,
+  min,
+  max,
+  category,
+  visibility,
+}: ProductFilterType) => {
+  const filter: any = { $and: [] };
 
-    if (min && max) {
-      const minVal = Number(min);
-      const maxVal = Number(max);
+  // helper to escape regex special characters
+  const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-      filter.$and = [{
-          $or: [
-            { price: { $gte: minVal, $lte: maxVal } },
-            { "variants.price": { $gte: minVal, $lte: maxVal } }
-          ]
-      }];
-    }
+  if (searchTerm) {
+    const safeSearch = escapeRegExp(searchTerm);
+    filter.$and.push({
+      $or: [
+        { product_name: { $regex: safeSearch, $options: 'i' } },
+        { sku: { $regex: safeSearch, $options: 'i' } },
+        { category: { $regex: safeSearch, $options: 'i' } },
+        // ✅ use dot notation instead of $elemMatch
+        { 'variants.sku': { $regex: safeSearch, $options: 'i' } },
+      ],
+    });
+  }
 
-    filter.$and = [  { visibility: { $ne: "Deleted" } } ]
+  if (min && max) {
+    const minVal = Number(min);
+    const maxVal = Number(max);
+    filter.$and.push({
+      $or: [
+        { price: { $gte: minVal, $lte: maxVal } },
+        { 'variants.price': { $gte: minVal, $lte: maxVal } },
+      ],
+    });
+  }
 
-    if(visibility) filter.$and.push({ visibility })
+  if (visibility && visibility !== 'All') {
+    filter.$and.push({ visibility });
+  } else {
+    filter.$and.push({ visibility: { $ne: 'Deleted' } });
+  }
 
-    if (category && category !== "All") filter.category = category;
+  if (category && category !== 'All') {
+    filter.$and.push({ category });
+  }
 
-    return filter
-}
+  return filter;
+};
+
 
 export const determineSortOption = (sort : string) : { [key: string]: SortOrder }  => {
     let sortOption: { [key: string]: SortOrder };

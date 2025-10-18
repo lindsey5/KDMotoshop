@@ -128,7 +128,8 @@ export const get_products = async (req: Request, res: Response) => {
           .populate("added_by", ["firstname", "lastname"])
           .skip(skip)
           .sort(sortOption)
-          .limit(limit),
+          .limit(limit)
+          .lean() ,
         Product.countDocuments(filter),
       ]);
 
@@ -365,7 +366,7 @@ export const get_inventory_status = async (req: Request, res: Response) => {
 
     if(searchTerm){
       filter.$or = [
-        { 'variant.sku': { $regex: searchTerm, $options: 'i' } },
+        { 'variants.sku': { $regex: searchTerm, $options: 'i' } },
         { sku: { $regex: searchTerm, $options: 'i' } },
         { product_name: { $regex: searchTerm, $options: 'i' } },
       ]
@@ -374,7 +375,8 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const products = await Product.find(filter)
       .sort({ product_name: 1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     const totalProducts = await Product.countDocuments(filter);
 
