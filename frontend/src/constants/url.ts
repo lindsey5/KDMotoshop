@@ -1,1 +1,1 @@
-export const url = process.env.NODE_ENV === 'production' ? process.env.NGROK_URL : 'http://localhost:8000';
+export const url = import.meta.env.VITE_AI_URL
