@@ -6,7 +6,7 @@ export const get_predicted_sales = async (req : Request, res : Response) => {
         const month = req.query.month || today.getMonth() + 1;
         const year = req.query.year || today.getFullYear(); 
 
-        const response = await fetch(`${process.env.NGROK_URL}/api/predict?month=${month}&year=${year}`)
+        const response = await fetch(`${process.env.VITE_AI_URL}/api/predict?month=${month}&year=${year}`)
         if(!response.ok){
             res.status(400).json({ success: false, message: 'Failed to fetch predicted sales'});
             return;
@@ -27,7 +27,7 @@ export const get_predicted_items = async (req : Request, res : Response) => {
         const month = req.query.month || today.getMonth() + 1;
         const year = req.query.year || today.getFullYear(); 
 
-        const response = await fetch(`${process.env.NGROK_URL}/api/predict/items?month=${month}&year=${year}`)
+        const response = await fetch(`${process.env.VITE_AI_URL}/api/predict/items?month=${month}&year=${year}`)
         if(!response.ok){
             res.status(400).json({ success: false, message: 'Failed to fetch predicted items'});
             return;
