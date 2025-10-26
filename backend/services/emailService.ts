@@ -1,6 +1,5 @@
 import SibApiV3Sdk from 'sib-api-v3-sdk';
 
-// ✅ Initialize Brevo API client once
 const brevoClient = SibApiV3Sdk.ApiClient.instance;
 brevoClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY as string;
 
@@ -9,12 +8,9 @@ const brevo = new SibApiV3Sdk.TransactionalEmailsApi();
 // Shared sender info
 const sender = {
   name: 'KD Motoshop',
-  email: process.env.EMAIL_USER as string, // e.g. noreply@kdmotoshop.com
+  email: process.env.EMAIL_USER as string,
 };
 
-// -------------------------------------------------------------------
-// ✅ 1. Send Verification Code
-// -------------------------------------------------------------------
 export const sendVerificationCode = async (email: string) => {
   try {
     const verificationCode = Math.floor(1000 + Math.random() * 9000);
@@ -46,9 +42,6 @@ export const sendVerificationCode = async (email: string) => {
   }
 };
 
-// -------------------------------------------------------------------
-// ✅ 2. Send Order Update
-// -------------------------------------------------------------------
 export const sendOrderUpdate = async (
   email: string,
   order_id: string,
@@ -95,9 +88,7 @@ export const sendOrderUpdate = async (
   }
 };
 
-// -------------------------------------------------------------------
-// ✅ 3. Send Refund Update
-// -------------------------------------------------------------------
+
 interface RefundUpdateProps {
   email: string;
   order_id: string;

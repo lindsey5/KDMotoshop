@@ -39,7 +39,12 @@ const CustomerSignupPage = () => {
 
     return (
         <div className={cn("min-h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
-            <VerifyEmailModal open={code !== undefined} customer={newCustomer as NewCustomer} code={code}/>
+            <VerifyEmailModal 
+                open={code !== undefined} 
+                customer={newCustomer as NewCustomer} 
+                code={code}
+                close={() => setCode(undefined)}
+            />
             <div className="flex justify-between items-center w-full">
                 <img className={cn("hidden sm:block w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
                     onClick={() => window.location.href = '/'} 
