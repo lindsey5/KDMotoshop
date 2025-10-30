@@ -66,15 +66,14 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (customer && customer.role === 'Customer') {
-      setAddAddress((customer.addresses?.length || 0) < 1);
       setAddress((prev) => ({
         ...prev,
         firstname: customer.firstname,
         lastname: customer.lastname,
       }));
       
-      setSelectedAddress(customer && customer?.role === 'Customer' ? 
-      customer?.addresses?.findIndex(address => address.isDefault) ?? 0 : 0)
+      const defaultAddress = customer?.addresses?.findIndex(address => address.isDefault) ?? -1;
+      setSelectedAddress(defaultAddress < 0 ? 0 : defaultAddress);
   
     }
   }, [customer]);
