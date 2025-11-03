@@ -133,7 +133,7 @@ const CustomerProduct = () => {
     }
 
     return (
-         <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
+         <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col lg:flex-row gap-10 py-10">
                 <div className="flex gap-5 flex-col items-center">

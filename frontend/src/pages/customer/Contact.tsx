@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { RedTextField } from "../../components/Textfield";
 import { RedButton } from "../../components/buttons/Button";
 import Card from "../../components/Card";
+import { cn } from "../../utils/utils";
 
 const Contact: React.FC = () => {
     const isDark = useDarkmode();
@@ -22,10 +23,10 @@ const Contact: React.FC = () => {
     };
 
     return (
-        <main className={`pt-20 pb-5 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-white"}`}>
+        <main className={`pt-20 pb-5 min-h-screen transition-colors duration-300 ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}>
         
         {/* Hero Section */}
-        <div className={`relative overflow-hidden bg-red-600`}>
+        <div className={cn(`relative overflow-hidden bg-red-600`, isDark && 'bg-gradient-to-r from-red-900 to-red-800')}>
             <div className="max-w-6xl mx-auto px-6 py-16 text-center">
             <h1 className="text-5xl font-bold text-white mb-4">Contact Us</h1>
             <p className="text-red-100 text-lg">
@@ -59,7 +60,7 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Contact Form */}
-            <Card className="flex flex-col gap-4">
+            <Card className="flex flex-col gap-4 p-10">
             {submitted && (
                 <p className="text-green-500 font-semibold text-center">
                 Your message has been sent!

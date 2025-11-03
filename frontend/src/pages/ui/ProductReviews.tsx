@@ -38,15 +38,15 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
             <div className="flex items-center gap-5 justify-between flex-wrap mt-2">
                 <h1 className={cn("text-2xl font-bold", isDark && 'text-white')}>Customer Reviews ({reviewsRes?.overallTotal})</h1>
                 <div className="flex items-center gap-2">
-                    <Rating 
+                    {reviewsRes?.reviews.length > 0 && <Rating 
                         name="read-only"
                         value={rating}
                         readOnly
                         precision={0.5}
                         size="large"
                         emptyIcon={<GradeOutlinedIcon fontSize="inherit" sx={{ color: isDark ? 'white' : ''}}/>}
-                    />
-                    <span className={cn("text-gray-500", isDark && 'text-gray-400')}>{rating} out of 5</span>
+                    />}
+                    <span className={cn("text-gray-500", isDark && 'text-gray-400')}>{reviewsRes?.reviews.length > 0 ? `${rating}  out of 5` : 'No Reviews yet'}</span>
                 </div>
             </div>
             <div className="flex gap-5 flex-wrap">

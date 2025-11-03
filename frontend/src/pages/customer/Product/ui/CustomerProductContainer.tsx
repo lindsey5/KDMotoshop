@@ -24,7 +24,7 @@ const CustomerProductContainer = ({ product, className }: { product: any, classN
             <img
                 src={product.image}
                 alt={product.product_name}
-                className="w-full h-[160px] sm:h-[200px] md:h-[240px] lg:h-[260px] xl:h-[280px] object-cover"
+                className="w-full h-[160px] sm:h-[200px] md:h-[200px] lg:h-[260px] object-cover"
             />
             <div className="p-3 flex flex-col gap-2 md:gap-3">
                 <h1 className="text-sm sm:text-base md:text-lg font-bold text-white truncate">

@@ -4,6 +4,7 @@ import {
   HelpCircle, ChevronDown, ShoppingBag, Package, 
   CreditCard, MapPin, Shield, FileText 
 } from "lucide-react";
+import Card from "../../components/Card";
 
 type Category = {
     id: string;
@@ -308,7 +309,7 @@ const FAQ: React.FC = () => {
     const filteredFaqs = faqs.filter(faq => activeCategory === "all" || faq.category === activeCategory);
 
     return (
-        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-white"}`}>
+        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}>
         
         {/* Hero Section */}
         <div className={`relative overflow-hidden ${isDark ? "bg-gradient-to-r from-red-900 to-red-800" : "bg-red-600"}`}>
@@ -335,7 +336,7 @@ const FAQ: React.FC = () => {
                         ? "bg-red-600 text-white"
                         : "bg-red-600 text-white shadow-lg"
                         : isDark
-                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        ? "bg-[#121212] text-gray-300 hover:bg-gray-700"
                         : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                     }`}
                 >
@@ -350,16 +351,11 @@ const FAQ: React.FC = () => {
             <div className="space-y-4">
             {filteredFaqs.length > 0 ? (
                 filteredFaqs.map((faq, index) => (
-                <div
-                    key={index}
-                    className={`rounded-xl overflow-hidden transition-all ${
-                    isDark ? "bg-gray-900 border border-gray-800" : "bg-white border border-gray-200 shadow-sm"
-                    }`}
-                >
+                <Card key={index} className="p-3">
                     <button
                     onClick={() => toggleItem(index)}
                     className={`w-full px-6 py-4 flex items-center justify-between text-left transition-colors ${
-                        isDark ? "hover:bg-gray-800" : "hover:bg-red-50"
+                        isDark ? "hover:opacity-50" : "hover:bg-red-50"
                     }`}
                     >
                     <span className={`font-semibold pr-4 ${isDark ? "text-white" : "text-gray-900"}`}>{faq.question}</span>
@@ -372,7 +368,7 @@ const FAQ: React.FC = () => {
                         <p className="leading-relaxed">{faq.answer}</p>
                     </div>
                     )}
-                </div>
+                </Card>
                 ))
             ) : (
                 <div className={`text-center py-12 rounded-xl ${isDark ? "bg-gray-900 border border-gray-800" : "bg-white border border-gray-200"}`}>
@@ -383,18 +379,18 @@ const FAQ: React.FC = () => {
             </div>
 
             {/* Still Have Questions */}
-            <div className={`mt-12 rounded-2xl p-8 text-center ${isDark ? "bg-gradient-to-r from-red-900/30 to-orange-900/30 border border-red-800/50" : "bg-gradient-to-r from-red-50 to-orange-50 border border-red-200"}`}>
-            <h3 className={`text-2xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>Still have questions?</h3>
-            <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>Can't find the answer you're looking for? Feel free to reach out to our support team.</p>
-            <a
-                href="/contact"
-                className={`inline-block px-6 py-3 rounded-lg font-medium transition-all ${
-                isDark ? "bg-red-600 text-white hover:bg-red-700" : "bg-red-600 text-white hover:bg-red-700 shadow-lg hover:shadow-xl"
-                }`}
-            >
-                Contact Support
-            </a>
-            </div>
+            <Card className="text-center mt-12">
+                <h3 className={`text-2xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>Still have questions?</h3>
+                <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>Can't find the answer you're looking for? Feel free to reach out to our support team.</p>
+                <a
+                    href="/contact"
+                    className={`inline-block px-6 py-3 rounded-lg font-medium transition-all ${
+                    isDark ? "bg-red-600 text-white hover:bg-red-700" : "bg-red-600 text-white hover:bg-red-700 shadow-lg hover:shadow-xl"
+                    }`}
+                >
+                    Contact Support
+                </a>
+            </Card>
 
             {/* Footer */}
             <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-800 text-gray-500" : "border-gray-200 text-gray-500"}`}>

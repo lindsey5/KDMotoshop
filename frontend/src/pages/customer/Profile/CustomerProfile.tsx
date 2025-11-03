@@ -19,7 +19,7 @@ const CustomerProfile = () => {
     if(!customer) return null
 
     return (
-        <div className={`mt-20 min-h-screen ${isDark ? 'bg-gradient-to-r from-gray-900 via-black to-gray-800' : 'bg-neutral-50'}`}>
+        <div className={`mt-20 min-h-screen ${isDark ? 'bg-[#1e1e1e]' : 'bg-neutral-50'}`}>
         {/* Header with Profile Info */}
         <div className={`${isDark ? 'bg-[#121212] border-gray-700' : 'bg-white border-neutral-200'} border-b`}>
             <div className="max-w-7xl mx-auto px-6 py-8">

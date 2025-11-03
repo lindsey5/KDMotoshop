@@ -84,7 +84,7 @@ const CustomerProducts = () => {
 
     return (
         <div className="flex flex-col md:flex-row pt-20">
-            <div className={cn("transition-colors duration-600 relative flex-1 p-3 lg:p-10 bg-gray-100", isDark && 'bg-gradient-to-r from-gray-900 via-black to-gray-800')}>
+            <div className={cn("transition-colors duration-600 relative flex-1 p-3 lg:p-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
                 <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
                 <div className="w-full flex flex-col md:flex-row flex-wrap gap-10 md:justify-between md:items-center mt-4">
                     {searchTerm ? <p className={cn('my-2 text-2xl', isDark && 'text-white')}>Results for: {searchTerm}</p> : <Title className="text-2xl md:text-3xl">Products</Title>}

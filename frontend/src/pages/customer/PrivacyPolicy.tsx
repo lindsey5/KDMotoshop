@@ -1,3 +1,4 @@
+import Card from "../../components/Card";
 import useDarkmode from "../../hooks/useDarkmode";
 import { Shield, Lock, Users, FileText, CreditCard, Clock, Mail } from "lucide-react";
 
@@ -45,7 +46,7 @@ const PrivacyPolicy = () => {
     ];
 
     return (
-        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-gray-950" : "bg-gray-50"}`}>
+        <main className={`pt-20 min-h-screen transition-colors duration-300 ${isDark ? "bg-[#1e1e1e]" : "bg-gray-50"}`}>
             {/* Hero Section */}
             <div className={`relative overflow-hidden ${isDark ? "bg-gradient-to-r from-red-900 to-red-800" : "bg-red-600"}`}>
                 <div className="max-w-6xl mx-auto px-6 py-16 text-center">
@@ -62,8 +63,8 @@ const PrivacyPolicy = () => {
                     {sections.map((section, index) => {
                         const Icon = section.icon;
                         return (
-                            <div key={index} className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${isDark ? "bg-gray-900 border border-gray-800 hover:border-red-500" : "bg-white border border-gray-200 hover:border-red-400 hover:shadow-red-100"}`}>
-                                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 transform translate-x-8 -translate-y-8 text-red-500">
+                            <Card key={index} className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${isDark ? "border border-gray-800 hover:border-red-500" : "border border-gray-200 hover:border-red-400 hover:shadow-red-100"}`}>
+                                <div className="absolute top-0 right-0 w-32 h-32 opacity-10 transform translate-x-8 -translate-y-8 text-red-500">
                                     <Icon className="w-full h-full" />
                                 </div>
 
@@ -89,18 +90,18 @@ const PrivacyPolicy = () => {
                                         )}
                                     </p>
                                 </div>
-                            </div>
+                            </Card>
                         );
                     })}
                 </div>
 
                 {/* Trust Badges */}
-                <div className={`mt-12 rounded-2xl p-8 text-center ${isDark ? "bg-gray-900 border border-gray-800" : "bg-white border border-gray-200"}`}>
+                <Card className="text-center mt-12">
                     <h3 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>Your Data is Safe With Us</h3>
                     <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                         We are committed to protecting your privacy and ensuring the security of your personal information.
                     </p>
-                </div>
+                </Card>
 
                 {/* Footer */}
                 <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-700 text-gray-300" : "border-gray-200 text-gray-500"}`}>
