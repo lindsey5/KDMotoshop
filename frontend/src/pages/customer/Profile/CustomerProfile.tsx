@@ -69,7 +69,7 @@ const CustomerProfile = () => {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-3 md:px-6 py-8">
             {activeTab === "Profile" && (
                 <ProfileSettings customer={customer as Customer} isDark={isDark}/>
             )}

@@ -53,7 +53,7 @@ const Addresses = ({ isDark, defaultAddresses }: AddressesProps) => {
 
     return (
         <div className="min-h-screen transition-colors duration-300">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+        <div className="max-w-4xl mx-auto px-2 sm:px-6 py-12">
             {/* Header */}
             <div className="mb-12">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">

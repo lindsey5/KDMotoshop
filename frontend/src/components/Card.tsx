@@ -12,7 +12,7 @@ const Card  = ({ className = "", children } : CardProps) => {
     
     return (
         
-    <div className={cn("p-5 rounded-lg shadow-lg border", isDark ? "bg-[#121212] border-gray-400 text-white" : 'bg-white border-gray-300', className)}>
+    <div className={cn("p-5 rounded-lg shadow-lg border", isDark ? "bg-[#121212] border-gray-500 text-white" : 'bg-white border-gray-300', className)}>
       {children}
     </div>
   );
