@@ -17,7 +17,7 @@ const MobileHome = () => {
         <CustomerHeader />
 
         {/* ✅ Hero Section (Responsive) */}
-        <div className="relative bg-[url(/bg.png)] bg-cover min-h-[80vh] px-5 flex flex-col justify-center items-center text-center">
+        <div className="relative bg-[url(/bg.png)] bg-cover min-h-[75vh] px-5 flex flex-col justify-center items-center text-center">
             <motion.div
             className="space-y-6 text-white max-w-md flex flex-col items-center"
             initial={{ opacity: 0, y: 50 }}
