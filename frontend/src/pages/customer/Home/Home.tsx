@@ -84,7 +84,7 @@ const KDMotoshopHome = () => {
                     </ParallaxLayer>
                     
 
-                    <ParallaxLayer className="relative flex justify-center items-center z-10" offset={1} speed={1}>
+                    <ParallaxLayer className="relative flex justify-center items-center z-10" offset={1} speed={0.5}>
                         <TextType 
                             text ={["Welcome to KD Motoshop", "Find everything you need", "Enjoy seamless checkout!", "Thanks for shopping with us!"]}
                             typingSpeed={75}
