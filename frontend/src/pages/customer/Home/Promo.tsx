@@ -41,7 +41,7 @@ export default function PromoSection({ isParallax }: { isParallax: boolean }) {
     return (
         <section
             className={`py-16 transition-colors duration-300 ${
-                isParallax && isDark ? "" : isDark ? "bg-gradient-to-r from-gray-900 via-black to-gray-800" : "bg-gray-50"
+                isParallax && isDark ? "" : isDark ? "bg-[#1e1e1e]" : "bg-gray-50"
             }`}
         >
             <div className="max-w-6xl mx-auto px-6">

@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
 import { Navigate } from "react-router-dom";
 import PromoSection from "./Promo";
+import FacebookPage from "./FacebookPage";
 
 const KDMotoshopHome = () => {
     const parallax = useRef<IParallax>(null!)
@@ -31,7 +32,7 @@ const KDMotoshopHome = () => {
                 {isDark && <SplashCursor />}
                 <ChatbotButton />
                 <MobileHome />
-                <Parallax ref={parallax} pages={7} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
+                <Parallax ref={parallax} pages={8} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
                     <ParallaxLayer className="relative z-100" offset={0}>
                         <CustomerHeader />
                          <div className='relative h-screen px-5 overflow-hidden flex justify-center items-center gap-25'>
@@ -106,30 +107,34 @@ const KDMotoshopHome = () => {
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={4} speed={0.5}>
-                        <PromoSection isParallax={true} />
+                        <FacebookPage />
                     </ParallaxLayer>
 
                     <ParallaxLayer offset={5} speed={0.5}>
+                        <PromoSection isParallax={true} />
+                    </ParallaxLayer>
+
+                    <ParallaxLayer offset={6} speed={0.5}>
                         <AboutSection isParallax={true}/>
                     </ParallaxLayer>
 
-                    <ParallaxLayer className="relative" sticky={{ start: 5, end: 5.2 }}>
+                    <ParallaxLayer className="relative" sticky={{ start: 6, end: 6.2 }}>
                         <img className="absolute right-20 bottom-1/2 translate-y-1/2" src="/icons/Astronot.gif" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={6} speed={0.3}>
+                    <ParallaxLayer offset={7} speed={0.3}>
                         <img className="w-full h-screen" src="/moon.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={6} speed={-0.2}>
+                    <ParallaxLayer offset={7} speed={-0.2}>
                         <img className="w-full h-screen" src="/mountain.png" />
                     </ParallaxLayer>
                 
-                    <ParallaxLayer offset={6}>
+                    <ParallaxLayer offset={7}>
                         <img className="w-full h-screen" src="/road.png" />
                     </ParallaxLayer>
 
-                    <ParallaxLayer offset={6.3} speed={-0.3}>
+                    <ParallaxLayer offset={7.3} speed={-0.3}>
                         <img className="w-full h-screen" src="/moto-pov.png" />
                     </ParallaxLayer>
                 </Parallax>

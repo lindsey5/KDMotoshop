@@ -1,17 +1,15 @@
 import ChatbotButton from "../../../components/buttons/Chatbot";
 import CustomerFooter from "../ui/CustomerFooter";
 import CustomerHeader from "../ui/CustomerHeader";
-import useDarkmode from "../../../hooks/useDarkmode";
 import { cn } from "../../../utils/utils";
 import AboutSection from "./About";
 import PopularCategoriesSection from "./PopularCategories";
 import PopularProductsSection from "./PopularProducts";
 import * as motion from "motion/react-client";
 import PromoSection from "./Promo";
-import RippleGrid from "../../../components/backgrounds/RippleGrid";
+import FacebookPageMap from "./FacebookPage";
 
 const MobileHome = () => {
-    const isDark = useDarkmode();
 
     return (
         <div className="bg-white block lg:hidden">
@@ -61,16 +59,9 @@ const MobileHome = () => {
         {/* ✅ Sections (Still Mobile Friendly) */}
         <PopularProductsSection isParallax={false} />
         <PopularCategoriesSection />
+        <FacebookPageMap />
         <AboutSection isParallax={false} />
         <PromoSection isParallax={false} />
-
-        {/* ✅ Responsive Map */}
-        <iframe
-            className={cn("w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-100", isDark && "bg-[#121212]")}
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3862.349116006964!2d121.05185327507307!3d14.522012278995932!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397bbee71caad35%3A0x8c8e2d4f2d0bdde3!2sKD%20Motoshop%20Pinagsama%20Branch!5e0!3m2!1sen!2sph!4v1752127835647!5m2!1sen!2sph"
-            loading="lazy"
-            allowFullScreen
-        />
 
         {/* ✅ Footer + Chatbot (Mobile) */}
         <CustomerFooter />

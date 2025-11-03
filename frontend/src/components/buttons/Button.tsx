@@ -21,20 +21,6 @@ export const RedButton = ({ sx, ...props }: ButtonProps) => {
           color: isDark ? "gray" : "white",
         },
 
-        // 🔥 Responsive styles
-        fontSize: {
-          xs: "0.75rem", // small phones
-          sm: "0.875rem", // tablets
-        },
-        padding: {
-          xs: "6px 12px",
-          sm: "8px 16px",
-        },
-        borderRadius: {
-          xs: "6px",
-          sm: "8px",
-        },
-
         ...sx,
       }}
       {...props}
