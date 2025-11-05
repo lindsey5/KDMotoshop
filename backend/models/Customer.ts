@@ -77,7 +77,7 @@ CustomerSchema.methods.getTotalCompletedOrders = async function () {
 }
 
 CustomerSchema.methods.getTotalPendingOrders = async function () {
-  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id, status: { $in: ['Pending', 'Confirmed', 'Shipped']} })
+  const totalOrders = await Order.countDocuments({ 'customer.customer_id': this._id, status: { $in: ['Pending']} })
 
   return totalOrders
 }
