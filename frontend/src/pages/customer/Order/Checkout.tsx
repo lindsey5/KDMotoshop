@@ -177,7 +177,7 @@ const CheckoutPage = () => {
       const items = await Promise.all(
         parsedItems
           .map(async (item: any) => {
-            const response = await fetchData(`/api/products/${item.product_id}`);
+            const response = await fetchData(`/api/products/published/${item.product_id}`);
             if (response.success) {
               const product: Product = response.product;
               const variant = product.variants?.find(
@@ -226,10 +226,8 @@ const CheckoutPage = () => {
 
             return null;
           })
-          .filter((item: any) => item)
       );
-
-      setOrderItems(items);
+      setOrderItems(items.filter((item) => item !== null));
     };
 
     getProducts();

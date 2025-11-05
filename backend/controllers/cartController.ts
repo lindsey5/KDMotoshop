@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Cart from "../models/Cart";
+import Product from "../models/Product";
 
 export const create_new_item = async (req : AuthenticatedRequest, res : Response) => {
     try{
@@ -10,6 +11,12 @@ export const create_new_item = async (req : AuthenticatedRequest, res : Response
             product_id: product_id,
             customer_id: customer_id,
             sku: sku,
+        }
+
+        const isProductExist = await Product.findOne({ _id: product_id, visibility: 'Published'})
+        if(!isProductExist){
+            res.status(404).json({ success: false, message: 'Product is not available please select another products'})
+            return;
         }
 
         const existedCart = await Cart.findOne(query)

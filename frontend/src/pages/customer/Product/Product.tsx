@@ -9,7 +9,7 @@ import { RedButton } from "../../../components/buttons/Button";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { CircularProgress, Rating } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
-import { successAlert } from "../../../utils/swal";
+import { errorAlert, successAlert } from "../../../utils/swal";
 import MultiImageSlideshow from "./ui/MultiImageSlideShow";
 import ProductThumbnail from "../../ui/ProductThumbnail";
 import ProductReviews from "../../ui/ProductReviews";
@@ -39,7 +39,7 @@ const CustomerProduct = () => {
     useEffect(() => {
         const fetchDataAsync = async () => {
             const [productResponse, reviewsResponse] = await Promise.all([
-                fetchData(`/api/products/${id}`),   
+                fetchData(`/api/products/published/${id}`),   
                 fetchData(`/api/reviews/product/${id}`)
             ]);
 
@@ -53,8 +53,6 @@ const CustomerProduct = () => {
     const filteredVariants = useMemo(() => {
         setQuantity(1)
         if (!product || product?.product_type === 'Single') { return [] };
-
-        console.log(product)
     
         return product.variants.filter((variant) =>
             Object.entries(selectedAttributes).every(
@@ -86,26 +84,28 @@ const CustomerProduct = () => {
                 quantity: quantity,
             } 
             const response = await postData('/api/cart', newItem);
-            if(response.success){
-                const existedCartIndex = cart.findIndex(item => item._id === response.cart._id);
-
-                existedCartIndex !== -1 ? dispatch(setCart(cart.map((item, index) => (
-                    index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
-                )))) : dispatch(setCart([...cart, {
-                    ...response.cart, 
-                    isSelected: true,
-                    attributes: selectedAttributes,
-                    stock:  product.product_type === 'Single' ? product.stock : filteredVariants[0].stock,
-                    product_name: product.product_name,
-                    price: product.product_type === 'Single' ? product.price : filteredVariants[0].price,
-                    image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
-                        ? product.thumbnail.imageUrl
-                            : typeof product?.thumbnail === 'string'
-                            ? product.thumbnail
-                        : '/photo.png'
-                }]))
-                successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
+            if(!response.success){
+                await errorAlert('Error', response.message || 'Failed');
+                return;
             }
+            const existedCartIndex = cart.findIndex(item => item._id === response.cart._id);
+
+            existedCartIndex !== -1 ? dispatch(setCart(cart.map((item, index) => (
+                index === existedCartIndex ? {...item, quantity: item.quantity + newItem.quantity} : item
+            )))) : dispatch(setCart([...cart, {
+                ...response.cart, 
+                isSelected: true,
+                attributes: selectedAttributes,
+                stock:  product.product_type === 'Single' ? product.stock : filteredVariants[0].stock,
+                product_name: product.product_name,
+                price: product.product_type === 'Single' ? product.price : filteredVariants[0].price,
+                image: typeof product?.thumbnail === 'object' && product.thumbnail !== null && 'imageUrl' in product.thumbnail
+                    ? product.thumbnail.imageUrl
+                        : typeof product?.thumbnail === 'string'
+                        ? product.thumbnail
+                    : '/photo.png'
+            }]))
+            successAlert('Added to Cart', 'You can view it in your cart anytime.', isDark);
         }else{
             navigate('/login')
         }

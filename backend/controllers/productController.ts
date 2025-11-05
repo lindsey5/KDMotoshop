@@ -40,16 +40,15 @@ const validate_product = async (product : IProduct) => {
       product.sku,
       ...(product.variants ? product.variants.map((v) => v.sku) : []),
     ].filter(Boolean);
-  
     const existing = await Product.find({
-      _id: { $ne: product._id }, // exclude self when updating
+      _id: { $ne: product._id }, 
       $or: [
         { sku: { $in: allSkus } },
         { 'variants.sku': { $in: allSkus } },
       ],
     });
   
-    if (existing) {
+    if (existing.length > 0) {
       throw new Error(`SKUs already exist in another product: ${existing.map(e => e.sku).join(', ')}`)
     }
 }
@@ -149,7 +148,7 @@ export const get_product_by_id = async (req: Request, res: Response) => {
     try {
       const product = await Product.findById(req.params.id);
 
-      if(!product){
+      if(!product || product.visibility === 'Deleted'){
         res.status(404).json({ success: false, message: 'Product not found'})
         return;
       }
@@ -161,6 +160,23 @@ export const get_product_by_id = async (req: Request, res: Response) => {
       res.status(500).json({ success: false, message: err.message });
     }
 };
+
+export const get_published_product_by_id = async (req : Request, res : Response) => {
+  try{
+      const product = await Product.findById(req.params.id);
+
+      if(!product || product.visibility !== 'Published'){
+        res.status(404).json({ success: false, message: 'Product not found'})
+        return;
+      }
+
+      res.status(200).json({ success: true, product })
+
+  }catch(err : any){
+    console.log(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
 
 // Utility to calculate total stock
 const calculateTotalStock = (product: any) => {
