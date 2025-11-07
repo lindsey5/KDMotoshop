@@ -16,6 +16,7 @@ import { updateAllNotifications } from "../features/notifications/notificationTh
 import { clearCart } from "../features/cart/cartSlice";
 import { logoutUser } from "../features/user/userThunks";
 import { ClipboardList } from "lucide-react";
+import { successAlert } from "../utils/swal";
 
 export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
     const [open, setOpen] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
       dispatch(clearCart())
       dispatch(resetNotifications())   
       dispatch(logoutUser({ navigate, path: '/' }))
+      successAlert('Logout successful', 'You’ve been securely signed out of your account.')
     }
 
     const handleClick = (path : string) => {
