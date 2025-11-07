@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../features/store';
 import { SocketContext } from '../../../context/socketContext';
 import { logoutUser } from '../../../features/user/userThunks';
-import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
@@ -88,12 +87,11 @@ const SidebarDropdown = ({ icon, label, options } :SidebarDropdownProps) => {
 export const AdminSidebar = () => {
     const { user } = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
 
     const handleSignout = () => {
       dispatch(resetNotifications());
-      dispatch(logoutUser({ navigate, path: '/admin/login' }));
+      dispatch(logoutUser({ path: '/admin/login' }));
     };
 
     return (
