@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { verifyPassword, createAccessToken, createRefreshToken, setTokenCookie } from "../utils/authUtils";
+import { verifyPassword, createAccessToken, createRefreshToken, setTokenCookie, hashPassword, isStrongPassword } from "../utils/authUtils";
 import { createCustomer, findCustomer } from "../services/customerService";
 import Admin from "../models/Admin";
 import Customer from "../models/Customer";
@@ -78,14 +78,27 @@ export const customerLogin = async (req: Request, res: Response) => {
 
 export const signupCustomer = async (req : Request, res: Response) => {
   try{
-    const isExist = await findCustomer({ email: req.body.email });
+    const { code, ...rest } = req.body;
+    const verificationCode = req.cookies?.verificationCode;
+    if(!verificationCode){
+      res.status(401).json({ success: false, message: 'No verification code found.'})
+      return;
+    }
+
+    const isExist = await findCustomer({ email: rest.email });
 
     if(isExist){
       res.status(409).json({ success: false, message: 'Email already used' });
       return;
     }
+    const isMatch = await verifyPassword(code.toString(), verificationCode);
+  
+    if (!isMatch) {
+      res.status(401).json({ success: false, message: 'Incorrect Verification Code'})
+      return;
+    }
 
-    const newCustomer = await createCustomer(req.body);
+    const newCustomer = await createCustomer(rest);
 
     const accessToken = createAccessToken(newCustomer._id.toString());
     const refreshToken = createRefreshToken(newCustomer._id.toString());
@@ -93,25 +106,46 @@ export const signupCustomer = async (req : Request, res: Response) => {
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
     setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
 
-    res.status(201).json({ success: true, accessToken });
+    res.status(201).json({ success: true });
 
   }catch(err : any){
+    console.log(err)
     res.status(500).json({ success: false, message: err.message || 'Server error'})
   }
 }
 
 export const sendSignupEmailVerification = async (req : Request, res : Response) => {
   try{
-    const { email } = req.body
+    const { email, password } = req.body
+    
     const customer = await Customer.findOne({ email });
 
     if (customer) {
       res.status(400).json({ success: false, message: 'This email is already registered. Please use a different one.' });
       return;
     }
+
+    const isPasswordValid = isStrongPassword(password);
+
+    if(!isPasswordValid){
+      res.status(401).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.'})
+      return;
+    }
+
     const code = await sendVerificationCode(email)
 
-    res.status(200).json({ success: true, code,  })
+    if(!code){
+      res.status(400).json({ success: false, message: 'Failed to send verification code please try again.'})
+      return;
+    }
+
+    const hashedCode = await hashPassword(code.toString());
+
+    console.log(code, hashedCode)
+
+    setTokenCookie(res, "verificationCode", hashedCode, 30 * 60 * 1000); 
+
+    res.status(200).json({ success: true  })
 
   }catch(err : any){
     res.status(500).json({ success: false, message: err.message || 'Server error'})

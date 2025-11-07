@@ -14,7 +14,7 @@ function formatTime(seconds : number) {
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-const VerifyEmailModal = ({ open, customer, code, close } : { open : boolean, customer : NewCustomer, code : number | undefined, close : () => void }) => {
+const VerifyEmailModal = ({ open, customer, close } : { open : boolean, customer : NewCustomer, close : () => void }) => {
     const [otp, setOtp] = useState(Array(4).fill(""));
     const [sending, setSending] = useState(false);
     const [countdown, setCountdown] = useState(300);
@@ -40,12 +40,12 @@ const VerifyEmailModal = ({ open, customer, code, close } : { open : boolean, cu
             return;
         }
 
-        if (enteredCode === code) {
-            const response = await postData('/api/auth/signup', customer);
-            response.success ? window.location.href = '/' : errorAlert("Signup failed", response.message || "");
-        } else {
-            errorAlert("Incorrect code", "");
+        const response = await postData('/api/auth/signup', { ...customer, code: enteredCode });
+        if(!response.success){
+            errorAlert("Signup failed", response.message || "");
         }
+        await successAlert('You\'re all set!', 'Your account is ready. Let\'s get started on your journey.')
+        window.location.href = '/'
     };
 
     useEffect(() => {
@@ -64,12 +64,15 @@ const VerifyEmailModal = ({ open, customer, code, close } : { open : boolean, cu
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [open, code]);
+    }, [open]);
 
     return (
         <Modal 
             open={open}
-            onClose={close}
+            onClose={() => {
+                close();
+                setOtp(Array(4).fill(""))
+            }}
             aria-labelledby="create-admin-modal-title"
             aria-describedby="create-admin-modal-description"
             sx={{

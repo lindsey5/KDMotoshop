@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { ThemeToggle } from "../../components/Toggle"
 import useDarkmode from "../../hooks/useDarkmode"
-import { cn, isStrongPassword } from "../../utils/utils"
+import { cn } from "../../utils/utils"
 import { GoogleButton, RedButton } from "../../components/buttons/Button"
 import { PasswordField, RedTextField } from "../../components/Textfield"
 import { useState } from "react"
@@ -14,7 +14,7 @@ import { Navigate } from "react-router-dom"
 const CustomerSignupPage = () => {
     const isDark = useDarkmode()
     const [newCustomer, setNewCustomer] = useState<NewCustomer>();
-    const [code, setCode] = useState<number>();
+    const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
@@ -22,14 +22,15 @@ const CustomerSignupPage = () => {
     const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true)
-        if (!isStrongPassword(newCustomer?.password ?? '')) {
-            setError("Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.");
-            setLoading(false); 
+        setError('');
+        if (newCustomer?.password !== newCustomer?.confirmPassword) {
+            setError("Passwords do not match");
+            setLoading(false);
             return;
         }
-        const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email})
+        const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email, password: newCustomer?.password})
         
-        response.success ? setCode(response.code) : setError(response.message)
+        response.success ? setShowVerificationModal(true) : setError(response.message)
         setLoading(false)
     }
 
@@ -40,10 +41,9 @@ const CustomerSignupPage = () => {
     return (
         <div className={cn("min-h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
             <VerifyEmailModal 
-                open={code !== undefined} 
+                open={showVerificationModal} 
                 customer={newCustomer as NewCustomer} 
-                code={code}
-                close={() => setCode(undefined)}
+                close={() => setShowVerificationModal(false)}
             />
             <div className="flex justify-between items-center w-full">
                 <img className={cn("hidden sm:block w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
