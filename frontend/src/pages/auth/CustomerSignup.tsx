@@ -1,5 +1,4 @@
 import { motion } from "framer-motion"
-import { ThemeToggle } from "../../components/Toggle"
 import useDarkmode from "../../hooks/useDarkmode"
 import { cn } from "../../utils/utils"
 import { GoogleButton, RedButton } from "../../components/buttons/Button"
@@ -39,19 +38,12 @@ const CustomerSignupPage = () => {
     }
 
     return (
-        <div className={cn("min-h-screen bg-white flex flex-col gap-3 p-5", isDark && "bg-[#1e1e1e]" )}>
+        <div className={cn("min-h-screen bg-white flex flex-col gap-3 px-5 py-25", isDark && "bg-[#1e1e1e]" )}>
             <VerifyEmailModal 
                 open={showVerificationModal} 
                 customer={newCustomer as NewCustomer} 
                 close={() => setShowVerificationModal(false)}
             />
-            <div className="flex justify-between items-center w-full">
-                <img className={cn("hidden sm:block w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
-                    onClick={() => window.location.href = '/'} 
-                    src="/kd-logo.png" alt="" 
-                />
-               <ThemeToggle />
-            </div>
             <form className="flex-1 w-full lg:grid grid-cols-[1fr_1fr] gap-10" onSubmit={handleSubmit}>
                 <div className="p-5 relative hidden lg:block">
                     <motion.img 

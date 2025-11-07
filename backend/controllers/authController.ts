@@ -3,9 +3,12 @@ import { verifyPassword, createAccessToken, createRefreshToken, setTokenCookie, 
 import { createCustomer, findCustomer } from "../services/customerService";
 import Admin from "../models/Admin";
 import Customer from "../models/Customer";
-import { sendVerificationCode } from "../services/emailService";
+import { sendResetEmail, sendVerificationCode } from "../services/emailService";
 import { OAuth2Client } from "google-auth-library";
 import { AuthenticatedRequest } from "../types/auth";
+import crypto from 'crypto';
+import ResetToken from "../models/ResetToken";
+import { io } from "../middlewares/socket";
 
 const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 
@@ -63,6 +66,7 @@ export const customerLogin = async (req: Request, res: Response) => {
         res.status(401).json({ success: false, message: 'Incorrect Password'})
         return;
       }
+
       const accessToken = createAccessToken(user._id.toString());
       const refreshToken = createRefreshToken(user._id.toString());
 
@@ -105,6 +109,7 @@ export const signupCustomer = async (req : Request, res: Response) => {
 
     setTokenCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
     setTokenCookie(res, "accessToken", accessToken, 30 * 60 * 1000); 
+    res.clearCookie('verificationCode');
 
     res.status(201).json({ success: true });
 
@@ -141,9 +146,7 @@ export const sendSignupEmailVerification = async (req : Request, res : Response)
 
     const hashedCode = await hashPassword(code.toString());
 
-    console.log(code, hashedCode)
-
-    setTokenCookie(res, "verificationCode", hashedCode, 30 * 60 * 1000); 
+    setTokenCookie(res, "verificationCode", hashedCode, 5 * 60 * 1000); 
 
     res.status(200).json({ success: true  })
 
@@ -231,3 +234,83 @@ export const getUser = async (req : AuthenticatedRequest, res : Response) => {
     res.status(500).json({ success: false, message: err.message || 'Server error' });
   }
 }
+
+export const forgotPassword = async (req : Request, res : Response) => {
+  try {
+    const { email } = req.body;
+    const customer = await Customer.findOne({ email });
+
+    if (!customer) {
+      res.status(404).json({ error: 'No user with that email.' });
+      return;
+    }
+    if(!customer.password){
+      res.status(400).json({ success: false, message: 'Failed to reset password. This account was created using Google Sign-In.'});
+      return;
+    }
+    await ResetToken.findOneAndDelete({ customer_id: customer._id });
+
+    // Create reset token
+    const token = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    await ResetToken.create({ 
+      customer_id: customer._id, 
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: Date.now() + 5 * 60 * 1000
+    })
+
+    await sendResetEmail(customer.email, token);
+
+    res.status(200).json({ success: true, message: 'Reset email sent!' });
+  } catch (err : any) {
+    console.log(err.message);
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
+  }
+};
+
+export const resetPassword = async (req : Request, res : Response) => {
+  try{
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const isStrong = isStrongPassword(newPassword);
+    if(!isStrong){
+      res.status(401).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.' })
+      return;
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const resetToken = await ResetToken.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!resetToken) {
+      res.status(400).json({ message: 'Token is invalid or expired.' });
+      return;
+    }
+
+    const customer = await Customer.findById(resetToken.customer_id);
+    if(!customer){
+      res.status(404).json({ success: false, message: 'User not found'});
+      return;
+    }
+
+    if(!customer.password){
+      res.status(400).json({ success: false, message: 'Failed to reset password. This account was created using Google Sign-In.'})
+      return;
+    }
+
+    customer.password = newPassword;
+    await customer.save();
+    await resetToken.deleteOne();
+
+    io?.to(customer._id.toString()).emit('logout', {});
+
+    res.status(200).json({ success: true, message: 'Password has been reset successfully!' });
+  }catch(err : any){
+    console.log(err.message);
+    res.status(500).json({ success: false, message: err.message || 'Server error' });
+  }
+};

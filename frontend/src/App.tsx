@@ -16,6 +16,8 @@ import PrivacyPolicy from "./pages/customer/PrivacyPolicy";
 import TermsAndConditions from "./pages/customer/TermsAndConditions";
 import FAQ from "./pages/customer/FAQ";
 import Contact from "./pages/customer/Contact";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 const AdminLogin = lazy(() => import("./pages/auth/AdminLogin"));
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard/Dashboard"));
@@ -56,12 +58,10 @@ export default function App() {
   return (
     <DarkmodeContextProvider>
       <ToastContainer />
-      <SocketContextProvider>
         <BrowserRouter>
+          <SocketContextProvider>
           <LazyLoader>
             <Routes>
-              <Route path="login" element={<CustomerLogin />} />
-              <Route path="signup" element={<CustomerSignupPage />} />
               <Route index element={<Home />} />
               <Route element={<CustomerLayout />}>
                 <Route path="terms-and-conditions" element={<TermsAndConditions />} />
@@ -75,6 +75,10 @@ export default function App() {
                 <Route path="orders" element={<CustomerOrders />} />
                 <Route path="order/:id" element={<CustomerOrderDetails />} />
                 <Route path="profile" element={<CustomerProfile />} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password/:token" element={<ResetPassword />} />
+                <Route path="login" element={<CustomerLogin />} />
+                <Route path="signup" element={<CustomerSignupPage />} />
               </Route>
               <Route path="admin">
                 <Route path="login" element={<AdminLogin />} />
@@ -106,8 +110,8 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </LazyLoader>
+          </SocketContextProvider>
         </BrowserRouter>
-      </SocketContextProvider>
     </DarkmodeContextProvider>
   );
 }

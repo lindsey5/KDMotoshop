@@ -1,6 +1,8 @@
 import { Server, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { Server as HTTPServer } from 'http';
+import Admin from '../models/Admin';
+import { Types } from 'mongoose';
 
 interface JwtPayload {
   id: string;
@@ -47,11 +49,20 @@ export const initializeSocket = (server: HTTPServer): void => {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
 
       socket.join(decodedToken.id);
+      
       console.log('User connected:', decodedToken.id);
+      triggerCustomerStatus(decodedToken.id, true)
 
-      socket.on('disconnect', () => {
+      socket.on('disconnect', async () => {
+        await triggerCustomerStatus(decodedToken.id, false);
         console.log('User disconnected:', decodedToken.id);
       });
+
+      socket.on('isOnline', async (customer_id : string) => {
+        const isOnline = await isUserOnline(customer_id);
+        io.emit('customerStatus', { customer_id, status: isOnline});
+      })
+
     } catch (err: any) {
       console.log('Error verifying token:', err.message);
       socket.disconnect();
@@ -60,9 +71,18 @@ export const initializeSocket = (server: HTTPServer): void => {
   });
 };
 
+export const triggerCustomerStatus = async (customer_id : string, status : boolean) => {
+  if (!io) return false; 
+  const admins = await Admin.find();
+  for(const admin of admins){
+    const admin_id = (admin._id as Types.ObjectId).toString();
+    io.to(admin_id).emit('customerStatus', { customer_id, status });
+  }
+}
+
 export const isUserOnline = async (userId: string): Promise<boolean> => {
   if (!io) return false; 
   const sockets = await io.in(userId).fetchSockets();
-  
+
   return sockets.length > 0;
 };

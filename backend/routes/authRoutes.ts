@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminLogin, customerLogin, getUser, logout, sendSignupEmailVerification, signinWithGoogle, signupCustomer } from "../controllers/authController";
+import { adminLogin, customerLogin, forgotPassword, getUser, logout, resetPassword, sendSignupEmailVerification, signinWithGoogle, signupCustomer } from "../controllers/authController";
 import rateLimit from 'express-rate-limit';
 import { tokenRequire } from "../middlewares/authMiddleware";
 
@@ -17,6 +17,8 @@ router.post('/admin/login', authLimiter, adminLogin);
 router.post('/logout', logout)
 router.post('/signup', signupCustomer)
 router.post('/signup/verification', sendSignupEmailVerification);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 router.get('/user', tokenRequire, getUser)
 
 export default router;

@@ -43,11 +43,11 @@ export const CustomerDropdownMenu = ({ image } : { image: string}) =>{
       setShowDrawer(open)
     };
 
-    const handleSignout = () => {
-      dispatch(clearCart())
-      dispatch(resetNotifications())   
-      dispatch(logoutUser({ navigate, path: '/' }))
-      successAlert('Logout successful', 'You’ve been securely signed out of your account.')
+    const handleSignout = async () => {
+        await successAlert('Logout successful', 'You’ve been securely signed out of your account.')
+        dispatch(clearCart())
+        dispatch(resetNotifications())   
+        dispatch(logoutUser({ path: '/' }))
     }
 
     const handleClick = (path : string) => {

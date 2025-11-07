@@ -1,6 +1,5 @@
 import { GoogleButton, RedButton } from "../../components/buttons/Button";
 import { cn } from "../../utils/utils";
-import { ThemeToggle } from "../../components/Toggle";
 import { PasswordField, RedTextField } from "../../components/Textfield";
 import useDarkmode from "../../hooks/useDarkmode";
 import * as motion from "motion/react-client"
@@ -33,15 +32,7 @@ const CustomerLogin = () => {
     }
 
     return (
-        <div className={cn("h-screen bg-white flex lg:grid grid-cols-[1fr_1fr] gap-10 p-5", isDark && "bg-[#1e1e1e]" )}>
-            <img className={cn("hidden sm:block z-1 absolute top-5 left-5 w-30 h-15 cursor-pointer", !isDark && 'bg-black')} 
-                onClick={() => window.location.href = '/'} 
-                src="/kd-logo.png" alt="" 
-            />
-            <div className="absolute z-10 top-5 right-5">
-                <ThemeToggle />
-            </div>
-
+        <div className={cn("h-screen bg-white flex lg:grid grid-cols-[1fr_1fr] gap-10 px-5 py-25", isDark && "bg-[#1e1e1e]" )}>
             <div className="p-5 relative hidden lg:block">
                 <motion.img 
                     className="z-1 absolute w-1/2 h-[45%] left-10 top-20 rounded-xl" src="/helmet.png" alt="helmet"
@@ -70,8 +61,8 @@ const CustomerLogin = () => {
                     {error && <p className="text-red-600">{error}</p>}
                     <RedTextField required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <PasswordField required placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <a className={cn("hover:underline text-gray-600", isDark && 'text-gray-200')} href="">Forgot Password</a>
                     <RedButton type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
+                    <a className="w-full text-red-600 hover:underline text-end" href="/forgot-password">Forgot Password?</a>
                     <div className="w-full flex justify-center mt-4">
                         <p className={cn("text-lg", isDark && 'text-gray-400')}>Don't have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/signup">Create an account</a></p>
                     </div>

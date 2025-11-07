@@ -14,10 +14,10 @@ export const fetchUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   'user/logoutUser',
-  async ({ navigate, path }: { navigate: (path: string) => void; path : string }) => {
+  async ({ path }: { path : string }) => {
     await postData('/api/auth/logout', {});
       localStorage.removeItem('items');
       localStorage.removeItem('cart');
-      navigate(path);
+      window.location.href = path
   }
 );

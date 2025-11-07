@@ -148,3 +148,58 @@ export const sendRefundUpdate = async ({
     throw new Error('Failed to send refund update email.');
   }
 };
+
+export const sendResetEmail = async (email : string, resetToken : string) => {
+  try{
+    const url = process.env.NODE_ENV === 'production' ? 'https://kdmotoshop.onrender.com' : 'http://localhost:5173';
+    const resetLink = `${url}/reset-password/${resetToken}`;
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+        <h2 style="text-align: center; color: #333;">KD Motoshop Password Reset Request</h2>
+        <p style="font-size: 15px; color: #555;">
+          Hello, <br><br>
+          You recently requested to reset your password for your account. Click the button below to reset it:
+        </p>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <a 
+            href="${resetLink}" 
+            target="_blank" 
+            style="background-color: #4F46E5; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; display: inline-block;">
+            Reset My Password
+          </a>
+        </div>
+
+        <p style="font-size: 14px; color: #555; text-align: center;">
+          Or copy and paste this link into your browser:
+        </p>
+        <p style="word-break: break-all; font-size: 13px; text-align: center; color: #4F46E5;">
+          ${resetLink}
+        </p>
+
+        <p style="font-size: 13px; color: #999; text-align: center; margin-top: 25px;">
+          This link will expire in <strong>10 minutes</strong>.<br>
+          If you didn’t request a password reset, please ignore this email.
+        </p>
+
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="text-align: center; font-size: 12px; color: #aaa;">
+          © ${new Date().getFullYear()} KD Motoshop. All rights reserved.
+        </p>
+      </div>
+    `
+
+    await brevo.sendTransacEmail({
+      sender,
+      to: [{ email }],
+      subject: `KD Motoshop Password Reset Request`,
+      htmlContent,
+    });
+
+    return true;
+
+  } catch (err: any) {
+    console.error('Error sending refund update email:', err.message);
+    throw new Error('Failed to send refund update email.');
+  }
+}

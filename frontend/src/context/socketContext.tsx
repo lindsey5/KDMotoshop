@@ -1,5 +1,10 @@
 import React, { createContext, useEffect, useState, type ReactNode } from 'react';
+import { useDispatch } from 'react-redux';
 import { io, Socket } from 'socket.io-client';
+import type { AppDispatch } from '../features/store';
+import { clearCart } from '../features/cart/cartSlice';
+import { resetNotifications } from '../features/notifications/notificationSlice';
+import { logoutUser } from '../features/user/userThunks';
 
 const SOCKET_URL = process.env.NODE_ENV === 'production' ? undefined : 'http://localhost:3000';
 
@@ -21,6 +26,7 @@ interface SocketContextProviderProps {
 // 4. Implement the provider
 export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const connectSocket =() => {
@@ -30,6 +36,12 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
         newSocket.on("connect", () => {
           console.log("Connected to Socket");
         });
+
+        newSocket.on("logout", () => {
+          dispatch(clearCart());
+          dispatch(resetNotifications());
+          dispatch(logoutUser({ path: '/'}));
+        })
 
         setSocket(newSocket);
       } catch (error : any) {
