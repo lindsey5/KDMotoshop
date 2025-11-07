@@ -18,7 +18,7 @@ dayjs.extend(isoWeek);
 
 const validate_product = async (product : IProduct) => {
   
-    // ✅ 1️⃣ Check for duplicate SKUs within the same product
+    // Check for duplicate SKUs within the same product
     if (product.variants && product.variants.length > 0) {
       const skuSet = new Set();
       const duplicates : any = [];
@@ -35,7 +35,7 @@ const validate_product = async (product : IProduct) => {
       }
     }
   
-    // ✅ 2️⃣ Check for duplicate SKUs across all products
+    // Check for duplicate SKUs across all products
     const allSkus = [
       product.sku,
       ...(product.variants ? product.variants.map((v) => v.sku) : []),
