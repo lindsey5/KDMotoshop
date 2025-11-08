@@ -48,10 +48,6 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
-        if(updatedData?.password) {
-            updatedData.password = await hashPassword(updatedData.password);
-        }
-
         const isEmailExist = await findAdmin({ _id: { $ne: id }, email: req.body.email });
         if(isEmailExist) {
             res.status(409).json({ success: false, message: "Email already used"});
@@ -105,10 +101,10 @@ export const update_admin_profile = async (req: AuthenticatedRequest, res: Respo
             image = await uploadImage(updatedData.image);
             updatedData.image = image;
         }
+        admin.set(req.body);
+        await admin.save();
 
-        const updatedAdmin = await Admin.findByIdAndUpdate(id, req.body, { new: true });
-
-        res.status(200).json({success: true, updatedAdmin});
+        res.status(200).json({success: true, updatedAdmin: admin});
         
     }catch(err : any){
         console.log(err)

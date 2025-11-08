@@ -102,6 +102,11 @@ export const signupCustomer = async (req : Request, res: Response) => {
       return;
     }
 
+    if(!isStrongPassword(rest.password)){
+      res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.'})
+      return;
+    }
+
     const newCustomer = await createCustomer(rest);
 
     const accessToken = createAccessToken(newCustomer._id.toString());
@@ -133,7 +138,7 @@ export const sendSignupEmailVerification = async (req : Request, res : Response)
     const isPasswordValid = isStrongPassword(password);
 
     if(!isPasswordValid){
-      res.status(401).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.'})
+      res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.'})
       return;
     }
 

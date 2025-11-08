@@ -79,16 +79,13 @@ const ProfileSettings = ({ customer, isDark }: { customer: Customer; isDark: boo
                 isDark ? "bg-[#121212] border-gray-700" : "bg-white border-neutral-200"
                 } rounded-2xl border p-8 mb-8`}
             >
-                <div className="flex items-start justify-between mb-8">
-                <div>
+                <div className="mb-8">
                     <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Profile Settings</h2>
                     <p className={`${isDark ? "text-slate-400" : "text-slate-600"}`}>
                         Update your personal information and profile picture
                     </p>
                 </div>
-                </div>
 
-                {/* Profile Picture Section */}
                 <div className={cn("flex items-center space-x-6 mb-8 p-6 bg-gray-100 rounded-xl", isDark && 'bg-[#2A2A2A]')}>
                     <div className="relative">
                         <UserAvatar sx={{ width: 60, height: 60 }} image={editedCustomer?.image} />

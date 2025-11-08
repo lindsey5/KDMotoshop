@@ -4,6 +4,7 @@ type Customer = {
   firstname: string;
   lastname: string;
   phone: string;
+  password: string;
   image: UploadedImage | string | ArrayBuffer;
   addresses?: Address[],
   pendingOrders?: number,

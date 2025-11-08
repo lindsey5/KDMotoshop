@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, MapPin, Trash2, Phone, User } from "lucide-react";
 import AddAddress from "./AddAddress";
 import { updateData } from "../../../../services/api";
 import type { RootState } from "../../../../features/store";
 import { useSelector } from "react-redux";
-import { confirmDialog, successAlert } from "../../../../utils/swal";
+import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal";
 import Card from "../../../../components/Card";
 import { RedButton } from "../../../../components/buttons/Button";
 
@@ -19,37 +19,32 @@ const Addresses = ({ isDark, defaultAddresses }: AddressesProps) => {
     const [isAdding, setIsAdding] = useState(false);
 
     const handleDelete = async (index: number) => {
-        if (
-        await confirmDialog(
-            "Delete Address",
-            "Are you sure you want to delete this address?",
-            isDark
-        )
-        ) {
-        setAddresses(addresses.filter((_, i) => i !== index));
-        await successAlert(
-            "Deleted!",
-            "The address has been removed successfully.",
-            isDark
-        );
+        if (await confirmDialog("Delete Address", "Are you sure you want to delete this address?",  isDark)) {
+            const updatedAddresses = addresses.filter((_, i) => i !== index)
+            const response = await updateData('/api/customers', { ...customer, addresses: updatedAddresses, })
+            if(!response.success){
+                errorAlert('Error', response.message || 'Failed to delete address');
+                return;
+            }
+
+            setAddresses(addresses.filter((_, i) => i !== index));
+            await successAlert("Deleted!", "The address has been removed successfully.", isDark);
         }
     };
 
-    const handleSetDefault = (index: number) => {
+    const handleSetDefault = async (index: number) => {
         setAddresses(
         addresses.map((addr, i) => ({
             ...addr,
             isDefault: i === index,
         }))
         );
+        const response = await updateData("/api/customers", { ...customer, addresses });
+        if(!response.success){
+            errorAlert('Error', 'Failed to set as default');
+            return
+        }
     };
-
-    useEffect(() => {
-        const updateAddresses = async () => {
-        await updateData("/api/customers", { ...customer, addresses });
-        };
-        updateAddresses();
-    }, [addresses]);
 
     return (
         <div className="min-h-screen transition-colors duration-300">
@@ -87,9 +82,11 @@ const Addresses = ({ isDark, defaultAddresses }: AddressesProps) => {
             {/* Add Address Form */}
             {isAdding && (
             <AddAddress
+                customer={customer as Customer}
                 close={() => setIsAdding(false)}
                 isDark={isDark}
                 setAddresses={setAddresses}
+                addresses={addresses}
             />
             )}
 

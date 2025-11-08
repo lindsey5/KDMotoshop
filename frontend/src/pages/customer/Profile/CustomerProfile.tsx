@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { User, MapPin } from "lucide-react";
+import { User, MapPin, Shield } from "lucide-react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
 import UserAvatar from "../../ui/UserAvatar";
 import useDarkmode from "../../../hooks/useDarkmode";
 import ProfileSettings from "./ui/ProfileSetting";
 import Addresses from "./ui/Addresses";
+import Password from "./ui/Password";
 
 const CustomerProfile = () => {
     const isDark = useDarkmode();
     const [activeTab, setActiveTab] = useState("Profile");
     const { user : customer } = useSelector((state : RootState) => state.user)
-    const tabs = [
+        const tabs = [
         { id: "Profile", label: "Profile", icon: User },
         { id: "Addresses", label: "Addresses", icon: MapPin },
-    ];
+        ...(customer?.password
+            ? [{ id: "Password", label: "Password", icon: Shield }]
+            : [])
+        ];
 
     if(!customer) return null
 
@@ -55,7 +59,7 @@ const CustomerProfile = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center space-x-2 py-4 border-b-2 transition-colors ${
                         isActive
-                        ? `border-red-500 ${isDark ? 'text-red-400' : 'text-red-600'}`
+                        ? `border-red-500 ${isDark ? 'text-red-500' : 'text-red-600'}`
                         : `border-transparent ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`
                     }`}
                     >
@@ -76,6 +80,10 @@ const CustomerProfile = () => {
 
             {activeTab === "Addresses" && (
                 <Addresses isDark={isDark} defaultAddresses={customer?.role === 'Customer' ? customer.addresses ?? [] : []}/>
+            )}
+
+            {activeTab === "Password" && (
+                <Password />
             )}
         </div>
         </div>

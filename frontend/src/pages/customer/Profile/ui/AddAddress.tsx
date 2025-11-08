@@ -6,14 +6,17 @@ import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal"
 import Card from "../../../../components/Card";
 import { RedButton } from "../../../../components/buttons/Button";
 import { RedTextField } from "../../../../components/Textfield";
+import { updateData } from "../../../../services/api";
 
 type AddAddressProps = {
+  customer: Customer;
   isDark: boolean;
   setAddresses: React.Dispatch<React.SetStateAction<Address[]>>;
   close: () => void;
+  addresses: Address[];
 };
 
-const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
+const AddAddress = ({ customer, isDark, setAddresses, close, addresses }: AddAddressProps) => {
     const [newAddress, setNewAddress] = useState<Address>({
         street: "",
         barangay: "",
@@ -47,9 +50,16 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
     ) {
         // Show confirmation dialog
         if (await confirmDialog("Save Address", "Are you sure you want to save this address?", isDark)) {
-        setAddresses((prev) => [...prev, newAddress]);
-        await successAlert("Saved!", "The address has been added successfully.", isDark);
-        close();
+          const response = await updateData('/api/customers', { ...customer, addresses })
+
+          if(!response.success){
+            await errorAlert('Error', response.message || 'Failed to add address')
+            return;
+          }
+
+          setAddresses((prev) => [...prev, newAddress]);
+          await successAlert("Saved!", "The address has been added successfully.", isDark);
+          close();
         }
     } else {
         // Show warning if fields are missing
@@ -65,7 +75,6 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
     isDark ? "text-gray-300" : "text-gray-700"
   }`;
 
-  // ✅ Region change
   const handleRegionChange = (value: string) => {
     const selected = regions.find((region: any) => region.code === value);
     setSelectedRegion(value);
@@ -78,7 +87,6 @@ const AddAddress = ({ isDark, setAddresses, close }: AddAddressProps) => {
     }));
   };
 
-  // ✅ City change
   const handleCityChange = (value: string) => {
     const selected = cities.find((city: any) => city.code === value);
     setSelectedCity(value);
