@@ -114,7 +114,7 @@ const Products = () => {
     }
     
     const cols = useMemo(() => ['Product', 'Stock', 'Category', 'Product Type', 'Created At', 'Created By', 'Rating', 'Visibility', 'Actions'], [])
-    const rows = useMemo(() => productsRes?.products.map((product: Product) => ProductRow(product, isDark, navigate)) , [productsRes?.products]);
+    const rows = useMemo(() => productsRes?.products.map((product: Product) => ProductRow(product, isDark, navigate)) || [], [productsRes?.products]);
 
     const deleteCategory = async (id: string) => {
         const confirmed = await confirmDialog('Remove this category?', 'You won\'t be able to revert this!', isDark);

@@ -46,7 +46,7 @@ interface CustomizedTableProps extends TableContainerProps{
 
 const CustomizedTable = ({cols, rows, ...props} : CustomizedTableProps) => {
   const isDark = useDarkmode();
-
+  console.log('Rendered')
   return (
     <TableContainer component={Paper} {...props}>
       <Table aria-label="customized table">

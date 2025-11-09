@@ -5,7 +5,7 @@ import { Rating } from "@mui/material";
 
 const OrderProductContainer = ({ product, addOrder } : { product : Product, addOrder: (product : Product) => void}) => {
     const stock = product.product_type === 'Variable' ? product.variants.reduce((total, variant) => total + (variant.stock ?? 0) ,0) : product.stock
-
+    
     return (
         <Card className="flex flex-col gap-4">
             <img 

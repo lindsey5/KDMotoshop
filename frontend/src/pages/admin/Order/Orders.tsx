@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { DateRange } from "@mui/x-date-pickers-pro";
 import { CustomDateRangePicker } from "../../../components/DatePicker";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, type NavigateFunction } from "react-router-dom";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import { Statuses } from "../../../constants/status";
 import { OrderStatsCards } from "./ui/OrderStatsCard";
@@ -31,6 +31,22 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
 
+const OrderRow = (index : number, order : Order, isDark : boolean, navigate : NavigateFunction) => {
+    return {
+        '#' : index + 1,
+        'Customer Name' : `${order.customer.firstname} ${order.customer.lastname}`,
+        'Order ID' : order.order_id,
+        'Amount' : formatNumberToPeso(order.total),
+        'Payment Method' : order.payment_method,
+        'Order Date' : formatDate(order.createdAt),
+        'Order Channel' : <PlatformChip platform={order.order_source} />,
+        'Status' : <div className="flex justify-center">
+            <Status status={order.status} isDark={isDark}/>
+        </div>,
+        'Action' : <RedButton onClick={() => navigate(`/admin/orders/${order._id}`)}>Details</RedButton>
+    }
+}
+
 const Orders = () => {
     const isDark = useDarkmode();
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
@@ -40,7 +56,7 @@ const Orders = () => {
     const [from, setFrom] = useState<string>('Website');
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const searchDebounce = useDebounce(searchTerm, 0.5);
+    const searchDebounce = useDebounce(searchTerm, 500);
     
     const formattedSelectedDates = useMemo(() => {
         const startDate = selectedDates?.[0] ? selectedDates[0].toString() : '';
@@ -81,6 +97,9 @@ const Orders = () => {
 
         exportData({ dataToExport, filename: 'KD Motoshop - Orders.xlsx', sheetname: 'Orders'})
     }
+
+    const cols = useMemo(() => ['#', 'Customer Name', 'Order ID', 'Amount', 'Payment Method', 'Order Date', 'Order Channel', 'Status', 'Action'], [])
+    const rows = useMemo(() => data?.orders.map((order : Order, index : number) => OrderRow(index, order, isDark, navigate)) || [], [data?.orders]);
 
 
     return <PageContainer className="flex flex-col">
@@ -133,21 +152,8 @@ const Orders = () => {
                 </div>
             </div>
             <CustomizedTable
-                cols={['#', 'Customer Name', 'Order ID', 'Amount', 'Payment Method', 'Order Date', 'Order Channel', 'Status', 'Action']}
-                rows={data?.orders.map((order : Order, index : number) => ({
-                    '#' : index + 1,
-                    'Customer Name' : `${order.customer.firstname} ${order.customer.lastname}`,
-                    'Order ID' : order.order_id,
-                    'Amount' : formatNumberToPeso(order.total),
-                    'Payment Method' : order.payment_method,
-                    'Order Date' : formatDate(order.createdAt),
-                    'Order Channel' : <PlatformChip platform={order.order_source} />,
-                    'Status' : <div className="flex justify-center">
-                        <Status status={order.status} isDark={isDark}/>
-
-                    </div>,
-                    'Action' : <RedButton onClick={() => navigate(`/admin/orders/${order._id}`)}>Details</RedButton>
-                })) || []} 
+                cols={cols}
+                rows={rows} 
             />
             <div className="flex justify-end mt-4">
                 <CustomizedPagination count={data?.totalPages} page={page} onChange={handlePage} />
