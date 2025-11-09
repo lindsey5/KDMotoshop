@@ -4,7 +4,7 @@ import { createAdmin, findAdmin, isSuperAdmin } from "../services/adminService";
 import Admin from "../models/Admin";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import { create_activity_log } from "../services/activityLogServices";
-import { hashPassword } from "../utils/authUtils";
+import { isStrongPassword, verifyPassword } from "../utils/authUtils";
 
 export const create_new_admin = async(req: AuthenticatedRequest, res: Response) => {
     try{
@@ -39,7 +39,7 @@ export const get_admin= async(req: AuthenticatedRequest, res: Response) => {
 export const update_admin = async (req: AuthenticatedRequest, res: Response) => {
     try{
         const updatedData = req.body;
-        const id = req.user_id;
+        const id = req.params.id;
 
         const isSuperAdmin = await findAdmin({ _id: id, role: 'Super Admin'})
 
@@ -61,14 +61,15 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
-        const updatedAdmin = await Admin.findByIdAndUpdate(id, updatedData, { new: true });
+        admin.set(updatedData);
+        await admin.save();
 
         await create_activity_log({
             admin_id: req.user_id ?? '',
             description: `updated ${admin.firstname} ${admin.lastname} details`
         });
 
-        res.status(200).json({success: true, updatedAdmin});
+        res.status(200).json({success: true, updatedAdmin: admin });
         
     }catch(err : any){
         console.log(err)
@@ -86,6 +87,12 @@ export const update_admin_profile = async (req: AuthenticatedRequest, res: Respo
             res.status(409).json({ success: false, message: "Email already used"});
             return;
         }
+        const { password } = updatedData;
+
+        if(password && !isStrongPassword(password)){
+            res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.' })
+            return;
+        }
 
         const admin = await Admin.findById(id);
 
@@ -101,10 +108,10 @@ export const update_admin_profile = async (req: AuthenticatedRequest, res: Respo
             image = await uploadImage(updatedData.image);
             updatedData.image = image;
         }
-        admin.set(req.body);
+        admin.set(updatedData);
         await admin.save();
 
-        res.status(200).json({success: true, updatedAdmin: admin});
+        res.status(200).json({success: true, updatedAdmin: admin, message: 'Your profile information has been successfully updated.'});
         
     }catch(err : any){
         console.log(err)
@@ -133,6 +140,36 @@ export const get_all_admins = async (req: AuthenticatedRequest, res: Response) =
         const admins = await Admin.find(query).select('-password').sort({ createdAt: -1 });
 
         res.status(200).json({ success: true, admins });
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
+
+export const changeAdminPassword = async (req : AuthenticatedRequest, res : Response) => {
+    try{
+        const { currentPassword, newPassword } = req.body;
+        const admin = await Admin.findById(req.user_id);
+
+        if(!admin){
+            res.status(404).json({ success: false, message: 'Admin not found.'});
+            return;
+        }
+
+        if(!await verifyPassword(currentPassword, admin.password)){
+            res.status(401).json({ success: false, message: 'Your current password is incorrect'})
+            return;
+        }
+
+        if(!isStrongPassword(newPassword)){
+            res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.'})
+            return;
+        }
+
+        admin.password = newPassword;
+        await admin.save();
+
+        res.status(200).json({ success: true, message: 'Password has been changed successfully!'});
+
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message || 'Server error' });
     }

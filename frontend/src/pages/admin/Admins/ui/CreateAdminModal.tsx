@@ -34,7 +34,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
             errorAlert('Error', 'Last name must be at least 2 characters long', isDark);    
         }else { 
             const { confirmPassword, ...rest } = admin;
-            const response = admin._id ? await updateData('/api/admins', rest) : await postData('/api/admins', rest);
+            const response = admin._id ? await updateData(`/api/admins/${adminData?._id}`, rest) : await postData('/api/admins', rest);
             response.success ? window.location.reload() : errorAlert('Error', response.message);
         }
         setLoading(false);
@@ -104,16 +104,16 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
                     type="number"
                     value={admin?.phone || ''}
                     onChange={(e) => {
-                        const value = e.target.value.slice(0, 13);
+                        const value = e.target.value.slice(0, 11);
                         setAdmin(prev => ({ ...prev!, phone: value }));
                     }}
                     required
-                    placeholder="+63 XXX XXX XXXX"
+                    placeholder="09 XXX XXX XXX"
                     />
                 
                     {/* Add more fields as necessary */}
                     <div className="flex justify-end gap-4">
-                        <RedButton onClick={close}>Cancel</RedButton>
+                        <RedButton onClick={close} disabled={loading}>Cancel</RedButton>
                         <RedButton disabled={loading} type="submit">
                             {loading ? 'Saving...' : 'Save'}
                         </RedButton>

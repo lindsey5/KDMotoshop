@@ -55,6 +55,7 @@ export const getCustomers = async (req: AuthenticatedRequest, res: Response) => 
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
+    const sort = req.query.sort;
     const searchTerm = req.query.searchTerm;
 
     let filter: any = {};
@@ -66,8 +67,16 @@ export const getCustomers = async (req: AuthenticatedRequest, res: Response) => 
       ];
     }
 
+    let sortQuery = {};
+    if(sort){ 
+      if(sort === 'name') sortQuery = { 'firstname' : 1 }
+      else if(sort === 'newest') sortQuery = { 'createdAt' : -1 }
+      else if(sort === 'oldest') sortQuery = { 'createdAt' : 1 }
+
+    }
+
     const [customers, totalCustomers] = await Promise.all([
-      Customer.find(filter).skip(skip).limit(limit),
+      Customer.find(filter).skip(skip).limit(limit).sort(sortQuery),
       Customer.countDocuments(filter)
     ])
 

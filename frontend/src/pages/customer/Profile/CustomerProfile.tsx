@@ -49,7 +49,7 @@ const CustomerProfile = () => {
         {/* Tab Navigation */}
         <div className={`${isDark ? 'bg-[#121212] border-gray-700' : 'bg-white border-neutral-200'} border-b`}>
             <div className="max-w-7xl mx-auto px-6">
-            <div className="flex space-x-8">
+            <div className="flex space-x-8 overflow-x-auto">
                 {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;

@@ -6,8 +6,8 @@ import UserAvatar from "../ui/UserAvatar"
 import React, { useEffect, useState} from "react"
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import { Backdrop, Button, CircularProgress } from "@mui/material"
-import { RedTextField } from "../../components/Textfield"
-import { confirmDialog, errorAlert } from "../../utils/swal"
+import { PasswordField, RedTextField } from "../../components/Textfield"
+import { confirmDialog, errorAlert, successAlert } from "../../utils/swal"
 import { RedButton } from "../../components/buttons/Button"
 import { updateData } from "../../services/api"
 import LockOutlineIcon from '@mui/icons-material/LockOutline';
@@ -27,6 +27,12 @@ const Settings = () => {
     const { user, loading : userLoading } = useSelector((state : RootState) => state.user)
     const [updatedAdmin, setUpdatedAdmin] = useState<Admin | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
+    const [passwords, setPasswords] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+    })
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -52,13 +58,43 @@ const Settings = () => {
 
     const handleSave = async(e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(await confirmDialog('Are you sure you want to save changes?', 'Your updated profile information will be saved.', isDark)){
-            setLoading(true)
-            const response = await updateData('/api/admins/profile', updatedAdmin)
-            if(response.success) window.location.reload()
-            else errorAlert('Error', response.message, isDark)
-            setLoading(false)
+        const mainMessage = showChangePassword ? 'Change Password?' : 'Save Profile Changes?';
+
+        const subMessage = showChangePassword ? 'Your password will be updated. Make sure to remember your new password.' : 'Your updated profile information will be saved.';
+
+        if (await confirmDialog(mainMessage, subMessage, isDark)) {
+            setLoading(true);
+
+            if(showChangePassword && (passwords.newPassword !== passwords.confirmNewPassword)){
+                setLoading(false)
+                errorAlert('Error', 'New password do not match.')
+                return;
+            }
+
+            const response = showChangePassword ? await updateData('/api/admins/password', passwords) : await updateData('/api/admins/profile', updatedAdmin);
+            setLoading(false);
+            if (!response.success) {
+                errorAlert('Error', response.message, isDark);
+                return;
+            }
+            await successAlert('Success', response.message);
+            window.location.reload();
+
         }
+    }
+
+    const handleCancel = () => {
+        if(showChangePassword){
+            setShowChangePassword(false)
+            setPasswords({
+                currentPassword: '',
+                newPassword: '',
+                confirmNewPassword: ''
+            })
+            return;
+        }
+
+        setUpdatedAdmin(user as Admin)
     }
 
     return (
@@ -95,11 +131,13 @@ const Settings = () => {
                     </label>
                 </div>
                 <div className="flex gap-5">
+                    {!showChangePassword && (
                     <Button
                         sx={{ color: isDark ? 'white' : 'red' }} 
                         startIcon={<LockOutlineIcon/>}
-                        
+                        onClick={() => setShowChangePassword(true)}
                     >Change Password</Button>
+                    )}
                     <Button 
                         sx={{ color: isDark ? 'white' : 'red' }} 
                         startIcon={<HistoryIcon/>}
@@ -108,15 +146,19 @@ const Settings = () => {
                 </div>
             </div>
             <div className={cn("py-10 grid grid-cols-2 gap-x-20 gap-y-5 border-t border-gray-300", isDark && "border-gray-500")}>
+            {!showChangePassword  ? (
+                <>
                 <RedTextField 
                     label="Firstname" 
                     value={updatedAdmin?.firstname ?? ''}
+                    placeholder="Enter your firstname"
                     required
                     onChange={(e) => handleChange('firstname', e.target.value) }
                 />
                 <RedTextField 
                     label="Lastname" 
                     value={updatedAdmin?.lastname ?? ''}
+                    placeholder="Enter your lastname"
                     required
                     onChange={(e) => handleChange('lastname', e.target.value) }
                 />
@@ -125,6 +167,7 @@ const Settings = () => {
                     label="Email" 
                     value={updatedAdmin?.email ?? ''}
                     type="email"
+                    placeholder="Enter your email"
                     required
                     onChange={(e) => handleChange('email', e.target.value) }
                 />
@@ -132,10 +175,38 @@ const Settings = () => {
                     label="Phone" 
                     value={updatedAdmin?.phone ?? ''}
                     required
-                    onChange={(e) => setUpdatedAdmin((prev) => ({ ...prev!, phone: e.target.value}))}
+                    placeholder="09 XXX XXX XXX"
+                    onChange={(e) => {
+                        const value = e.target.value.slice(0, 11);
+                        setUpdatedAdmin(prev => ({ ...prev!, phone: value }));
+                    }}
                 />
+                </>
+            ) :
+                <>
+                <PasswordField 
+                    label="New Password"
+                    placeholder="Enter your new password"
+                    required
+                    onChange={(e) => setPasswords(prev => ({...prev, newPassword: e.target.value }))}
+                />
+                <PasswordField
+                    label="Confirm New Password"
+                    placeholder="Confirm your new password"
+                    required
+                    onChange={(e) => setPasswords(prev => ({...prev, confirmNewPassword: e.target.value }))}    
+                />
+                <PasswordField 
+                    label="Current Password"
+                    placeholder="Enter your current password"
+                    required
+                    onChange={(e) => setPasswords(prev => ({...prev, currentPassword: e.target.value }))}
+                />
+                </>
+            }
             </div>
-            <div className="flex justify-between">
+            <div className="flex gap-4 justify-end">
+                <RedButton onClick={handleCancel}>Cancel</RedButton>
                 <RedButton type="submit">Save Changes</RedButton>
             </div>
         </PageContainer>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { memo, useContext, useEffect, useState } from "react";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import Card from "../../../components/Card";
 import CustomizedPagination from "../../../components/Pagination";
@@ -12,25 +12,31 @@ import { formatDate, isWithinLast7Days } from "../../../utils/dateUtils";
 import UserAvatar from "../../ui/UserAvatar";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { SocketContext } from "../../../context/socketContext";
+import { CustomizedSelect } from "../../../components/Select";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
     { label: 'Customers', href: '/admin/customers' },
 ]
 
-const StatusChip = ({ id } : { id : string }) => {
+const StatusChip = memo(({ id } : { id : string }) => {
     const { socket } = useContext(SocketContext);
     const [isOnline, setIsOnline] = useState(false);
 
     useEffect(() => {
-        socket?.emit('isOnline', id)
-
-        socket?.on("customerStatus", ({ customer_id, status} : { customer_id: string, status : boolean}) => {
-            console.log(status)
-            if(customer_id === id){
+        const handleStatusUpdate = ({ customer_id, status }: { customer_id: string; status: boolean }) => {
+            if (customer_id === id) {
                 setIsOnline(status);
             }
-        })
+        };
+
+        socket?.emit('isOnline', id)
+
+        socket?.on("customerStatus", handleStatusUpdate)
+
+        return () => {
+            socket?.off("customerStatus", handleStatusUpdate);
+        };
     }, [socket, id])
     
     return (
@@ -49,14 +55,21 @@ const StatusChip = ({ id } : { id : string }) => {
         {isOnline ? "Online" : "Offline"}
         </div>
     );
-};
+});
+
+const options = [
+    { label: 'Name', value: 'name'},
+    { label: 'Newest', value: 'newest' },
+    { label: 'Oldest', value: 'oldest' }
+];
 
 
 const CustomersPage = () => {
     const [page, setPage] = useState<number>(1);
+    const [selectedSort, setSelectedSort] = useState('name');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const searchDebounce = useDebounce(searchTerm, 500);
-    const { data : customersRes, loading } = useFetch(`/api/customers/all?page=${page}&searchTerm=${searchDebounce}&limit=20`)
+    const { data : customersRes, loading } = useFetch(`/api/customers/all?page=${page}&searchTerm=${searchDebounce}&limit=20&sort=${selectedSort}`)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
@@ -67,14 +80,25 @@ const CustomersPage = () => {
         <PageContainer className="h-full flex flex-col gap-5">
             <Title className="mb-4">Customers</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
-            <Card className="flex-grow min-h-0 flex flex-col gap-5 p-5">
-                <SearchField 
-                    sx={{ width: '400px'}}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search by Email, Firstname, Lastname..."
-                />
+            <Card className="w-full flex-grow min-h-0 flex flex-col gap-5 p-5">
+                <div className="w-full flex justify-between">
+                    <div className="w-[400px] bg-red-100">
+                        <SearchField 
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search by Email, Firstname, Lastname..."
+                        />
+                    </div>
+                    <div className="w-[350px] bg-red-100">
+                        <CustomizedSelect 
+                            label="Sort by"
+                            menu={options.map(option => ({ label: option.label, value: option.value }))}
+                            value={selectedSort}
+                            onChange={(e) => setSelectedSort(e.target.value as string)}
+                        />
+                    </div>
+                </div>
                 <CustomizedTable 
-                    cols={['Fullname', 'Email', 'Status', 'Last Order', 'Pending Orders', 'Completed Orders']}  
+                    cols={['Fullname', 'Email', 'Status', 'Last Order', 'Pending Orders', 'Completed Orders', 'Created At']}  
                     rows={customersRes?.customers.map((customer : Customer) => ({
                         'Fullname' : (
                             <div className="flex items-center gap-2">
@@ -90,7 +114,8 @@ const CustomersPage = () => {
                         'Status' : <StatusChip id={customer._id} />,
                         'Last Order' : formatDate(customer.lastOrder) || 'N/A',
                         'Pending Orders' : customer.pendingOrders,
-                        'Completed Orders' : customer.completedOrders
+                        'Completed Orders' : customer.completedOrders,
+                        'Created At' : formatDate(customer.createdAt)
                     })) || []}
                 />
                 {loading && (

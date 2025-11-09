@@ -56,7 +56,7 @@ const AdminNotifications = () => {
                         
                         return ({
                             'Customer Name' : (
-                                <div className={cn('flex gap-3', !n.isViewed && 'font-bold')}>
+                                <div className={cn('flex gap-3', !n.isViewed ? 'font-bold' : 'opacity-50')}>
                                     <Avatar src={(customer?.image as UploadedImage)?.imageUrl}/>
                                     <div>
                                         <h1>{customer?.firstname} {customer?.lastname}</h1>
@@ -64,8 +64,8 @@ const AdminNotifications = () => {
                                     </div>
                                 </div>
                             ),
-                            'Message' : <p className={`${!n.isViewed && 'font-bold'}`}>{n.content}</p>,
-                            'Date' : <p className={`${!n.isViewed && 'font-bold'}`}>{formatDate(n.createdAt)}</p>,
+                            'Message' : <p className={`${!n.isViewed ? 'font-bold' : 'opacity-50'}`}>{n.content}</p>,
+                            'Date' : <p className={`${!n.isViewed ? 'font-bold' : 'opacity-50'}`}>{formatDate(n.createdAt)}</p>,
                             'Action' : <RedButton onClick={() => navigateToOrder(n)}>View</RedButton>
                         })
 

@@ -281,7 +281,7 @@ export const resetPassword = async (req : Request, res : Response) => {
 
     const isStrong = isStrongPassword(newPassword);
     if(!isStrong){
-      res.status(401).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.' })
+      res.status(400).json({ success: false, message: 'Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.' })
       return;
     }
 
