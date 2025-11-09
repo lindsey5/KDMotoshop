@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import useDarkmode from '../hooks/useDarkmode';
+import { memo } from 'react';
 
 export const StyledTableCell = styled(TableCell, {
   shouldForwardProp: (prop) => prop !== 'isDark',
@@ -66,4 +67,4 @@ const CustomizedTable = ({cols, rows, ...props} : CustomizedTableProps) => {
   );
 }
 
-export default CustomizedTable
+export default memo(CustomizedTable)
