@@ -29,6 +29,8 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
         const order_id = createdOrder._id;
         const newPayment = new Payment({ payment_id, order_id})
         await newPayment.save();
+        console.log(createdOrder);
+        console.log(createdOrder.customer.customer_id)
         successCheckout(createdOrder.customer.customer_id);
     }
     
