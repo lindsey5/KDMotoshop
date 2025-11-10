@@ -133,6 +133,7 @@ export const updatePurchaseOrder = async (req : AuthenticatedRequest, res : Resp
                 if(!variant) continue;
                 variant.stock += item.quantity;
                 await product.save();
+                purchaseOrder.receivedDate = new Date();
             }
         }
 
@@ -147,7 +148,6 @@ export const updatePurchaseOrder = async (req : AuthenticatedRequest, res : Resp
         }
 
         purchaseOrder.status = req.body.status;
-        purchaseOrder.receivedDate = new Date();
         await purchaseOrder.save()
 
         res.status(200).json({ success: true, purchaseOrder });
