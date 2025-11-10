@@ -16,7 +16,7 @@ type Supplier = {
     name: string;
     email: string;
     phone: string;
-    status: string;
+    status: 'Active' | 'Inactive';
 }
 
 type PurchaseOrderItem = {

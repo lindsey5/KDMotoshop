@@ -16,6 +16,9 @@ import UserAvatar from "../../ui/UserAvatar";
 import { IconButton } from "@mui/material";
 import useDarkmode from "../../../hooks/useDarkmode";
 import EditIcon from '@mui/icons-material/Edit';
+import { Delete } from "@mui/icons-material";
+import { confirmDialog, errorAlert, successAlert } from "../../../utils/swal";
+import { deleteData } from "../../../services/api";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -39,6 +42,19 @@ const Admins = () => {
     const openModal =(admin : Admin) => {
         setAdminData(admin)
         setShowAdmin(true)
+    }
+
+    const handleDelete = async (id : string) => {
+        if(await confirmDialog('Delete', 'Do you want to delete this admin?', isDark)){
+            const response = await deleteData(`/api/admins/${id}`);
+            if(!response.success){
+                await errorAlert('Error', response.message || 'Something went wrong. Please try again.')
+                return;
+            }
+
+            await successAlert('Success', response.message);
+            window.location.reload();
+        }
     }
 
     if(user && user.role !== 'Super Admin'){
@@ -66,7 +82,7 @@ const Admins = () => {
                     placeholder="Search by Email, Firstname, Lastname..."
                 />
                 <CustomizedTable 
-                    cols={['Fullname', 'Email', 'Phone', 'Role', 'Created At', 'Actions']}  
+                    cols={['Fullname', 'Email', 'Phone', 'Role', 'Actions']}  
                     rows={data?.admins.map((admin : Admin) => ({
                         'Fullname' : (
                             <div className="flex items-center gap-2">
@@ -77,11 +93,15 @@ const Admins = () => {
                         'Email' : admin.email,
                         'Phone' : admin.phone,
                         'Role' : admin.role,
-                        'Created At' : admin.createdAt,
                         'Actions' : (
-                            <IconButton onClick={() => openModal(admin)}>
-                                <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
-                            </IconButton>
+                            <div className="flex">
+                                <IconButton onClick={() => openModal(admin)}>
+                                    <EditIcon sx={{ color: isDark ? 'white' : 'inherit'}}/>
+                                </IconButton>
+                                <IconButton onClick={() => handleDelete(admin._id as string)}>
+                                    <Delete sx={{ color: isDark ? 'white' : 'inherit'}} />
+                                </IconButton>
+                            </div>
                         )
                     })) || []}
                 />

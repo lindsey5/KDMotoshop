@@ -5,18 +5,29 @@ import Admin from "../models/Admin";
 import { deleteImage, uploadImage } from "../services/cloudinary";
 import { create_activity_log } from "../services/activityLogServices";
 import { isStrongPassword, verifyPassword } from "../utils/authUtils";
+import { logoutUser } from "../middlewares/socket";
+import { Types } from "mongoose";
 
 export const create_new_admin = async(req: AuthenticatedRequest, res: Response) => {
     try{
         await isSuperAdmin(req, res)
         const admin = await findAdmin({ email: req.body.email });
 
-        if(admin) {
+        if(admin && admin.status === 'Active') {
             res.status(409).json({ success: false, message: 'Email already used'});
             return;
         }
 
-        const newUser = await createAdmin(req.body);
+        let newUser;
+
+        if(admin.status === 'Inactive'){
+            admin.set(req.body);
+            admin.status = 'Active';
+            await admin.save();
+            newUser = admin;
+        }else{
+            newUser = await createAdmin(req.body);
+        }
 
         res.status(201).json({ success: true, newUser });
 
@@ -41,9 +52,8 @@ export const update_admin = async (req: AuthenticatedRequest, res: Response) => 
         const updatedData = req.body;
         const id = req.params.id;
 
-        const isSuperAdmin = await findAdmin({ _id: id, role: 'Super Admin'})
-
-        if(!isSuperAdmin){
+        const super_admin = await Admin.findOne({ _id: id})
+        if(super_admin && super_admin.role === 'Super Admin'){
             res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
             return;
         }
@@ -128,7 +138,7 @@ export const get_all_admins = async (req: AuthenticatedRequest, res: Response) =
             res.status(403).json({ success: false, message: 'Access Denied: You are not a Super Admin' });
             return;
         }
-        const query: any = { _id: { $ne: req.user_id } };
+        const query: any = { _id: { $ne: req.user_id }, status: 'Active' };
         if (searchTerm) {
             query.$or = [
                 { email: { $regex: searchTerm, $options: 'i' } },
@@ -169,6 +179,32 @@ export const changeAdminPassword = async (req : AuthenticatedRequest, res : Resp
         await admin.save();
 
         res.status(200).json({ success: true, message: 'Password has been changed successfully!'});
+
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
+
+export const deleteAdmin = async (req : AuthenticatedRequest, res : Response) => {
+    try{
+        const isSuperAdmin = await Admin.findOne({ _id: req.user_id, role: 'Super Admin'});
+
+        if(!isSuperAdmin){
+            res.status(401).json({ success: false, message: 'Unauthorized.'});
+            return;
+        }
+
+        const admin = await Admin.findById(req.params.id);
+
+        if(!admin){
+            res.status(404).json({ success: false, message: 'Admin not found'});
+            return;
+        }
+
+        admin.status = "Inactive";
+        await admin.save();
+        logoutUser((admin._id as Types.ObjectId).toString());
+        res.status(200).json({ success: true, message: 'Admin successfully deleted'});
 
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message || 'Server error' });

@@ -7,13 +7,7 @@ import { postData, updateData } from "../../../../services/api";
 import { confirmDialog, errorAlert, successAlert } from "../../../../utils/swal";
 import useDarkmode from "../../../../hooks/useDarkmode";
 import { Backdrop, CircularProgress } from "@mui/material";
-
-interface Supplier {
-    _id?: string;
-    name: string;
-    email: string;
-    phone: string;
-}
+import { CustomizedSelect } from "../../../../components/Select";
 
 interface SupplierModalProps {
     open: boolean;
@@ -26,7 +20,9 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
         name: "",
         email: "",
         phone: "",
+        status: "Active",
     });
+
     const [loading, setLoading] = useState<boolean>(false);
     const isDark = useDarkmode();
 
@@ -35,33 +31,35 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
         if (supplier) {
         setSupplierState(supplier);
         } else {
-        setSupplierState({ name: "", email: "", phone: "" });
+        setSupplierState({ name: "", email: "", phone: "", status: "Active" });
         }
     }, [supplier, open]);
 
     const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); 
-    if (await confirmDialog(
-        supplier ? "Update Supplier" : "Add Supplier",
-        supplier
-        ? "Are you sure you want to update this supplier's details?"
-        : "Are you sure you want to add this new supplier?",
-        isDark
-    )) {
+        e.preventDefault();
+        if (
+        await confirmDialog(
+            supplier ? "Update Supplier" : "Add Supplier",
+            supplier
+            ? "Are you sure you want to update this supplier's details?"
+            : "Are you sure you want to add this new supplier?",
+            isDark
+        )
+        ) {
         setLoading(true);
 
         const response = supplier
-        ? await updateData(`/api/suppliers/${supplier._id}`, supplierState)
-        : await postData("/api/suppliers", supplierState);
+            ? await updateData(`/api/suppliers/${supplier._id}`, supplierState)
+            : await postData("/api/suppliers", supplierState);
 
         if (response.success) {
             const message = supplier
-                ? "Supplier updated successfully!"
-                : "Supplier added successfully!";
+            ? "Supplier updated successfully!"
+            : "Supplier added successfully!";
 
             const subMessage = supplier
-                ? "The supplier details have been updated in the system."
-                : "The new supplier has been added to the system.";
+            ? "The supplier details have been updated in the system."
+            : "The new supplier has been added to the system.";
 
             await successAlert(message, subMessage, isDark);
             window.location.reload();
@@ -71,9 +69,8 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
         }
 
         setLoading(false);
-    }
-
-  };
+        }
+    };
 
     return (
         <Modal
@@ -90,10 +87,7 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
         >
         <Card className="w-[90%] max-w-[450px] p-10">
             <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-            <Backdrop
-                sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}
-                open={loading}
-            >
+            <Backdrop sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })} open={loading}>
                 <CircularProgress color="inherit" />
             </Backdrop>
 
@@ -105,24 +99,39 @@ const SupplierModal = ({ supplier, open, close }: SupplierModalProps) => {
                 label="Name"
                 required
                 value={supplierState.name}
-                onChange={(e) => setSupplierState((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                setSupplierState((prev) => ({ ...prev, name: e.target.value }))
+                }
                 inputProps={{ maxLength: 100 }}
             />
+
             <RedTextField
                 label="Email"
                 type="email"
                 required
                 value={supplierState.email}
-                onChange={(e) => setSupplierState((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                setSupplierState((prev) => ({ ...prev, email: e.target.value }))
+                }
                 inputProps={{ maxLength: 100 }}
             />
+
             <RedTextField
                 label="Phone"
                 required
                 type="number"
                 value={supplierState.phone}
-                onChange={(e) => setSupplierState((prev) => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                setSupplierState((prev) => ({ ...prev, phone: e.target.value }))
+                }
             />
+            {supplier && <CustomizedSelect 
+                sx={{ height: 55 }}
+                label="Status"
+                menu={['Active', 'Inactive'].map(status => ({ label: status, value: status }))}
+                value={supplierState.status}
+                onChange={(e) => setSupplierState(prev => ({...prev, status: e.target.value as 'Active' | 'Inactive'}))}
+            />}
 
             <RedButton type="submit">
                 {supplier ? "Save changes" : "Add new supplier"}

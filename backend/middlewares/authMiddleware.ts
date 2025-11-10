@@ -39,7 +39,7 @@ export const adminRequireAuth = async (
 
     req.user_id = decoded.id;
 
-    const user = await findAdmin({ _id: req.user_id });
+    const user = await findAdmin({ _id: req.user_id, status: 'Active' });
     if (!user) {
       res.status(401).json({ success: false, message: 'User ID doesn\'t exist.' });
       return;

@@ -12,6 +12,7 @@ import SupplierModal from "./ui/SupplierModal"
 import { CircularProgress, IconButton, Tooltip } from "@mui/material"
 import { useDebounce } from "../../../hooks/useDebounce"
 import useDarkmode from "../../../hooks/useDarkmode"
+import { CustomizedSelect } from "../../../components/Select"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -20,9 +21,10 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 
 const SuppliersPage = () => {
     const isDark = useDarkmode();
+    const [status, setStatus] = useState('All');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const searchDebounce = useDebounce(searchTerm, 500);
-    const { data, loading } = useFetch(`/api/suppliers?searchTerm=${searchDebounce}`)
+    const { data, loading } = useFetch(`/api/suppliers?searchTerm=${searchDebounce}&status=${status}`)
     const [selectedSupplier, setSelectedSupplier] = useState<Supplier>();
     const [openModal, setOpenModal] = useState(false);
 
@@ -39,12 +41,26 @@ const SuppliersPage = () => {
     return (
         <PageContainer className="h-full flex flex-col gap-5">
             <SupplierModal close={closeModal} open={openModal} supplier={selectedSupplier}/>
-            <Title>Suppliers</Title>
-            <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            <div className="flex justify-between items-center">
+            <div className="space-y-4">
+                <Title>Suppliers</Title>
+                <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
+            </div>
+            <RedButton onClick={() => setOpenModal(true)}>Add Supplier</RedButton>
+            </div>
             <Card className="min-h-0 flex-grow flex flex-col gap-5">
                 <div className="flex gap-10 justify-between items-center">
                     <SearchField onChange={(e) => setSearchTerm(e.target.value)} sx={{ maxWidth: '350px'}} placeholder="Search supplier"/>
-                    <RedButton onClick={() => setOpenModal(true)}>Add Supplier</RedButton>
+                    <div className="w-[400px]">
+                        <CustomizedSelect 
+                            sx={{ height: 55 }}
+                            label="Status"
+                            menu={['All', 'Active', 'Inactive'].map(status => ({ label: status, value: status }))}
+                            value={status}
+                            fullWidth
+                            onChange={(e) => setStatus(e.target.value as string)}
+                        />
+                    </div>
                 </div>
                 <div className="min-h-0 flex-grow overflow-y-auto">
                     <CustomizedTable

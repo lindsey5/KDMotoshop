@@ -8,7 +8,7 @@ export const createSupplier = async (req : AuthenticatedRequest, res : Response)
         const isExists = await Supplier.findOne({ email : req.body.email });
 
         if(isExists){
-            res.status(409).json({ success: true, message: 'Supplier already exists'})
+            res.status(409).json({ success: false, message: 'Email already used'})
             return;
         }
 
@@ -33,12 +33,22 @@ export const createSupplier = async (req : AuthenticatedRequest, res : Response)
 export const getSuppliers = async (req :Request, res : Response) => {
     try{
         const searchTerm = req.query?.searchTerm as string ?? '';
-        const suppliers = await Supplier.find({
-            $or: [
+        const status = req.query.status;
+
+        let query : any = {};
+
+        if(searchTerm){
+            query.$or =[
                 { name: { $regex: searchTerm, $options: 'i' } },
                 { email: { $regex: searchTerm, $options: 'i' } },
             ]
-        });
+        }
+
+        if(status && status !== 'All'){
+            query.status = status;
+        }
+
+        const suppliers = await Supplier.find(query);
 
         res.status(200).json({ success: true, suppliers });
 
@@ -50,6 +60,13 @@ export const getSuppliers = async (req :Request, res : Response) => {
 
 export const updateSupplier = async (req : AuthenticatedRequest, res : Response) => {
     try{
+        const isExist = await Supplier.findOne({email: req.body.email, _id: { $ne: req.params.id }});
+
+        if(isExist){
+            res.status(409).json({ success: false, message: 'Email already used.'})
+            return;
+        }
+
         const supplier = await Supplier.findById(req.params.id);
 
         if(!supplier){
@@ -68,6 +85,25 @@ export const updateSupplier = async (req : AuthenticatedRequest, res : Response)
         })
 
         res.status(200).json({ success: true, supplier });
+
+    }catch(err : any){
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server error'})
+    }
+}
+
+export const deleteSupplier = async (req : Request, res : Response) => {
+    try{
+        const supplier = await Supplier.findById(req.params.id);
+
+        if(!supplier){
+            res.status(404).json({ success: false, message: 'Supplier not found.'})
+            return;
+        }
+
+        supplier.status = 'inactive';
+        await supplier.save();
+        res.status(200).json({ success: true, message: 'Supplier successfully deleted'});
 
     }catch(err : any){
         console.log(err)

@@ -32,7 +32,7 @@ const poInitialState : PurchaseOrder = {
 const PurchaseOrder = () => {
     const { id } = useParams();
     const isDark = useDarkmode();
-    const { data : suppliersRes } = useFetch('/api/suppliers')
+    const { data : suppliersRes } = useFetch('/api/suppliers?status=Active')
     const [purchaseOrder, setPurchaseOrder] = useState<PurchaseOrder>(poInitialState);
     const [showAdd, setShowAdd] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -182,7 +182,7 @@ const PurchaseOrder = () => {
             }
         }
     };
-    console.log(purchaseOrder)
+
     return (
         <PageContainer className="flex flex-col gap-5">
             <div className="flex justify-between gap-5 items-start">

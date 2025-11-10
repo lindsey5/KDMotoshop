@@ -48,7 +48,7 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
             isDefault: { type: Boolean, default: false }
         }],
         required: false
-    }
+    },
   },
   { timestamps: true }
 );

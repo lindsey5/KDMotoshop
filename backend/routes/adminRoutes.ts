@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAdminPassword, create_new_admin, get_admin, get_all_admins, update_admin, update_admin_profile } from "../controllers/adminController";
+import { changeAdminPassword, create_new_admin, deleteAdmin, get_admin, get_all_admins, update_admin, update_admin_profile } from "../controllers/adminController";
 import { adminRequireAuth } from "../middlewares/authMiddleware";
 
 const router = Router();
@@ -10,5 +10,6 @@ router.get('/all', adminRequireAuth, get_all_admins);
 router.put('/profile', adminRequireAuth, update_admin_profile);
 router.put('/password', adminRequireAuth, changeAdminPassword);
 router.put('/:id', adminRequireAuth, update_admin);
+router.delete('/:id', adminRequireAuth, deleteAdmin);
 
 export default router;
