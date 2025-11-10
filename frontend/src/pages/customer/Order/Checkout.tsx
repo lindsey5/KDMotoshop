@@ -168,9 +168,11 @@ const CheckoutPage = () => {
         } else {
           window.open(response.checkout_url, "_blank");
         }
-      } else errorAlert(response.message, "", isDark);
+      } else {
+        errorAlert(response.message, "", isDark);
+        setLoading(false)
+      }
 
-      setLoading(false);
     }
   };
 

@@ -92,7 +92,7 @@ export const logoutUser = (user_id : string) => {
   io.to(user_id).emit('logout');
 }
 
-export const successCheckout = (customer_id) => {
+export const successCheckout = (customer_id : string) => {
   if(!io) return;
   io.to(customer_id).emit('successCheckout');
 }

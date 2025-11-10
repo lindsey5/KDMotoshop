@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import crypto from 'crypto'
 import { createNewOrder, generateOrderId } from "../services/orderService";
 import Payment from "../models/Payment";
+import { successCheckout } from "./socket";
 
 export const paymongoWebhook = async (req : Request, res : Response) => {
   const payload = req.body;
@@ -28,6 +29,7 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
         const order_id = createdOrder._id;
         const newPayment = new Payment({ payment_id, order_id})
         await newPayment.save();
+        successCheckout(createdOrder.customer_id);
     }
     
     res.sendStatus(200)
