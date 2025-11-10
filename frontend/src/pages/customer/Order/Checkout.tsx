@@ -23,6 +23,7 @@ import { Navigate } from "react-router-dom";
 import type { RootState } from "../../../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../../features/user/userSlice";
+import useSuccessCheckout from "../../../hooks/useSuccessCheckout";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -63,6 +64,7 @@ const CheckoutPage = () => {
   const isDark = useDarkmode();
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
+  useSuccessCheckout();
 
   useEffect(() => {
     if (customer && customer.role === 'Customer') {

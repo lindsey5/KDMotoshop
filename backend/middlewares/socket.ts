@@ -91,3 +91,8 @@ export const logoutUser = (user_id : string) => {
   if (!io) return; 
   io.to(user_id).emit('logout');
 }
+
+export const successCheckout = (customer_id) => {
+  if(!io) return;
+  io.to(customer_id).emit('successCheckout');
+}
