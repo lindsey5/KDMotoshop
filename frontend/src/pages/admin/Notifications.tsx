@@ -7,12 +7,14 @@ import PageContainer from "./ui/PageContainer";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../features/store";
 import { fetchNotifications, updateNotification } from "../../features/notifications/notificationThunks";
-import { Avatar } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import { cn } from "../../utils/utils";
 import useDarkmode from "../../hooks/useDarkmode";
 import { formatDate } from "../../utils/dateUtils";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../components/buttons/Button";
+import { updateData } from "../../services/api";
+import { successAlert } from "../../utils/swal";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -41,13 +43,21 @@ const AdminNotifications = () => {
         if(!notification.isViewed)  dispatch(updateNotification({ id: notification._id, user: "admin"}));
     }
 
+    const markedAllAsRead = async () => {
+        const response = await updateData('/api/notifications/admin', {});
+        if(response.success){
+            await successAlert('Success', response.message);
+            window.location.reload();
+        }
+    }
+
     return (
         <PageContainer className="h-full flex flex-col">
             <Title className="mb-4">Notifications</Title>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             <Card className="flex-grow min-h-0 flex flex-col mt-10 gap-5">
                 <div className="flex justify-end">
-                    <CustomizedPagination count={Math.ceil(total / 30)} onChange={handlePage} />
+                    <Button onClick={markedAllAsRead} sx={{ color: isDark ? 'white' : 'red' }}>Mark All As Read</Button>
                 </div>
                 <CustomizedTable
                     cols={['Customer Name', 'Message', 'Date', 'Action']}
@@ -71,6 +81,9 @@ const AdminNotifications = () => {
 
                     })}
                 />
+                <div className="flex justify-end">
+                    <CustomizedPagination count={Math.ceil(total / 30)} onChange={handlePage} />
+                </div>
             </Card>
         </PageContainer>
     )

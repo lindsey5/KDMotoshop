@@ -95,3 +95,14 @@ export const update_admin_notification =  async(req: AuthenticatedRequest, res: 
         res.status(500).json({ success: false, message: err.message || 'Server error' });
     }
 }
+
+export const adminReadAllNotifications = async (req : AuthenticatedRequest, res : Response) => {
+    try{
+        await AdminNotification.updateMany({ isViewed: false, to: req.user_id}, { isViewed: true });
+
+        res.status(200).json({ success: true, message: 'All notifications marked as read'});
+
+    } catch (err: any) {
+        res.status(500).json({ success: false, message: err.message || 'Server error' });
+    }
+}
