@@ -221,8 +221,8 @@ export const getUser = async (req : AuthenticatedRequest, res : Response) => {
     const id = req.user_id;
 
     const customer = await Customer.findById(id);
-    const admin = await Admin.findById(id);
-
+    const admin = await Admin.findOne({ _id: id, status: 'Active'})
+    
     if(!customer && !admin) {
        res.status(404).json({ success: false, message: 'User not found' });
        return;
