@@ -35,11 +35,11 @@ const containerVariants = {
 }
 
 const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
-    const { data } = useFetch("/api/products/top?limit=5")
+    const { data } = useFetch("/api/products/top?limit=4")
     const isDark = useDarkmode()
 
     return (
-        <section className={cn("bg-white transition-colors duration-600 min-h-screen px-3 py-20 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]',isDark && isParallax && 'bg-gray-900/20 backdrop-blur-md rounded-xl shadow-lg')}>
+        <section className={cn("bg-white transition-colors duration-600 px-3 py-20 lg:px-10 lg:py-20 flex flex-col items-center", isDark && 'bg-[#1e1e1e]',isDark && isParallax && 'bg-gray-900/20 backdrop-blur-md rounded-xl shadow-lg')}>
         <div className="w-full">
             <Title className="text-2xl md:text-4xl">Most Selling Products</Title>
         </div>
@@ -48,7 +48,7 @@ const PopularProductsSection = ({ isParallax } : { isParallax : boolean }) => {
             initial="hidden"
             whileInView="visible"
             variants={containerVariants}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 my-12 md:gap-10 gap-5"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-12 md:gap-10 gap-5"
             >
             {data?.topProducts.map((product : TopProduct) => (
             <motion.div
