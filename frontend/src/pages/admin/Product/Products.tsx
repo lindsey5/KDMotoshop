@@ -140,6 +140,7 @@ const Products = () => {
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value)
+        setPage(1)
     };
     
     const exportProducts = () => {

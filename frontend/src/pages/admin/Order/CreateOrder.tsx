@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { postData } from "../../../services/api";
-import { Backdrop, Badge, Button,IconButton,Pagination } from "@mui/material";
+import { Backdrop, Badge, Button,IconButton } from "@mui/material";
 import { SearchField } from "../../../components/Textfield";
 import { RedButton } from "../../../components/buttons/Button";
 import AddIcon from '@mui/icons-material/Add';
@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ReceiptModal from "./ui/ReceiptModal";
 import useFetch from "../../../hooks/useFetch";
 import { useDebounce } from "../../../hooks/useDebounce";
+import CustomizedPagination from "../../../components/Pagination";
 
 const OrderState : Order = {
     order_source: 'Store',
@@ -56,7 +57,7 @@ const CreateOrderPage = () => {
     const [payment, setPayment] = useState<number>(0);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const searchDebounce = useDebounce(searchTerm, 500);
-    const { data : productsRes } = useFetch(`/api/products?page=${page}&limit=100&searchTerm=${searchDebounce}&category=${selectedCategory}`)
+    const { data : productsRes } = useFetch(`/api/products?page=${page}&limit=6&searchTerm=${searchDebounce}&category=${selectedCategory}`)
 
     const calculateTotal = useCallback(() => {
         setOrder(prev => (
@@ -196,14 +197,18 @@ const CreateOrderPage = () => {
 
             <div className="flex flex-wrap gap-5 justify-between items-center mt-6">
                 <SearchField 
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value)
+                        setPage(1)
+                    }}
                     sx={{ maxWidth: '450px' }}
                     value={searchTerm}
                     placeholder="Search by Product name, SKU, Category..." 
                 />
-                <Pagination 
+                <CustomizedPagination 
                     count={productsRes?.totalPages} 
                     onChange={handlePage} 
+                    page={page}
                 />
             </div>
 

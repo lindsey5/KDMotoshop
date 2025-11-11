@@ -1,4 +1,4 @@
-import { memo, } from "react";
+import { memo, useEffect, } from "react";
 import useDarkmode from "../../../hooks/useDarkmode"
 import { cn } from "../../../utils/utils"
 import { Title } from "../../../components/text/Text";
@@ -104,6 +104,10 @@ const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates
     if(user && user.role !== 'Super Admin'){
         return <Navigate to="/admin/dashboard"/>
     }
+
+    useEffect(() => {
+        setPage(1)
+    }, [selectedDates])
 
     return (
         <PageContainer className="min-h-full">

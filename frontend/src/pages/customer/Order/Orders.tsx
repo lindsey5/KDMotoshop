@@ -52,7 +52,10 @@ const CustomerOrders = () => {
                 <div className="flex-1 md:max-w-sm">
                     <StatusSelect 
                         value={selectedStatus}
-                        onChange={(e) => setSelectedStatus(e.target.value as string)}
+                        onChange={(e) => {
+                            setSelectedStatus(e.target.value as string)
+                            setPage(1)
+                        }}
                         menu={Statuses}
                     />
                 </div>

@@ -119,7 +119,10 @@ const Orders = () => {
             <div className="flex flex-col md:flex-row md:flex-wrap justify-between mb-6 gap-10">
                 <SearchField
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value)
+                        setPage(1)
+                    }}
                     placeholder="Search by Customer Name, Order ID" 
                     sx={{ flex: 1, maxWidth: '400px', height: 55 }}
                 />
@@ -128,12 +131,18 @@ const Orders = () => {
                         <CustomizedSelect
                             label="Order Channel"
                             value={from}
-                            onChange={(e) => setFrom(e.target.value as string)}
+                            onChange={(e) => {
+                                setFrom(e.target.value as string)
+                                setPage(1)
+                            }}
                             menu={['Website', 'Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
                          />
                         <StatusSelect 
                             value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.target.value as string)}
+                            onChange={(e) => {
+                                setSelectedStatus(e.target.value as string)
+                                setPage(1)
+                            }}
                             menu={Statuses}
                         />
                         <CustomizedSelect 
@@ -142,7 +151,10 @@ const Orders = () => {
                             menu={payment_methods.map(pm => ({ label: pm, value: pm}))}
                             icon={<FilterListIcon />}
                             value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value as string)}
+                            onChange={(e) => {
+                                setPaymentMethod(e.target.value as string)
+                                setPage(1)
+                            }}
                         />
                     </div>
                     <CustomDateRangePicker 

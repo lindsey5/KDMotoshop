@@ -40,7 +40,14 @@ const PurchaseOrdersPage = () => {
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
             <Card className="min-h-0 flex-grow flex flex-col gap-5">
                 <div className="flex gap-10 justify-between items-center">
-                    <SearchField onChange={(e) => setSearchTerm(e.target.value)} sx={{ maxWidth: '350px'}} placeholder="Search purchase order"/>
+                    <SearchField 
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value)
+                            setPage(1)
+                        }} 
+                        sx={{ maxWidth: '350px'}} 
+                        placeholder="Search purchase order"
+                    />
                     <RedButton onClick={() => navigate('/admin/purchase-order')}>Create Purchase Order</RedButton>
                 </div>
                 <div className="min-h-0 flex-grow overflow-y-auto">

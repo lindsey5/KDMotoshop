@@ -29,7 +29,7 @@ const RefundsPage = () => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const searchDebounce = useDebounce(searchTerm, 500);
     const [page, setPage] = useState(1);
-    const { data : refundRequests, loading } = useFetch(`/api/refunds?status=${status}&searchTerm=${searchDebounce}&page=${page}`);
+    const { data : refundRequests, loading } = useFetch(`/api/refunds?limit=30&status=${status}&searchTerm=${searchDebounce}&page=${page}`);
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
@@ -45,7 +45,10 @@ const RefundsPage = () => {
                     <CustomizedSelect 
                         label="Status"
                         value={status}
-                        onChange={(e) => setStatus(e.target.value as string)}
+                        onChange={(e) => {
+                            setStatus(e.target.value as string)
+                            setPage(1)
+                        }}
                         menu={['All', 'Pending', 'Under Review', 'Approved', 'Processing', 'Refunded', 'Cancelled'].map(method => ({ value: method, label: method }))}
                     />
                 </div>
@@ -55,7 +58,10 @@ const RefundsPage = () => {
                     type="text"
                     className="border px-3 py-2 mb-5 w-full md:w-1/2"
                     placeholder="Search by Order ID, Firstname, Lastname, or Product Name"
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                        setSearchTerm(e.target.value)
+                        setPage(1)
+                    }}
                 />
                 <CustomizedTable 
                     cols={['Customer Name', 'Order ID', 'Product Name', 'Quantity', 'Status', 'Total Amount', 'Request Date', 'Action']}

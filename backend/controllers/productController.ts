@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import isoWeek from "dayjs/plugin/isoWeek";
+import redisClient from "../utils/redisClient";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -376,61 +377,72 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
-    const searchTerm = req.query?.searchTerm || '';
+    const searchTerm = (req.query?.searchTerm as string) || '';
+    const status = req.query.status && req.query.status !== 'All' ? req.query.status : '';
 
-    let filter : any = { visibility: { $ne: 'Deleted' }};
+    const cacheKey = `inventory:${searchTerm}`;
+    const cached = await redisClient.get(cacheKey);
 
-    if(searchTerm){
-      filter.$or = [
-        { 'variants.sku': { $regex: searchTerm, $options: 'i' } },
-        { sku: { $regex: searchTerm, $options: 'i' } },
-        { product_name: { $regex: searchTerm, $options: 'i' } },
-      ]
-    }
+    let allProducts: any[] = [];
 
-    const products = await Product.find(filter)
-      .sort({ product_name: 1 })
-      .skip(skip)
-      .limit(limit)
+    if(cached){
+      allProducts = JSON.parse(cached)
+    }else{
+      const filter: any = { visibility: { $ne: 'Deleted' } };
 
-    const totalProducts = await Product.countDocuments(filter);
+      if (searchTerm) {
+        filter.$or = [
+          { 'variants.sku': { $regex: searchTerm, $options: 'i' } },
+          { sku: { $regex: searchTerm, $options: 'i' } },
+          { product_name: { $regex: searchTerm, $options: 'i' } },
+        ];
+      }
 
-    const allProducts: any[] = [];
+      const products = await Product.find(filter).sort({ product_name: 1 });
 
-    for (const product of products) {
-      if (product.product_type === "Variable") {
-        // For each variant
-        for (const variant of product.variants) {
-          const inventory = await product.getStockStatus(variant.sku);
+      for (const product of products) {
+        if (product.product_type === "Variable") {
+          // For each variant
+          for (const variant of product.variants) {
+            const inventory = await product.getStockStatus(variant.sku);
+            allProducts.push({
+              _id: product._id,
+              product_name: product.product_name,
+              thumbnail: product.thumbnail,
+              product_type: product.product_type,
+              sku: variant.sku,
+              stock: variant.stock,
+              ...inventory,
+            });
+          }
+        } else {
+          const inventory = await product.getStockStatus();
           allProducts.push({
             _id: product._id,
             product_name: product.product_name,
             thumbnail: product.thumbnail,
             product_type: product.product_type,
-            sku: variant.sku,
-            stock: variant.stock,
+            sku: product.sku,
+            stock: product.stock,
             ...inventory,
           });
         }
-      } else {
-        const inventory = await product.getStockStatus();
-        allProducts.push({
-          _id: product._id,
-          product_name: product.product_name,
-          thumbnail: product.thumbnail,
-          product_type: product.product_type,
-          sku: product.sku,
-          stock: product.stock,
-          ...inventory,
-        });
       }
+
+      await redisClient.setex(cacheKey, 60, JSON.stringify(allProducts));
     }
+
+    const filteredProducts = status
+      ? allProducts.filter((p) => p.status === status)
+      : allProducts;
+
+    const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
     res.status(200).json({
       success: true,
       page,
-      totalPages: Math.ceil(totalProducts / limit),
-      products: allProducts,
+      totalPages: Math.ceil(filteredProducts.length / limit),
+      products: paginatedProducts,
     });
   } catch (err: any) {
     console.error(err);
