@@ -19,10 +19,13 @@ import refundRoutes from './routes/refundRoutes';
 import supplierRoutes from './routes/supplierRoutes';
 import purchaseOrderRoutes from './routes/purchaseOrderRoutes';
 import aiRoutes from './routes/aiRoutes';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
-const origins = process.env.NODE_ENV === 'production' ? ['https://kdmotoshop-ai-api.onrender.com'] : ['http://localhost:5173', 'http://192.168.1.3:5000']
+const origins = process.env.NODE_ENV === 'production' ? [process.env.VITE_AI_URL as string] : ['http://localhost:5173', 'http://192.168.1.3:5000']
 
 // middleware & static files
 app.use(cors({
