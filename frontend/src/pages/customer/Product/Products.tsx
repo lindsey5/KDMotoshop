@@ -43,7 +43,7 @@ const CustomerProducts = () => {
     const min = valueDebounce?.[0] ?? 0;
     const max = valueDebounce?.[1] ?? 10000; 
     const { data : productsRes, loading : productsLoading } = useFetch(`/api/products?page=${page}&limit=${20}&min=${min}&max=${max}&category=${selectedCategory}&visibility=Published&sort=${selectedSort}&searchTerm=${searchTerm || ''}`)
-    const { data : topProductsRes } = useFetch('/api/products/top');
+    const { data : topProductsRes } = useFetch('/api/products/top?limit=10');
     const { data : categoriesRes } = useFetch('/api/categories');
 
     const products = useMemo(() => {

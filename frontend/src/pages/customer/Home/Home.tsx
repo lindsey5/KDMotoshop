@@ -29,7 +29,11 @@ const KDMotoshopHome = () => {
 
     return (
             <div className="transition-colors duration-600 border-box">
-                {isDark && <SplashCursor />}
+                {isDark && (
+                    <div className="hidden lg:block">
+                        <SplashCursor />
+                    </div>
+                )}
                 <ChatbotButton />
                 <MobileHome />
                 <Parallax ref={parallax} pages={8} className='bg-[url(/bg.png)] bg-cover bg-white hidden lg:block'>
