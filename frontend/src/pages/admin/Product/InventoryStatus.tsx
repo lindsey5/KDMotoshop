@@ -63,7 +63,7 @@ const InventoryStatus = () => {
                 <div className="w-full md:w-1/2">
                     <SearchField 
                         placeholder="Search by name, sku..."
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                         value={search}
                     />
                 </div>
