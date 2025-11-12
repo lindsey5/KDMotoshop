@@ -50,7 +50,7 @@ const RateProductModal: React.FC<RateProductModalProps> = ({ open, close, orderI
         <Modal open={open} onClose={handleClose}>
             <Card className="w-[80%] max-w-[400px] flex flex-col absolute top-1/2 left-1/2 transform -translate-1/2 rounded-xl p-6">
                 <h1 className="font-bold text-2xl mb-4 text-center">Overall Rating</h1>
-
+                
                 <Rating
                     onChange={(_, newValue) => setRating(newValue || 0)}
                     value={rating}
@@ -80,6 +80,7 @@ const RateProductModal: React.FC<RateProductModalProps> = ({ open, close, orderI
                     <label htmlFor="upload-image">
                         <Button
                             variant="outlined"
+                            disabled={loading}
                             component="span"
                             color="error"
                             startIcon={<CloudUploadIcon />}
