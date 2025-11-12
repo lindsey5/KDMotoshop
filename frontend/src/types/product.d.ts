@@ -48,6 +48,7 @@ type Review = {
     customer_id: Customer;
     orderItemId: OrderItem;
     product_id: Product;
+    image?: UploadedImage;
     createdAt: Date;
 }
 

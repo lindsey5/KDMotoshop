@@ -6,10 +6,13 @@ import Product from "../models/Product";
 import OrderItem from "../models/OrderItem";
 import Customer from "../models/Customer";
 import { sendAdminsNotification } from "../services/notificationService";
+import { uploadImage } from "../services/cloudinary";
 
 export const create_review = async (req: AuthenticatedRequest, res: Response) => {
     try{
-        const { orderItemId, product_id } = req.body;
+        const { orderItemId, product_id, image } = req.body;
+
+        const reviewImage = await uploadImage(image);
 
         // Find customer
         const customer = await Customer.findById(req.user_id);
@@ -36,7 +39,7 @@ export const create_review = async (req: AuthenticatedRequest, res: Response) =>
         }
 
         // Create new review
-        const review = new Review({...req.body, customer_id: req.user_id});
+        const review = new Review({...req.body, customer_id: req.user_id, ...(image && { image: reviewImage })});
         await review.save();
 
         // Calculate rating based on reviews

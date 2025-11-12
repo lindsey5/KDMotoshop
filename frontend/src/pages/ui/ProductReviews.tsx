@@ -1,23 +1,23 @@
 import { memo, useMemo, useState } from "react";
 import useDarkmode from "../../hooks/useDarkmode"
-import { cn, maskMiddle } from "../../utils/utils";
+import { cn } from "../../utils/utils";
 import { CircularProgress, Rating } from "@mui/material";
 import Card from "../../components/Card";
 import { formatDate } from "../../utils/dateUtils";
 import CustomizedPagination from "../../components/Pagination";
 import { CustomizedChip } from "../../components/Chip";
 import GradeOutlinedIcon from '@mui/icons-material/GradeOutlined';
-import { useSelector } from "react-redux";
-import type { RootState } from "../../features/store";
 import { useLocation } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
+import UserAvatar from "./UserAvatar";
+import ProductReviewImageModal from "./ProductReviewImage";
 
 const ProductReviews = ({ product_id } : { product_id : string }) => {  
     const isDark = useDarkmode();
     const params = new URLSearchParams(useLocation().search);
     const review_id = params.get("id");
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
-    const { user } = useSelector((state : RootState) => state.user)
+    const [selectedImage, setSelectedImage] = useState<string>();
 
     if (!product_id) return null;
     const [page, setPage] = useState(1);
@@ -32,9 +32,16 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
     const handlePage = (_: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
     };
+    
 
     return (
         <div className="flex flex-col gap-5 py-5">
+            <ProductReviewImageModal 
+                open={selectedImage !== undefined}
+                close={() => setSelectedImage(undefined)}
+                image={selectedImage || ''}
+            />
+            
             <div className="flex items-center gap-5 justify-between flex-wrap mt-2">
                 <h1 className={cn("text-2xl font-bold", isDark && 'text-white')}>Customer Reviews ({reviewsRes?.overallTotal})</h1>
                 <div className="flex items-center gap-2">
@@ -68,8 +75,11 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
                     <CircularProgress sx={{ color: 'red'}}/>
                 </div> : reviewsRes?.reviews.length > 0 ? 
                 reviewsRes?.reviews.map((review : Review) => (
-                    <Card className={cn("flex flex-col gap-3", isDark && 'bg-[#121212]')}>
-                        <strong>{user?.role === 'Admin' || user?.role === 'Super Admin' ? `${review.customer_id.firstname} ${review.customer_id.lastname}` : maskMiddle(`${review.customer_id.firstname} ${review.customer_id.lastname}`)}</strong>
+                    <Card className={cn("space-y-3", isDark && 'bg-[#121212]')}>
+                        <div className="flex gap-4 items-center">
+                            <UserAvatar image={review.customer_id.image}/>
+                            <strong>{`${review.customer_id.firstname} ${review.customer_id.lastname}`}</strong>
+                        </div>
                         <Rating 
                             name="read-only"
                             value={review.rating}
@@ -83,7 +93,17 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
                             ))} 
                         </div>
                         <p className={cn("text-gray-500", isDark && 'text-gray-400')}>{formatDate(review.createdAt)}</p>
-                        {review.review && <div className={cn("bg-gray-200 p-3 rounded-lg", isDark && 'bg-[#1e1e1e]')} dangerouslySetInnerHTML={{ __html: review.review }} />}
+                        {review.review && (
+                            <>
+                            <div className={cn("bg-gray-200 p-3 rounded-lg", isDark && 'bg-[#1e1e1e]')} dangerouslySetInnerHTML={{ __html: review.review }} />
+                            {review.image && <img 
+                                className="cursor-pointer object-cover h-25 w-25 md:w-40 md:h-40" 
+                                src={review?.image?.imageUrl} 
+                                onClick={() => setSelectedImage(review?.image?.imageUrl)}
+                                alt="" 
+                            />}
+                            </>
+                        )}
                     </Card>
                 ))
                 : <p className={cn("text-xl", isDark && 'text-white')}>No Reviews</p>
