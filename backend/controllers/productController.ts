@@ -429,7 +429,7 @@ export const get_inventory_status = async (req: Request, res: Response) => {
         }
       }
 
-      await redisClient.setex(cacheKey, 60, JSON.stringify(allProducts));
+      await redisClient.setex(cacheKey, 120, JSON.stringify(allProducts));
     }
 
     const filteredProducts = status
