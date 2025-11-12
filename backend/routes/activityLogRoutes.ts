@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { adminRequireAuth } from "../middlewares/authMiddleware";
-import { get_activity_logs, get_admin_activity_logs } from "../controllers/activityLog.Controller";
+import { get_activity_logs, get_admin_activity_logs } from "../controllers/activityLogController";
 
 const router = Router();
 

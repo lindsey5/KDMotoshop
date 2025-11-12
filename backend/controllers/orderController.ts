@@ -230,21 +230,6 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
         let orderData = req.body;
         if(req.body.status === 'Delivered') orderData.deliveredAt = new Date();
         const updatedOrder = await Order.findByIdAndUpdate(id, req.body, { new: true });
-
-        /*if(req.body.status !== 'Delivered'){
-            for (const item of req.body.orderItems) {
-                if((order.status === 'Shipped' || order.status === 'Delivered') && req.body !== 'Refunded') await incrementStock(item)
-                if(req.body.status === 'Pending'){
-                    await OrderItem.updateOne({_id: item._id}, { status: 'Unfulfilled' });
-                }else if(req.body.status === 'Refunded'){
-                    await OrderItem.updateOne({_id: item._id}, { status: 'Refunded' });
-                }else if(req.body.status === 'Cancelled'){
-                    await OrderItem.updateOne({_id: item._id}, { status: 'Cancelled' });
-                }else if(req.body.status === 'Failed'){
-                    await OrderItem.updateOne({_id: item._id}, { status: 'Failed' });
-                }
-            }
-        }*/
         
         if(req.body.status === 'Delivered' || req.body.status === 'Shipped'){
             for (const item of req.body.orderItems) {
