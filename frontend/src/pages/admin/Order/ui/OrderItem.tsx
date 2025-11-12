@@ -49,19 +49,17 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
                                 readOnly 
                             />
                             {review.review && (
-                                <>
                                 <div className={cn("p-3 bg-gray-100 rounded-md mt-2", isDark && 'bg-gray-700')}>
                                     <p>{review.review}</p>
                                 </div>
-                                {review.image && (
-                                    <img 
-                                        className="mt-4 cursor-pointer object-cover w-25 h-25 md:w-40 md:h-40" 
-                                        src={review?.image?.imageUrl} 
-                                        onClick={() => setShowImage(true)}
-                                        alt="" 
-                                    />
-                                )}
-                                </>
+                            )}
+                            {review.image && (
+                                <img 
+                                    className="mt-4 cursor-pointer object-cover w-25 h-25 md:w-40 md:h-40" 
+                                    src={review?.image?.imageUrl} 
+                                    onClick={() => setShowImage(true)}
+                                    alt="" 
+                                />
                             )}
                         </div>
                     )}

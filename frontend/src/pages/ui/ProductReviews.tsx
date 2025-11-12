@@ -94,16 +94,14 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
                         </div>
                         <p className={cn("text-gray-500", isDark && 'text-gray-400')}>{formatDate(review.createdAt)}</p>
                         {review.review && (
-                            <>
                             <div className={cn("bg-gray-200 p-3 rounded-lg", isDark && 'bg-[#1e1e1e]')} dangerouslySetInnerHTML={{ __html: review.review }} />
-                            {review.image && <img 
-                                className="cursor-pointer object-cover h-25 w-25 md:w-40 md:h-40" 
-                                src={review?.image?.imageUrl} 
-                                onClick={() => setSelectedImage(review?.image?.imageUrl)}
-                                alt="" 
-                            />}
-                            </>
                         )}
+                        {review.image && <img 
+                            className="cursor-pointer object-cover h-25 w-25 md:w-40 md:h-40" 
+                            src={review?.image?.imageUrl} 
+                            onClick={() => setSelectedImage(review?.image?.imageUrl)}
+                            alt="" 
+                        />}
                     </Card>
                 ))
                 : <p className={cn("text-xl", isDark && 'text-white')}>No Reviews</p>

@@ -10,6 +10,7 @@ import { OrderItemStatusChip, RefundStatusChip } from "../../../../components/Ch
 import RequestRefundModal from "../../ui/CreateRefund";
 import CustomerRefundRequestModal from "../../ui/CustomerRefundRequest";
 import { isWithinLast7Days } from "../../../../utils/dateUtils";
+import ProductReviewImageModal from "../../../ui/ProductReviewImage";
 
 const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, status: string, deliveredAt: Date | undefined }) => {
     const isDark = useDarkmode();
@@ -17,6 +18,7 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
     const [review, setReview] = useState<Review>();
     const [showRequest, setShowRequest]= useState<boolean>(false);
     const [refund, setRefund] = useState<RefundRequest>();
+    const [showImage, setShowImage] = useState(false);
 
     const handleClose = () => {
         setRatingData(undefined)
@@ -34,6 +36,11 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
     return (
         <>
         {refund && <CustomerRefundRequestModal open={refund !== undefined} close={() => setRefund(undefined)} refundRequest={refund as RefundRequest}/>}
+        <ProductReviewImageModal 
+            close={() => setShowImage(false)}
+            image={review?.image?.imageUrl || ''}
+            open={showImage}
+        />
         <RateProductModal
             open={ratingData !== undefined} 
             close={handleClose}
@@ -69,6 +76,14 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
                             {review.review && <div className={cn("p-3 bg-gray-100 rounded-md mt-2", isDark && 'bg-gray-700')}>
                                 <p>{review.review}</p>
                             </div>}
+                            {review.image && (
+                                <img 
+                                    className="mt-4 cursor-pointer object-cover w-25 h-25 md:w-40 md:h-40" 
+                                    src={review?.image?.imageUrl} 
+                                    onClick={() => setShowImage(true)}
+                                    alt="" 
+                                />
+                            )}
                         </div>
                     )}
                 </div>
