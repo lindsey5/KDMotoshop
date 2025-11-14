@@ -72,6 +72,12 @@ const OrderDetails = () => {
                         <p className="text-right">{formatNumberToPeso(order?.subtotal || 0)}</p>
                         <p>Shipping Fee</p>
                         <p className="text-right">Free</p>
+                        {order?.voucher &&
+                          <>
+                          <p>Discount</p>
+                          <p className="text-right">{order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
+                          </>
+                        }
                     </div>
                     <div className="flex justify-between">
                         <h1 className="font-bold text-xl">Total</h1>

@@ -35,6 +35,7 @@ const CustomerOrderDetails = () => {
     useEffect(() => {
         const getOrderAsync = async () => {
             const response = await fetchData(`/api/orders/${id}`)
+            console.log(response)
             if(response.success){
                 const { customer, ...rest } = response.order
                 setOrder({...rest, customer: { ...customer, customer_id: customer.customer_id._id, image: customer.customer_id?.image.imageUrl ?? ''}})
@@ -110,6 +111,12 @@ const CustomerOrderDetails = () => {
                             <p className="text-right">{formatNumberToPeso(order.subtotal)}</p>
                             <p>Shipping fee</p>
                             <p className="text-right">Free</p>
+                            {order?.voucher &&
+                            <>
+                            <p>Discount</p>
+                            <p className="text-right">{order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
+                            </>
+                            }
                         </div>
                         <div className="flex justify-between font-bold text-lg md:text-xl">
                             <h1>Total</h1>

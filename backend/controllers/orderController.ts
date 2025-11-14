@@ -159,7 +159,8 @@ export const get_order_by_id = async (req: Request, res: Response) => {
     try {
         const order = await Order.findById(req.params.id)
         .populate('customer.customer_id', 'image.imageUrl')
-        .populate('createdBy');
+        .populate('createdBy')
+        .populate('voucher');
 
         if(!order){
             res.status(404).json({ success: false, message: 'Order not found'})
@@ -176,7 +177,7 @@ export const get_order_by_id = async (req: Request, res: Response) => {
                 path: "order_item_id",
                 populate: [
                     { path: "order_id" },
-                    { path: "product_id", select: "product_name thumbnail" }
+                    { path: "product_id", select: "product_name thumbnail" },
                 ]
                 }
             ]

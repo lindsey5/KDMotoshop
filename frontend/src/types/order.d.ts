@@ -24,6 +24,7 @@ type Order = {
     createdAt?: Date;
     updatedAt?: Date;
     deliveredAt?: Date;
+    voucher?: Voucher;
     orderItems?: OrderItem[];
 }
 
