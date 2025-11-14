@@ -16,7 +16,7 @@ export const createPaymentCheckout = async (req: Request, res: Response) => {
         const line_items = finalItems.map((item: any) => (  {
             images: [item.image],
             currency: "PHP",
-            amount: Math.round(item.discountedPrice * 100), // amount in centavos
+            amount: Math.round((item.discountedPrice || item.price) * 100),
             name: item.product_name,
             quantity: item.quantity
         }));
