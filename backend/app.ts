@@ -37,6 +37,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(express.static('public'));
 app.use(express.json({ limit: '200mb' }));
+app.set("trust proxy", 1);
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 app.get('/api/regions', async (req, res) => {
