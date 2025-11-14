@@ -88,7 +88,7 @@ const CustomerOrderItem = ({ item, status, deliveredAt } : { item : OrderItem, s
                     )}
                 </div>
             </div>
-            <h1 className="font-bold">{formatNumberToPeso(item.lineTotal)}</h1>
+            <h1 className="font-bold">{formatNumberToPeso(item.price * item.quantity)}</h1>
             <div className="flex justify-between md:flex-col gap-5">
                 {status === 'Delivered' && item.status === 'Fulfilled' && (
                     <RedButton onClick={() => setRatingData({ orderItemId: item._id ?? '', product_id: item.product_id })}>Rate Product</RedButton>

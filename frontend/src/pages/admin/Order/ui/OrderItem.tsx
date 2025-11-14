@@ -68,7 +68,7 @@ const OrderItem = ({ item } : { item : OrderItem }) => {
             <div className="flex gap-3 my-5">
                 <OrderItemStatusChip status={item.status} />
             </div>
-            <h1 className="font-bold">{formatNumberToPeso(item.lineTotal)}</h1>
+            <h1 className="font-bold">{formatNumberToPeso(item.price * item.quantity)}</h1>
         </div>
     )
 }
