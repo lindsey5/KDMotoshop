@@ -44,3 +44,19 @@ type OrderItem = {
     refund?: RefundRequest;
     createdAt?: Date;
 }
+
+interface Voucher {
+    _id: string;
+    name: string;
+    code: string;
+    voucherType: "percentage" | "amount";  
+    percentage?: number;
+    amount?: number;
+    minSpend: number;
+    maxDiscount: number;
+    startDate: Date;
+    endDate: Date;
+    usageLimit: number;
+    usedCount: number;
+    createdBy: Admin;
+}

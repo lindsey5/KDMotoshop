@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchData, postData, updateData } from "../../../services/api";
 import useDarkmode from "../../../hooks/useDarkmode";
-import { cn } from "../../../utils/utils";
+import { applyVoucherToItems, cn } from "../../../utils/utils";
 import Card from "../../../components/Card";
 import LocationPinIcon from '@mui/icons-material/LocationPin';
 import AddIcon from '@mui/icons-material/Add';
@@ -52,6 +52,7 @@ const CheckoutPage = () => {
   const [address, setAddress] = useState<Address>(addresssInitialState);
   const [selectedAddress, setSelectedAddress] = useState<number>(0);
   const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
+  const [voucherCode, setVoucherCode] = useState('');
   const {
     selectedCity,
     setSelectedCity,
@@ -118,6 +119,25 @@ const CheckoutPage = () => {
       return;
     }
 
+    let voucher;
+    if(voucherCode){
+      const response = await fetchData(`/api/vouchers/is-valid?code=${voucherCode}`);
+
+      if(voucherCode && !response.success){
+        errorAlert('Invalid Voucher', response.message || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      voucher = response.voucher;
+    }
+
+    let finalOrderItems = orderItems;
+
+    if (voucher) {
+      finalOrderItems = applyVoucherToItems(orderItems, voucher);
+    }
+    const discountedTotal = finalOrderItems.reduce((sum, item) => sum + item.lineTotal, 0);
+    console.log(finalOrderItems)
     if (
       await confirmDialog(
         paymentMethod === "CASH" ? "Place this Order?" : "Proceed to payment?",
@@ -129,8 +149,8 @@ const CheckoutPage = () => {
       setLoading(true);
       const order = {
         order_source: "Website",
-        subtotal,
-        total,
+        subtotal: discountedTotal,
+        total: discountedTotal,
         status: "Pending",
         customer: {
           customer_id: customer?._id,
@@ -146,12 +166,13 @@ const CheckoutPage = () => {
           region: customer?.addresses?.[selectedAddress].region,
         },
         payment_method: paymentMethod,
+        ...(voucher && ({ voucher: voucher._id }))
       };
       const response = await postData(
         paymentMethod === "CASH" ? "/api/orders/customer" : "/api/payment",
         {
           order,
-          orderItems,
+          orderItems: finalOrderItems,
           cart: parsedCartItems,
         }
       );
@@ -431,6 +452,12 @@ const CheckoutPage = () => {
                     </div>
                 </div>
             </RadioGroup>
+
+            <RedTextField 
+              label="Enter Voucher"
+              value={voucherCode}
+              onChange={(e) => setVoucherCode(e.target.value)}
+            />
 
             <div className="flex items-center gap-2 mt-4 mb-2">
               <input 

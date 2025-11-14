@@ -20,6 +20,7 @@ import supplierRoutes from './routes/supplierRoutes';
 import purchaseOrderRoutes from './routes/purchaseOrderRoutes';
 import aiRoutes from './routes/aiRoutes';
 import dotenv from 'dotenv';
+import voucherRoutes from './routes/voucherRoutes';
 
 dotenv.config();
 
@@ -85,6 +86,7 @@ app.use('/api/reviews', reviewRoutes)
 app.use('/api/refunds', refundRoutes)
 app.use('/api/suppliers', supplierRoutes)
 app.use('/api/purchase-orders', purchaseOrderRoutes)
+app.use('/api/vouchers', voucherRoutes);
 app.use(aiRoutes);
 
 export default app

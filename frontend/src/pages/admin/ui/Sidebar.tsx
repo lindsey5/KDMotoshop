@@ -21,7 +21,7 @@ import ReplayRoundedIcon from "@mui/icons-material/ReplayRounded";
 import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Box } from 'lucide-react'
+import { Box, Ticket } from 'lucide-react'
 import { Archive, Description } from '@mui/icons-material';
 import { addNotification, resetNotifications } from '../../../features/notifications/notificationSlice';
 import { fetchNotifications } from '../../../features/notifications/notificationThunks';
@@ -110,12 +110,12 @@ export const AdminSidebar = () => {
 
         {/* Sidebar */}
         <aside
-          className={`fixed top-0 left-0 h-full bg-[#121212] p-5 flex flex-col items-center gap-5 transform transition-transform duration-300 z-40
+          className={`fixed top-0 left-0 h-full bg-[#121212] py-5 flex flex-col items-center gap-5 transform transition-transform duration-300 z-40
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
           md:translate-x-0 md:w-[200px] w-[200px]`}
         >
           <img className="h-[80px] mb-8" src="/kd-logo.png" alt="logo" />
-          <div className="w-full flex-col flex gap-3 flex-grow min-h-0 overflow-hidden">
+          <div className="w-full flex-col flex gap-3 flex-grow min-h-0 overflow-y-auto">
             <SidebarLink label="Dashboard" icon={<DashboardIcon sx={{ width: 25, height: 25 }} />} path="/admin/dashboard" />
 
             <SidebarDropdown
@@ -128,7 +128,8 @@ export const AdminSidebar = () => {
                   ? [{ label: "Refunds", icon: <ReplayRoundedIcon sx={{ width: 22, height: 22 }} />, path: "/admin/refunds" }]
                   : []),
                 { label: "Customers", icon: <PersonIcon sx={{ width: 22, height: 22 }} />, path: "/admin/customers" },
-                { label: "Inventory Status", icon: <Box size={22} />, path: "/admin/inventory-status" }
+                { label: "Inventory Status", icon: <Box size={22} />, path: "/admin/inventory-status" },
+                { label: "Vouchers", icon: <Ticket size={22} />, path: "/admin/vouchers" }
               ]}
             />
 

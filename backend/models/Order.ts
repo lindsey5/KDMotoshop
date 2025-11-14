@@ -23,7 +23,8 @@ export interface IOrder extends Document {
     deliveredAt: Date,
     payment_method: "CASH" | "GCASH" | "PAYMAYA" | "CARD";
     createdBy?: Types.ObjectId;
-    createdAt: Date
+    createdAt: Date;
+    voucher?: Types.ObjectId;
 }
 
 const OrderSchema: Schema<IOrder> = new Schema(
@@ -72,7 +73,8 @@ const OrderSchema: Schema<IOrder> = new Schema(
       type: Date,
       required: false
     },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: false }
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: false },
+    voucher: { type: Schema.Types.ObjectId, ref: 'Voucher'}
   },
   { timestamps: true }
 );

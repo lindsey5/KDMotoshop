@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
-interface OrderItem extends Document {
+export interface IOrderItem extends Document {
     order_id: Types.ObjectId; 
     product_id: Types.ObjectId;
     sku: string;
@@ -13,7 +13,7 @@ interface OrderItem extends Document {
     status: 'Unfulfilled' | 'Fulfilled' | 'Rated';
 }
 
-const OrderItemSchema: Schema<OrderItem> = new Schema(
+const OrderItemSchema: Schema<IOrderItem> = new Schema(
   {
     order_id: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
     product_id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -39,5 +39,5 @@ OrderItemSchema.virtual("refund", {
 OrderItemSchema.set("toObject", { virtuals: true });
 OrderItemSchema.set("toJSON", { virtuals: true });
 
-const OrderItem = mongoose.model<OrderItem>('OrderItem', OrderItemSchema);
+const OrderItem = mongoose.model<IOrderItem>('OrderItem', OrderItemSchema);
 export default OrderItem;
