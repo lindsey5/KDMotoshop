@@ -12,6 +12,7 @@ import AddVoucherModal from "./ui/AddVoucherModal"
 import CustomizedTable from '../../../components/Table';
 import { formatToShortDate } from "../../../utils/dateUtils"
 import { formatNumberToPeso } from "../../../utils/utils"
+import CustomizedPagination from "../../../components/Pagination"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -22,7 +23,12 @@ const Vouchers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [status, setStatus] = useState('Active');
-    const { data, loading} = useFetch(`/api/vouchers?searchTerm=${searchTerm}&status=${status}`);
+    const [page, setPage] = useState(1);
+    const { data, loading} = useFetch(`/api/vouchers?searchTerm=${searchTerm}&status=${status}&page=${page}&limit=50`);
+
+    const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value)
+    };
 
     return (
         <PageContainer className="h-full flex flex-col gap-5">
@@ -36,7 +42,14 @@ const Vouchers = () => {
             </div>
             <Card className="min-h-0 flex-grow flex flex-col gap-5">
                 <div className="flex gap-10 justify-between items-center">
-                    <SearchField onChange={(e) => setSearchTerm(e.target.value)} sx={{ maxWidth: '350px'}} placeholder="Search by name or code..."/>
+                    <SearchField 
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setPage(1);
+                        }} 
+                        sx={{ maxWidth: '350px'}} 
+                        placeholder="Search by name or code..."
+                    />
                     <div className="w-[400px]">
                         <CustomizedSelect 
                             sx={{ height: 55 }}
@@ -79,6 +92,9 @@ const Vouchers = () => {
                             <CircularProgress />
                         </div>
                     )}
+                </div>
+                <div className="flex justify-end mt-4">
+                    <CustomizedPagination count={data?.totalPages} page={page} onChange={handlePage} />
                 </div>
             </Card>
         </PageContainer>

@@ -27,13 +27,6 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             return;
         }
 
-        const voucher = await Voucher.findById(order.voucher);
-
-        if(voucher){
-            voucher.usedCount += 1;
-            await voucher.save();
-        }
-
         await create_activity_log({
             admin_id: req.user_id ?? '',
             description: 'created a new order',
@@ -61,6 +54,13 @@ export const create_customer_order = async (req: Request, res: Response) => {
         if(!savedOrder) {
             res.status(400).json({ success: false, message: 'Creating order error'});
             return;
+        }
+
+        const voucher = await Voucher.findById(order.voucher);
+
+        if(voucher){
+            voucher.usedCount += 1;
+            await voucher.save();
         }
 
         res.status(201).json({ success: true, order: savedOrder });
