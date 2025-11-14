@@ -84,7 +84,7 @@ const CheckoutPage = () => {
 
   const subtotal: number = useMemo(() => {
     return (
-      orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0
+      orderItems?.reduce((total, item) => item.price + total, 0) ?? 0
     );
   }, [orderItems]);
 
@@ -101,6 +101,7 @@ const CheckoutPage = () => {
       const response = await fetchData(`/api/vouchers/is-valid?code=${voucherCode}&total=${total}`);
 
       if(voucherCode && !response.success){
+        setVoucher(undefined)
         errorAlert('Invalid Voucher', response.message || 'Something went wrong. Please try again.');
         return;
       }
@@ -328,7 +329,7 @@ const CheckoutPage = () => {
                 </div>
                 {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
             </Card>
-            <PaymentSummaryCard subtotal={subtotal} total={total}/>
+            <PaymentSummaryCard subtotal={subtotal} total={total} voucher={voucher}/>
         </div>
         <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
             <h1 className="font-bold text-lg">Delivery</h1>

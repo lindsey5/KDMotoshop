@@ -16,7 +16,7 @@ const CheckoutItemContainer = ({ item } : { item : OrderItem}) => {
                     {Object.values(item?.attributes || {}).map((attribute, i) => <CustomizedChip key={i} label={attribute} />)}
                 </div>
             </div>
-            <strong>{formatNumberToPeso(item.lineTotal)}</strong>
+            <strong>{formatNumberToPeso(item.price * item.quantity)}</strong>
         </div>
     )
 }
