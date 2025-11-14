@@ -7,7 +7,7 @@ export interface IVoucher extends Document {
   percentage?: number;
   amount?: number;
   minSpend: number;
-  maxDiscount: number;
+  maxDiscount?: number;
   startDate: Date;
   endDate: Date;
   usageLimit: number;
@@ -33,7 +33,7 @@ const VoucherSchema = new Schema<IVoucher>(
     percentage: { type: Number, min: 0, max: 100 },
     amount: { type: Number, min: 0 },
     minSpend: { type: Number, default: 0, required: true },
-    maxDiscount: { type: Number, default: 0, required: true },
+    maxDiscount: { type: Number, default: 0 },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     usageLimit: { type: Number, default: 1 },

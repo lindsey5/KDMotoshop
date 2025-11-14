@@ -183,14 +183,14 @@ const AddVoucherModal = ({ open, close }: AddVoucherModalProps) => {
             />
 
             {/* Maximum Discount */}
-            <RedTextField
+            {voucherState.voucherType === "percentage" && <RedTextField
                 label="Maximum Discount"
                 type="number"
                 value={voucherState.maxDiscount || ""}
                 onChange={(e) =>
                 setVoucherState((p) => ({ ...p, maxDiscount: Number(e.target.value) }))
                 }
-            />
+            />}
 
             {/* Start Date */}
             <RedTextField

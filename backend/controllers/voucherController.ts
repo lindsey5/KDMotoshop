@@ -31,7 +31,7 @@ export const getVouchers = async (req : Request, res: Response) => {
         let query : any = {};
 
         if(status){
-            query.status = status;
+            query.endDate = status === 'Active' ? { $gt: new Date() } : { $lt: new Date() };
         }
 
         if(searchTerm){
@@ -67,7 +67,7 @@ export const getVouchers = async (req : Request, res: Response) => {
 
 export const checkIfVoucherValid = async (req: AuthenticatedRequest, res: Response) => {
     try{
-        const { code } = req.query;
+        const { code, total } = req.query;
         const voucher = await Voucher.findOne({
             code, 
             endDate: { $gt: new Date() }
@@ -75,6 +75,14 @@ export const checkIfVoucherValid = async (req: AuthenticatedRequest, res: Respon
 
         if(!voucher){
             res.status(404).json({ success: false, message: 'Voucher not exists.'})
+            return;
+        }
+
+        if (Number(total) <= voucher.minSpend) {
+            res.status(400).json({ 
+                success: false, 
+                message: `The total amount must be greater than ₱${voucher.minSpend} to use this voucher.` 
+            });
             return;
         }
 

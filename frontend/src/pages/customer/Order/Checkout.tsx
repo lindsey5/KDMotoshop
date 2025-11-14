@@ -121,7 +121,7 @@ const CheckoutPage = () => {
 
     let voucher;
     if(voucherCode){
-      const response = await fetchData(`/api/vouchers/is-valid?code=${voucherCode}`);
+      const response = await fetchData(`/api/vouchers/is-valid?code=${voucherCode}&total=${total}`);
 
       if(voucherCode && !response.success){
         errorAlert('Invalid Voucher', response.message || 'Something went wrong. Please try again.');

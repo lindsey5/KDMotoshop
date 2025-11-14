@@ -11,6 +11,7 @@ import { CircularProgress } from "@mui/material"
 import AddVoucherModal from "./ui/AddVoucherModal"
 import CustomizedTable from '../../../components/Table';
 import { formatToShortDate } from "../../../utils/dateUtils"
+import { formatNumberToPeso } from "../../../utils/utils"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -53,7 +54,7 @@ const Vouchers = () => {
                         rows={data?.vouchers.map((voucher : Voucher) => ({
                             'Name' : voucher.name,
                             'Code' : voucher.code,
-                            'Discount' : `${voucher.amount || voucher.percentage}`,
+                            'Discount' : voucher.voucherType === 'percentage' ? `${voucher.percentage}%` : formatNumberToPeso(voucher.amount ?? 0),
                             'Min. Spend' : voucher.minSpend,
                             'Max. Discount' : voucher.maxDiscount,
                             'Start Date' : formatToShortDate(voucher.startDate),

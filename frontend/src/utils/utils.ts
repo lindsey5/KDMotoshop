@@ -49,22 +49,36 @@ export const exportData = ({ dataToExport, filename, sheetname } : { dataToExpor
 }
 
 export const applyVoucherToItems = (items: OrderItem[], voucher: Voucher) => {
-  return items.map(item => {
-    let discountedPrice = item.price;
+const totalLine = items.reduce((sum, i) => sum + i.lineTotal, 0);
+    let totalDiscount = 0;
 
-    if (voucher.voucherType === "percentage") {
-      discountedPrice = item.price * (1 - (voucher.percentage ?? 0) / 100);
-    } else if (voucher.voucherType === "amount") {
-      // Distribute fixed amount discount proportionally by line total
-      const totalLine = items.reduce((sum, i) => sum + i.lineTotal, 0);
-      const proportion = item.lineTotal / totalLine;
-      discountedPrice = item.price - (voucher.amount ?? 0) * proportion / item.quantity;
-    }
+    return items.map(item => {
+        let discountedPrice = item.price;
+        let itemDiscount = 0;
 
-    return {
-      ...item,
-      lineTotal: discountedPrice * item.quantity,
-      discountedPrice,
-    };
-  });
+        if (voucher.voucherType === "percentage") {
+        itemDiscount = item.price * (voucher.percentage ?? 0) / 100;
+        discountedPrice = item.price - itemDiscount;
+        } else if (voucher.voucherType === "amount") {
+        // Distribute fixed amount discount proportionally by line total
+        const proportion = item.lineTotal / totalLine;
+        itemDiscount = (voucher.amount ?? 0) * proportion / item.quantity;
+        discountedPrice = item.price - itemDiscount;
+        }
+
+        // Apply maxDiscount if specified
+        if (voucher.maxDiscount && (totalDiscount + itemDiscount * item.quantity) > voucher.maxDiscount) {
+        const remainingDiscount = voucher.maxDiscount - totalDiscount;
+        itemDiscount = remainingDiscount / item.quantity;
+        discountedPrice = item.price - itemDiscount;
+        }
+
+        totalDiscount += itemDiscount * item.quantity;
+
+        return {
+        ...item,
+        lineTotal: discountedPrice * item.quantity,
+        discountedPrice,
+        };
+    });
 };

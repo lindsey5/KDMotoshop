@@ -9,6 +9,7 @@ import { create_activity_log } from '../services/activityLogServices';
 import Payment from '../models/Payment';
 import { refundPayment } from '../services/paymentService';
 import { sendOrderUpdate } from '../services/emailService';
+import Voucher from '../models/Voucher';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -24,6 +25,13 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
         if(!savedOrder) {
             res.status(400).json({ success: false, message: 'Creating order error'});
             return;
+        }
+
+        const voucher = await Voucher.findById(order.voucher);
+
+        if(voucher){
+            voucher.usedCount += 1;
+            await voucher.save();
         }
 
         await create_activity_log({

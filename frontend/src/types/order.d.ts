@@ -53,7 +53,7 @@ interface Voucher {
     percentage?: number;
     amount?: number;
     minSpend: number;
-    maxDiscount: number;
+    maxDiscount?: number;
     startDate: Date;
     endDate: Date;
     usageLimit: number;

@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import { createNewOrder, generateOrderId } from "../services/orderService";
 import Payment from "../models/Payment";
 import { successCheckout } from "./socket";
+import Voucher from "../models/Voucher";
 
 export const paymongoWebhook = async (req : Request, res : Response) => {
   const payload = req.body;
@@ -29,6 +30,14 @@ export const paymongoWebhook = async (req : Request, res : Response) => {
         const order_id = createdOrder._id;
         const newPayment = new Payment({ payment_id, order_id})
         await newPayment.save();
+
+        
+        const voucher = await Voucher.findById(createdOrder.voucher);
+
+        if(voucher){
+            voucher.usedCount += 1;
+            await voucher.save();
+        }
 
         successCheckout(createdOrder.customer.customer_id.toString());
     }
