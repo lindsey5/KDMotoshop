@@ -129,7 +129,7 @@ export const AdminSidebar = () => {
                   : []),
                 { label: "Customers", icon: <PersonIcon sx={{ width: 22, height: 22 }} />, path: "/admin/customers" },
                 { label: "Inventory Status", icon: <Box size={22} />, path: "/admin/inventory-status" },
-                { label: "Vouchers", icon: <Ticket size={22} />, path: "/admin/vouchers" }
+                ...(user?.role === 'Super Admin' ? [{ label: "Vouchers", icon: <Ticket size={22} />, path: "/admin/vouchers" }] : [])
               ]}
             />
 
