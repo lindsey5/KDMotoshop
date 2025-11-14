@@ -77,8 +77,8 @@ const Orders = () => {
     }, [searchDebounce]);
 
     const exportOrders = () => {
-        const dataToExport : any[] = []
-        data?.orders.forEach((order : Order) => {
+        const dataToExport: any[] = [];
+        data?.orders.forEach((order: Order) => {
             order.orderItems?.forEach(item => {
                 dataToExport.push({
                     order_id: order.order_id,
@@ -91,12 +91,21 @@ const Orders = () => {
                     price: item.price,
                     quantity: item.quantity,
                     amount: item.lineTotal,
-                })
-            })
-        })
+                });
+            });
+        });
 
-        exportData({ dataToExport, filename: 'KD Motoshop - Orders.xlsx', sheetname: 'Orders'})
-    }
+        const start = formattedSelectedDates.startDate || "no-start";
+        const end = formattedSelectedDates.endDate || "no-end";
+
+        const filename = `KD Motoshop-Orders_page-${page}_from-${from}_start-${start}_end-${end}.xlsx`;
+
+        exportData({
+            dataToExport,
+            filename,
+            sheetname: "Orders",
+        });
+    };
 
     const cols = useMemo(() => ['#', 'Customer Name', 'Order ID', 'Amount', 'Payment Method', 'Order Date', 'Order Channel', 'Status', 'Action'], [])
     const rows = useMemo(() => data?.orders.map((order : Order, index : number) => OrderRow(index, order, isDark, navigate)) || [], [data?.orders]);

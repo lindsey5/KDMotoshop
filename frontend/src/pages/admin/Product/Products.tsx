@@ -144,33 +144,40 @@ const Products = () => {
     };
     
     const exportProducts = () => {
-        const dataToExport : any[] = []
+        const dataToExport: any[] = [];
         
-        productsRes?.products.forEach((product : Product) => {
-            if(product.product_type === 'Single'){
+        productsRes?.products.forEach((product: Product) => {
+            if (product.product_type === "Single") {
                 dataToExport.push({
                     product_name: product.product_name,
                     sku: product.sku,
                     stock: product.stock,
                     category: product.category,
                     rating: product.rating,
-                    price: product.price
-                })
-            }else{
-                product.variants.forEach(variant => {
+                    price: product.price,
+                });
+            } else {
+                product.variants.forEach((variant) => {
                     dataToExport.push({
                         product_name: product.product_name,
                         sku: variant.sku,
                         stock: variant.stock,
                         category: product.category,
                         rating: product.rating,
-                        price: variant.price
-                    })
-                })
+                        price: variant.price,
+                    });
+                });
             }
-        })
-        exportData({ dataToExport, filename: `KDMotoshop - Inventory (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
-    }
+        });
+
+        const filename = `KDMotoshop-Inventory_page-${page}.xlsx`;
+
+        exportData({
+            dataToExport,
+            filename,
+            sheetname: "Inventory",
+        });
+    };
 
     return (
         <PageContainer className="w-full flex flex-col">

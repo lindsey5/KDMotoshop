@@ -38,7 +38,7 @@ const InventoryStatus = () => {
             Status: p.status
         }))
         
-        exportData({ dataToExport, filename: `KDMotoshop - Inventory Status Report (${formatDate(new Date())}).xlsx`, sheetname: 'Inventory'})
+        exportData({ dataToExport, filename: `KDMotoshop - Inventory Status Report (${formatDate(new Date())}).xlsx_page-${page}`, sheetname: 'Inventory'})
     }
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
