@@ -10,6 +10,7 @@ export interface ICustomer extends Document {
     firstname: string;
     lastname: string;
     image: UploadedImage;
+    lastOnline: Date;
     addresses: {
       street: string;
       barangay: string;
@@ -49,6 +50,10 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
         }],
         required: false
     },
+    lastOnline: {
+      type: Date,
+      required: true
+    }
   },
   { timestamps: true }
 );

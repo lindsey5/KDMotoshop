@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Server as HTTPServer } from 'http';
 import Admin from '../models/Admin';
 import { Types } from 'mongoose';
+import Customer from '../models/Customer';
 
 interface JwtPayload {
   id: string;
@@ -51,10 +52,17 @@ export const initializeSocket = (server: HTTPServer): void => {
       socket.join(decodedToken.id);
       
       console.log('User connected:', decodedToken.id);
-      triggerCustomerStatus(decodedToken.id, true)
+      triggerCustomerStatus(decodedToken.id, true, new Date())
 
       socket.on('disconnect', async () => {
-        await triggerCustomerStatus(decodedToken.id, false);
+
+        const customer = await Customer.findById(decodedToken.id);
+
+        if(customer){
+          customer.lastOnline = new Date();
+          await customer.save();
+          await triggerCustomerStatus(decodedToken.id, false, customer?.lastOnline);
+        }
         console.log('User disconnected:', decodedToken.id);
       });
 
@@ -71,13 +79,15 @@ export const initializeSocket = (server: HTTPServer): void => {
   });
 };
 
-export const triggerCustomerStatus = async (customer_id : string, status : boolean) => {
+export const triggerCustomerStatus = async (customer_id : string, status : boolean, lastOnline : Date) => {
   if (!io) return false; 
+
   const admins = await Admin.find();
   for(const admin of admins){
     const admin_id = (admin._id as Types.ObjectId).toString();
-    io.to(admin_id).emit('customerStatus', { customer_id, status });
+    io.to(admin_id).emit('customerStatus', { customer_id, status, lastOnline });
   }
+
 }
 
 export const isUserOnline = async (userId: string): Promise<boolean> => {
@@ -87,8 +97,9 @@ export const isUserOnline = async (userId: string): Promise<boolean> => {
   return sockets.length > 0;
 };
 
-export const logoutUser = (user_id : string) => {
+export const logoutUser = async (user_id : string) => {
   if (!io) return; 
+
   io.to(user_id).emit('logout');
 }
 

@@ -8,72 +8,75 @@ import { SearchField } from "../../../components/Textfield";
 import useFetch from "../../../hooks/useFetch";
 import PageContainer from "../ui/PageContainer"
 import { CircularProgress } from "@mui/material";
-import { formatDate, isWithinLast7Days } from "../../../utils/dateUtils";
+import { formatDate, isWithinLast7Days, minutesAgo } from "../../../utils/dateUtils";
 import UserAvatar from "../../ui/UserAvatar";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { SocketContext } from "../../../context/socketContext";
-import { CustomizedSelect } from "../../../components/Select";
+import { cn } from "../../../utils/utils";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
     { label: 'Customers', href: '/admin/customers' },
 ]
 
-const StatusChip = memo(({ id } : { id : string }) => {
-    const { socket } = useContext(SocketContext);
-    const [isOnline, setIsOnline] = useState(false);
+const StatusChip = memo(({ isOnline }: { isOnline : boolean }) => {
 
-    useEffect(() => {
-        const handleStatusUpdate = ({ customer_id, status }: { customer_id: string; status: boolean }) => {
-            if (customer_id === id) {
-                setIsOnline(status);
-            }
-        };
-
-        socket?.emit('isOnline', id)
-
-        socket?.on("customerStatus", handleStatusUpdate)
-
-        return () => {
-            socket?.off("customerStatus", handleStatusUpdate);
-        };
-    }, [socket, id])
-    
     return (
-        <div
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium shadow-sm ${
-            isOnline
-            ? "bg-green-100 text-green-700 border border-green-300"
-            : "bg-gray-100 text-gray-600 border border-gray-300"
-        }`}
-        >
-        <span
-            className={`h-2 w-2 rounded-full mr-2 ${
-            isOnline ? "bg-green-500" : "bg-gray-400"
-            }`}
-        />
-        {isOnline ? "Online" : "Offline"}
+        <div className="flex flex-col">
+            <div
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium shadow-sm ${
+                    isOnline
+                        ? "bg-green-100 text-green-700 border border-green-300"
+                        : "bg-gray-100 text-gray-600 border border-gray-300"
+                }`}
+            >
+                <span
+                    className={`h-2 w-2 rounded-full mr-2 ${
+                        isOnline ? "bg-green-500" : "bg-gray-400"
+                    }`}
+                />
+                {isOnline ? "Online" : "Offline"}
+            </div>
         </div>
     );
 });
 
-const options = [
-    { label: 'Name', value: 'name'},
-    { label: 'Newest', value: 'newest' },
-    { label: 'Oldest', value: 'oldest' }
-];
-
 
 const CustomersPage = () => {
     const [page, setPage] = useState<number>(1);
-    const [selectedSort, setSelectedSort] = useState('name');
+    const isDark = useDarkmode();
+    const { socket } = useContext(SocketContext);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const searchDebounce = useDebounce(searchTerm, 500);
-    const { data : customersRes, loading } = useFetch(`/api/customers/all?page=${page}&searchTerm=${searchDebounce}&limit=20&sort=${selectedSort}`)
-
+    const { data : customersRes, loading } = useFetch(`/api/customers/all?page=${page}&searchTerm=${searchDebounce}&limit=20`)
+    const [customers, setCustomers] = useState<Customer[]>([]);
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
     };
+
+    useEffect(() => {
+        if(customersRes?.customers.length > 0){
+            setCustomers(customersRes.customers.sort((a : Customer, b : Customer) => (Number(b.isOnline) || 0) - (Number(a.isOnline) || 0)))
+        }
+    }, [customersRes])
+
+    useEffect(() => {
+        const handleStatusUpdate = ({ customer_id, status, lastOnline }: { customer_id: string; status: boolean; lastOnline: Date }) => {
+            
+            setCustomers(prev =>
+            prev.map(customer =>
+                customer._id === customer_id ? { ...customer, isOnline: status, lastOnline } : customer)
+                .sort((a, b) => (Number(b.isOnline) || 0) - (Number(a.isOnline) || 0))
+            );
+        };
+
+        socket?.on("customerStatus", handleStatusUpdate);
+
+        return () => {
+            socket?.off("customerStatus", handleStatusUpdate);
+        };
+    }, [socket]);
 
 
     return (
@@ -88,30 +91,37 @@ const CustomersPage = () => {
                             placeholder="Search by Email, Firstname, Lastname..."
                         />
                     </div>
-                    <div className="w-[350px] bg-red-100">
-                        <CustomizedSelect 
-                            label="Sort by"
-                            menu={options.map(option => ({ label: option.label, value: option.value }))}
-                            value={selectedSort}
-                            onChange={(e) => setSelectedSort(e.target.value as string)}
-                        />
-                    </div>
                 </div>
                 <CustomizedTable 
                     cols={['Fullname', 'Email', 'Status', 'Last Order', 'Pending Orders', 'Completed Orders', 'Created At']}  
-                    rows={customersRes?.customers.map((customer : Customer) => ({
+                    rows={customers.map((customer : Customer) => ({
                         'Fullname' : (
-                            <div className="flex items-center gap-2">
-                                <UserAvatar image={customer.image} />
-                                <p>{customer.firstname} {customer.lastname}</p>
+                            <div className="flex items-center gap-2 relative">
+                            <UserAvatar image={customer.image} />
 
-                                {isWithinLast7Days(customer?.createdAt) && (
-                                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">New</span>
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                    <p className="font-medium">
+                                        {customer.firstname} {customer.lastname}
+                                    </p>
+
+                                    {isWithinLast7Days(customer?.createdAt) && (
+                                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                            New
+                                        </span>
+                                    )}
+                                </div>
+
+                                {!customer.isOnline && customer.lastOnline && (
+                                    <p className={cn("text-xs text-gray-600", isDark && 'text-gray-400')}>
+                                        {minutesAgo(customer.lastOnline)}
+                                    </p>
                                 )}
                             </div>
+                        </div>
                         ),
                         'Email' : customer.email,
-                        'Status' : <StatusChip id={customer._id} />,
+                        'Status' : <StatusChip isOnline={customer.isOnline || false} />,
                         'Last Order' : formatDate(customer.lastOrder) || 'N/A',
                         'Pending Orders' : customer.pendingOrders,
                         'Completed Orders' : customer.completedOrders,

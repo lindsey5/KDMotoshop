@@ -11,7 +11,8 @@ type Customer = {
   completedOrders?: number,
   lastOrder?: Date,
   isOnline?: boolean,
-  createdAt?: Date
+  lastOnline: Date;
+  createdAt?: Date;
 }
 
 type Address = {
