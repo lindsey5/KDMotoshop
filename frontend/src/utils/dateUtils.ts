@@ -82,8 +82,7 @@ export function minutesAgo(date: Date | string): string {
     const diffMs = now - past; // difference in milliseconds
     const diffMins = Math.floor(diffMs / (1000 * 60));
 
-    if (diffMins < 1) return "just now";
-    if (diffMins === 1) return "1 minute ago";
+    if (diffMins <= 1) return `${diffMins} minute ago`;
     if (diffMins < 60) return `${diffMins} minutes ago`;
 
     const diffHours = Math.floor(diffMins / 60);
