@@ -153,6 +153,10 @@ const CreateOrderPage = () => {
         setSelectedCategory('All');
     }
 
+    useEffect(() => {
+        setPage(1)
+    }, [selectedCategory])
+
     return <PageContainer className="flex h-full p-0">
         <Backdrop
             sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
