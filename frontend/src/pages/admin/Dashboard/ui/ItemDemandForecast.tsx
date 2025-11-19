@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { cn } from '../../../../utils/utils';
+import { RedTextField } from '../../../../components/Textfield';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -32,6 +33,7 @@ const ItemDemandForecast = () => {
     const [page, setPage] = useState<number>(1);
     const [selected, setSelected] = useState<"current" | "next">("next"); 
     const now = new Date();
+    const [search, setSearch] = useState('');
 
     const getMonthYear = () => {
         let month = now.getMonth() + 1; // current month (1-12)
@@ -55,9 +57,10 @@ const ItemDemandForecast = () => {
         if (!data) return { forecast: [], month: '' };
         const forecast = data.forecast
             .map((item: any) => ({ ...item, predicted_qty: Math.round(item.predicted_qty) }))
-            .sort((a: any, b: any) => b.predicted_qty - a.predicted_qty);
+            .sort((a: any, b: any) => b.predicted_qty - a.predicted_qty)
+            .filter((item: any) => item.item.toLowerCase().includes(search.toLowerCase()))
         return { forecast, month: data.month };
-    }, [data]);
+    }, [data, search]);
 
     const paginatedData = useMemo(() => {
         const start = (page - 1) * ITEMS_PER_PAGE;
@@ -137,14 +140,26 @@ const ItemDemandForecast = () => {
                 <h2 className='font-bold'>
                     Demand Forecast ({monthNames[month - 1]} {year})
                 </h2>
-                <select
-                    value={selected}
-                    onChange={(e) => { setSelected(e.target.value as "current" | "next"); setPage(1); }}
-                    className="border rounded px-2 py-1 text-sm bg-white text-black"
-                >
-                    <option value="current">Current Month</option>
-                    <option value="next">Next Month</option>
-                </select>
+                
+                <div className='flex items-center gap-4'>
+                    <RedTextField 
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value)
+                            setPage(1)
+                        }}
+                        placeholder='Search items...'
+                        sx={{ width: '200px'}}
+                    />
+                    <select
+                        value={selected}
+                        onChange={(e) => { setSelected(e.target.value as "current" | "next"); setPage(1); }}
+                        className="border rounded px-2 py-1 text-sm bg-white text-black"
+                    >
+                        <option value="current">Current Month</option>
+                        <option value="next">Next Month</option>
+                    </select>
+                </div>
             </div>
 
             {loading ? (
