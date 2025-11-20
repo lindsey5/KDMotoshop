@@ -74,8 +74,14 @@ const OrderDetails = () => {
                         <p className="text-right">Free</p>
                         {order?.voucher &&
                           <>
-                          <p>Discount</p>
-                          <p className="text-right">{order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
+                            <p>Voucher Name:</p>
+                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.name}</p>
+                            <p>Max Discount:</p>
+                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
+                            <p>Min. Spend:</p>
+                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
+                            <p >Discount:</p>
+                            <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                           </>
                         }
                     </div>

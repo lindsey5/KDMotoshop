@@ -174,29 +174,28 @@ const AddAddress = ({ customer, isDark, setAddresses, close, addresses }: AddAdd
               onChange={(e) => handleRegionChange(e.target.value as string)}
             />
 
-            {selectedRegion && (
-              <CustomizedSelect
+            
+            <CustomizedSelect
                 label="City/Municipality"
+                disabled={!selectedRegion}
                 value={selectedCity}
                 menu={cities.map((city: any) => ({
                   value: city.code,
                   label: city.name,
                 }))}
                 onChange={(e) => handleCityChange(e.target.value as string)}
-              />
-            )}
+            />
 
-            {selectedCity && (
-              <CustomizedSelect
+            <CustomizedSelect
                 label="Barangay"
+                disabled={!selectedCity}
                 value={newAddress.barangay}
                 menu={barangays.map((barangay: any) => ({
                   value: barangay,
                   label: barangay,
                 }))}
                 onChange={(e) => handleBarangayChange(e.target.value as string)}
-              />
-            )}
+            />
           </div>
         </div>
       </div>

@@ -77,7 +77,7 @@ const totalLine = items.reduce((sum, i) => sum + i.lineTotal, 0);
 
         return {
         ...item,
-        lineTotal: discountedPrice * item.quantity,
+        lineTotal: parseFloat((discountedPrice * item.quantity).toFixed(2)),
         discountedPrice,
         };
     });

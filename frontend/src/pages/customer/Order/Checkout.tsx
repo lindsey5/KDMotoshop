@@ -84,13 +84,14 @@ const CheckoutPage = () => {
 
   const subtotal: number = useMemo(() => {
     return (
-      orderItems?.reduce((total, item) => item.price + total, 0) ?? 0
+      orderItems?.reduce((total, item) => (item.price * item.quantity) + total, 0) ?? 0
     );
   }, [orderItems]);
 
   const total: number = useMemo(() => {
     return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0)
   }, [orderItems]);
+
 
   const areFieldsFilled = useMemo(() => {
     return Object.entries(address).every(([_, value]) => value !== "");
@@ -105,6 +106,7 @@ const CheckoutPage = () => {
         errorAlert('Invalid Voucher', response.message || 'Something went wrong. Please try again.');
         return;
       }
+      console.log(applyVoucherToItems(orderItems, response.voucher))
       setOrderItems(applyVoucherToItems(orderItems, response.voucher));
       setVoucher(response.voucher)
       await successAlert('Success', 'Voucher applied.', isDark)
@@ -368,18 +370,20 @@ const CheckoutPage = () => {
                     menu={regions.map((region : any) => ({ value: region.code, label: region.name }))}
                     onChange={(e) => handleRegionChange(e.target.value as string)}
                 />
-                {selectedRegion && <CustomizedSelect 
+                <CustomizedSelect 
                     label="City/Municipalities"
                     value={selectedCity}
+                    disabled={!selectedRegion}
                     menu={cities.map((city: any) => ({ value: city.code, label: city.name }))}
                     onChange={(e) => handleCityChange(e.target.value as string)}
-                />}
-                {selectedCity && <CustomizedSelect 
+                />
+                <CustomizedSelect 
                     label="Barangay"
                     value={address?.barangay}
+                    disabled={!selectedCity}
                     menu={barangays.map((barangay : any) => ({ value: barangay, label: barangay }))}
                     onChange={(e) => handleBarangayChange(e.target.value as string)}
-                />}
+                />
                 <RedTextField 
                     label="Street, Building, House No." 
                     fullWidth 

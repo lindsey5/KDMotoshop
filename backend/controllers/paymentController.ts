@@ -11,7 +11,7 @@ export const createPaymentCheckout = async (req: Request, res: Response) => {
         // Apply voucher per item
         const voucher = await Voucher.findById(order.voucher);
 
-        const finalItems = order.voucher && voucher ? await applyVoucherToItems(orderItems, voucher) : orderItems;
+        const finalItems = order.voucher && voucher ? applyVoucherToItems(orderItems, voucher) : orderItems;
 
         const line_items = finalItems.map((item: any) => (  {
             images: [item.image],
