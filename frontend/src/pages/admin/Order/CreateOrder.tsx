@@ -34,6 +34,7 @@ const OrderState : Order = {
         phone: '',
         email: ''
     },
+    shipping_fee: 0,
     payment_method: 'CASH',
 }
 
