@@ -54,7 +54,6 @@ export const get_activity_logs = async (req : Request, res : Response) => {
 
 export const get_admin_activity_logs = async (req : AuthenticatedRequest, res : Response) => {
     try{
-        await isSuperAdmin(req, res)
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
         const skip = (page - 1) * limit;

@@ -94,16 +94,10 @@ type ActivityContainerProps = {
 }
 
 const ActivityLogsPage = memo(({ title, activityLogs, breadcrumbs, selectedDates, setSelectedDates, page, setPage, totalPages, loading} :ActivityContainerProps) => {
-    const { user } = useSelector((state : RootState) => state.user)
 
     const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
     };
-
-    
-    if(user && user.role !== 'Super Admin'){
-        return <Navigate to="/admin/dashboard"/>
-    }
 
     useEffect(() => {
         setPage(1)
