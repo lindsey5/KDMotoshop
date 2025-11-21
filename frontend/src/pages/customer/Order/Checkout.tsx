@@ -24,6 +24,8 @@ import type { RootState } from "../../../features/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../../features/user/userSlice";
 import useSuccessCheckout from "../../../hooks/useSuccessCheckout";
+import useFetch from "../../../hooks/useFetch";
+import { calculateShippingFee } from "../../../utils/shipping";
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Home', href: '/' },
@@ -53,6 +55,7 @@ const CheckoutPage = () => {
   const [selectedAddress, setSelectedAddress] = useState<number>(0);
   const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
   const [voucherCode, setVoucherCode] = useState('');
+  const { data } = useFetch('/api/orders/customer');
   const {
     selectedCity,
     setSelectedCity,
@@ -82,6 +85,13 @@ const CheckoutPage = () => {
     }
   }, [customer]);
 
+  const shipping_fee : number = useMemo(() => {
+    if(data?.orders.filter((order : Order) => order.status !== 'Cancelled' && order.status !== 'Failed' && order.status !== "Rejected") === 0) return 0;
+    if(((customer as Customer)?.addresses?.length ?? 0) < 1 || (orderItems.reduce((total, orderItems) => orderItems.quantity + total,0) >= 3)) return 0;
+
+    return orderItems?.reduce((total, item) => total + calculateShippingFee(item?.weight || 0, (customer as Customer)?.addresses?.[selectedAddress].region || ''), 0) ?? 0;
+  }, [orderItems, selectedAddress]);
+
   const subtotal: number = useMemo(() => {
     return (
       orderItems?.reduce((total, item) => (item.price * item.quantity) + total, 0) ?? 0
@@ -89,7 +99,7 @@ const CheckoutPage = () => {
   }, [orderItems]);
 
   const total: number = useMemo(() => {
-    return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0)
+    return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0) + shipping_fee
   }, [orderItems]);
 
 
@@ -151,6 +161,7 @@ const CheckoutPage = () => {
         subtotal,
         total,
         status: "Pending",
+        shipping_fee,
         customer: {
           customer_id: customer?._id,
           email: customer?.email,
@@ -226,6 +237,7 @@ const CheckoutPage = () => {
                   : product.attributes,
                 stock: stock,
                 product_name: product.product_name,
+                weight: product.weight,
                 quantity:
                   item.quantity > (stock ?? 0) ? stock : item.quantity,
                 price:
@@ -331,7 +343,7 @@ const CheckoutPage = () => {
                 </div>
                 {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
             </Card>
-            <PaymentSummaryCard subtotal={subtotal} total={total} voucher={voucher}/>
+            <PaymentSummaryCard subtotal={subtotal} total={total} shipping_fee={shipping_fee} voucher={voucher}/>
         </div>
         <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
             <h1 className="font-bold text-lg">Delivery</h1>

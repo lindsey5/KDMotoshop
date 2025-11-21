@@ -21,6 +21,15 @@ export const createPaymentCheckout = async (req: Request, res: Response) => {
             quantity: item.quantity
         }));
 
+        if(order.shipping_fee && order.shipping_fee > 0){
+            line_items.push({
+                currency: "PHP",
+                amount: Math.round(order.shipping_fee * 100),
+                name: "Shipping Fee",
+                quantity: 1
+            });
+        }
+
         const options = {
             method: 'POST',
             headers: {
@@ -55,8 +64,8 @@ export const createPaymentCheckout = async (req: Request, res: Response) => {
             res.status(200).json({ success: true, id: result.data.id, checkout_url: result.data.attributes.checkout_url });
             return;
         }
-
-        res.status(400).json({ success: false, message: result });
+        console.log(result)
+        res.status(400).json({ success: false, message: 'Failed to create checkout session.' });
     } catch (err: any) {
         console.log(err);
         res.status(500).json({ success: false, message: err.message });

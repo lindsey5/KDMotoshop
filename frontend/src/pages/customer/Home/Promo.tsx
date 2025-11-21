@@ -11,7 +11,7 @@ const features = [
     {
         icon: Truck,
         title: "Free Shipping",
-        description: "Enjoy free delivery on all orders nationwide",
+        description: "Enjoy free shipping on your first order, and on any order with 3 or more items.",
     },
     {
         icon: MapPin,

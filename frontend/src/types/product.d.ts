@@ -30,6 +30,7 @@ type Product = {
     variants: Variant[];
     attributes: string[];
     createdAt?: Date;
+    weight: number;
     rating?: number;
 }
 

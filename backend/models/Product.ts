@@ -21,6 +21,7 @@ export interface IProduct extends Document {
   stock: number;
   product_type: 'Single' | 'Variable';
   visibility: 'Published' | 'Hidden' | 'Deleted';
+  weight: number;
   added_by: Types.ObjectId;
   images: UploadedImage[];
   thumbnail: UploadedImage;
@@ -48,6 +49,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
     sku: { type: String },
     price: { type: Number },
     stock: { type: Number },
+    weight: { type: Number, required: true, default: 0 },
     product_type: { type: String, required: true },
     visibility: { type: String, required: true, enum: ['Published', 'Hidden', 'Deleted'] },
     added_by: { type: Schema.Types.ObjectId, ref: 'Admin', required: true },

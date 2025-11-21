@@ -2,9 +2,15 @@ import { Request, Response } from "express";
 import Voucher from "../models/Voucher";
 import { AuthenticatedRequest } from "../types/auth";
 import Order from "../models/Order";
+import Admin from "../models/Admin";
 
 export const createVoucher = async (req : AuthenticatedRequest, res : Response) => {
     try{
+        const admin = await Admin.findById(req.user_id);
+        if(admin && admin?.role === 'Admin'){
+            res.status(401).json({ success: false, message: 'Unauthorized action.'});
+            return;
+        }
         const isExist = await Voucher.findOne({ code: req.body.code, status: 'Active' });
         if(isExist){
             res.status(409).json({ success: false, message: 'Code already exists.'});
@@ -20,15 +26,25 @@ export const createVoucher = async (req : AuthenticatedRequest, res : Response) 
     }
 }
 
-export const getVouchers = async (req : Request, res: Response) => {
+export const getVouchers = async (req : AuthenticatedRequest, res: Response) => {
     try{
+        await Voucher.updateMany(
+            {},
+            { $set: { status: 'active' } }
+        );
+        const admin = await Admin.findById(req.user_id);
+        if(admin && admin?.role === 'Admin'){
+            res.status(401).json({ success: false, message: 'Unauthorized action.'});
+            return;
+        }
+
         const status = req.query.status as string | undefined;
         const searchTerm = req.query.searchTerm as string | undefined;
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
 
         const skip = (page - 1) * limit;
-        let query : any = {};
+        let query : any = { status: 'active' };
 
         if(status){
             query.endDate = status === 'Active' ? { $gt: new Date() } : { $lt: new Date() };
@@ -99,6 +115,27 @@ export const checkIfVoucherValid = async (req: AuthenticatedRequest, res: Respon
         res.status(200).json({ success: true, voucher });
     }catch(err : any){
         console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server Error'});
+    }
+}
+
+export const deleteVoucher = async (req: AuthenticatedRequest, res: Response) => {
+    try{
+        const admin = await Admin.findById(req.user_id);
+        if(admin && admin?.role === 'Admin'){
+            res.status(401).json({ success: false, message: 'Unauthorized action.'});
+            return;
+        }
+
+        const voucher = await Voucher.findById(req.params.id);
+        if(!voucher){
+            res.status(404).json({ success: false, message: 'Voucher not found.'});
+            return;
+        }
+        voucher.status = 'removed';
+        await voucher.save();
+        res.status(200).json({ success: true, message: 'Voucher successfully removed.'});
+    }catch(err : any){
         res.status(500).json({ success: false, message: err.message || 'Server Error'});
     }
 }

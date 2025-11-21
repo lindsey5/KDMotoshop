@@ -4,6 +4,7 @@ type Order = {
     order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
     total: number;
     subtotal: number;
+    shipping_fee: number;
     status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Failed" |"Rated";
     customer: {
         customer_id?: string | UploadedImage;
@@ -44,6 +45,7 @@ type OrderItem = {
     status: 'Unfulfilled' | 'Fulfilled' | 'Rated' | 'Cancelled',
     refund?: RefundRequest;
     createdAt?: Date;
+    weight?: number;
 }
 
 interface Voucher {

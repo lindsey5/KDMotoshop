@@ -57,7 +57,7 @@ export const create_customer_order = async (req: Request, res: Response) => {
         }
 
         const voucher = await Voucher.findById(order.voucher);
-
+        
         if(voucher){
             voucher.usedCount += 1;
             await voucher.save();

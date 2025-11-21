@@ -32,7 +32,7 @@ export const setTokenCookie = (
   res.cookie(name, token, {
     httpOnly: true,
     maxAge: maxAgeMs,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: true
   });
 };

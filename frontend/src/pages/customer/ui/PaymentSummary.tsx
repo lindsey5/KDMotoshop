@@ -5,10 +5,11 @@ import Card from "../../../components/Card";
 type PaymentSummaryCard = {
     subtotal: number;
     total: number;
+    shipping_fee: number;
     voucher?: Voucher
 }
 
-const PaymentSummaryCard = ({ subtotal, total, voucher} : PaymentSummaryCard) =>{
+const PaymentSummaryCard = ({ subtotal, total, shipping_fee, voucher} : PaymentSummaryCard) =>{
     const isDark = useDarkmode();
 
     return (
@@ -17,7 +18,7 @@ const PaymentSummaryCard = ({ subtotal, total, voucher} : PaymentSummaryCard) =>
                 <strong>Subtotal</strong>
                 <strong className="text-right">{formatNumberToPeso(subtotal ?? 0)}</strong>
                 <p>Shipping fee</p>
-                <p className="text-right">Free</p>
+                <p className="text-right">{shipping_fee ? formatNumberToPeso(shipping_fee) : 'Free'}</p>
                 {voucher && (
                     <>
                     <p>Voucher Name:</p>

@@ -12,6 +12,7 @@ export interface IVoucher extends Document {
   endDate: Date;
   usageLimit: number;
   usedCount: number;
+  status: "active" | "removed";
   createdBy: Types.ObjectId;
 }
 
@@ -38,6 +39,7 @@ const VoucherSchema = new Schema<IVoucher>(
     endDate: { type: Date, required: true },
     usageLimit: { type: Number, default: 1 },
     usedCount: { type: Number, default: 0 },
+    status: { type: String, enum: ["active", "removed"], default: "active" },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "Admin",

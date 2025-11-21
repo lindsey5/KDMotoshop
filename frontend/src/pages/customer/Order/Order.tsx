@@ -109,8 +109,6 @@ const CustomerOrderDetails = () => {
                         <div className="text-sm md:text-base my-6 grid grid-cols-2 gap-5 p-2">
                             <p >Subtotal</p>
                             <p className="text-right">{formatNumberToPeso(order.subtotal)}</p>
-                            <p>Shipping fee</p>
-                            <p className="text-right">Free</p>
                             {order?.voucher &&
                             <>
                             <p>Voucher Name:</p>
@@ -123,6 +121,8 @@ const CustomerOrderDetails = () => {
                             <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                             </>
                             }
+                            <p>Shipping Fee</p>
+                            <p className="text-right">{order?.shipping_fee ? formatNumberToPeso(order?.shipping_fee) : 'Free'}</p>
                         </div>
                         <div className="flex justify-between font-bold text-lg md:text-xl">
                             <h1>Total</h1>
@@ -160,6 +160,7 @@ const CustomerOrderDetails = () => {
                             <p>{order.address?.region}</p>
                         </div>}
                         <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                        <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Payment Method: {order.payment_method}</p>
                         {!['Cancelled', 'Delivered', 'Failed', 'Rejected'].includes(order.status) && (
                         <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>
                             Expected delivery: 3-5 days

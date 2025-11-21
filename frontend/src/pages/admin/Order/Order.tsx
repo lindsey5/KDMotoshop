@@ -50,7 +50,6 @@ const OrderDetails = () => {
       )
     }
 
-
     return <PageContainer className="flex flex-col justify-start p-0">
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
@@ -70,20 +69,20 @@ const OrderDetails = () => {
                     <div className="my-6 grid grid-cols-2 gap-5 p-2">
                         <p>Subtotal</p>
                         <p className="text-right">{formatNumberToPeso(order?.subtotal || 0)}</p>
-                        <p>Shipping Fee</p>
-                        <p className="text-right">Free</p>
                         {order?.voucher &&
                           <>
                             <p>Voucher Name:</p>
                             <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.name}</p>
+                            <p >Discount:</p>
+                            <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                             <p>Max Discount:</p>
                             <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
                             <p>Min. Spend:</p>
                             <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
-                            <p >Discount:</p>
-                            <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                           </>
                         }
+                        <p>Shipping Fee</p>
+                        <p className="text-right">{order?.shipping_fee ? formatNumberToPeso(order?.shipping_fee) : 'Free'}</p>
                     </div>
                     <div className="flex justify-between">
                         <h1 className="font-bold text-xl">Total</h1>
@@ -121,6 +120,7 @@ const OrderDetails = () => {
                           <p>{order.address?.region}</p>
                     </div>}
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
+                    <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Payment Method: {order?.payment_method}</p>
                     {order?.deliveredAt && <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Delivered At: {formatToLongDateFormat(order?.deliveredAt)}</p>}
                     <div className="flex gap-3">
                       <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Channel:</p>
