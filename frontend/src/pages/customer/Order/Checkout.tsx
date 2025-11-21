@@ -69,6 +69,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<string>("CASH");
   const [voucher, setVoucher] = useState<Voucher>();
+  const [calculatingShippingFee, setCalculatingShippingFee] = useState<boolean>(false);
   useSuccessCheckout();
 
   useEffect(() => {
@@ -86,6 +87,7 @@ const CheckoutPage = () => {
   }, [customer]);
 
   const shipping_fee : number = useMemo(() => {
+    setCalculatingShippingFee(true);
     if(!customer || !orderItems || !data ) return 0;
 
     if(((customer as Customer)?.addresses?.length ?? 0) < 1 || 
@@ -93,7 +95,11 @@ const CheckoutPage = () => {
       data?.orders.filter((order : Order) => order.status !== 'Cancelled' && order.status !== 'Failed' && order.status !== "Rejected").length === 0
     ) return 0;
 
-    return orderItems?.reduce((total, item) => total + calculateShippingFee(item?.weight || 0, (customer as Customer)?.addresses?.[selectedAddress].region || ''), 0) ?? 0;
+    setCalculatingShippingFee(false);
+    return calculateShippingFee(
+      orderItems?.reduce((total, item) => total +( item.weight ?? 0), 0),
+      (customer as Customer).addresses?.[selectedAddress]?.region || ''
+    )
   }, [orderItems, selectedAddress, data]);
 
   const subtotal: number = useMemo(() => {
@@ -502,6 +508,7 @@ const CheckoutPage = () => {
                     || loading 
                     || !savedItems
                     || !acceptedTerms
+                    || calculatingShippingFee
                 }
             >
                 {paymentMethod === 'CASH' ? 'Place order' : 'Proceed to payment'}
