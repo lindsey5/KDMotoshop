@@ -37,10 +37,13 @@ export const createRefundRequest = async (req :AuthenticatedRequestWithFile, res
         await request.save();
 
         await sendAdminsNotification({
-            from: req.user_id as string,
-            order_id: orderItem.order_id._id,
-            content: `Has requested a refund for ${orderItem.order_id.order_id}.`,
-            refund_id: request._id as string,
+            notificationData: {
+                from: req.user_id as string,
+                order_id: orderItem.order_id._id,
+                content: `Has requested a refund for ${orderItem.order_id.order_id}.`,
+                refund_id: request._id as string,
+            }, 
+            role: 'Super Admin'
         });
 
         res.status(201).json({ success: true, request });

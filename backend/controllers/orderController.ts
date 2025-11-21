@@ -378,9 +378,11 @@ export const cancel_order = async (req: Request, res: Response) => {
         const customer = order.customer
         if(customer.customer_id){
             await sendAdminsNotification({
-                from: customer.customer_id?.toString(), 
-                order_id: order._id as string, 
-                content: `Order ${order.order_id} has been cancelled`
+                notificationData: {
+                    from: customer.customer_id?.toString(), 
+                    order_id: order._id as string, 
+                    content: `Order ${order.order_id} has been cancelled`
+                }
             })
         }
 

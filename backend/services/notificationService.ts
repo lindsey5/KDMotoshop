@@ -25,9 +25,9 @@ type AdminNotificationData = {
     refund_id?: string;
 }
 
-export const sendAdminsNotification = async (notificationData : AdminNotificationData) => {
+export const sendAdminsNotification = async ({ notificationData, role} : { notificationData: AdminNotificationData, role?: 'Admin' | 'Super Admin'}) => {
     try{
-        const admins = await Admin.find();
+        const admins = await Admin.find({ role: role || { $in: ['Admin', 'SuperAdmin'] } });
 
         for(const admin of admins){
             const notification = new AdminNotification({...notificationData, to: admin._id});
