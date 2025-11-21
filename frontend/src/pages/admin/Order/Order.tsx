@@ -41,6 +41,11 @@ const OrderDetails = () => {
       return {...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}}
 
     }, [data])
+
+    const discountedPrice = useMemo(() => {
+      if(!order?.voucher) return 0;
+      return order.orderItems?.reduce((total, item) => item.lineTotal + total, 0)
+    }, [order]);
     
     if(loading) {
       return (
@@ -79,6 +84,10 @@ const OrderDetails = () => {
                             <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
                             <p>Min. Spend:</p>
                             <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
+                            {discountedPrice && <>
+                            <p>Discounted Subtotal:</p>
+                            <p className="text-right">{formatNumberToPeso(discountedPrice)}</p>
+                            </>}
                           </>
                         }
                         <p>Shipping Fee</p>

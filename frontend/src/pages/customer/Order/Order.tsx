@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { fetchData, updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
@@ -45,13 +45,6 @@ const CustomerOrderDetails = () => {
         getOrderAsync();
     }, [id])
 
-    
-    if(!order) return (
-        <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
-            <CircularProgress sx={{ color: 'red'}}/>
-         </div>
-    )
-
     const cancelOrder = async () => {
         if (await confirmDialog(
             'Are you sure you want to cancel this order?', 
@@ -70,6 +63,18 @@ const CustomerOrderDetails = () => {
         }
 
     }
+
+    const discountedPrice = useMemo(() => {
+        if(!order?.voucher) return 0;
+        return order.orderItems?.reduce((total, item) => item.lineTotal + total, 0)
+    }, [order]);
+    
+    
+    if(!order) return (
+        <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
+            <CircularProgress sx={{ color: 'red'}}/>
+         </div>
+    )
 
     if (!customer && !customerLoading) {
         return <Navigate to="/" />;
@@ -111,14 +116,18 @@ const CustomerOrderDetails = () => {
                             <p className="text-right">{formatNumberToPeso(order.subtotal)}</p>
                             {order?.voucher &&
                             <>
-                            <p>Voucher Name:</p>
-                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.name}</p>
-                            <p>Max Discount:</p>
-                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
-                            <p>Min. Spend:</p>
-                            <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
-                            <p >Discount:</p>
-                            <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
+                                <p>Voucher Name:</p>
+                                <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.name}</p>
+                                <p>Max Discount:</p>
+                                <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
+                                <p>Min. Spend:</p>
+                                <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
+                                <p >Discount:</p>
+                                <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
+                                {discountedPrice && <>
+                                <p>Discounted Subtotal:</p>
+                                <p className="text-right">{formatNumberToPeso(discountedPrice)}</p>
+                                </>}
                             </>
                             }
                             <p>Shipping Fee</p>

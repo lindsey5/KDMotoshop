@@ -6,10 +6,11 @@ type PaymentSummaryCard = {
     subtotal: number;
     total: number;
     shipping_fee: number;
+    discountedPrice: number;
     voucher?: Voucher
 }
 
-const PaymentSummaryCard = ({ subtotal, total, shipping_fee, voucher} : PaymentSummaryCard) =>{
+const PaymentSummaryCard = ({ subtotal, total, shipping_fee, discountedPrice, voucher} : PaymentSummaryCard) =>{
     const isDark = useDarkmode();
 
     return (
@@ -17,8 +18,6 @@ const PaymentSummaryCard = ({ subtotal, total, shipping_fee, voucher} : PaymentS
             <div className="grid grid-cols-2 gap-5">
                 <strong>Subtotal</strong>
                 <strong className="text-right">{formatNumberToPeso(subtotal ?? 0)}</strong>
-                <p>Shipping fee</p>
-                <p className="text-right">{shipping_fee ? formatNumberToPeso(shipping_fee) : 'Free'}</p>
                 {voucher && (
                     <>
                     <p>Voucher Name:</p>
@@ -29,8 +28,14 @@ const PaymentSummaryCard = ({ subtotal, total, shipping_fee, voucher} : PaymentS
                     <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(voucher.minSpend)}</p>
                     <p >Discount:</p>
                     <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {voucher?.voucherType === 'amount' ? formatNumberToPeso(voucher?.amount ?? 0) : `${voucher?.percentage}%`}</p>
+                    {discountedPrice && <>
+                    <p>Discounted Subtotal:</p>
+                    <p className="text-right">{formatNumberToPeso(discountedPrice)}</p>
+                    </>}
                     </>
                 )}
+                <p>Shipping fee</p>
+                <p className="text-right">{shipping_fee ? formatNumberToPeso(shipping_fee) : 'Free'}</p>
             </div>
             <div className={cn("grid grid-cols-2 font-bold text-2xl mt-5 pt-3 border-t border-gray-300", isDark && 'border-gray-500')}>
                 <h1>Total</h1>

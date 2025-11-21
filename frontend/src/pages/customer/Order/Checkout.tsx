@@ -113,6 +113,11 @@ const CheckoutPage = () => {
   }, [orderItems]);
 
 
+  const discountedPrice = useMemo(() => {
+    if(!voucher) return 0;
+    return orderItems?.reduce((total, item) => item.lineTotal + total, 0)
+  }, [voucher, orderItems]);
+
   const areFieldsFilled = useMemo(() => {
     return Object.entries(address).every(([_, value]) => value !== "");
   }, [address]);
@@ -126,7 +131,6 @@ const CheckoutPage = () => {
         errorAlert('Invalid Voucher', response.message || 'Something went wrong. Please try again.');
         return;
       }
-      console.log(applyVoucherToItems(orderItems, response.voucher))
       setOrderItems(applyVoucherToItems(orderItems, response.voucher));
       setVoucher(response.voucher)
       await successAlert('Success', 'Voucher applied.', isDark)
@@ -353,7 +357,13 @@ const CheckoutPage = () => {
                 </div>
                 {orderItems?.map((item, i) => <CheckoutItemContainer key={i} item={item} />)}
             </Card>
-            <PaymentSummaryCard subtotal={subtotal} total={total} shipping_fee={shipping_fee} voucher={voucher}/>
+            <PaymentSummaryCard 
+              subtotal={subtotal} 
+              total={total} 
+              discountedPrice={discountedPrice}
+              shipping_fee={shipping_fee} 
+              voucher={voucher}
+            />
         </div>
         <Card className="p-5 lg:pt-5 lg:py-10 lg:px-10 flex flex-1 flex-col gap-5">
             <h1 className="font-bold text-lg">Delivery</h1>
