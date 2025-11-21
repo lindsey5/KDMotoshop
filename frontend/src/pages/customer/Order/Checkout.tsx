@@ -86,11 +86,15 @@ const CheckoutPage = () => {
   }, [customer]);
 
   const shipping_fee : number = useMemo(() => {
-    if(data?.orders.filter((order : Order) => order.status !== 'Cancelled' && order.status !== 'Failed' && order.status !== "Rejected") === 0) return 0;
-    if(((customer as Customer)?.addresses?.length ?? 0) < 1 || (orderItems.reduce((total, orderItems) => orderItems.quantity + total,0) >= 3)) return 0;
+    if(!customer || !orderItems || !data ) return 0;
+
+    if(((customer as Customer)?.addresses?.length ?? 0) < 1 || 
+      (orderItems.reduce((total, orderItems) => orderItems.quantity + total,0) >= 3) ||
+      data?.orders.filter((order : Order) => order.status !== 'Cancelled' && order.status !== 'Failed' && order.status !== "Rejected").length === 0
+    ) return 0;
 
     return orderItems?.reduce((total, item) => total + calculateShippingFee(item?.weight || 0, (customer as Customer)?.addresses?.[selectedAddress].region || ''), 0) ?? 0;
-  }, [orderItems, selectedAddress]);
+  }, [orderItems, selectedAddress, data]);
 
   const subtotal: number = useMemo(() => {
     return (
