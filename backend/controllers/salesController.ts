@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import OrderItem from "../models/OrderItem";
+import { isSuperAdmin } from "../services/adminService";
 
 // Helper: convert to Asia/Manila timezone (UTC+8)
 function toManilaTime(date = new Date()) {
@@ -16,6 +17,7 @@ function getMonthRange(year: number, month: number) {
 
 export const get_monthly_sales = async (req: Request, res: Response) => {
   try {
+    await isSuperAdmin(req, res)
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00+08:00`);
     const end = new Date(`${year + 1}-01-01T00:00:00+08:00`);
@@ -65,6 +67,7 @@ export const get_monthly_sales = async (req: Request, res: Response) => {
 
 export const get_product_quantity_sold = async (req: Request, res: Response) => {
   try {
+    await isSuperAdmin(req, res)
     const items = req.query.items as string;
     const skus = items ? items.split(",").filter(item => item.trim() !== "") : [];
 
@@ -129,6 +132,7 @@ export const get_product_quantity_sold = async (req: Request, res: Response) => 
 
 export const get_sales_per_channel = async (req: Request, res: Response) => {
   try {
+    await isSuperAdmin(req, res)
     const year = parseInt(req.query.year as string) || new Date().getFullYear();
     const start = new Date(`${year}-01-01T00:00:00+08:00`);
     const end = new Date(`${year + 1}-01-01T00:00:00+08:00`);
@@ -184,6 +188,7 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
 
 export const get_daily_sales = async (req: Request, res: Response) => {
   try {
+    await isSuperAdmin(req, res)
     const now = toManilaTime();
     const month = parseInt(req.query.month as string) || now.getMonth() + 1;
     const year = parseInt(req.query.year as string) || now.getFullYear();
@@ -244,6 +249,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 
 export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
+    await isSuperAdmin(req, res)
     const now = toManilaTime();
     const startOfToday = new Date(now.setHours(0, 0, 0, 0));
     const startOfWeek = new Date(now);

@@ -142,3 +142,13 @@ export const changeCustomerPassword = async (req : AuthenticatedRequest, res: Re
     res.status(500).json({ success: false, message: err.message });
   }
 }
+
+export const totalCustomers = async (req : AuthenticatedRequest, res : Response) => {
+  try{
+    const total = await Customer.countDocuments();
+    res.status(200).json({ success: true, total });
+  }
+  catch(err : any){
+    res.status(500).json({ success: false, message: err.message });
+  }
+}

@@ -5,7 +5,7 @@ import { Title } from "../../../components/text/Text";
 import BreadCrumbs from "../../../components/BreadCrumbs";
 import Card from "../../../components/Card";
 import { RedButton } from "../../../components/buttons/Button";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import CustomizedPagination from "../../../components/Pagination";
 import type { DateRange } from "@mui/x-date-pickers-pro";

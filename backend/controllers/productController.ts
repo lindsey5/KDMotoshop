@@ -449,3 +449,13 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const total_products = async (req: Request, res: Response) => {
+  try{
+      const total = await Product.countDocuments({ visibility: { $ne: 'Deleted' }});
+      res.status(200).json({ success: true, total });
+  }catch(err : any){
+      console.log(err)
+      res.status(500).json({ success: false, message: err.message });
+  }
+};
