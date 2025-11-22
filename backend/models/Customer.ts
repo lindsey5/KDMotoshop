@@ -52,7 +52,8 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
     },
     lastOnline: {
       type: Date,
-      required: true
+      required: true,
+      default: Date.now
     }
   },
   { timestamps: true }
