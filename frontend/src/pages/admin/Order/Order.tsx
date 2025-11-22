@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import { updateData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
@@ -26,7 +26,9 @@ const OrderDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const isDark = useDarkmode();
-    const { data, loading } = useFetch(`/api/orders/${id}`);
+    const { data, loading : orderLoading } = useFetch(`/api/orders/${id}`);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [order, setOrder] = useState<Order>()
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -34,20 +36,33 @@ const OrderDetails = () => {
         { label: 'Details', href: `/admin/orders/${id}`}
     ]
 
-    const order = useMemo<Order | null>(() => {
-      if(!data?.order) return null
-
-      const { customer, ...rest } = data.order
-      return {...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl ?? ''}}
-
+    useEffect(() => {
+      if(data?.order) {
+        const { customer, ...rest } = data.order
+        setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl}})
+      }
     }, [data])
+
+    const updateOrder = async (message: string, subMessage: string, status: string) => {
+      if (await confirmDialog(message, subMessage, isDark)) {
+        setLoading(true)
+        const response = await updateData(`/api/orders/${id}`, { ...order, status });
+        if (response.success) {
+          await successAlert(`${order?.order_id} successfully updated from ${order?.status} to ${status}`, '', isDark)
+          setOrder(prev => ({ ...prev, status } as Order))
+        } else {
+          errorAlert(response.message, '', isDark);
+        }
+        setLoading(false)
+      }
+    };
 
     const discountedPrice = useMemo(() => {
       if(!order?.voucher) return 0;
       return order.orderItems?.reduce((total, item) => item.lineTotal + total, 0)
     }, [order]);
     
-    if(loading) {
+    if(orderLoading) {
       return (
           <div className={cn("h-screen flex justify-center items-center", isDark && 'bg-[#1e1e1e]')}>
               <CircularProgress sx={{ color: 'red'}}/>
@@ -56,6 +71,12 @@ const OrderDetails = () => {
     }
 
     return <PageContainer className="flex flex-col justify-start p-0">
+        <Backdrop
+          sx={{ color: '#fff', zIndex: 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
             <div className="flex items-center mb-6 gap-2">
                 <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
@@ -99,7 +120,7 @@ const OrderDetails = () => {
                     </div>
                 </Card>
                 <Card className="justify-end hidden lg:flex">
-                    <UpdateButton id={id as string} order={order as Order}/>
+                    <UpdateButton order={order as Order} updateOrder={updateOrder}/>
                 </Card>
             </div>
             <div className="w-full lg:w-[350px] flex flex-col gap-5">
@@ -144,7 +165,7 @@ const OrderDetails = () => {
                     </div>
                 </Card>}
                 <Card className="flex justify-end lg:hidden">
-                    <UpdateButton id={id as string} order={order as Order}/>
+                    <UpdateButton order={order as Order} updateOrder={updateOrder}/>
                 </Card>
             </div>
         </div>
@@ -153,32 +174,10 @@ const OrderDetails = () => {
 
 export default OrderDetails
 
-const UpdateButton = ({ order, id }: { order: Order, id: string }) => {
-  const isDark = useDarkmode();
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const updateOrder = async (message: string, subMessage: string, status: string) => {
-    if (await confirmDialog(message, subMessage, isDark)) {
-      setLoading(true)
-      const response = await updateData(`/api/orders/${id}`, { ...order, status });
-      if (response.success) {
-        await successAlert(`${order.order_id} successfully updated from ${order.status} to ${status}`, '', isDark)
-        window.location.reload();
-      } else {
-        errorAlert(response.message, '', isDark);
-      }
-      setLoading(false)
-    }
-  };
+const UpdateButton = ({ order, updateOrder }: { order: Order, updateOrder: (message: string, subMessage: string, status: string) => Promise<void>}) => {
 
   return (
     <div className="flex gap-5">
-      <Backdrop
-          sx={{ color: '#fff', zIndex: 1 }}
-          open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
       {order?.status === 'Pending' &&
         <RedButton
           onClick={() => updateOrder('Reject Order?', 'This action is irreversible.', 'Rejected')}
