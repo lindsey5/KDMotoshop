@@ -88,14 +88,19 @@ const CheckoutPage = () => {
 
   const shipping_fee : number = useMemo(() => {
     setCalculatingShippingFee(true);
-    if(!customer || !orderItems || !data ) return 0;
+    if(!customer || !orderItems || !data ) {
+      setCalculatingShippingFee(false);
+      return 0;
+    }
 
     if(((customer as Customer)?.addresses?.length ?? 0) < 1 || 
       (orderItems.reduce((total, orderItems) => orderItems.quantity + total,0) >= 3) ||
       data?.orders.filter((order : Order) => order.status !== 'Cancelled' && order.status !== 'Failed' && order.status !== "Rejected").length === 0
-    ) return 0;
+    ) {
+      setCalculatingShippingFee(false);
+      return 0;
+    }
 
-    setCalculatingShippingFee(false);
     return calculateShippingFee(
       orderItems?.reduce((total, item) => total +( item.weight ?? 0), 0),
       (customer as Customer).addresses?.[selectedAddress]?.region || ''
