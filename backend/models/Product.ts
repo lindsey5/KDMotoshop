@@ -219,7 +219,7 @@ ProductSchema.methods.getStockStatus = async function (
     status = 'Understock'; 
     amount = optimalStockLevel - currentStock; 
 
-  } else if (currentStock > optimalStockLevel * 1.2) {
+  } else if (currentStock > optimalStockLevel) {
     status = 'Overstock';
     amount = currentStock - optimalStockLevel; 
 
