@@ -116,8 +116,8 @@ const RefundRequestModal: React.FC<RefundRequestModalProps> = ({
                     </div>
                     <div className="text-sm mt-4">
                         <h2 className="font-semibold">Address</h2>
-                        <p>{refundRequest.order_item_id.order_id.customer.firstname} {refundRequest.order_item_id.order_id.customer.lastname}</p>
-                        <p>{refundRequest.order_item_id.order_id.customer.phone}</p>
+                        <p>{refundRequest.order_item_id.order_id?.customer?.firstname} {refundRequest.order_item_id.order_id?.customer?.lastname}</p>
+                        <p>{refundRequest.order_item_id.order_id?.customer?.phone}</p>
                         <p>{refundRequest.order_item_id.order_id.address?.street}</p>
                         <p>{refundRequest.order_item_id.order_id.address?.barangay}</p>
                         <p>{refundRequest.order_item_id.order_id.address?.city}</p>
