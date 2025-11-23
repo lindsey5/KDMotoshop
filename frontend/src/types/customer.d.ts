@@ -6,6 +6,7 @@ type Customer = {
   phone: string;
   password: string;
   image: UploadedImage | string | ArrayBuffer;
+  status: 'Active' | 'Deactivated';
   addresses?: Address[],
   pendingOrders?: number,
   completedOrders?: number,

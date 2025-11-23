@@ -47,7 +47,7 @@ export const GoogleButton = ({ theme = 'filled_blue' } : { theme?: 'filled_black
           document.referrer ? navigate(-1) : navigate('/');
           setTimeout(() => window.location.reload(), 100);
         } else {
-          errorAlert('Sign in error. Please try again', '', isDark);
+          errorAlert('Sign in error. Please try again', response.message, isDark);
         }
       } catch (error) {
         console.error('Login processing error:', error);

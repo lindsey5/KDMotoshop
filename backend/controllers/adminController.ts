@@ -203,7 +203,7 @@ export const deleteAdmin = async (req : AuthenticatedRequest, res : Response) =>
 
         admin.status = "Inactive";
         await admin.save();
-        await logoutUser((admin._id as Types.ObjectId).toString());
+        logoutUser((admin._id as Types.ObjectId).toString());
         res.status(200).json({ success: true, message: 'Admin successfully deleted'});
 
     } catch (err: any) {

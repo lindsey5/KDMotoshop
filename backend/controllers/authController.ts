@@ -55,6 +55,11 @@ export const customerLogin = async (req: Request, res: Response) => {
          return;
       }
 
+      if(user.status === 'Deactivated'){
+        res.status(403).json({ success: false, message: 'Your account has been deactivated.'})
+        return;
+      }
+
       if(!user.password){
         res.status(400).json({ success: false, message: 'This account was registered using Google. Please sign in with Google.'});
         return;
@@ -185,6 +190,11 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
 
     let customer = await findCustomer({ email });
 
+    if(customer.status === 'Deactivated'){
+      res.status(403).json({ success: false, message: 'Your account has been deactivated.'})
+      return;
+    }
+
     if (!customer) {
       customer = await createCustomer({
         email,
@@ -220,7 +230,7 @@ export const getUser = async (req : AuthenticatedRequest, res : Response) => {
   try{
     const id = req.user_id;
 
-    const customer = await Customer.findById(id);
+    const customer = await Customer.findOne({ _id: id, status: 'Active'});
     const admin = await Admin.findOne({ _id: id, status: 'Active'})
     
     if(!customer && !admin) {
@@ -249,10 +259,17 @@ export const forgotPassword = async (req : Request, res : Response) => {
       res.status(404).json({ error: 'No user with that email.' });
       return;
     }
+
     if(!customer.password){
       res.status(400).json({ success: false, message: 'Failed to reset password. This account was created using Google Sign-In.'});
       return;
     }
+
+    if(customer.status === 'Deactivated'){
+      res.status(403).json({ success: false, message: 'Your account has been deactivated.'})
+      return;
+    }
+
     await ResetToken.findOneAndDelete({ customer_id: customer._id });
 
     // Create reset token

@@ -97,7 +97,7 @@ export const isUserOnline = async (userId: string): Promise<boolean> => {
   return sockets.length > 0;
 };
 
-export const logoutUser = async (user_id : string) => {
+export const logoutUser = (user_id : string) => {
   if (!io) return; 
 
   io.to(user_id).emit('logout');

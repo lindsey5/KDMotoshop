@@ -11,6 +11,7 @@ export interface ICustomer extends Document {
     lastname: string;
     image: UploadedImage;
     lastOnline: Date;
+    status: 'Active' | 'Deactivated';
     addresses: {
       street: string;
       barangay: string;
@@ -36,6 +37,12 @@ const CustomerSchema: Schema<ICustomer> = new Schema(
     image: {
       imageUrl: { type: String, required: false },
       imagePublicId: { type: String, required: false },
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Deactivated'],
+      required: true,
+      default: 'Active'
     },
     addresses: {
         type: [{

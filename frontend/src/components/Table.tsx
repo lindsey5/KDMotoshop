@@ -46,12 +46,12 @@ interface CustomizedTableProps extends TableContainerProps{
 
 const CustomizedTable = ({cols, rows, ...props} : CustomizedTableProps) => {
   const isDark = useDarkmode();
-  console.log('Rendered')
+
   return (
     <TableContainer component={Paper} {...props}>
       <Table aria-label="customized table">
         <TableHead>
-          <TableRow sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
+          <TableRow sx={{ position: 'sticky', top: 0, zIndex: 5 }}>
             {cols.map((col, index) => <StyledTableCell key={index} align={index !== 0 ? 'center' : 'left'}>{col}</StyledTableCell>)}
           </TableRow>
         </TableHead>

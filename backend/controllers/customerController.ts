@@ -2,8 +2,9 @@ import { Response } from "express";
 import { AuthenticatedRequest } from "../types/auth";
 import Customer from "../models/Customer";
 import { deleteImage, uploadImage } from "../services/cloudinary";
-import { isUserOnline } from "../middlewares/socket";
+import { isUserOnline, logoutUser } from "../middlewares/socket";
 import { isStrongPassword, verifyPassword } from "../utils/authUtils";
+import { Types } from "mongoose";
 
 
 export const getCustomerById = async (req : AuthenticatedRequest, res: Response) => {
@@ -149,6 +150,25 @@ export const totalCustomers = async (req : AuthenticatedRequest, res : Response)
     res.status(200).json({ success: true, total });
   }
   catch(err : any){
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+export const updateCustomerStatus = async (req : AuthenticatedRequest, res : Response) => {
+  try{
+    const { status } = req.body;
+    const customer = await Customer.findById(req.params.id);
+    if(!customer){
+      res.status(404).json({ success: false, message: 'Customer not found.'});
+      return;
+    }
+    console.log(status)
+    customer.status = status;
+    await customer.save();
+
+    logoutUser((customer._id as Types.ObjectId).toString());
+    res.status(200).json({ success: true, message: 'Customer status updated successfully.'});
+  } catch(err : any){
     res.status(500).json({ success: false, message: err.message });
   }
 }
