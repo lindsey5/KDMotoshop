@@ -86,7 +86,7 @@ const OrderDetails = () => {
             </div>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs}/>
         </div>
-        <OrderStatusStepper order={order as Order}/>
+        {order?.order_source !== 'Store' && <OrderStatusStepper order={order as Order}/>}
         <div className="flex flex-wrap items-start p-5 gap-5">
             <div className="flex flex-col gap-5 flex-1">
                 <OrderItemsContainer orderItems={order?.orderItems} />
@@ -111,8 +111,17 @@ const OrderDetails = () => {
                             </>}
                           </>
                         }
-                        <p>Shipping Fee</p>
-                        <p className="text-right">{order?.shipping_fee ? formatNumberToPeso(order?.shipping_fee) : 'Free'}</p>
+                        {order?.order_source === 'Website' && <>
+                          <p>Shipping Fee</p>
+                          <p className="text-right">{order?.shipping_fee ? formatNumberToPeso(order?.shipping_fee) : 'Free'}</p>
+                        </>}
+                        {order?.order_source === 'Store' && <>
+                        <p>Payment Amount</p>
+                        <p className="text-right">{formatNumberToPeso(order?.paymentAmount || 0)}</p>
+                        <p>Change</p>
+                        <p className="text-right">{formatNumberToPeso(order?.change || 0)}</p>
+
+                        </>}
                     </div>
                     <div className="flex justify-between">
                         <h1 className="font-bold text-xl">Total</h1>
@@ -129,11 +138,13 @@ const OrderDetails = () => {
             </div>
             <div className="w-full lg:w-[350px] flex flex-col gap-5">
                 <Card className="w-full flex flex-col gap-5">
+                    {order?.customer.firstname && order?.customer.lastname && <>
                     <h1 className="font-bold text-xl">Customer</h1>
                     <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                         <Avatar src={order?.customer.image} />
                         <h1>{order?.customer.firstname} {order?.customer.lastname}</h1>
                     </div>
+                    </>}
                     <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                         <h1 className="font-bold">Contact Info</h1>
                         <div className="flex gap-3">

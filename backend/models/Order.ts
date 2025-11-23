@@ -5,6 +5,8 @@ export interface IOrder extends Document {
     order_source: 'Store' | 'Website' | 'Facebook' | 'Shopee' | 'Lazada' | 'Tiktok';
     shipping_fee: number;
     total: number;
+    paymentAmount?: number;
+    change?: number;
     subtotal: number;
     status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
     customer: {
@@ -33,6 +35,8 @@ const OrderSchema: Schema<IOrder> = new Schema(
     order_id: { type: String, required: true, unique: true },
     total: { type: Number, required: true },
     subtotal: { type: Number, required: true },
+    paymentAmount: { type: Number, required: false },
+    change: { type: Number, required: false },
     order_source: {
       type: String,
       enum: ['Store', 'Website', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'],
@@ -49,8 +53,8 @@ const OrderSchema: Schema<IOrder> = new Schema(
       type: {
         customer_id: { type: Schema.Types.ObjectId, ref: 'Customer', required: false },
         email: { type: String, required: false },
-        firstname: { type: String, required: true },
-        lastname: { type: String, required: true },
+        firstname: { type: String, },
+        lastname: { type: String, },
         phone: { type: String, required: false }
       },
       required: true

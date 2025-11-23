@@ -34,8 +34,10 @@ const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
 const OrderRow = (index : number, order : Order, isDark : boolean, navigate : NavigateFunction) => {
     return {
         '#' : index + 1,
-        'Customer Name' : `${order.customer.firstname} ${order.customer.lastname}`,
+        'Customer Name' : order.customer.firstname && order.customer.lastname ? `${order.customer.firstname} ${order.customer.lastname}` : ' - ',
         'Order ID' : order.order_id,
+        'Payment' : order.paymentAmount ? formatNumberToPeso(order.paymentAmount) : '-',
+        'Change' : order.change ? formatNumberToPeso(order.change) : '-',
         'Amount' : formatNumberToPeso(order.total),
         'Payment Method' : order.payment_method,
         'Order Date' : formatDate(order.createdAt),
@@ -107,9 +109,20 @@ const Orders = () => {
         });
     };
 
-    const cols = useMemo(() => ['#', 'Customer Name', 'Order ID', 'Amount', 'Payment Method', 'Order Date', 'Order Channel', 'Status', 'Action'], [])
-    const rows = useMemo(() => data?.orders.map((order : Order, index : number) => OrderRow(index, order, isDark, navigate)) || [], [data?.orders]);
-
+    const cols: string[] = useMemo(() => [
+    '#',
+    'Customer Name',
+    'Order ID',
+    ...(from === 'Store' ? ['Payment', 'Change'] : []),
+    'Amount',
+    'Payment Method',
+    'Order Date',
+    'Order Channel',
+    ...(from !== 'Store' ? ['Status'] : []),
+    'Action'
+    ], [from]);
+    const rows = useMemo(() =>
+         data?.orders.map((order : Order, index : number) => OrderRow(index, order, isDark, navigate)) || [], [data?.orders]);
 
     return <PageContainer className="flex flex-col">
         <div className="flex justify-between items-center mb-6">
@@ -142,18 +155,19 @@ const Orders = () => {
                             value={from}
                             onChange={(e) => {
                                 setFrom(e.target.value as string)
+                                setSelectedStatus('All')
                                 setPage(1)
                             }}
                             menu={['Website', 'Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
                          />
-                        <StatusSelect 
+                        {from !== 'Store' && <StatusSelect 
                             value={selectedStatus}
                             onChange={(e) => {
                                 setSelectedStatus(e.target.value as string)
                                 setPage(1)
                             }}
                             menu={Statuses}
-                        />
+                        />}
                         <CustomizedSelect 
                             sx={{ height: 55 }}
                             label="Payment Method"

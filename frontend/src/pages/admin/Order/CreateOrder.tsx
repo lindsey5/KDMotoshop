@@ -119,12 +119,13 @@ const CreateOrderPage = () => {
     }
 
     const proceed = async () => {
-        if(!order.customer.firstname || !order.customer.lastname || (order.order_source !== 'Store' && (!order.address || Object.values(order.address).some(value => !value)))){
+        if(order.order_source !== 'Store' && (!order.customer.phone || !order.address || Object.values(order.address).some(value => !value))){
             setShowCustomerModal(true);
         }else{
             if(await confirmDialog('Place order?', '', isDark, "success",)){
                 setLoading(true)
-                const response = await postData('/api/orders', { order, orderItems});
+                const newOrder = {...order, change: payment - order.total, paymentAmount: payment };
+                const response = await postData('/api/orders', { order: newOrder , orderItems});
                 if(response.success){
                     if(order.order_source === 'Store'){
                         setLoading(false)

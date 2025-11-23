@@ -27,6 +27,8 @@ type Order = {
     deliveredAt?: Date;
     voucher?: Voucher;
     orderItems?: OrderItem[];
+    paymentAmount?: number;
+    change?: number;
     cancellationReason?: string;
 }
 

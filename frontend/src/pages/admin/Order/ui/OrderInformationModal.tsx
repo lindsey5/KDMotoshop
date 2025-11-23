@@ -56,6 +56,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                 setSelectedCity('');
                 return ({
                     ...rest,
+                    status: 'Delivered',
                     order_source: e.target.value as Order['order_source']
                 })
             }
@@ -131,7 +132,7 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                     isDark ? 'text-white' : 'text-gray-800'
                     }`}
                 >
-                    Phone (Optional)
+                    Phone
                 </label>
 
                 <PhoneInput
@@ -162,11 +163,11 @@ const OrderInformationModal = ({ open, close, setOrder, order } : OrderInformati
                         onChange={handleOrderChannel}
                         menu={['Store', 'Facebook', 'Shopee', 'Lazada', 'Tiktok'].map(method => ({ value: method, label: method }))}
                     />
-                    <StatusSelect 
+                    {order.order_source !== 'Store' && <StatusSelect 
                         value={order.status}
                         onChange={(e) => setOrder(prev => ({ ...prev, status: e.target.value as Order['status'] }))}
                         menu={Statuses}
-                    />
+                    />}
                     <CustomizedSelect 
                         label="Payment Method"
                         value={order.payment_method}
