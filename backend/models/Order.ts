@@ -9,7 +9,7 @@ export interface IOrder extends Document {
     change?: number;
     subtotal: number;
     status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
-    customer: {
+    customer?: {
         customer_id?: Types.ObjectId;
         email?: string;
         firstname: string;
@@ -57,7 +57,7 @@ const OrderSchema: Schema<IOrder> = new Schema(
         lastname: { type: String, },
         phone: { type: String, required: false }
       },
-      required: true
+      required: false
     },
     address: {
       type: {

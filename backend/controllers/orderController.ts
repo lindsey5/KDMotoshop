@@ -18,7 +18,14 @@ export const create_order = async (req: AuthenticatedRequest, res: Response) => 
             res.status(400).json({ success: false, message: 'Order and order items are required' });
             return;
         }
-        const newOrder = {...order, createdBy: req.user_id, order_id: await generateOrderId()}
+        const isOrderIdExist = await Order.findOne({ order_id: order.order_id });
+
+        if(isOrderIdExist){
+            res.status(409).json({ success: false, message: 'Order ID already exists. Try another Order ID'})
+            return;
+        }
+
+        const newOrder = {...order, createdBy: req.user_id, order_id: order.order_id || await generateOrderId()}
 
         const savedOrder = await createNewOrder({ orderItems, order: newOrder });
 
@@ -249,7 +256,7 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
         }
 
         if(req.body.status !== order.status) {
-            if(order.customer.customer_id) {
+            if(order?.customer?.customer_id) {
                 await sendCustomerNotification({
                     to: order.customer?.customer_id?.toString() || '', 
                     order_id: order._id as string, 
@@ -265,7 +272,7 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             })
         }
 
-        if(order.customer.customer_id) await sendOrderUpdate(order.customer.email as string, order.order_id, order.customer.firstname, req.body.status);
+        if(order?.customer?.customer_id) await sendOrderUpdate(order?.customer.email as string, order.order_id, order?.customer.firstname, req.body.status);
 
         res.status(200).json({ 
             success: true,  
@@ -377,10 +384,10 @@ export const cancel_order = async (req: Request, res: Response) => {
         await order.save();
 
         const customer = order.customer
-        if(customer.customer_id){
+        if(customer?.customer_id){
             await sendAdminsNotification({
                 notificationData: {
-                    from: customer.customer_id?.toString(), 
+                    from: customer?.customer_id?.toString(), 
                     order_id: order._id as string, 
                     content: `Order ${order.order_id} has been cancelled`
                 }

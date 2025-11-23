@@ -125,23 +125,23 @@ const CustomerOrderDetails = () => {
                     <Card className="w-full flex flex-col gap-5">
                         <h1 className="font-bold text-lg md:text-xl">Information:</h1>
                         <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
-                            <Avatar src={order.customer.image} />
-                            <h1>{order.customer.firstname} {order.customer.lastname}</h1>
+                            <Avatar src={order?.customer?.image} />
+                            <h1>{order?.customer?.firstname} {order?.customer?.lastname}</h1>
                         </div>
                         <div className={cn("text-sm md:text-base flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                             <h1 className="font-bold">Contact Info</h1>
                             <div className="flex gap-3">
                                 <EmailOutlinedIcon />
-                                <p>{order.customer.email || 'N/A'}</p>
+                                <p>{order?.customer?.email || 'N/A'}</p>
                             </div>
                             <div className="flex gap-3">
                                 <LocalPhoneOutlinedIcon />
-                                <p>{order.customer.phone || 'N/A'}</p>
+                                <p>{order?.customer?.phone || 'N/A'}</p>
                             </div>
                         </div>
                         {order.address && <div className="text-sm md:text-base flex flex-col gap-2 pb-5 border-b-1 border-gray-300">
                             <h1 className="font-bold">Address</h1>
-                            <p>{order.customer.firstname} {order.customer.lastname}</p>
+                            <p>{order?.customer?.firstname} {order?.customer?.lastname}</p>
                             <p>{order.address?.street}</p>
                             <p>{order.address?.barangay}</p>
                             <p>{order.address?.city}</p>

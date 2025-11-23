@@ -19,6 +19,7 @@ import Contact from "./pages/customer/Contact";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Vouchers from "./pages/admin/Vouchers/Vouchers";
+import CreateOrderPage from "./pages/admin/Order/CreateOrder";
 const AdminLogin = lazy(() => import("./pages/auth/AdminLogin"));
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard/Dashboard"));
@@ -26,7 +27,7 @@ const Products = lazy(() => import("./pages/admin/Product/Products"));
 const ProductPage = lazy(() => import("./pages/admin/Product/Product"));
 const Home = lazy(() => import("./pages/customer/Home/Home"));
 const Orders = lazy(() => import("./pages/admin/Order/Orders"));
-const CreateOrderPage = lazy(() => import("./pages/admin/Order/CreateOrder"));
+const POSPage = lazy(() => import("./pages/admin/Order/POS"));
 const OrderDetails = lazy(() => import("./pages/admin/Order/Order"));
 const CustomerLayout = lazy(() => import("./layouts/CustomerLayout"));
 const CustomerProducts = lazy(() => import("./pages/customer/Product/Products"));
@@ -102,6 +103,7 @@ export default function App() {
                   <Route path="purchase-order/:id" element={<PurchaseOrder />} />
                   <Route path="customers" element={<CustomersPage />} />
                   <Route path="vouchers" element={<Vouchers />} />
+                  <Route path="pos" element={<POSPage />}/>
                   <Route path="orders">
                     <Route index element={<Orders />} />
                     <Route path="create" element={<CreateOrderPage />} />

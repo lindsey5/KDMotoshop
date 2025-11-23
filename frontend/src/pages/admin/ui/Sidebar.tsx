@@ -22,7 +22,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Box, Ticket } from 'lucide-react'
-import { Archive, Description } from '@mui/icons-material';
+import { Archive, Description, PointOfSale } from '@mui/icons-material';
 import { addNotification, resetNotifications } from '../../../features/notifications/notificationSlice';
 import { fetchNotifications } from '../../../features/notifications/notificationThunks';
 
@@ -140,6 +140,12 @@ export const AdminSidebar = () => {
                 { label: "Suppliers", icon: <Archive sx={{ width: 22, height: 22 }} />, path: "/admin/suppliers" },
                 { label: "Purchase Orders", icon: <Description sx={{ width: 22, height: 22 }} />, path: "/admin/purchase-orders" },
               ]}
+            />
+
+            <SidebarLink 
+              label='POS' 
+              icon={<PointOfSale sx={{ width: 25, height: 25 }}/>}
+              path='/admin/pos'
             />
 
             {user?.role === 'Super Admin' && (

@@ -75,14 +75,6 @@ const ReceiptModal = ({ open, onClose, order, orderItems, payment, change } : Re
                     <p className="text-xs">{formatToLongDateFormat(order?.createdAt)}</p>
                 </div>
 
-                {/* Customer Info */}
-                <div className="border-b border-dashed border-gray-400 pb-3 mb-4">
-                    <p className="font-bold mb-1">CUSTOMER:</p>
-                    <p className="text-xs">{order.customer.firstname} {order.customer.lastname}</p>
-                    <p className="text-xs">{order.customer.phone}</p>
-                    <p className="text-xs">{order.customer.email}</p>
-                </div>
-
                 {/* Items */}
                 <div className="mb-4">
                     <div className="border-b border-dashed border-gray-400 pb-1 mb-2">

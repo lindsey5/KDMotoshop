@@ -97,7 +97,6 @@ const AddAddress = ({ customer, isDark, setAddresses, close, addresses }: AddAdd
     }));
   };
 
-  // ✅ Barangay change
   const handleBarangayChange = (value: string) => {
     setNewAddress((prev) => ({ ...prev, barangay: value }));
   };
@@ -162,7 +161,6 @@ const AddAddress = ({ customer, isDark, setAddresses, close, addresses }: AddAdd
             />
           </div>
 
-          {/* ✅ Region > City > Barangay */}
           <div className="flex flex-col gap-4">
             <CustomizedSelect
               label="Region"

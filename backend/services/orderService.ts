@@ -114,12 +114,12 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
 
         const customer = order.customer
 
-        if(customer.customer_id){
+        if(customer?.customer_id){
             await sendAdminsNotification({
                 notificationData: {
-                  from: customer.customer_id.toString(),
+                  from: customer?.customer_id.toString(),
                   order_id: savedOrder._id as string,
-                  content: `New order placed by ${customer.firstname} ${customer.lastname}`
+                  content: `New order placed by ${customer?.firstname} ${customer?.lastname}`
               }
             });
         }

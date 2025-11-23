@@ -6,13 +6,13 @@ type Order = {
     subtotal: number;
     shipping_fee: number;
     status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Failed" |"Rated";
-    customer: {
+    customer?: {
         customer_id?: string | UploadedImage;
         image?: string; 
         email?: string;
         firstname: string;
         lastname: string;
-        phone?: string;
+        phone: string;
     };
     address?: {
         street: string;

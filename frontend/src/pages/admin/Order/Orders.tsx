@@ -34,7 +34,7 @@ const payment_methods = ["All", "CASH", "GCASH", "PAYMAYA", "CARD"]
 const OrderRow = (index : number, order : Order, isDark : boolean, navigate : NavigateFunction) => {
     return {
         '#' : index + 1,
-        'Customer Name' : order.customer.firstname && order.customer.lastname ? `${order.customer.firstname} ${order.customer.lastname}` : ' - ',
+        'Customer Name' : order?.customer?.firstname && order?.customer.lastname ? `${order.customer.firstname} ${order.customer.lastname}` : ' - ',
         'Order ID' : order.order_id,
         'Payment' : order.paymentAmount ? formatNumberToPeso(order.paymentAmount) : '-',
         'Change' : order.change ? formatNumberToPeso(order.change) : '-',
@@ -86,7 +86,7 @@ const Orders = () => {
                     order_id: order.order_id,
                     order_date: order.createdAt,
                     status: order.status,
-                    customer: `${order.customer.firstname} ${order.customer.lastname}`,
+                    customer: `${order?.customer?.firstname} ${order?.customer?.lastname}`,
                     order_channel: order.order_source,
                     sku: item.sku,
                     product_name: item.product_name,
@@ -111,7 +111,7 @@ const Orders = () => {
 
     const cols: string[] = useMemo(() => [
     '#',
-    'Customer Name',
+    ...(from !== 'Store' ? ['Customer Name'] : []),
     'Order ID',
     ...(from === 'Store' ? ['Payment', 'Change'] : []),
     'Amount',

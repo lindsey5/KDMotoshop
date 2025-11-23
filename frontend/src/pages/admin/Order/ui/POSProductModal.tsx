@@ -14,7 +14,7 @@ type AddOrderModalProps = {
     close: () => void;
 }
 
-const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModalProps) => {
+const POSProductModal = ({ close, selectedProduct, setOrderItems } : AddOrderModalProps) => {
     const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
     const [quantity, setQuantity] = useState<number>(1);
     const isDark = useDarkmode()
@@ -118,13 +118,17 @@ const AddOrderModal = ({ close, selectedProduct, setOrderItems } : AddOrderModal
                 </div>
                 <RedButton
                     onClick={handleAddOrder}
-                    disabled={filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length}
+                    disabled={filteredVariants[0]?.stock === 0 || 
+                        filteredVariants.length !== 1 || 
+                        Object.keys(selectedAttributes).length !== selectedProduct?.attributes.length ||
+                        quantity === 0
+                    }
                 >
-                    Add Order
+                    Add Item
                 </RedButton>
             </div>
         </Card>
     </Modal>
 }
 
-export default memo(AddOrderModal)
+export default memo(POSProductModal)

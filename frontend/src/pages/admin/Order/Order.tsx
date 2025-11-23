@@ -138,32 +138,33 @@ const OrderDetails = () => {
             </div>
             <div className="w-full lg:w-[350px] flex flex-col gap-5">
                 <Card className="w-full flex flex-col gap-5">
-                    {order?.customer.firstname && order?.customer.lastname && <>
+                    {order?.order_source !== 'Store' && <>
                     <h1 className="font-bold text-xl">Customer</h1>
                     <div className={cn("flex gap-5 items-center pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
-                        <Avatar src={order?.customer.image} />
-                        <h1>{order?.customer.firstname} {order?.customer.lastname}</h1>
+                        <Avatar src={order?.customer?.image} />
+                        <h1>{order?.customer?.firstname} {order?.customer?.lastname}</h1>
                     </div>
-                    </>}
                     <div className={cn("flex flex-col gap-5 pb-5 border-b-1 border-gray-300", isDark && 'border-gray-700')}>
                         <h1 className="font-bold">Contact Info</h1>
                         <div className="flex gap-3">
                             <EmailOutlinedIcon />
-                            <p>{order?.customer.email || 'N/A'}</p>
+                            <p>{order?.customer?.email || 'N/A'}</p>
                         </div>
                         <div className="flex gap-3">
                             <LocalPhoneOutlinedIcon />
-                            <p>{order?.customer.phone || 'N/A'}</p>
+                            <p>{order?.customer?.phone || 'N/A'}</p>
                         </div>
                     </div>
+                    </>}
                     {order?.address && <div className="flex flex-col gap-2 pb-5 border-b-1 border-gray-300">
                         <h1 className="font-bold">Address</h1>
-                          <p>{order.customer.firstname} {order.customer.lastname}</p>
+                          <p>{order?.customer?.firstname} {order?.customer?.lastname}</p>
                           <p>{order.address?.street}</p>
                           <p>{order.address?.barangay}</p>
                           <p>{order.address?.city}</p>
                           <p>{order.address?.region}</p>
                     </div>}
+                    <h1 className="font-bold">Order Information:</h1>
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Order Date: {formatToLongDateFormat(order?.createdAt)}</p>
                     <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Payment Method: {order?.payment_method}</p>
                     {order?.deliveredAt && <p className={cn(isDark ? "text-gray-300" : "text-gray-500")}>Delivered At: {formatToLongDateFormat(order?.deliveredAt)}</p>}

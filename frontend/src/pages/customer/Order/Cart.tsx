@@ -38,6 +38,10 @@ const Cart = () => {
     if (!customer && !customerLoading) {
         return <Navigate to="/" />;
     }
+
+    const isQuantityValid = useMemo(() => {
+        return selectedItem.items.every(item => item.quantity !== 0)
+    }, [selectedItem])
     
     return (
         <div className={cn("flex flex-col gap-5 transition-colors duration-600 pt-30 pb-5 px-5 lg:pb-10 lg:px-10 bg-gray-100", isDark && 'bg-[#1e1e1e]')}>
@@ -59,7 +63,7 @@ const Cart = () => {
                 {cart.map((item) => <CartItemContainer key={item._id} item={item} />)}
                 <div className="flex flex-col justify-center lg:flex-row lg:justify-end mt-8 gap-5">
                     <h2 className='font-bold text-md md:text-lg'>Total: {formatNumberToPeso(selectedItem.total)}</h2>
-                    <RedButton onClick={proceedToCheckout} disabled={selectedItem.items.length === 0}>Checkout ({selectedItem.items.length} items)</RedButton>
+                    <RedButton onClick={proceedToCheckout} disabled={selectedItem.items.length === 0 || !isQuantityValid}>Checkout ({selectedItem.items.length} items)</RedButton>
                 </div>
             </Card>
         </div>
