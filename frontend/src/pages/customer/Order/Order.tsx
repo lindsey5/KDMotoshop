@@ -93,12 +93,12 @@ const CustomerOrderDetails = () => {
                             <>
                                 <p>Voucher Name:</p>
                                 <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.name}</p>
+                                 <p >Discount:</p>
+                                <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                                 <p>Max Discount:</p>
                                 <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{order.voucher.maxDiscount ? formatNumberToPeso(order.voucher.maxDiscount) : 'N/A'}</p>
                                 <p>Min. Spend:</p>
                                 <p className={`text-right text-green-600 ${isDark && 'text-green-500'}`}>{formatNumberToPeso(order.voucher.minSpend)}</p>
-                                <p >Discount:</p>
-                                <p className={`text-right text-red-600 ${isDark && 'text-red-500'}`}> - {order.voucher?.voucherType === 'amount' ? formatNumberToPeso(order.voucher?.amount ?? 0) : `${order.voucher?.percentage}%`}</p>
                                 {discountedPrice && <>
                                 <p>Discounted Subtotal:</p>
                                 <p className="text-right">{formatNumberToPeso(discountedPrice)}</p>
@@ -159,7 +159,7 @@ const CustomerOrderDetails = () => {
                     </Card>
                 </div>
             </div>
-            <div className="lg:hidden flex justify-end p-5">
+            <div className={cn("lg:hidden flex justify-end p-5", isDark && 'text-white')}>
                 {order?.cancellationReason && <div className={cn("w-full bg-gray-200 p-3 rounded-md", isDark && 'bg-gray-700')}>
                             <h1 className="font-bold text-lg mb-2">Cancellation Reason:</h1>
                             <p>{order.cancellationReason}</p>
