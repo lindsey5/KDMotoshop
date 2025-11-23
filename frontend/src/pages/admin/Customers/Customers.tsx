@@ -71,11 +71,12 @@ const UpdateStatusButton = ({ status, id }: { status: "Active" | "Deactivated"; 
     <button
       onClick={updateStatus}
       className={cn(
-        "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm border transition-colors duration-200",
+        "cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm border transition-colors duration-200",
         !isDark &&
-          "border-neutral-300 text-neutral-700 hover:bg-neutral-100",
+          "border-neutral-300 text-neutral-700",
         isDark &&
-          "border-neutral-600 text-neutral-300 hover:bg-neutral-800"
+          "border-neutral-600 text-neutral-300",
+        isActive ? "hover:bg-red-50 hover:text-red-400" : "hover:bg-green-50 hover:text-green-400"
       )}
     >
       {isActive ? <Lock size={14} /> : <Unlock size={14} />}
