@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom"
-import { fetchData, updateData } from "../../../services/api";
+import { fetchData } from "../../../services/api";
 import { formatToLongDateFormat } from "../../../utils/dateUtils";
 import { cn, formatNumberToPeso } from "../../../utils/utils";
-import { Avatar, Backdrop, CircularProgress, IconButton } from "@mui/material";
+import { Avatar, CircularProgress, IconButton } from "@mui/material";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
 import BreadCrumbs from "../../../components/BreadCrumbs";
@@ -11,12 +11,12 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Card from "../../../components/Card";
 import useDarkmode from "../../../hooks/useDarkmode";
 import OrderStatusStepper from "../../../components/Stepper";
-import { confirmDialog, errorAlert } from "../../../utils/swal";
 import { RedButton } from "../../../components/buttons/Button";
 import { Status, Title } from "../../../components/text/Text";
 import CustomerOrderItems from "./ui/OrderItems";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../features/store";
+import CancelOrderModal from "./ui/CancelOrderModal";
 
 const CustomerOrderDetails = () => {
     const { id } = useParams();
@@ -24,7 +24,7 @@ const CustomerOrderDetails = () => {
     const navigate = useNavigate();
     const isDark = useDarkmode();
     const { user : customer, loading : customerLoading} = useSelector((state : RootState) => state.user)
-    const [loading, setLoading] = useState(false);
+    const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
     const PageBreadCrumbs : { label: string, href: string }[] = [
         { label: 'Home', href: '/' },
@@ -45,25 +45,6 @@ const CustomerOrderDetails = () => {
         getOrderAsync();
     }, [id])
 
-    const cancelOrder = async () => {
-        if (await confirmDialog(
-            'Are you sure you want to cancel this order?', 
-            'This action cannot be undone.', 
-            isDark
-        )) {
-            setLoading(true)
-            const response = await updateData(`/api/orders/customer/${id}/cancel`, {});
-
-            if (response.success) {
-                window.location.reload();
-            } else {
-                errorAlert(response.message, '', isDark);
-            }
-            setLoading(false)
-        }
-
-    }
-
     const discountedPrice = useMemo(() => {
         if(!order?.voucher) return 0;
         return order.orderItems?.reduce((total, item) => item.lineTotal + total, 0)
@@ -82,12 +63,6 @@ const CustomerOrderDetails = () => {
 
     if(customer?._id === order.customer?.customer_id) {
         return <div className={cn("pt-20 transition-colors duration-600 flex flex-col justify-start bg-gray-100 min-h-screen", isDark && 'bg-[#1e1e1e]')}>
-            <Backdrop
-                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
             <div className={cn("p-5 border-b-1", isDark ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-300')}>
                 <div className="flex items-center mb-6 gap-2">
                     <IconButton onClick={() => navigate(-1)} sx={{ color: isDark? 'white' : ''}}>
@@ -139,7 +114,11 @@ const CustomerOrderDetails = () => {
                         </div>
                     </Card>
                     <Card className="justify-end hidden lg:flex">
-                        {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
+                        {order?.cancellationReason && <div className={cn("w-full bg-gray-200 p-3 rounded-md", isDark && 'bg-gray-700')}>
+                            <h1 className="font-bold text-lg mb-2">Cancellation Reason:</h1>
+                            <p>{order.cancellationReason}</p>
+                        </div>}
+                        {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={() => setOpenCancelDialog(true)}>Cancel Order</RedButton>}
                     </Card>
                 </div>
                 <div className="flex-1 lg:max-w-[400px] flex flex-col gap-5">
@@ -180,9 +159,18 @@ const CustomerOrderDetails = () => {
                     </Card>
                 </div>
             </div>
-        <div className="lg:hidden flex justify-end p-5">
-            {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={cancelOrder}>Cancel Order</RedButton>}
-        </div>
+            <div className="lg:hidden flex justify-end p-5">
+                {order?.cancellationReason && <div className={cn("w-full bg-gray-200 p-3 rounded-md", isDark && 'bg-gray-700')}>
+                            <h1 className="font-bold text-lg mb-2">Cancellation Reason:</h1>
+                            <p>{order.cancellationReason}</p>
+                        </div>}
+                {(order.status === 'Pending' || order.status === 'Confirmed') && <RedButton onClick={() => setOpenCancelDialog(true)}>Cancel Order</RedButton>}
+            </div>
+            <CancelOrderModal 
+                open={openCancelDialog}
+                close={() => setOpenCancelDialog(false)}
+                id={id as string}
+            />
         </div>
     }
 }

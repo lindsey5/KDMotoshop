@@ -42,47 +42,47 @@ const StatusChip = memo(({ status }: { status : 'Active' | 'Deactivated'}) => {
 });
 
 const UpdateStatusButton = ({ status, id }: { status: "Active" | "Deactivated"; id: string }) => {
-  const isDark = useDarkmode();
+    const isDark = useDarkmode();
 
-  const updateStatus = async () => {
-    if (
-      await confirmDialog(
-        "Change customer status?",
-        "This can be reverted later.",
-        isDark
-      )
-    ) {
-      const response = await updateData(`/api/customers/${id}/status`, {
-        status: status === "Active" ? "Deactivated" : "Active",
-      });
+    const updateStatus = async () => {
+        if (
+        await confirmDialog(
+            "Change customer status?",
+            "This can be reverted later.",
+            isDark
+        )
+        ) {
+        const response = await updateData(`/api/customers/${id}/status`, {
+            status: status === "Active" ? "Deactivated" : "Active",
+        });
 
-      if (!response.success) {
-        await errorAlert("Error", response.message, isDark);
-        return;
-      }
+        if (!response.success) {
+            await errorAlert("Error", response.message, isDark);
+            return;
+        }
 
-      window.location.reload();
-    }
-  };
+        window.location.reload();
+        }
+    };
 
-  const isActive = status === "Active";
+    const isActive = status === "Active";
 
-  return (
-    <button
-      onClick={updateStatus}
-      className={cn(
-        "cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm border transition-colors duration-200",
-        !isDark &&
-          "border-neutral-300 text-neutral-700",
-        isDark &&
-          "border-neutral-600 text-neutral-300",
-        isActive ? "hover:bg-red-50 hover:text-red-400" : "hover:bg-green-50 hover:text-green-400"
-      )}
-    >
-      {isActive ? <Lock size={14} /> : <Unlock size={14} />}
-      {isActive ? "Deactivate" : "Activate"}
-    </button>
-  );
+    return (
+        <button
+        onClick={updateStatus}
+        className={cn(
+            "cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm border transition-colors duration-200",
+            !isDark &&
+            "border-neutral-300 text-neutral-700",
+            isDark &&
+            "border-neutral-600 text-neutral-300",
+            isActive ? "hover:bg-red-50 hover:text-red-400" : "hover:bg-green-50 hover:text-green-400"
+        )}
+        >
+        {isActive ? <Lock size={14} /> : <Unlock size={14} />}
+        {isActive ? "Deactivate" : "Activate"}
+        </button>
+    );
 };
 
 const CustomersPage = () => {

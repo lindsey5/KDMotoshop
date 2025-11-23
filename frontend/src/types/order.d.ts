@@ -27,6 +27,7 @@ type Order = {
     deliveredAt?: Date;
     voucher?: Voucher;
     orderItems?: OrderItem[];
+    cancellationReason?: string;
 }
 
 type OrderItem = {

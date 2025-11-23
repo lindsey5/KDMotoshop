@@ -119,7 +119,11 @@ const OrderDetails = () => {
                         <h1 className="font-bold text-xl">{formatNumberToPeso(order?.total || 0)}</h1>
                     </div>
                 </Card>
-                <Card className="justify-end hidden lg:flex">
+                <Card className={cn("justify-end hidden lg:flex", order?.cancellationReason && 'w-full justify-start')}>
+                    {order?.cancellationReason && <div className={cn("w-full bg-gray-200 p-3 rounded-md", isDark && 'bg-gray-700')}>
+                        <h1 className="font-bold text-lg mb-2">Cancellation Reason:</h1>
+                        <p>{order.cancellationReason}</p>
+                    </div>}
                     <UpdateButton order={order as Order} updateOrder={updateOrder}/>
                 </Card>
             </div>
@@ -164,7 +168,11 @@ const OrderDetails = () => {
                         <p>{order?.createdBy?.firstname} {order?.createdBy?.lastname}</p>
                     </div>
                 </Card>}
-                <Card className="flex justify-end lg:hidden">
+                <Card className={cn("justify-end flex lg:hidden", order?.cancellationReason && 'w-full justify-start')}>
+                    {order?.cancellationReason && <div className={cn("w-full bg-gray-200 p-3 rounded-md", isDark && 'bg-gray-700')}>
+                        <h1 className="font-bold text-lg mb-2">Cancellation Reason:</h1>
+                        <p>{order.cancellationReason}</p>
+                    </div>}
                     <UpdateButton order={order as Order} updateOrder={updateOrder}/>
                 </Card>
             </div>

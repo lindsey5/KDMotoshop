@@ -355,6 +355,7 @@ export const cancel_order = async (req: Request, res: Response) => {
         }
 
         order.status = 'Cancelled'
+        order.cancellationReason = req.body.cancellationReason;
 
         const payment = await Payment.findOne({ order_id: order._id});
         

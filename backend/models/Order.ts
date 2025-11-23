@@ -25,6 +25,7 @@ export interface IOrder extends Document {
     createdBy?: Types.ObjectId;
     createdAt: Date;
     voucher?: Types.ObjectId;
+    cancellationReason?: string;
 }
 
 const OrderSchema: Schema<IOrder> = new Schema(
@@ -74,7 +75,8 @@ const OrderSchema: Schema<IOrder> = new Schema(
       required: false
     },
     createdBy: { type: Schema.Types.ObjectId, ref: 'Admin', required: false },
-    voucher: { type: Schema.Types.ObjectId, ref: 'Voucher'}
+    voucher: { type: Schema.Types.ObjectId, ref: 'Voucher'},
+    cancellationReason: { type: String, required: false }
   },
   { timestamps: true }
 );
