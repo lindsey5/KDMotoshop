@@ -202,13 +202,13 @@ const CustomerProduct = () => {
                             sx={{ height: 45 }}
                             onClick={proceedToCheckout}
                             fullWidth
-                            disabled={product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0}
+                            disabled={quantity === 0 || (product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0)}
                         >Buy</RedButton>
                         <RedButton 
                             sx={{ height: 45 }}
                             onClick={addToCart}
                             fullWidth
-                            disabled={quantity === 0 || product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0}
+                            disabled={quantity === 0 || (product?.product_type === 'Variable' ? (filteredVariants[0]?.stock === 0 || filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length) : product?.stock === 0)}
                         >Add to cart</RedButton>
                     </div>
                 </div>

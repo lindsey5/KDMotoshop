@@ -48,7 +48,7 @@ const CreateOrderItemContainer = ({ orderItem, setOrderItems } : { orderItem : O
                     <h1>{orderItem.product_name}</h1>
                     <div className="flex flex-wrap gap-2">
                         {Object.entries(orderItem.attributes ?? {}).map(([_, value]) => (
-                            <div className="text-sm p-2 border border-gray-400 rounded-full">
+                            <div key={value} className="text-sm p-2 border border-gray-400 rounded-full">
                                 {value}
                             </div>
                         ))}

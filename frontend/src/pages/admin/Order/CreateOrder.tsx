@@ -379,7 +379,7 @@ const CreateOrderPage = () => {
             {orderItems.length ? (
                 <div className="flex flex-col gap-5 max-h-full overflow-y-auto p-5">
                     {orderItems.map((item) => (
-                        <CreateOrderItemContainer orderItem={item} setOrderItems={setOrderItems}/>
+                        <CreateOrderItemContainer key={item.sku} orderItem={item} setOrderItems={setOrderItems}/>
                     ))}
                 </div>
             ) : 
