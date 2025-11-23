@@ -115,7 +115,7 @@ const CheckoutPage = () => {
 
   const total: number = useMemo(() => {
     return (orderItems?.reduce((total, item) => item.lineTotal + total, 0) ?? 0) + shipping_fee
-  }, [orderItems]);
+  }, [orderItems, shipping_fee]);
 
 
   const discountedPrice = useMemo(() => {
