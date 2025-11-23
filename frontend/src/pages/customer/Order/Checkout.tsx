@@ -100,7 +100,7 @@ const CheckoutPage = () => {
       setCalculatingShippingFee(false);
       return 0;
     }
-
+    setCalculatingShippingFee(false);
     return calculateShippingFee(
       orderItems?.reduce((total, item) => total +( item.weight ?? 0), 0),
       (customer as Customer).addresses?.[selectedAddress]?.region || ''
