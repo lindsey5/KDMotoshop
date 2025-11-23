@@ -71,7 +71,7 @@ const CreateOrderItemContainer = ({ orderItem, setOrderItems } : { orderItem : O
                             e.preventDefault(); 
                         }
                     }}
-                    value={orderItem.price}
+                    value={orderItem.price || ''}
                     onChange={(e) => handlePriceChange(Number(e.target.value))}
                 />
             </div>
