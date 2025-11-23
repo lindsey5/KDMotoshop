@@ -156,7 +156,7 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
                 totalQuantity: { $sum: '$quantity' },
             },
         },
-        { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }, // sort by date ascending
+        { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1 } }, // sort by date ascending
     ]);
 
     return dailySales;
