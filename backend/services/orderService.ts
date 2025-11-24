@@ -136,6 +136,9 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
     const match: any = {
         product_id: new Types.ObjectId(product_id),
         status: { $in: ['Fulfilled', 'Rated'] },
+        createdAt: {
+            $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) 
+        }
     };
 
     if (variant_sku) {
@@ -144,8 +147,6 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     const dailySales = await OrderItem.aggregate([
         { $match: match },
-        { $sort: { createdAt: -1 } },
-        { $limit: 30 }, 
         {
             $group: {
                 _id: {
@@ -156,7 +157,7 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
                 totalQuantity: { $sum: '$quantity' },
             },
         },
-        { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1 } }, // sort by date ascending
+        { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1 } },
     ]);
 
     return dailySales;
