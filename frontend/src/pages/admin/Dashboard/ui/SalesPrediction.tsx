@@ -10,11 +10,8 @@ const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep
 
 const SalesPredictionChart = () => {
     const today = new Date();
-
-    // ✅ State to control selected month option
     const [selected, setSelected] = useState<"current" | "next">("current");
 
-    // ✅ Compute month & year based on selection
     const getMonthYear = () => {
         let month = today.getMonth() + 1; // current month (1–12)
         let year = today.getFullYear();

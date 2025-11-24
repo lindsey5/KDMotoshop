@@ -11,6 +11,7 @@ export interface IOrderItem extends Document {
     price: number;
     lineTotal: number;
     status: 'Unfulfilled' | 'Fulfilled' | 'Rated';
+    createdAt: Date;
 }
 
 const OrderItemSchema: Schema<IOrderItem> = new Schema(

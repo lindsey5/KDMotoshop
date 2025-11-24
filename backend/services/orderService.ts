@@ -133,18 +133,43 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
 }
 
 export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
-
-    const match: any = {
+    const matchBase: any = {
         product_id: new Types.ObjectId(product_id),
-        status: { $in: ['Fulfilled', 'Rated'] },
-        createdAt: {
-            $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) 
-        }
+        status: { $in: ['Fulfilled', 'Rated'] }
     };
 
     if (variant_sku) {
-        match.sku = variant_sku;
+        matchBase.sku = variant_sku;
     }
+
+    const firstOrder = await OrderItem.findOne(matchBase)
+        .sort({ createdAt: 1 })
+        .select("createdAt");
+
+    if (!firstOrder) {
+        const result: any[] = [];
+        const today = new Date();
+        for (let i = 0; i < 30; i++) {
+            const d = new Date();
+            d.setDate(today.getDate() - i);
+
+            result.push({
+                date: d.toISOString().split("T")[0],
+                totalQuantity: 0
+            });
+        }
+        return result.reverse();
+    }
+
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const startDate = firstOrder.createdAt > thirtyDaysAgo
+        ? firstOrder.createdAt
+        : thirtyDaysAgo;
+
+    const match: any = {
+        ...matchBase,
+        createdAt: { $gte: startDate }
+    };
 
     const dailySales = await OrderItem.aggregate([
         { $match: match },
@@ -157,19 +182,29 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
                 },
                 totalQuantity: { $sum: '$quantity' },
             },
-        },
-        { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1 } },
+        }
     ]);
 
-    return dailySales;
-};
+    const salesMap = new Map();
+    dailySales.forEach(item => {
+        const key = `${item._id.year}-${item._id.month}-${item._id.day}`;
+        salesMap.set(key, item.totalQuantity);
+    });
 
-export const getDailySalesLength = async (id : string, product_type: string,sku?: string) => {
-  let dailySales;
-  if (product_type === 'Variable' && sku) {
-    dailySales = await getProductDailyDemand(id, sku);
-  } else {
-     dailySales = await getProductDailyDemand(id);
-  }
-  return dailySales.length
-}
+    const result: { date: string; totalQuantity: number }[] = [];
+    let loopDate = new Date();
+
+    while (loopDate >= startDate) {
+        const key = `${loopDate.getFullYear()}-${loopDate.getMonth() + 1}-${loopDate.getDate()}`;
+        const qty = salesMap.get(key) || 0;
+
+        result.push({
+            date: loopDate.toISOString().split("T")[0],
+            totalQuantity: qty
+        });
+
+        loopDate.setDate(loopDate.getDate() - 1);
+    }
+
+    return result.reverse();
+};

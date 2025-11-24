@@ -1,4 +1,4 @@
-import MonthlySales from "./ui/MonthlySales";
+import MonthlySalesAndExpenses from "./ui/MonthlySalesAndExpenses";
 import { formatDateWithWeekday } from "../../../utils/dateUtils";
 import DashboardCards from "./ui/DashboardCards";
 import TopProductsChart from "./ui/TopProducts";
@@ -21,7 +21,7 @@ const AdminDashboard = () => {
         <p className="mt-2 text-lg">{formatDateWithWeekday(new Date())}</p>
         <DashboardCards user={user as Admin}/>
         <div className="flex xl:flex-row flex-col gap-5">
-            {!userLoading && user?.role === 'Super Admin' ? <MonthlySales /> : <TopCategoriesChart />}
+            {!userLoading && user?.role === 'Super Admin' ? <MonthlySalesAndExpenses /> : <TopCategoriesChart />}
             <TopProductsChart />
         </div>
         {!userLoading && user?.role === 'Super Admin' && (

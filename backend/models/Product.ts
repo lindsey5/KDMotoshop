@@ -28,13 +28,16 @@ export interface IProduct extends Document {
   variants: Variant[];
   attributes: string[];
   rating: number;
+  createdAt: Date;
 
   getCurrentStock(sku?: string): number;
-  getSafetyStock(sku?: string): Promise<number>;
-  getReorderLevel(sku?: string): Promise<{ reorderLevel: number; safetyStock: number }>;
-  getStockStatus(sku?: string): Promise<{ 
-    reorderLevel: number; 
-    currentStock: number; 
+  getSafetyStock(dailySales: any[], leadTime: number, sku?: string): Promise<number>;
+  getReorderLevel(dailySales: any[], leadTime: number, sku?: string): Promise<number>;
+  getDailySales(sku?: string): Promise<any[]>;
+  getLeadTime(sku?: string): Promise<number>;
+  getStockStatus(sku?: string): Promise<{
+    reorderLevel: number;
+    currentStock: number;
     status: 'Overstock' | 'Understock' | 'Balanced' | 'Out of Stock';
     amount: number;
     optimalStockLevel: number;
@@ -94,60 +97,53 @@ ProductSchema.methods.getCurrentStock = function (sku?: string): number {
   return this.stock ?? 0;
 };
 
+// Lead time in days
 ProductSchema.methods.getLeadTime = async function (sku?: string): Promise<number> {
   const leadTimes = await PurchaseOrderItem.aggregate([
-    {
-      $match: { sku }, // filter by SKU
-    },
+    { $match: { sku } },
     {
       $lookup: {
-        from: 'purchaseorders', 
+        from: 'purchaseorders',
         localField: 'purchase_order',
         foreignField: '_id',
         as: 'po',
       },
     },
     { $unwind: '$po' },
-    {
-      $match: {
-        'po.status': 'Received', 
-      },
-    },
-    {
-      $sort: { 'po.createdAt': -1 }, 
-    },
+    { $match: { 'po.status': 'Received' } },
+    { $sort: { 'po.createdAt': -1 } },
     { $limit: 30 },
     {
       $project: {
         leadTime: {
-          $divide: [
-            { $subtract: ['$po.receivedDate', '$po.createdAt'] },
-            1000 * 60 * 60 * 24, 
-          ],
+          $divide: [{ $subtract: ['$po.receivedDate', '$po.createdAt'] }, 1000 * 60 * 60 * 24],
         },
       },
     },
-    {
-      $group: {
-        _id: null,
-        avgLeadTime: { $avg: '$leadTime' },
-      },
-    },
+    { $group: { _id: null, avgLeadTime: { $avg: '$leadTime' } } },
   ]);
 
   return leadTimes.length > 0 ? leadTimes[0].avgLeadTime : 5;
 };
 
-// Safety Stock formula: Safety Stock = Z * σdemand * √Lead Time
-ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<number> {
-  const dailySales = await this.getDailySales(sku);
+// Get daily sales
+ProductSchema.methods.getDailySales = async function (sku?: string): Promise<any[]> {
+  if (this.product_type === 'Variable') {
+    return getProductDailyDemand(this._id, sku);
+  }
+  return getProductDailyDemand(this._id);
+};
 
-  if(dailySales.length < 2) return 0
+// Safety Stock = Z * σdemand * √Lead Time
+ProductSchema.methods.getSafetyStock = async function (
+  dailySales: any[],
+  leadTime: number,
+  sku?: string
+): Promise<number> {
+  if (!dailySales.length) return 0;
 
-  const salesArray : number[] = dailySales.map((d : any) => d.totalQuantity);
+  const salesArray: number[] = dailySales.map((d: any) => Number(d.totalQuantity ?? 0));
   const mean = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
-
-  // sample variance (n - 1)
   const variance =
     salesArray.length > 1
       ? salesArray.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / (salesArray.length - 1)
@@ -155,74 +151,67 @@ ProductSchema.methods.getSafetyStock = async function (sku?: string): Promise<nu
 
   const stdDev = Math.sqrt(variance);
   const Z = 1.65; // 95% service level
-  const leadTime = await this.getLeadTime();
 
   return Math.round(Z * stdDev * Math.sqrt(leadTime));
 };
 
-// Reorder Level = (Average Daily Demand * Lead Time) + Safety Stock
-ProductSchema.methods.getReorderLevel = async function (sku?: string): Promise<number> {
-  const safetyStock = await this.getSafetyStock(sku);
+// Average Daily Demand * Lead Time + Safety Stock
+ProductSchema.methods.getReorderLevel = async function (
+  dailySales: any[],
+  leadTime: number,
+  sku?: string
+): Promise<number> {
+  if (!dailySales) dailySales = await this.getDailySales(sku);
+  if (!dailySales.length) return 0;
 
-  const dailySales = await this.getDailySales(sku);
+  const salesArray: number[] = dailySales.map((d: any) => Number(d.totalQuantity ?? 0));
+  const avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
 
-  if(dailySales.length < 2) return 0
+  if (!leadTime) leadTime = await this.getLeadTime(sku);
+  const safetyStock = await this.getSafetyStock(dailySales, leadTime, sku);
 
-  let avgDailyDemand: number;
-  
-  const salesArray : number[] = dailySales.map((d : any)=> d.totalQuantity);
-
-  avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
-
-  const leadTime = await this.getLeadTime();
-  
-  return Math.round(avgDailyDemand * leadTime + safetyStock)
+  return Math.round(avgDailyDemand * leadTime + safetyStock);
 };
 
-ProductSchema.methods.getDailySales = async function (sku? : string): Promise<any[]> {
-  let dailySales;
-  if (this.product_type === 'Variable') {
-    dailySales = await getProductDailyDemand(this._id, sku);
-  } else {
-    dailySales = await getProductDailyDemand(this._id);
-  }
-  return dailySales
-}
-
+// Stock status calculation
 ProductSchema.methods.getStockStatus = async function (
   sku?: string
-): Promise<{ 
-  reorderLevel: number; 
-  currentStock: number; 
+): Promise<{
+  reorderLevel: number;
+  currentStock: number;
   status: 'Overstock' | 'Understock' | 'Balanced' | 'Out of Stock';
   amount: number;
   optimalStockLevel: number;
 }> {
-  const reorderLevel = await this.getReorderLevel(sku);
-  const currentStock = this.getCurrentStock(sku);
+  const reviewPeriodDays = 7;
 
-  // Calculate optimal stock level (target stock after restocking)
-  let optimalStockLevel = Math.round(reorderLevel * 1.2) ;
+  // Fetch dailySales and leadTime once
+  const dailySales = await this.getDailySales(sku);
+  const currentStock = this.getCurrentStock(sku);
+  const leadTime = await this.getLeadTime(sku);
+  const safetyStock = await this.getSafetyStock(dailySales, leadTime, sku);
+
+  const salesArray: number[] = dailySales.map((d : any) => Number(d.totalQuantity ?? 0));
+  const avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
+
+  const reorderLevel = Math.round(avgDailyDemand * leadTime + safetyStock);
+  const optimalStockLevel = Math.max(0, Math.round(avgDailyDemand * (leadTime + reviewPeriodDays) + safetyStock));
 
   let status: 'Overstock' | 'Understock' | 'Balanced' | 'Out of Stock';
-  let amount: number; // Suggested amount
-  
+  let amount: number;
+
   if (currentStock === 0) {
     status = 'Out of Stock';
-    amount = optimalStockLevel !== 0 ? optimalStockLevel : 10;
-
-  } else if(optimalStockLevel === 0){
-    status = 'Balanced'
+    amount = optimalStockLevel || 10;
+  } else if (optimalStockLevel === 0) {
+    status = 'Balanced';
     amount = 0;
-    
-  } else if (currentStock <= reorderLevel) {
-    status = 'Understock'; 
-    amount = optimalStockLevel - currentStock; 
-
+  } else if (currentStock < reorderLevel) {
+    status = 'Understock';
+    amount = optimalStockLevel - currentStock;
   } else if (currentStock > optimalStockLevel) {
     status = 'Overstock';
-    amount = currentStock - optimalStockLevel; 
-
+    amount = currentStock - optimalStockLevel;
   } else {
     status = 'Balanced';
     amount = 0;
@@ -230,7 +219,6 @@ ProductSchema.methods.getStockStatus = async function (
 
   return { reorderLevel, currentStock, status, amount, optimalStockLevel };
 };
-
 
 const Product = mongoose.model<IProduct>('Product', ProductSchema);
 export default Product;

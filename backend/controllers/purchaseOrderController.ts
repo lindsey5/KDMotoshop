@@ -157,3 +157,43 @@ export const updatePurchaseOrder = async (req : AuthenticatedRequest, res : Resp
         res.status(500).json({ success: false, message: err.message || 'Server error'})
     }
 }
+
+export const getMonthlyExpenses = async (req : Request, res : Response) => {
+    try{
+        const year = parseInt(req.query.year as string) || new Date().getFullYear();
+        const start = new Date(`${year}-01-01T00:00:00+08:00`);
+        const end = new Date(`${year + 1}-01-01T00:00:00+08:00`);
+        const expensesArray = new Array(12).fill(0);
+
+        const monthlyExpenses = await PurchaseOrder.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: start, $lt: end},
+                    status: 'Received'
+                }
+            },
+            {
+                $project: {
+                    month: { $month: { date: "$receivedDate" }},
+                    totalAmount: 1
+                }
+            },
+            {
+                $group: {
+                    _id: "$month",
+                    totalExpenses: { $sum: "$totalAmount"}
+                }
+            }
+        ])
+
+        monthlyExpenses.forEach(expenses => {
+            expensesArray[expenses._id - 1] = expenses.totalExpenses;
+        });
+
+        res.status(200).json({ success: true, monthlyExpenses: expensesArray });
+        
+    }catch(err : any){
+        console.log(err)
+        res.status(500).json({ success: false, message: err.message || 'Server error'})
+    }
+}

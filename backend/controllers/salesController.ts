@@ -2,12 +2,6 @@ import { Request, Response } from "express";
 import OrderItem from "../models/OrderItem";
 import { isSuperAdmin } from "../services/adminService";
 
-// Helper: convert to Asia/Manila timezone (UTC+8)
-function toManilaTime(date = new Date()) {
-  const utc = date.getTime() + date.getTimezoneOffset() * 60000;
-  return new Date(utc + 8 * 60 * 60000);
-}
-
 // Helper: start and end of month in Asia/Manila
 function getMonthRange(year: number, month: number) {
   const start = new Date(Date.UTC(year, month - 1, 1, -8, 0, 0)); // convert to Manila midnight
@@ -189,7 +183,7 @@ export const get_sales_per_channel = async (req: Request, res: Response) => {
 export const get_daily_sales = async (req: Request, res: Response) => {
   try {
     await isSuperAdmin(req, res)
-    const now = toManilaTime();
+    const now = new Date();
     const month = parseInt(req.query.month as string) || now.getMonth() + 1;
     const year = parseInt(req.query.year as string) || now.getFullYear();
     const { start, end } = getMonthRange(year, month);
@@ -250,7 +244,7 @@ export const get_daily_sales = async (req: Request, res: Response) => {
 export const get_sales_statistics = async (req: Request, res: Response) => {
   try {
     await isSuperAdmin(req, res)
-    const now = toManilaTime();
+    const now = new Date();
     const startOfToday = new Date(now.setHours(0, 0, 0, 0));
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday

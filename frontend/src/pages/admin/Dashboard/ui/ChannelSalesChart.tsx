@@ -55,7 +55,7 @@ const ChannelSalesChart = () => {
 
     return (
         <Card className={cn("h-[500px] xl:flex-3 flex flex-col gap-3 border-t-4 border-t-red-500", isDark && "bg-gradient-to-br from-red-950/40 to-[#2A2A2A] shadow-red-900/20 text-white")}>
-            <h1 className="font-bold text-xl">Sales per Channel</h1>
+            <h1 className="font-bold text-xl">Sales per Channel {new Date().getFullYear()}</h1>
 
             {loading ? (
                 <div className="w-full h-[300px] flex justify-center items-center">

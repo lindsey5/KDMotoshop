@@ -99,7 +99,7 @@ const InventoryStatus = () => {
                             'SKU' : product.sku,
                             'Product Type' : product.product_type,
                             'Reorder Point' : product.reorderLevel,
-                            'Optimal Stock' : product.status === 'Out of Stock' ? 10 : product.optimalStockLevel || 'N/A',
+                            'Optimal Stock' : product.status === 'Out of Stock' ? product.amount : product.optimalStockLevel || 'N/A',
                             'Suggestion' : (
                                 product.status === "Overstock"
                                 ? `Reduce inventory by ${product.amount} items`

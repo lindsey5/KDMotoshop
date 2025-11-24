@@ -377,60 +377,65 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
-    const searchTerm = (req.query?.searchTerm as string) || '';
+
+    const searchTerm = (req.query.searchTerm as string) || '';
     const status = req.query.status && req.query.status !== 'All' ? req.query.status : '';
 
-    const cacheKey = `inventory:${searchTerm}`;
+    const cacheKey = `inventory:${page}:${limit}:${searchTerm}:${status}`;
     const cached = await redisClient.get(cacheKey);
+
+    if (cached) {
+      res.status(200).json(JSON.parse(cached));
+      return;
+    }
+
+    const filter: any = { visibility: { $ne: 'Deleted' } };
+
+    if (searchTerm) {
+      filter.$or = [
+        { 'variants.sku': { $regex: searchTerm, $options: 'i' } },
+        { sku: { $regex: searchTerm, $options: 'i' } },
+        { product_name: { $regex: searchTerm, $options: 'i' } },
+      ];
+    }
+
+    const products = await Product.find(filter).sort({ product_name: 1 });
 
     let allProducts: any[] = [];
 
-    if(cached){
-      allProducts = JSON.parse(cached)
-    }else{
-      const filter: any = { visibility: { $ne: 'Deleted' } };
+    const inventoryTasks: Promise<any>[] = [];
 
-      if (searchTerm) {
-        filter.$or = [
-          { 'variants.sku': { $regex: searchTerm, $options: 'i' } },
-          { sku: { $regex: searchTerm, $options: 'i' } },
-          { product_name: { $regex: searchTerm, $options: 'i' } },
-        ];
-      }
-
-      const products = await Product.find(filter).sort({ product_name: 1 });
-
-      for (const product of products) {
-        if (product.product_type === "Variable") {
-          // For each variant
-          for (const variant of product.variants) {
-            const inventory = await product.getStockStatus(variant.sku);
-            allProducts.push({
+    for (const product of products) {
+      if (product.product_type === "Variable") {
+        for (const variant of product.variants) {
+          inventoryTasks.push(
+            product.getStockStatus(variant.sku).then((inventory: any) => ({
               _id: product._id,
               product_name: product.product_name,
               thumbnail: product.thumbnail,
               product_type: product.product_type,
               sku: variant.sku,
               stock: variant.stock,
-              ...inventory,
-            });
-          }
-        } else {
-          const inventory = await product.getStockStatus();
-          allProducts.push({
+              ...inventory
+            }))
+          );
+        }
+      } else {
+        inventoryTasks.push(
+          product.getStockStatus().then((inventory: any) => ({
             _id: product._id,
             product_name: product.product_name,
             thumbnail: product.thumbnail,
             product_type: product.product_type,
             sku: product.sku,
             stock: product.stock,
-            ...inventory,
-          });
-        }
+            ...inventory
+          }))
+        );
       }
-
-      await redisClient.setex(cacheKey, 120, JSON.stringify(allProducts));
     }
+
+    allProducts = await Promise.all(inventoryTasks);
 
     const filteredProducts = status
       ? allProducts.filter((p) => p.status === status)
@@ -438,12 +443,18 @@ export const get_inventory_status = async (req: Request, res: Response) => {
 
     const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
-    res.status(200).json({
+    const response = {
       success: true,
       page,
       totalPages: Math.ceil(filteredProducts.length / limit),
-      products: paginatedProducts,
-    });
+      products: paginatedProducts
+    };
+
+    // ✅ Cache final result
+    await redisClient.setex(cacheKey, 120, JSON.stringify(response));
+
+    res.status(200).json(response);
+
   } catch (err: any) {
     console.error(err);
     res.status(500).json({ success: false, message: err.message });
