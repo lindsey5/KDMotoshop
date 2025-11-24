@@ -261,10 +261,10 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
 
                 if (item && (item.stock - orderItem.quantity < 0)) {
                     const attributes = typeof item.attributes === 'object' ? Array.from(item.attributes.values()) : []
-                    console.log(attributes)
+
                     res.status(400).json({
                         success: false,
-                        message: `Insufficient stock for product: ${product?.product_name} ${attributes.join(' | ')}. Available: ${item.stock}, Requested: ${orderItem.quantity}.`
+                        message: `Insufficient stock for product: ${product?.product_name} ${attributes.join(' | ')}.`
                     });
 
                     return;
