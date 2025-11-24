@@ -244,23 +244,23 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
             }
         }
         let orderData = req.body;
-        if(req.body.status === 'Delivered') orderData.deliveredAt = new Date();
-        const updatedOrder = await Order.findByIdAndUpdate(id, req.body, { new: true });
+        if(orderData.status === 'Delivered') orderData.deliveredAt = new Date();
+        const updatedOrder = await Order.findByIdAndUpdate(id, orderData, { new: true });
         
-        if(req.body.status === 'Delivered' || req.body.status === 'Shipped'){
-            for (const item of req.body.orderItems) {
+        if(orderData.status === 'Delivered' || orderData.status === 'Shipped'){
+            for (const item of orderData.orderItems) {
                 if(order.status !== 'Delivered' && order.status !== 'Shipped') await decrementStock(item)
                 await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
             }
 
         }
 
-        if(req.body.status !== order.status) {
+        if(orderData.status !== order.status) {
             if(order?.customer?.customer_id) {
                 await sendCustomerNotification({
                     to: order.customer?.customer_id?.toString() || '', 
                     order_id: order._id as string, 
-                    content: `${order.order_id} has been updated to ${req.body.status}`,
+                    content: `${order.order_id} has been updated to ${orderData.status}`,
                 });
             }
             await create_activity_log({
@@ -268,11 +268,11 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                 description: `updated ${order.order_id}`,
                 order_id: id,
                 prev_value: order.status,
-                new_value: req.body.status,
+                new_value: orderData.status,
             })
         }
 
-        if(order?.customer?.customer_id) await sendOrderUpdate(order?.customer.email as string, order.order_id, order?.customer.firstname, req.body.status);
+        if(order?.customer?.customer_id) await sendOrderUpdate(order?.customer.email as string, order.order_id, order?.customer.firstname, orderData.status);
 
         res.status(200).json({ 
             success: true,  

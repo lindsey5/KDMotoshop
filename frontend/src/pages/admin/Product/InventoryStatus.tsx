@@ -69,7 +69,7 @@ const InventoryStatus = () => {
                 </div>
                 <div className="w-[300px]">
                     <CustomizedSelect 
-                        menu={['All', 'Balanced', 'Overstock', 'Understock'].map(status => ({ value: status, label: status}))}
+                        menu={['All', 'Balanced', 'Overstock', 'Understock', 'Out of Stock'].map(status => ({ value: status, label: status}))}
                         label="Status"
                         value={status}
                         onChange={(e) => handleStatus(e.target.value as string)}
@@ -83,7 +83,7 @@ const InventoryStatus = () => {
                     </div>
                 ) : (
                     <CustomizedTable 
-                        cols={['Product name', 'Stock', 'SKU', 'Product Type', 'Reorder Level', 'Optimal Stock', 'Suggestion', 'Status']}
+                        cols={['Product name', 'Stock', 'SKU', 'Product Type', 'Reorder Point', 'Optimal Stock', 'Suggestion', 'Status']}
                         rows={data?.products.map((product : ProductInventoryStatus) => ({
                             'Product name' : (
                                 <div className="flex items-center gap-2 min-w-[200px]">
@@ -98,7 +98,7 @@ const InventoryStatus = () => {
                             'Stock' : product.stock,
                             'SKU' : product.sku,
                             'Product Type' : product.product_type,
-                            'Reorder Level' : product.reorderLevel,
+                            'Reorder Point' : product.reorderLevel,
                             'Optimal Stock' : product.status === 'Out of Stock' ? 10 : product.optimalStockLevel || 'N/A',
                             'Suggestion' : (
                                 product.status === "Overstock"

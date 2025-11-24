@@ -39,6 +39,9 @@ export const decrementStock = async (item: any) => {
     const newStock = currentStock - item.quantity;
     variant.stock = newStock;
 
+    product.markModified('variants');
+    await product.save();
+
     const { status, amount } = await product.getStockStatus(variant.sku);
 
     if (status === 'Understock' || status === 'Out of Stock') {
@@ -53,8 +56,6 @@ export const decrementStock = async (item: any) => {
       );
     }
 
-    product.markModified('variants');
-    await product.save();
   } else {
     // Simple product
     await Product.updateOne(

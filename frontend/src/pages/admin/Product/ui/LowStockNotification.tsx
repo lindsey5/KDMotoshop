@@ -44,7 +44,7 @@ const LowStockNotification = () => {
             key={a.sku}
             className="cursor-pointer bg-white shadow-lg rounded-2xl p-4 w-80 border border-red-200 animate-slide-up"
             >
-            <div className="flex justify-between gap-3" onClick={() => navigate(`/admin/product?id=${a._id}`)}>
+            <div className="flex justify-between gap-3" onClick={() => navigate(`/admin/purchase-order?id=${a._id}`)}>
                 <img
                 src={a.product_image}
                 alt={a.product_name}
