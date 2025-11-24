@@ -39,7 +39,7 @@ const OrderDetails = () => {
     useEffect(() => {
       if(data?.order) {
         const { customer, ...rest } = data.order
-        setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image.imageUrl}})
+        setOrder({...rest, customer: { ...customer, image: customer.customer_id?.image?.imageUrl ?? ''}})
       }
     }, [data])
 

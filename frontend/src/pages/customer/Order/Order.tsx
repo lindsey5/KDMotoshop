@@ -35,10 +35,11 @@ const CustomerOrderDetails = () => {
     useEffect(() => {
         const getOrderAsync = async () => {
             const response = await fetchData(`/api/orders/${id}`)
-            console.log(response)
+
             if(response.success){
                 const { customer, ...rest } = response.order
-                setOrder({...rest, customer: { ...customer, customer_id: customer.customer_id._id, image: customer.customer_id?.image.imageUrl ?? ''}})
+                console.log(response)
+                setOrder({...rest, customer: { ...customer, customer_id: customer.customer_id._id, image: customer.customer_id?.image?.imageUrl ?? ''}})
             }else window.location.href = '/login'
         }
 

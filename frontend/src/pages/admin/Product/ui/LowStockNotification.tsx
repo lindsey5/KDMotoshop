@@ -23,13 +23,7 @@ const LowStockNotification = () => {
         if (!socket) return;
 
         socket.on("lowStockNotification", (alert: Alert) => {
-        console.log("Low stock notification received:", alert);
-        setAlerts((prev) => [...prev, alert]);
-
-        // Auto remove after 8s
-        setTimeout(() => {
-            setAlerts((prev) => prev.filter((a) => a.sku !== alert.sku));
-        }, 8000);
+            setAlerts((prev) => [...prev, alert]);
         });
 
         return () => {
