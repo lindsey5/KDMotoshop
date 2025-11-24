@@ -10,6 +10,7 @@ import Payment from '../models/Payment';
 import { refundPayment } from '../services/paymentService';
 import { sendOrderUpdate } from '../services/emailService';
 import Voucher from '../models/Voucher';
+import Product from '../models/Product';
 
 export const create_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -213,6 +214,7 @@ export const get_order_by_id = async (req: Request, res: Response) => {
 export const update_order = async (req: AuthenticatedRequest, res: Response) => {
     try {
         const { id } = req.params;
+        let orderData = req.body;
         const order = await Order.findById(id); 
 
         if(!order){
@@ -223,16 +225,58 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
         if (
             order.status === 'Cancelled' || 
             order.status === 'Rejected' || 
-            order.status === 'Refunded' 
+            order.status === 'Refunded' || 
+            order.status === 'Failed'
         ) {
             res.status(400).json({
                 success: false,
-                message: `This order is already ${order.status.toLowerCase()} and cannot be modified.`
+                message: `This order is already ${order.status.toLowerCase()} and cannot be modified. Please reload the page.`
             });
             return;
         }
 
-        if(req.body.status === 'Cancelled' || req.body.status === 'Rejected'){
+        if(order.status === orderData.status){
+            res.status(400).json({ success: false, message: `This order is already ${order.status.toLowerCase()}. Please reload the page.`})
+        }
+
+        const statusFlow = ['Pending', 'Confirmed', 'Shipped', 'Delivered'];
+
+        // Prevent backwards status updates
+        const currentIndex = statusFlow.indexOf(order.status);
+        const newIndex = statusFlow.indexOf(orderData.status);
+
+        if (newIndex < currentIndex && statusFlow.includes(orderData.status) && statusFlow.includes(order.status)) {
+            res.status(400).json({
+                success: false,
+                message: `Cannot move order status backward from ${order.status} to ${orderData.status}. Please reload the page.`
+            });
+
+            return;
+        }
+        
+        if(orderData.status === 'Shipped'){
+            for (const orderItem of orderData.orderItems) {
+                const product = await Product.findById(orderItem.product_id);
+                const item = product?.product_type === 'Single' ? product.toObject() : product?.toObject().variants.find(variant => variant.sku === orderItem.sku);
+
+                if (item && (item.stock - orderItem.quantity < 0)) {
+                    const attributes = typeof item.attributes === 'object' ? Array.from(item.attributes.values()) : []
+                    console.log(attributes)
+                    res.status(400).json({
+                        success: false,
+                        message: `Insufficient stock for product: ${product?.product_name} ${attributes.join(' | ')}. Available: ${item.stock}, Requested: ${orderItem.quantity}.`
+                    });
+
+                    return;
+                }
+
+                await decrementStock(orderItem)
+                await OrderItem.updateOne({_id: orderItem._id}, { status: 'Fulfilled' });
+            }
+
+        }
+
+        if(orderData.status === 'Cancelled' || orderData.status === 'Rejected'){
             const payment = await Payment.findOne({ order_id: id});
         
             if(payment && payment.status === 'Paid'){
@@ -243,17 +287,9 @@ export const update_order = async (req: AuthenticatedRequest, res: Response) => 
                 await payment.save()
             }
         }
-        let orderData = req.body;
+        
         if(orderData.status === 'Delivered') orderData.deliveredAt = new Date();
         const updatedOrder = await Order.findByIdAndUpdate(id, orderData, { new: true });
-        
-        if(orderData.status === 'Delivered' || orderData.status === 'Shipped'){
-            for (const item of orderData.orderItems) {
-                if(order.status !== 'Delivered' && order.status !== 'Shipped') await decrementStock(item)
-                await OrderItem.updateOne({_id: item._id}, { status: 'Fulfilled' });
-            }
-
-        }
 
         if(orderData.status !== order.status) {
             if(order?.customer?.customer_id) {

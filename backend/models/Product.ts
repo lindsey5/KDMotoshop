@@ -9,7 +9,7 @@ interface Variant {
   image?: UploadedImage;
   price: number;
   stock: number;
-  attributes: { [key: string]: string };
+  attributes: Map<string, string>;
 }
 
 export interface IProduct extends Document {

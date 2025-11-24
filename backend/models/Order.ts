@@ -8,7 +8,7 @@ export interface IOrder extends Document {
     paymentAmount?: number;
     change?: number;
     subtotal: number;
-    status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Rated";
+    status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Rejected" | "Cancelled" | "Refunded" | "Rated" | "Failed";
     customer?: {
         customer_id?: Types.ObjectId;
         email?: string;
