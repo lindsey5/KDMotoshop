@@ -192,7 +192,7 @@ const PurchaseOrder = () => {
                 </div>
                 {purchaseOrder._id && <RedButton startIcon={<PrintIcon />} onClick={handlePrint}>Print</RedButton>}
             </div>
-            <div className="h-screen flex flex-col gap-5">
+            <div className="min-h-0 flex-grow flex flex-col gap-5">
                 <div className="flex justify-between items-center gap-5">
                     <div>
                         <p>{`${purchaseOrder._id ? 'Order ' : ''}Date:`} {formatDate(purchaseOrder.createdAt ? purchaseOrder.createdAt : new Date())}</p>
@@ -228,7 +228,7 @@ const PurchaseOrder = () => {
                 </div>
                 <Divider sx={{ background: isDark ? '#b8b8b8ff' : ''}}/>
                 {showAdd && !purchaseOrder._id && <AddItemSection addItem={addItem}/>}
-                <table className="w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
+                <table className="w-full border border-gray-200 min-h-0 flex-grow shadow-md rounded-lg overflow-hidden">
                     <thead className="bg-gradient-to-r from-red-600 to-red-600 text-white">
                         <tr>
                         <th className="px-6 py-3 text-left text-sm font-semibold">SKU</th>
@@ -272,7 +272,7 @@ const PurchaseOrder = () => {
                 <div className="flex justify-end gap-5">
                     {!purchaseOrder._id ? 
                         <RedButton onClick={handleSubmit} disabled={loading}>Create</RedButton>
-                        : updateButtons(purchaseOrder.status, onUpdate)}
+                        : <UpdateButtons status={purchaseOrder.status} onUpdate={onUpdate} />}
                 </div>
             </div> 
         </PageContainer>
@@ -281,10 +281,7 @@ const PurchaseOrder = () => {
 
 export default PurchaseOrder
 
-const updateButtons = (
-  status: PurchaseOrder['status'],
-  onUpdate: (newStatus: PurchaseOrder['status']) => void
-) => {
+const UpdateButtons = ({ status, onUpdate } :  { status: PurchaseOrder['status'],  onUpdate: (newStatus: PurchaseOrder['status']) => Promise<void> }) => {
   switch (status) {
     case 'Pending':
       return (

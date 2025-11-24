@@ -303,3 +303,82 @@ export const get_sales_statistics = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+/*
+export const getSalesBetweenMonths = async (req: Request, res: Response)=> {
+  try {
+    const startYear = parseInt(req.query.startYear as string);
+    const startMonth = parseInt(req.query.startMonth as string);
+    const endYear = parseInt(req.query.endYear as string);
+    const endMonth = parseInt(req.query.endMonth as string);
+
+    if (!startYear || !startMonth || !endYear || !endMonth) {
+      res.status(400).json({ success: false, message: 'Missing start or end month/year' });
+      return;
+    }
+
+    const startDate = new Date(startYear, startMonth - 1, 1);
+    const endDate = new Date(endYear, endMonth, 0, 23, 59, 59, 999);
+
+    const salesAgg = await OrderItem.aggregate([
+      {
+        $match: {
+          status: 'Fulfilled',
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+            day: { $dayOfMonth: '$createdAt' },
+          },
+          totalSales: { $sum: '$lineTotal' },
+          totalQuantity: { $sum: '$quantity' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: {
+            $dateFromParts: {
+              year: '$_id.year',
+              month: '$_id.month',
+              day: '$_id.day',
+            },
+          },
+          totalSales: 1,
+          totalQuantity: 1,
+        },
+      },
+      { $sort: { date: 1 } },
+    ]);
+
+    const allDates: { date: string; totalSales: number; totalQuantity: number }[] = [];
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      allDates.push({ date: `${yyyy}-${mm}-${dd}`, totalSales: 0, totalQuantity: 0 });
+    }
+
+    const salesMap = new Map(
+      salesAgg.map((s) => [s.date.toISOString().slice(0, 10), s])
+    );
+
+    allDates.forEach((d) => {
+      if (salesMap.has(d.date)) {
+        const s = salesMap.get(d.date)!;
+        d.totalSales = s.totalSales;
+        d.totalQuantity = s.totalQuantity;
+      }
+    });
+
+    res.status(200).json({ success: true, sales: allDates });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+*/
