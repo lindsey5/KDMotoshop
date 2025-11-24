@@ -31,8 +31,7 @@ export interface IProduct extends Document {
   createdAt: Date;
 
   getCurrentStock(sku?: string): number;
-  getSafetyStock(dailySales: any[], leadTime: number, sku?: string): Promise<number>;
-  getReorderLevel(dailySales: any[], leadTime: number, sku?: string): Promise<number>;
+  getSafetyStock(dailySales: any[], leadTime: number): Promise<number>;
   getDailySales(sku?: string): Promise<any[]>;
   getLeadTime(sku?: string): Promise<number>;
   getStockStatus(sku?: string): Promise<{
@@ -138,7 +137,6 @@ ProductSchema.methods.getDailySales = async function (sku?: string): Promise<any
 ProductSchema.methods.getSafetyStock = async function (
   dailySales: any[],
   leadTime: number,
-  sku?: string
 ): Promise<number> {
   if (!dailySales.length) return 0;
 
@@ -153,24 +151,6 @@ ProductSchema.methods.getSafetyStock = async function (
   const Z = 1.65; // 95% service level
 
   return Math.round(Z * stdDev * Math.sqrt(leadTime));
-};
-
-// Average Daily Demand * Lead Time + Safety Stock
-ProductSchema.methods.getReorderLevel = async function (
-  dailySales: any[],
-  leadTime: number,
-  sku?: string
-): Promise<number> {
-  if (!dailySales) dailySales = await this.getDailySales(sku);
-  if (!dailySales.length) return 0;
-
-  const salesArray: number[] = dailySales.map((d: any) => Number(d.totalQuantity ?? 0));
-  const avgDailyDemand = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
-
-  if (!leadTime) leadTime = await this.getLeadTime(sku);
-  const safetyStock = await this.getSafetyStock(dailySales, leadTime, sku);
-
-  return Math.round(avgDailyDemand * leadTime + safetyStock);
 };
 
 // Stock status calculation
@@ -189,7 +169,7 @@ ProductSchema.methods.getStockStatus = async function (
   const dailySales = await this.getDailySales(sku);
   const currentStock = this.getCurrentStock(sku);
   const leadTime = await this.getLeadTime(sku);
-  const safetyStock = await this.getSafetyStock(dailySales, leadTime, sku);
+  const safetyStock = await this.getSafetyStock(dailySales, leadTime);
 
   const salesArray: number[] = dailySales.map((d : any) => Number(d.totalQuantity ?? 0));
   const avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
