@@ -44,7 +44,7 @@ export const decrementStock = async (item: any) => {
 
     const { status, amount } = await product.getStockStatus(variant.sku);
 
-    if (status === 'Understock' || status === 'Out of Stock') {
+    if (product.visibility !== 'Deleted' && status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
         product._id as string,
         product.product_name,
@@ -69,7 +69,7 @@ export const decrementStock = async (item: any) => {
     await product.save();
     const { status, amount } = await product.getStockStatus();
 
-    if (status === 'Understock' || status === 'Out of Stock') {
+    if (product.visibility !== 'Deleted' && status === 'Understock' || status === 'Out of Stock') {
       await sendLowStockAlert(
         product._id as string,
         product.product_name,

@@ -90,7 +90,21 @@ const ProductPage = () => {
         if(id) getProduct(id as string);
     }, [])
 
-    const handleProductType = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, product_type: event.target.value as 'Single' | 'Variable'});
+    const handleProductType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const type = event.target.value;
+
+        let updatedProduct : any = { ...product, product_type: type };
+
+        if (type === 'Single') {
+            updatedProduct = { ...updatedProduct, variants: [], attributes: []};
+        } else {
+            // Remove sku, price, stock for Variable product
+            const { sku, price, stock, ...rest } = updatedProduct;
+            updatedProduct = rest;
+        }
+
+        setProduct(updatedProduct);
+    };
     const handleVisibility = (event: React.ChangeEvent<HTMLInputElement>) =>  setProduct({...product, visibility: event.target.value});
 
     const handleThumbnail = (e: React.ChangeEvent<HTMLInputElement>) => {

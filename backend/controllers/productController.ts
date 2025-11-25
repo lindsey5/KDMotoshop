@@ -58,6 +58,15 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
     try{
         const product = req.body;
 
+        const isExist = await Product.findOne({ product_name: req.body.product_name, visibility: { $ne: 'Deleted' }});
+
+        if(isExist){
+          res.status(409).json({ success: false, message: 'Product name already exists.'})
+          return;
+        }
+
+        await validate_product(product);
+
         const thumbnail = await uploadImage(product.thumbnail);
         const images = await Promise.all(product.images.map(async (image : string) => await uploadImage(image)))
 
@@ -67,8 +76,6 @@ export const create_product = async (req : AuthenticatedRequest, res: Response) 
             images, 
             added_by: req.user_id 
         })
-
-        await validate_product(newProduct);
 
         await newProduct.save();
 
@@ -340,7 +347,7 @@ export const get_top_products = async (req: Request, res: Response) => {
     ]);
 
     const topProductIds = topProductsAggregation.map((item) => item._id);
-    const products = await Product.find({ _id: { $in: topProductIds } });
+    const products = await Product.find({ _id: { $in: topProductIds }, visibility: { $ne: 'Deleted' } });
 
     const topProducts = topProductsAggregation.map((item) => {
       const product = products.find(p => p.id === item._id.toString());
