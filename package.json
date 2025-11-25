@@ -18,6 +18,7 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
+    "request-ip": "^3.3.0",
     "resend": "^6.1.2",
     "sib-api-v3-sdk": "^8.5.0",
     "socket.io": "^4.8.1"
@@ -32,6 +33,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^22.15.30",
     "@types/nodemailer": "^6.4.17",
+    "@types/request-ip": "^0.0.41",
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",

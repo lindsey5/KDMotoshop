@@ -15,6 +15,7 @@ import cors from 'cors';
 import express from 'express'
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import requestIp from "request-ip";
 import refundRoutes from './routes/refundRoutes';
 import supplierRoutes from './routes/supplierRoutes';
 import purchaseOrderRoutes from './routes/purchaseOrderRoutes';
@@ -38,6 +39,7 @@ app.use(morgan('dev'));
 app.use(express.static('public'));
 app.use(express.json({ limit: '200mb' }));
 app.set("trust proxy", 1);
+app.use(requestIp.mw());
 app.use(express.urlencoded({ limit: '200mb', extended: true }));
 
 app.get('/api/regions', async (req, res) => {
