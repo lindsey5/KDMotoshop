@@ -1,10 +1,10 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { adminLogin, customerLogin, forgotPassword, getUser, logout, resetPassword, sendSignupEmailVerification, signinWithGoogle, signupCustomer } from "../controllers/authController";
 import { tokenRequire } from "../middlewares/authMiddleware";
-import rateLimit from "express-rate-limit";
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 15 * 60 * 1000, 
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
@@ -12,9 +12,10 @@ const authLimiter = rateLimit({
     success: false,
     message: "Too many attempts. Please wait 15 minutes.",
   },
-  keyGenerator: function (req: any) {
-      return req.headers["x-forwarded-for"] || req.connection.remoteAddress; 
-  }
+  keyGenerator: (req: any) => {
+    const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress || req.ip;
+    return typeof ip === "string" ? ip.split(",")[0].trim() : "unknown";
+  },
 });
 
 const router = Router();
