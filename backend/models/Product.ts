@@ -31,7 +31,7 @@ export interface IProduct extends Document {
   createdAt: Date;
 
   getCurrentStock(sku?: string): number;
-  getSafetyStock(dailySales: any[], leadTime: number): Promise<number>;
+  getSafetyStock(dailySales: any[]): Promise<number>;
   getDailySales(sku?: string): Promise<any[]>;
   getLeadTime(sku?: string): Promise<number>;
   getStockStatus(sku?: string): Promise<{
@@ -133,24 +133,61 @@ ProductSchema.methods.getDailySales = async function (sku?: string): Promise<any
   return getProductDailyDemand(this._id);
 };
 
-// Safety Stock = Z * σdemand * √Lead Time
+// Safety Stock = Z * √( (Average Lead Time × σ²_demand) + (Average Demand² × σ²_leadtime) )
 ProductSchema.methods.getSafetyStock = async function (
   dailySales: any[],
-  leadTime: number,
 ): Promise<number> {
   if (!dailySales.length) return 0;
 
   const salesArray: number[] = dailySales.map((d: any) => Number(d.totalQuantity ?? 0));
-  const mean = salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
-  const variance =
+  const avgDailyDemand =
+    salesArray.reduce((a, b) => a + b, 0) / salesArray.length;
+
+  // Demand variance (σ²_demand)
+  const demandVariance =
     salesArray.length > 1
-      ? salesArray.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / (salesArray.length - 1)
+      ? salesArray.map(x => Math.pow(x - avgDailyDemand, 2)).reduce((a, b) => a + b, 0) / (salesArray.length - 1)
       : 0;
 
-  const stdDev = Math.sqrt(variance);
+  // Lead time variance (σ²_leadtime)
+  const leadTimesArray = await PurchaseOrderItem.aggregate([
+    { $match: { sku: this.sku } },
+    {
+      $lookup: {
+        from: 'purchaseorders',
+        localField: 'purchase_order',
+        foreignField: '_id',
+        as: 'po',
+      },
+    },
+    { $unwind: '$po' },
+    { $match: { 'po.status': 'Received' } },
+    { $sort: { 'po.createdAt': -1 } },
+    { $limit: 30 },
+    {
+      $project: {
+        leadTimeDays: {
+          $divide: [{ $subtract: ['$po.receivedDate', '$po.createdAt'] }, 1000 * 60 * 60 * 24],
+        },
+      },
+    },
+  ]);
+
+  const leadTimes = leadTimesArray.map(l => l.leadTimeDays);
+  const avgLeadTime = leadTimes.reduce((a, b) => a + b, 0) / (leadTimes.length || 1);
+
+  const leadTimeVariance =
+    leadTimes.length > 1
+      ? leadTimes.map(l => Math.pow(l - avgLeadTime, 2)).reduce((a, b) => a + b, 0) / (leadTimes.length - 1)
+      : 0;
+
   const Z = 1.65; // 95% service level
 
-  return Math.round(Z * stdDev * Math.sqrt(leadTime));
+  const safetyStock = Z * Math.sqrt(
+    (avgLeadTime * demandVariance) + (Math.pow(avgDailyDemand, 2) * leadTimeVariance)
+  );
+
+  return Math.round(safetyStock);
 };
 
 // Stock status calculation
@@ -165,13 +202,12 @@ ProductSchema.methods.getStockStatus = async function (
 }> {
   const reviewPeriodDays = 7;
 
-  // Fetch dailySales and leadTime once
   const dailySales = await this.getDailySales(sku);
   const currentStock = this.getCurrentStock(sku);
   const leadTime = await this.getLeadTime(sku);
-  const safetyStock = await this.getSafetyStock(dailySales, leadTime);
+  const safetyStock = await this.getSafetyStock(dailySales);
 
-  const salesArray: number[] = dailySales.map((d : any) => Number(d.totalQuantity ?? 0));
+  const salesArray: number[] = dailySales.map((d: any) => Number(d.totalQuantity ?? 0));
   const avgDailyDemand = salesArray.length > 0 ? salesArray.reduce((a, b) => a + b, 0) / salesArray.length : 0;
 
   const reorderLevel = Math.round(avgDailyDemand * leadTime + safetyStock);
