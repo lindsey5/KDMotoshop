@@ -4,7 +4,7 @@ import { tokenRequire } from "../middlewares/authMiddleware";
 import rateLimit from "express-rate-limit";
 
 const authLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
+  windowMs: 15 * 60 * 1000,
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
