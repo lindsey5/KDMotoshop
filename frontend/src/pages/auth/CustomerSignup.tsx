@@ -28,9 +28,8 @@ const CustomerSignupPage = () => {
             return;
         }
         const response = await postData('/api/auth/signup/verification', { email: newCustomer?.email, password: newCustomer?.password})
-        
-        response.success ? setShowVerificationModal(true) : setError(response.message)
         setLoading(false)
+        response.success ? setShowVerificationModal(true) : setError(response.message)
     }
 
     if(user && !userLoading){

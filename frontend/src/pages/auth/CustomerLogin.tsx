@@ -14,12 +14,15 @@ const CustomerLogin = () => {
     const [error, setError] = useState('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [logging, setLogging] = useState<boolean>(false);
     const { user, loading } = useSelector((state : RootState) => state.user)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError('')
+        setLogging(true)
         const response = await postData('/api/auth/login', { email, password });
+        setLogging(false)
         if(response.success){
             window.location.href = '/'
         }else{
@@ -61,7 +64,7 @@ const CustomerLogin = () => {
                     {error && <p className="text-red-600">{error}</p>}
                     <RedTextField required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <PasswordField required placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <RedButton type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth>Login</RedButton>
+                    <RedButton type="submit" sx={{ paddingY: 1, marginTop: 2 }} fullWidth disabled={logging}>Login</RedButton>
                     <a className="w-full text-red-600 hover:underline text-end" href="/forgot-password">Forgot Password?</a>
                     <div className="w-full flex justify-center mt-4">
                         <p className={cn("text-lg", isDark && 'text-gray-400')}>Don't have an account? <a className={cn("text-red-600 hover:underline", isDark && 'text-white font-bold')} href="/signup">Create an account</a></p>
