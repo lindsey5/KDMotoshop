@@ -450,7 +450,6 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       products: paginatedProducts
     };
 
-    // ✅ Cache final result
     await redisClient.setex(cacheKey, 120, JSON.stringify(response));
 
     res.status(200).json(response);

@@ -132,6 +132,7 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
     }
 }
 
+/*
 export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
     const matchBase: any = {
         product_id: new Types.ObjectId(product_id),
@@ -207,4 +208,37 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
     }
 
     return result.reverse();
+};
+*/
+
+export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
+
+    const match: any = {
+        product_id: new Types.ObjectId(product_id),
+        status: { $in: ['Fulfilled', 'Rated'] },
+        createdAt: {
+            $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) 
+        }
+    };
+
+    if (variant_sku) {
+        match.sku = variant_sku;
+    }
+
+    const dailySales = await OrderItem.aggregate([
+        { $match: match },
+        {
+            $group: {
+                _id: {
+                    year: { $year: '$createdAt' },
+                    month: { $month: '$createdAt' },
+                    day: { $dayOfMonth: '$createdAt' },
+                },
+                totalQuantity: { $sum: '$quantity' },
+            },
+        },
+        { $sort: { '_id.year': -1, '_id.month': -1, '_id.day': -1 } },
+    ]);
+
+    return dailySales;
 };
