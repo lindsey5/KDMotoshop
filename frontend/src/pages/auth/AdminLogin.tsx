@@ -16,11 +16,14 @@ const AdminLogin = () => {
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
     const isDark = useDarkmode()
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError('')
+        setLoading(true)
         const response = await postData('/api/auth/admin/login', { email, password });
+        setLoading(false)
         if(response.success){
             window.location.href = '/admin/dashboard'
         }else{
@@ -253,6 +256,7 @@ const AdminLogin = () => {
                                     }} 
                                     type="submit"
                                     className="w-full font-semibold text-lg tracking-wide"
+                                    disabled={loading}
                                 >
                                     Access Dashboard
                                 </RedButton>
