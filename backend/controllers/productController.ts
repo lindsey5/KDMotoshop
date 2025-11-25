@@ -388,14 +388,6 @@ export const get_inventory_status = async (req: Request, res: Response) => {
     const searchTerm = (req.query.searchTerm as string) || '';
     const status = req.query.status && req.query.status !== 'All' ? req.query.status : '';
 
-    const cacheKey = `inventory:${page}:${limit}:${searchTerm}:${status}`;
-    const cached = await redisClient.get(cacheKey);
-
-    if (cached) {
-      res.status(200).json(JSON.parse(cached));
-      return;
-    }
-
     const filter: any = { visibility: { $ne: 'Deleted' } };
 
     if (searchTerm) {
@@ -456,8 +448,6 @@ export const get_inventory_status = async (req: Request, res: Response) => {
       totalPages: Math.ceil(filteredProducts.length / limit),
       products: paginatedProducts
     };
-
-    await redisClient.setex(cacheKey, 120, JSON.stringify(response));
 
     res.status(200).json(response);
 
