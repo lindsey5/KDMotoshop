@@ -1,5 +1,5 @@
-import { Button, IconButton, Link, Tooltip } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { Button, Drawer, IconButton, Link, Tooltip } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RedButton } from "../../../components/buttons/Button";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -11,9 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../../../features/cart/cartThunks";
 import type { AppDispatch, RootState } from "../../../features/store";
 import { SocketContext } from "../../../context/socketContext";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, HomeIcon, Menu, StoreIcon, X } from "lucide-react";
 import { addNotification,  } from "../../../features/notifications/notificationSlice";
 import { fetchNotifications } from "../../../features/notifications/notificationThunks";
+import useDarkmode from "../../../hooks/useDarkmode";
 
 const NavLink = ({ label, path } : { path: string, label: string}) => {
     return (
@@ -56,6 +57,8 @@ const CustomerHeader = () => {
     const cart = useSelector((state : RootState) => state.cart.cart)
     const { user, loading } = useSelector((state : RootState) => state.user)
     const { socket } = useContext(SocketContext);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const isDark = useDarkmode();
 
     useEffect(() => {
         dispatch(fetchCart());
@@ -72,13 +75,17 @@ const CustomerHeader = () => {
     }, [socket]);
 
     return (
-        <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-2 sm:px-5 py-3 bg-black transition-all duration-300">
+        <>
+            <header className="z-10 flex gap-5 items-center justify-between fixed top-0 left-0 right-0 px-2 sm:px-5 py-3 bg-black transition-all duration-300">
             <img className="w-20 h-10 lg:w-30 lg:h-15 cursor-pointer" 
                 onClick={() => window.location.href = '/'} 
                 src="/kd-logo.png" alt="" 
             />
+            
+            <div className="lg:block hidden">
             <HeaderSearchField />
-            <div className="flex gap-5 items-center">
+            </div>
+            <div className="flex gap-1 md:gap-5 items-center">
                 <div className="gap-5 hidden lg:flex">
                     <NavLink path="/" label="Home"/>
                     <NavLink  path="/products" label="Products"/>
@@ -117,8 +124,120 @@ const CustomerHeader = () => {
                 <div className="hidden sm:block">
                     <ThemeToggle />
                 </div>
+                <div className="block sm:hidden">
+                    <IconButton
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        sx={{ 
+                            color: 'white',
+                            ":hover": { color: 'red' }
+                        }}
+                    >
+                        <Menu size={24} />
+                    </IconButton>
+                </div>
             </div>
         </header>
+        <Drawer
+            anchor="right"
+            open={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(!mobileMenuOpen)}
+            sx={{
+                '& .MuiDrawer-paper': {
+                    width: '280px',
+                    backgroundColor: isDark ? '#2a2a2a' : '#ffffff',
+                    color: isDark ? 'white' : '',
+                    padding: '20px'
+                }
+            }}
+        >
+            <div className="flex flex-col h-full">
+                {/* Close Button */}
+                <div className="flex justify-end mb-6">
+                    <IconButton
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        sx={{ color: isDark ? 'white' : '', ":hover": { color: 'red' } }}
+                    >
+                        <X size={24} />
+                    </IconButton>
+                </div>
+
+                {/* Navigation Links */}
+                <div className="flex flex-col gap-2 mb-6">
+                    <Link href="/s" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                        <Button
+                            fullWidth
+                            sx={{ 
+                                color: isDark ? 'white' : 'black',
+                                justifyContent: 'flex-start',
+                                textTransform: 'capitalize',
+                                fontSize: '16px',
+                                fontWeight: 500,
+                                ":hover": { color: 'red' }
+                            }}
+                            startIcon={<HomeIcon size={20} />}
+                        >
+                            Home
+                        </Button>
+                    </Link>
+                    <Link href="/s" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                        <Button
+                            fullWidth
+                            sx={{ 
+                                color: isDark ? 'white' : 'black',
+                                justifyContent: 'flex-start',
+                                textTransform: 'capitalize',
+                                fontSize: '16px',
+                                fontWeight: 500,
+                                ":hover": { color: 'red' }
+                            }}
+                            startIcon={<StoreIcon size={20} />}
+                        >
+                            Products
+                        </Button>
+                    </Link>
+                    
+                    {user && user.role === 'Customer' && !loading && (
+                        <Link href="/orders" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                            <Button
+                                fullWidth
+                                sx={{ 
+                                    color: isDark ? 'white' : 'black',
+                                    justifyContent: 'flex-start',
+                                    textTransform: 'capitalize',
+                                    fontSize: '16px',
+                                    fontWeight: 500,
+                                    ":hover": { color: 'red' }
+                                }}
+                                startIcon={<ClipboardList size={20} />}
+                            >
+                                My Orders
+                            </Button>
+                        </Link>
+                    )}
+                </div>
+
+                {/* Auth Button */}
+                {!user && (
+                    <div className="mb-6">
+                        <RedButton 
+                            onClick={() => navigate('/login')}
+                            fullWidth
+                        >
+                            Login
+                        </RedButton>
+                    </div>
+                )}
+
+                {/* Theme Toggle */}
+                <div className="mt-auto pt-6 border-t border-gray-800">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Theme</span>
+                        <ThemeToggle />
+                    </div>
+                </div>
+            </div>
+        </Drawer>
+        </>
     )
 }
 
