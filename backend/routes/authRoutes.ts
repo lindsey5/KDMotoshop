@@ -4,7 +4,7 @@ import { adminLogin, customerLogin, forgotPassword, getUser, logout, resetPasswo
 import { tokenRequire } from "../middlewares/authMiddleware";
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
+  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
