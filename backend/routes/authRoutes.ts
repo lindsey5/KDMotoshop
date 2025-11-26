@@ -20,14 +20,14 @@ const authLimiter = rateLimit({
 
 const router = Router();
 
-router.post('/login', authLimiter, customerLogin);
-router.post('/google/login', authLimiter, signinWithGoogle);
+router.post('/login', customerLogin);
+router.post('/google/login', signinWithGoogle);
 router.post('/admin/login', authLimiter, adminLogin);
 router.post('/logout', logout);
-router.post('/signup', authLimiter, signupCustomer);
-router.post('/signup/verification', authLimiter, sendSignupEmailVerification);
-router.post('/forgot-password', authLimiter, forgotPassword);
-router.post('/reset-password/:token', authLimiter, resetPassword);
+router.post('/signup', signupCustomer);
+router.post('/signup/verification', sendSignupEmailVerification);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 router.get('/user', tokenRequire, getUser);
 
 export default router;
