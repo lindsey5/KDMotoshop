@@ -10,7 +10,7 @@ const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep
 
 const SalesPredictionChart = () => {
     const today = new Date();
-    const [selected, setSelected] = useState<"current" | "next">("current");
+    const [selected, setSelected] = useState<"current" | "next">("next");
 
     const getMonthYear = () => {
         let month = today.getMonth() + 1; // current month (1–12)
