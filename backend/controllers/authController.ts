@@ -190,7 +190,7 @@ export const signinWithGoogle = async (req: Request, res: Response) => {
 
     let customer = await findCustomer({ email });
 
-    if(customer.status === 'Deactivated'){
+    if(customer?.status === 'Deactivated'){
       res.status(403).json({ success: false, message: 'Your account has been deactivated.'})
       return;
     }
