@@ -82,7 +82,7 @@ const CustomerHeader = () => {
                 src="/kd-logo.png" alt="" 
             />
             
-            <div className="lg:block hidden">
+            <div className="lg:flex flex-1 justify-center hidden">
                 <HeaderSearchField />
             </div>
             <div className="flex gap-1 md:gap-5 items-center">
