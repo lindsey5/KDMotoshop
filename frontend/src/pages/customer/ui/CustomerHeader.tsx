@@ -83,7 +83,7 @@ const CustomerHeader = () => {
             />
             
             <div className="lg:block hidden">
-            <HeaderSearchField />
+                <HeaderSearchField />
             </div>
             <div className="flex gap-1 md:gap-5 items-center">
                 <div className="gap-5 hidden lg:flex">

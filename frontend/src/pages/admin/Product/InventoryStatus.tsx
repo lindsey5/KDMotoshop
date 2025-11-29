@@ -13,6 +13,7 @@ import { useState } from "react"
 import { useDebounce } from "../../../hooks/useDebounce"
 import { SearchField } from "../../../components/Textfield"
 import { CustomizedSelect } from "../../../components/Select"
+import { useSearchParams } from "react-router-dom"
 
 const PageBreadCrumbs : { label: string, href: string }[] = [
     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -20,8 +21,10 @@ const PageBreadCrumbs : { label: string, href: string }[] = [
 ]
 
 const InventoryStatus = () => {
+    const [searchParams] = useSearchParams();
+    const sku = searchParams.get("sku");
     const [page, setPage] = useState(1);
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(sku ? sku : '');
     const searchDebounce = useDebounce(search, 500);
     const [status, setStatus] = useState<string>('All');
     const { data, loading } = useFetch(`/api/products/inventory-status?page=${page}&limit=10&searchTerm=${searchDebounce}&status=${status}`)

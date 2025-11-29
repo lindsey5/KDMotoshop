@@ -222,7 +222,7 @@ ProductSchema.methods.getStockStatus = async function (
   } else if (optimalStockLevel === 0) {
     status = 'Balanced';
     amount = 0;
-  } else if (currentStock < reorderLevel) {
+  } else if (currentStock <= reorderLevel) {
     status = 'Understock';
     amount = optimalStockLevel - currentStock;
   } else if (currentStock > optimalStockLevel) {

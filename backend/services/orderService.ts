@@ -132,7 +132,7 @@ export const createNewOrder = async ({ orderItems, order, cart } : { orderItems 
     }
 }
 
-/*
+
 export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
     const matchBase: any = {
         product_id: new Types.ObjectId(product_id),
@@ -169,7 +169,7 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     const match: any = {
         ...matchBase,
-        createdAt: { $gte: startDate }
+        createdAt: { $gte: startDate, $lt: new Date() }
     };
 
     const dailySales = await OrderItem.aggregate([
@@ -209,8 +209,8 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     return result.reverse();
 };
-*/
 
+/*
 export const getProductDailyDemand = async (product_id: string, variant_sku?: string) => {
 
     const match: any = {
@@ -242,3 +242,4 @@ export const getProductDailyDemand = async (product_id: string, variant_sku?: st
 
     return dailySales;
 };
+*/
