@@ -47,7 +47,7 @@ const CreateAdminModal = ({ open, close, adminData } : CreateAdminModalProps) =>
             aria-labelledby="create-admin-modal-title"
             aria-describedby="create-admin-modal-description"
             sx={{
-                zIndex: 1,
+                zIndex: 10,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
