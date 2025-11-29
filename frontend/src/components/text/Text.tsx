@@ -11,7 +11,7 @@ export const ExpandableText = ({ text = "", limit = 150 }) => {
   const displayedText = expanded || !isTruncated ? text : text.slice(0, limit) + "...";
 
   return (
-    <div className="whitespace-pre-line">
+    <div className="text-sm md:text-md whitespace-pre-line">
       <p>{displayedText}</p>
       {isTruncated && (
         <button

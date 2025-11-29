@@ -15,7 +15,7 @@ const PaymentSummaryCard = ({ subtotal, total, shipping_fee, discountedPrice, vo
 
     return (
         <Card>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="text-sm md:text-md grid grid-cols-2 gap-5">
                 <strong>Subtotal</strong>
                 <strong className="text-right">{formatNumberToPeso(subtotal ?? 0)}</strong>
                 {voucher && (
@@ -37,7 +37,7 @@ const PaymentSummaryCard = ({ subtotal, total, shipping_fee, discountedPrice, vo
                 <p>Shipping fee</p>
                 <p className="text-right">{shipping_fee ? formatNumberToPeso(shipping_fee) : 'Free'}</p>
             </div>
-            <div className={cn("grid grid-cols-2 font-bold text-2xl mt-5 pt-3 border-t border-gray-300", isDark && 'border-gray-500')}>
+            <div className={cn("grid grid-cols-2 font-bold text-lg md:text-2xl mt-5 pt-3 border-t border-gray-300", isDark && 'border-gray-500')}>
                 <h1>Total</h1>
                 <h1 className="text-right">{formatNumberToPeso(Math.round(total))}</h1>
             </div>

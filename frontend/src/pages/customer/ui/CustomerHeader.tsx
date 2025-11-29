@@ -163,7 +163,7 @@ const CustomerHeader = () => {
 
                 {/* Navigation Links */}
                 <div className="flex flex-col gap-2 mb-6">
-                    <Link href="/s" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <Link href="/" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         <Button
                             fullWidth
                             sx={{ 
@@ -179,7 +179,7 @@ const CustomerHeader = () => {
                             Home
                         </Button>
                     </Link>
-                    <Link href="/s" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    <Link href="/products" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                         <Button
                             fullWidth
                             sx={{ 

@@ -28,8 +28,8 @@ const Contact: React.FC = () => {
         {/* Hero Section */}
         <div className={cn(`relative overflow-hidden bg-red-600`, isDark && 'bg-gradient-to-r from-red-900 to-red-800')}>
             <div className="max-w-6xl mx-auto px-6 py-16 text-center">
-            <h1 className="text-5xl font-bold text-white mb-4">Contact Us</h1>
-            <p className="text-red-100 text-lg">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>
+            <p className="text-red-100 text-md md:text-lg">
                 We're here to help! Reach out to us through the form below or via our contact info.
             </p>
             </div>
@@ -43,19 +43,19 @@ const Contact: React.FC = () => {
             
             {/* Contact Info */}
             <div className={`space-y-6 text-gray-300 ${isDark ? "text-white" : "text-gray-700"}`}>
-            <h2 className="text-3xl font-semibold mb-4">Get in Touch</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4">Get in Touch</h2>
             <p>Have questions or need assistance? Our team is ready to help.</p>
             <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-red-600" />
-                <span>KDmotoshop@gmail.com</span>
+                <span className="text-sm md:text-md">KDmotoshop@gmail.com</span>
             </div>
             <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-red-600" />
-                <span>+63 912 345 6789</span>
+                <span className="text-sm md:text-md">+63 912 345 6789</span>
             </div>
             <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-red-600" />
-                <span>Taguig City, Philippines</span>
+                <span className="text-sm md:text-md">Taguig City, Philippines</span>
             </div>
             </div>
 

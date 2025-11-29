@@ -136,10 +136,10 @@ const CustomerProduct = () => {
          <div className={cn("pt-25 bg-gray-100 md:px-10 px-5 pb-10", isDark && 'bg-[#1e1e1e]')}>
             <BreadCrumbs breadcrumbs={PageBreadCrumbs} />
             <div className="flex flex-col lg:flex-row gap-10 py-10">
-                <div className="flex gap-5 flex-col items-center">
+                <div className="flex gap-5 flex-col md:items-center">
                     <ProductThumbnail 
                         product={product} 
-                        className={cn("w-[200px] h-[200px] lg:w-[350px] lg:h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
+                        className={cn("w-[150px] h-[150px] lg:w-[350px] lg:h-[350px] 2xl:w-[500px] 2xl:h-[500px] shadow-lg")}
                     />
                     <MultiImageSlideshow 
                             images={
@@ -155,7 +155,7 @@ const CustomerProduct = () => {
                         />
                 </div>
                 <div className={cn("flex flex-col gap-5 flex-1 p-5 bg-white rounded-md border border-gray-300 shadow-xl", isDark && 'bg-[#121212] border-gray-500 text-white')}>
-                    <h1 className="font-bold text-2xl md:text-3xl">{product?.product_name}</h1>
+                    <h1 className="font-bold text-xl md:text-3xl">{product?.product_name}</h1>
                     {product.rating !== 0 ? <div>
                         <div className="flex gap-3 items-center">
                             <Rating 
@@ -166,21 +166,21 @@ const CustomerProduct = () => {
                                 precision={0.5}
                                 emptyIcon={<GradeOutlinedIcon fontSize="inherit" sx={{ color: isDark ? 'white' : ''}}/>}
                             />
-                            <p className="text-xl">{product.rating} / 5</p>
+                            <p className="text-lg md:text-xl">{product.rating} / 5</p>
                         </div>
-                        <p className="text-xl">({totalReviews} Reviews)</p>
+                        <p className="text-lg md:text-xl">({totalReviews} Reviews)</p>
                     </div> : <p className={cn("text-gray-500", isDark && 'text-white')}>No Reviews</p>}
                     {product?.product_type === 'Variable' ? 
                         (filteredVariants.length > 0 ? 
-                            <h1 className="font-bold text-3xl">{formatNumberToPeso((
+                            <h1 className="font-bold text-xl md:text-3xl">{formatNumberToPeso((
                                 product?.product_type === 'Variable' ? 
                                     filteredVariants?.[0]?.price 
                                     : product?.price) ?? 0)}
                             </h1>
                         : <h1 className="text-red-500">Not Available</h1>)
-                    : <h1 className="font-bold text-2xl">{formatNumberToPeso(product?.price ?? 0)}</h1>}
+                    : <h1 className="font-bold text-xl md:text-2xl">{formatNumberToPeso(product?.price ?? 0)}</h1>}
 
-                    <p className="text-lg">Stock: {product?.product_type === 'Variable' ? filteredVariants[0] ? filteredVariants[0]?.stock : 'none' : product?.stock}</p>
+                    <p className="text-md md:text-lg">Stock: {product?.product_type === 'Variable' ? filteredVariants[0] ? filteredVariants[0]?.stock : 'none' : product?.stock}</p>
 
                     <div className="flex flex-col gap-4 mb-4">
                         <Attributes 
@@ -195,7 +195,7 @@ const CustomerProduct = () => {
                             disabled={product?.product_type === 'Variable' && (filteredVariants.length !== 1 || Object.keys(selectedAttributes).length !== product?.attributes.length)}
                         />
                     </div>
-                    <strong>Description: </strong>
+                    <strong>Description:</strong>
                     <ExpandableText text={product?.description} limit={80}/>
                     <div className="w-full flex gap-10">
                         <RedButton 

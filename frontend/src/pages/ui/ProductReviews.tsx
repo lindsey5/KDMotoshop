@@ -43,7 +43,7 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
             />
             
             <div className="flex items-center gap-5 justify-between flex-wrap mt-2">
-                <h1 className={cn("text-2xl font-bold", isDark && 'text-white')}>Customer Reviews ({reviewsRes?.overallTotal})</h1>
+                <h1 className={cn("text-xl md:text-2xl font-bold", isDark && 'text-white')}>Customer Reviews ({reviewsRes?.overallTotal})</h1>
                 <div className="flex items-center gap-2">
                     {reviewsRes?.reviews.length > 0 && <Rating 
                         name="read-only"
@@ -104,7 +104,7 @@ const ProductReviews = ({ product_id } : { product_id : string }) => {
                         />}
                     </Card>
                 ))
-                : <p className={cn("text-xl", isDark && 'text-white')}>No Reviews</p>
+                : <p className={cn("text-lg md:text-xl", isDark && 'text-white')}>No Reviews</p>
             }
             {!loading && <CustomizedPagination 
                 count={reviewsRes?.totalPages}

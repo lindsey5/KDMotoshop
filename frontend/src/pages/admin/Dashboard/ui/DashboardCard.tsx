@@ -14,7 +14,7 @@ const DashboardCard = ({ label, value, icon: Icon }: DashboardCardProps) => {
   
   return (
     <Card className={cn(
-      "relative p-6 rounded-2xl backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl group overflow-hidden",
+       "relative p-6 rounded-2xl backdrop-blur-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl group overflow-hidden",
       isDark 
         ? "bg-gradient-to-br from-red-950/40 to-[#121212] border-red-800/30 shadow-red-900/20" 
         : "bg-gradient-to-br from-white/90 via-red-50/60 to-white/95 border-gray-500/40 shadow-red-100/50"

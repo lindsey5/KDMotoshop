@@ -23,7 +23,7 @@ const AddressContainer = ({ address, index, selectedAddress, remove} : AddressCo
 
 
     return (
-        <div className={cn("flex justify-between items-center gap-5 border border-gray-300 p-5 rounded-lg", isDark && 'border-gray-500')}>
+        <div className={cn("text-sm md:text-md flex justify-between items-center gap-5 border border-gray-300 p-5 rounded-lg", isDark && 'border-gray-500')}>
             <div className="items-start flex flex-col gap-2">
                 <LocationPinIcon />
                 <p>Fullname: {address.firstname} {address.lastname}</p>

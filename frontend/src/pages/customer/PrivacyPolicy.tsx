@@ -51,8 +51,8 @@ const PrivacyPolicy = () => {
             <div className={`relative overflow-hidden ${isDark ? "bg-gradient-to-r from-red-900 to-red-800" : "bg-red-600"}`}>
                 <div className="max-w-6xl mx-auto px-6 py-16 text-center">
                     <Shield className="w-16 h-16 text-white mx-auto mb-4" />
-                    <h1 className="text-5xl font-bold text-white mb-4">Privacy Policy</h1>
-                    <p className="text-red-100 text-lg mb-2">Your privacy matters to us. Learn how we protect your data.</p>
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Privacy Policy</h1>
+                    <p className="text-red-100 text-md md:text-lg mb-2">Your privacy matters to us. Learn how we protect your data.</p>
                     <span className="text-white">Last Updated: {lastUpdated}</span>
                 </div>
             </div>
@@ -73,11 +73,11 @@ const PrivacyPolicy = () => {
                                         <Icon className="w-6 h-6" />
                                     </div>
 
-                                    <h2 className={`text-xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+                                    <h2 className={`text-lg md:text-xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
                                         {section.title}
                                     </h2>
 
-                                    <p className={`leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                                    <p className={`text-sm md:text-md leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                                         {section.content}
                                         {section.link && (
                                             <>
@@ -97,14 +97,14 @@ const PrivacyPolicy = () => {
 
                 {/* Trust Badges */}
                 <Card className="text-center mt-12">
-                    <h3 className={`text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>Your Data is Safe With Us</h3>
+                    <h3 className={`text-xl md:text-2xl font-semibold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>Your Data is Safe With Us</h3>
                     <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                         We are committed to protecting your privacy and ensuring the security of your personal information.
                     </p>
                 </Card>
 
                 {/* Footer */}
-                <footer className={`text-center mt-12 pt-8 border-t ${isDark ? "border-gray-700 text-gray-300" : "border-gray-200 text-gray-500"}`}>
+                <footer className={`text-sm md:text-md text-center mt-12 pt-8 border-t ${isDark ? "border-gray-700 text-gray-300" : "border-gray-200 text-gray-500"}`}>
                     <p>© {new Date().getFullYear()} KD Motoshop. All rights reserved.</p>
                 </footer>
             </div>

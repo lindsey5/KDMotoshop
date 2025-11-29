@@ -373,10 +373,10 @@ const FAQ: React.FC = () => {
         >
             <div className="max-w-6xl mx-auto px-6 py-16 text-center">
             <HelpCircle className="w-16 h-16 text-white mx-auto mb-4" />
-            <h1 className="text-5xl font-bold text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Frequently Asked Questions
             </h1>
-            <p className="text-red-100 text-lg mb-8">
+            <p className="text-red-100 text-md md:text-lg mb-8">
                 Find answers to common questions about KD Motoshop
             </p>
             </div>
@@ -392,7 +392,7 @@ const FAQ: React.FC = () => {
                 <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`text-sm md:text-md flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                     activeCategory === cat.id
                         ? isDark
                         ? "bg-red-600 text-white"
@@ -416,7 +416,7 @@ const FAQ: React.FC = () => {
                 <Card key={index} className="p-3">
                     <button
                     onClick={() => toggleItem(index)}
-                    className={`w-full px-6 py-4 flex items-center justify-between text-left transition-colors ${
+                    className={`text-sm md:text-md w-full px-6 py-4 flex items-center justify-between text-left transition-colors ${
                         isDark ? "hover:opacity-50" : "hover:bg-red-50"
                     }`}
                     >
@@ -435,7 +435,7 @@ const FAQ: React.FC = () => {
                     </button>
                     {openItems[index] && (
                     <div
-                        className={`px-6 pb-4 ${
+                        className={`mt-4 md:mt-8 px-6 pb-4 ${
                         isDark ? "text-gray-300" : "text-gray-600"
                         }`}
                     >
@@ -462,10 +462,10 @@ const FAQ: React.FC = () => {
 
             {/* Still Have Questions */}
             <Card className="text-center mt-12">
-            <h3 className={`text-2xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
+            <h3 className={`text-xl md:text-2xl font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>
                 Still have questions?
             </h3>
-            <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            <p className={`text-sm md:text-md mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
                 Can't find the answer you're looking for? Feel free to reach out to our support team.
             </p>
             <a

@@ -9,7 +9,7 @@ export const RedButton = ({ sx, ...props }: ButtonProps) => {
   const isDark = useDarkmode();
 
   return (
-    <Button
+    <Button 
       variant="contained"
       sx={{
         backgroundColor: "red",
@@ -20,7 +20,11 @@ export const RedButton = ({ sx, ...props }: ButtonProps) => {
           backgroundColor: isDark ? "#2a2a2a" : "#e0e0e0",
           color: isDark ? "gray" : "white",
         },
-
+        fontSize: {
+          xs: "0.8rem",  // phones
+          sm: "0.85rem",  // tablets
+          md: "0.9rem",  // small laptops
+        },
         ...sx,
       }}
       {...props}
