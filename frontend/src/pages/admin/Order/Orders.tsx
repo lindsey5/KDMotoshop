@@ -100,7 +100,7 @@ const Orders = () => {
         const start = formattedSelectedDates.startDate || "no-start";
         const end = formattedSelectedDates.endDate || "no-end";
 
-        const filename = `KD Motoshop-Orders_page-${page}_from-${from}_start-${start}_end-${end}.xlsx`;
+        const filename = `KD Motoshop-Orders_page-${page}_from-${from}${start && end ? `_start-${start}_end-${end}` : ''}_page=${page}.xlsx`;
 
         exportData({
             dataToExport,
